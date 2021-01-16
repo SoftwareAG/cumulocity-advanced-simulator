@@ -33,7 +33,7 @@ function createChart() {
         options: {
         }
     });
-    // createBarCharts();
+     createBarCharts();
 
 }
 

@@ -1,0 +1,58 @@
+<c8y-title>Create Custom Simulator</c8y-title>
+<c8y-action-bar-item [placement]="'left'">
+  
+  <a [routerLink]="['']" class="btn btn-link"><i class="fa fw fa-arrow-circle-o-left" style="font-size: large;"></i></a>
+</c8y-action-bar-item>
+
+<div style="width: 750px;">
+<div class="tight-grid">
+  <div class="col-sm-6 col-xs-6">
+    <div class="form-group">
+      <label for="fragment" translate>Fragment *</label>
+      <input id="fragment" class="form-control" />
+    </div>
+  </div>
+  <div class="col-sm-6 col-xs-6">
+    <div class="form-group">
+      <label for="series" translate>Series *</label>
+      <input name="series" class="form-control" />
+    </div>
+  </div>
+  <div class="col-sm-6 col-xs-6">
+    <div class="form-group">
+      <label for="min" translate="">Min</label>
+      <input name="minimum" class="form-control" />
+    </div>
+  </div>
+  <div class="col-sm-6 col-xs-6">
+    <div class="form-group">
+      <label for="min" translate>
+        Max 
+      </label>
+      <input name="maximum" class="form-control" />
+    </div>
+  </div>
+  <div>
+  <div class="col-sm-6 col-xs-6">
+    <div class="form-group">
+      <label for="min" translate>
+        Steps *
+      </label>
+      <input name="maximum" class="form-control" />
+    </div>
+  </div>
+  <div>
+  <div class="col-sm-6 col-xs-6">
+    <div class="form-group">
+      <label for="min" translate>
+        Unit
+      </label>
+      <input name="maximum" class="form-control" />
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary">Generate HTTP Request</button>
+  <button type="button" class="btn btn-default" style="float: right;"><i class="fa fa-cog"></i>&nbsp;Configure Sleep Settings</button>
+  <div>
+
+  
