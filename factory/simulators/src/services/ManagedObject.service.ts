@@ -1,0 +1,19 @@
+import { IManagedObject, InventoryService } from '@c8y/client';
+
+export abstract class ManagedObjectService {
+    readonly deviceSimulatorFragment = "c8y_CustomSimulator";
+
+    constructor(private inventory: InventoryService) { }
+
+    public getFilterInventoryResult(filter?: any): Promise<IManagedObject[]> {
+        return this.inventory.list(filter).then(result => result.data);
+    }
+
+    public createManagedObject<T>(mo: Partial<T>): Promise<T> {
+        return this.inventory.create(mo).then(result => {
+            const abc: T = result.data as any;
+            return abc;
+        });
+    }
+
+}
