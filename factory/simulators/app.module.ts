@@ -12,7 +12,7 @@ import { SimulatorConfigComponent } from './src/modules/simulator-config/simulat
 
 const appRoutes: Routes = [
   { path: '', component: SimulatorEntryComponent },
-  { path: 'createSim', component: CreateSimComponent },
+  { path: 'createSim/:id', component: CreateSimComponent },
 ]
 
 @NgModule({

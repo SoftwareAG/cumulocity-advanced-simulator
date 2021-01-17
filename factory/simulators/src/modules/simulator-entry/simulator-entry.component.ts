@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { IManagedObject } from "@c8y/client";
 import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
 import { SimulatorsServiceService } from '../../services/simulatorsService.service';
+import { DeviceSimulator } from 'src/models/simulator.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-simulator-entry',
@@ -15,7 +17,8 @@ export class SimulatorEntryComponent implements OnInit {
   subscriptions = new Subscription();
   allSimulators: IManagedObject[];
   constructor(private modalService: BsModalService,
-    private simService: SimulatorsServiceService) { }
+    private simService: SimulatorsServiceService,
+    private router: Router) { }
 
   ngOnInit() {
     this.simService.getAllDevices().then((simulators) => {this.allSimulators = simulators;
@@ -37,6 +40,11 @@ export class SimulatorEntryComponent implements OnInit {
 
 modalUnsubscribe() {
     this.subscriptions.unsubscribe();
+}
+
+editSimulator(simulator: DeviceSimulator) {
+  console.log(simulator.id);
+  this.router.navigate(['/createSim/' + simulator.id]);
 }
 
 }

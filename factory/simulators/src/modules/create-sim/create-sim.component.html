@@ -4,8 +4,9 @@
   <a [routerLink]="['']" class="btn btn-link"><i class="fa fw fa-arrow-circle-o-left" style="font-size: large;"></i></a>
 </c8y-action-bar-item>
 
+<c8y-drop-area>
 <div style="width: 750px;">
-<div class="tight-grid">
+<!-- <div class="tight-grid"> -->
   <div class="col-sm-6 col-xs-6">
     <div class="form-group">
       <label for="fragment" translate>Fragment *</label>
@@ -53,6 +54,19 @@
 
   <button type="button" class="btn btn-primary">Generate HTTP Request</button>
   <button type="button" class="btn btn-default" style="float: right;"><i class="fa fa-cog"></i>&nbsp;Configure Sleep Settings</button>
-  <div>
+  </div>
+  </div>
 
+<div class="card-inner-scroll">
+  <div class="card-block">
+    <textarea
+      class="form-control"
+      rows="6"
+    ></textarea>
+  </div>
+</div>
+</div>
+  </c8y-drop-area>
+
+  
   

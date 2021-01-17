@@ -5,10 +5,11 @@
 
 <div style="display: flex; flex-direction: row;">
 <ng-container *ngFor="let simulator of allSimulators">  
-  <div class="card custom-card">
-    <div class="card-header separator" style="display: flex; justify-content: space-between;"><div class="card-title">
-      <h3 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon">
-      &nbsp;{{simulator.c8y_CustomSimulator?.name}}</h3></div>
+  <div (click)="editSimulator(simulator)">
+  <div class="card custom-card" >
+    <div class="card-header separator" style="display: flex; justify-content: space-between; height: 56px"><div class="card-title">
+      <h4 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon">
+      &nbsp;{{simulator.c8y_CustomSimulator?.name}}</h4></div>
       <div class="dropdown settings" style="float: right;" dropdown >
         <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
           <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
@@ -34,10 +35,11 @@
     </div>
     <div class="card-block">
       <label class="c8y-switch">
-        <input type="checkbox" checked="unchecked" />
+        <input type="checkbox" />
         <span></span> paused
       </label>
     </div>
   </div>
+</div>
 </ng-container>
 </div>

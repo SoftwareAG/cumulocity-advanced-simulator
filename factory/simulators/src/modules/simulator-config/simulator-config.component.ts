@@ -47,7 +47,8 @@ export class SimulatorConfigComponent implements OnInit {
   saveSimulatorDetails() {
     this.simModel.c8y_CustomSimulator.name = this.simulatorTitle;
     this.inventoryService.create(this.simModel).then((result) => {console.log(result);
-    this.router.navigate(['/createSim'])});
+      const simulatorId = result.data.id;
+    this.router.navigate(['/createSim/' + simulatorId])});
     // console.log(this.simulatorTitle);
   }
 

@@ -68,9 +68,7 @@ function createBarCharts() {
         }
     });
 
-
-    /*
-      calculations based on the output
+//      calculations based on the output
   
     let sumOfFragment = [];
     let numberOfMeasurements = 0;
@@ -142,5 +140,5 @@ function createBarCharts() {
       options: {
       }
     });
-    */
+    
 }
