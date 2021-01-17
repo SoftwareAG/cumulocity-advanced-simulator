@@ -10,19 +10,19 @@
   <div class="col-sm-6 col-xs-6">
     <div class="form-group">
       <label for="fragment" translate>Fragment *</label>
-      <input id="fragment" class="form-control" />
+      <input id="fragment" class="form-control" [(ngModel)]="fragment"/>
     </div>
   </div>
   <div class="col-sm-6 col-xs-6">
     <div class="form-group">
       <label for="series" translate>Series *</label>
-      <input name="series" class="form-control" />
+      <input name="series" class="form-control" [(ngModel)]="series"/>
     </div>
   </div>
   <div class="col-sm-6 col-xs-6">
     <div class="form-group">
       <label for="min" translate="">Min</label>
-      <input name="minimum" class="form-control" />
+      <input name="minimum" class="form-control" [(ngModel)]="minValue"/>
     </div>
   </div>
   <div class="col-sm-6 col-xs-6">
@@ -30,7 +30,7 @@
       <label for="min" translate>
         Max 
       </label>
-      <input name="maximum" class="form-control" />
+      <input name="maximum" class="form-control" [(ngModel)]="maxValue"/>
     </div>
   </div>
   <div>
@@ -39,7 +39,7 @@
       <label for="min" translate>
         Steps *
       </label>
-      <input name="maximum" class="form-control" />
+      <input name="maximum" class="form-control" [(ngModel)]="steps"/>
     </div>
   </div>
   <div>
@@ -48,11 +48,11 @@
       <label for="min" translate>
         Unit
       </label>
-      <input name="maximum" class="form-control" />
+      <input name="maximum" class="form-control" [(ngModel)]="unit"/>
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary">Generate HTTP Request</button>
+  <button type="button" class="btn btn-primary" (click)="generateSimulatorRequest()">Generate HTTP Request</button>
   <button type="button" class="btn btn-default" style="float: right;"><i class="fa fa-cog"></i>&nbsp;Configure Sleep Settings</button>
   </div>
   </div>
@@ -62,7 +62,7 @@
     <textarea
       class="form-control"
       rows="6"
-    ></textarea>
+    >{{resultTemplate | json}}</textarea>
   </div>
 </div>
 </div>

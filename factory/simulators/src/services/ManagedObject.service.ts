@@ -16,4 +16,11 @@ export abstract class ManagedObjectService {
         });
     }
 
+    public updateManagedObject<T>(mo: Partial<T>): Promise<T> {
+        return this.inventory.update(mo).then(result => {
+            const abc: T = result.data as any;
+            return abc;
+        });
+    }
+
 }

@@ -3,11 +3,11 @@
   <button (click)="openAddNewSimulatorDialog()" class="btn btn-link"><i class="fa fw fa-plus-circle"></i>&nbsp;Add Simulator</button>
 </c8y-action-bar-item>
 
-<div style="display: flex; flex-direction: row;">
+<div class="card-group">
 <ng-container *ngFor="let simulator of allSimulators">  
   <div (click)="editSimulator(simulator)">
   <div class="card custom-card" >
-    <div class="card-header separator" style="display: flex; justify-content: space-between; height: 56px"><div class="card-title">
+    <div class="card-header separator" style="justify-content: space-between; height: 56px"><div class="card-title">
       <h4 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon">
       &nbsp;{{simulator.c8y_CustomSimulator?.name}}</h4></div>
       <div class="dropdown settings" style="float: right;" dropdown >
