@@ -8,7 +8,7 @@ import { SimulatorsServiceService } from '../../services/simulatorsService.servi
 @Component({
   selector: 'app-simulator-entry',
   templateUrl: './simulator-entry.component.html',
-  styleUrls: ['./simulator-entry.component.scss']
+  styleUrls: ['./simulator-entry.component.less']
 })
 export class SimulatorEntryComponent implements OnInit {
 
@@ -19,7 +19,7 @@ export class SimulatorEntryComponent implements OnInit {
 
   ngOnInit() {
     this.simService.getAllDevices().then((simulators) => {this.allSimulators = simulators;
-    console.log(this.allSimulators);});
+    console.log(simulators);});
   }
 
   openAddNewSimulatorDialog() {

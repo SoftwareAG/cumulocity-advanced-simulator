@@ -32,8 +32,8 @@ export class SimulatorConfigComponent implements OnInit {
   private closeSubject: Subject<any> = new Subject();
   simulatorTitle: string = '';
   simModel: Partial<DeviceSimulator> = {
-    name: '',
-    type: 'c8y_CustomSimulator'
+    type: 'c8y_CustomSimulator',
+    c8y_CustomSimulator: {name: ''}
   };
   public labels: ILabels = {
     ok: "Save",
@@ -45,7 +45,7 @@ export class SimulatorConfigComponent implements OnInit {
   }
 
   saveSimulatorDetails() {
-    this.simModel.name = this.simulatorTitle;
+    this.simModel.c8y_CustomSimulator.name = this.simulatorTitle;
     this.inventoryService.create(this.simModel).then((result) => {console.log(result);
     this.router.navigate(['/createSim'])});
     // console.log(this.simulatorTitle);

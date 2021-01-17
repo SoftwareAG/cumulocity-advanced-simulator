@@ -9,12 +9,13 @@ export interface SimulatorModel {
 }
 
 export interface DeviceSimulator extends IManagedObject {
-  type: string;
-  c8y_DeviceSimulator: {
-    commandQueue: { type: string; messageId: string; values: string[] }[];
-  };
-  instances: number;
-  name: string;
+  type?: string;
   id: string;
-  state: string;
+  c8y_CustomSimulator?: {
+    commandQueue?: { type: string; messageId: string; values: string[] }[];
+    instances?: number;
+    name?: string;
+    id?: string;
+    state?: string;
+  };
 }

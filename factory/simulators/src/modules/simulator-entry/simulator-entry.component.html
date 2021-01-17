@@ -3,6 +3,41 @@
   <button (click)="openAddNewSimulatorDialog()" class="btn btn-link"><i class="fa fw fa-plus-circle"></i>&nbsp;Add Simulator</button>
 </c8y-action-bar-item>
 
-<ng-container *ngFor="let simulator of allSimulators">
-  
+<div style="display: flex; flex-direction: row;">
+<ng-container *ngFor="let simulator of allSimulators">  
+  <div class="card custom-card">
+    <div class="card-header separator" style="display: flex; justify-content: space-between;"><div class="card-title">
+      <h3 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon">
+      &nbsp;{{simulator.c8y_CustomSimulator?.name}}</h3></div>
+      <div class="dropdown settings" style="float: right;" dropdown >
+        <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
+          <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+          <li>
+            <button type="button">
+              <i c8yIcon="cogs"></i> Create Smart Rule
+            </button>
+          </li>
+          <li>
+            <button type="button">
+              <i c8yIcon="trash"></i> Remove from list
+            </button>
+          </li>
+          <li>
+            <button type="button">
+              <i c8yIcon="floppy-o"></i> Save to library
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-block">
+      <label class="c8y-switch">
+        <input type="checkbox" checked="unchecked" />
+        <span></span> paused
+      </label>
+    </div>
+  </div>
 </ng-container>
+</div>
