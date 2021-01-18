@@ -12,7 +12,7 @@ export interface DeviceSimulator extends IManagedObject {
   type?: string;
   id: string;
   c8y_CustomSimulator?: {
-    commandQueue?: { type: string; messageId: string; values: string[] }[];
+    commandQueue?: { type: string; messageId: string; values: string[]} | {type: string; sleep: number} [];
     instances?: number;
     name?: string;
     id?: string;
