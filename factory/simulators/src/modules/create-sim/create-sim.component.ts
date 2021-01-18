@@ -1,5 +1,6 @@
 import { TransitiveCompileNgModuleMetadata } from "@angular/compiler";
 import { Component, OnInit } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { InventoryService, IManagedObject } from "@c8y/client";
 import { DeviceSimulator } from "src/models/simulator.model";
@@ -10,7 +11,7 @@ import { DeviceSimulator } from "src/models/simulator.model";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
-  constructor(private router: Router, private inventory: InventoryService) {}
+  constructor(private router: Router, private inventory: InventoryService, private sanitizer: DomSanitizer) {}
 
   resultTemplate = {
     instances: 1,
@@ -18,6 +19,7 @@ export class CreateSimComponent implements OnInit {
     commandQueue: [],
     supportedOperations: {},
   };
+  fileUrl;
   fragment: string;
   maxValue: string;
   minValue: string;
@@ -27,6 +29,7 @@ export class CreateSimComponent implements OnInit {
   unit: string;
   configureSettings = false;
   defaultSleep: string;
+  newFragmentAdded = false;
 
   template = {
     fragment: null,
@@ -52,7 +55,8 @@ export class CreateSimComponent implements OnInit {
   }
 
   generateSimulatorRequest() {
-    this.resultTemplate.commandQueue = [];
+    
+    if (!this.newFragmentAdded) {this.resultTemplate.commandQueue = [];}
     let allSteps = 0;
     const measurements = [this.deepCopy(this.template)];
     for (let i = 0; i < measurements.length; i++) {
@@ -139,5 +143,21 @@ export class CreateSimComponent implements OnInit {
   onChange(newVal) {
     // console.log(newVal);
     this.selectedConfig = newVal;
+  }
+
+  addNewFragment() {
+    this.newFragmentAdded = true;
+    this.fragment = '';
+    this.maxValue = '';
+    this.minValue = '';
+    this.series = '';
+    this.steps = '';
+    this.unit = '';
+  }
+
+  downloadJSON() {
+    const blob = new Blob([JSON.stringify(this.resultTemplate)], { type: 'application/json' });
+
+    this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
 }

@@ -143,6 +143,15 @@
         >
           Generate HTTP Request
         </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          style="float: right;"
+          (click)="addNewFragment()"
+        >
+          Add new fragment
+        </button>
       </div>
     </div>
 
@@ -153,5 +162,16 @@
         }}</textarea>
       </div>
     </div>
+
+    <a
+
+          [href]="fileUrl" 
+          download="HTTP_settings.json"
+          class="btn btn-primary"
+          (click)="downloadJSON()"
+          style="float: right;"
+        >
+          Download JSON Config
+  </a>
   </div>
 </c8y-drop-area>
