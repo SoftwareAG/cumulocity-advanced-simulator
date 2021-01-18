@@ -1,4 +1,3 @@
-import { TransitiveCompileNgModuleMetadata } from "@angular/compiler";
 import { Component, OnInit } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
@@ -18,6 +17,7 @@ export class CreateSimComponent implements OnInit {
     state: "PAUSED",
     commandQueue: [],
     supportedOperations: {},
+    name: ""
   };
   fileUrl;
   fragment: string;
@@ -44,12 +44,15 @@ export class CreateSimComponent implements OnInit {
   defaultSleepMsmtConfig = ['Sleep after each measurement', 'Sleep after each measurement group'];
   selectedConfig: string = this.defaultSleepMsmtConfig[0];
   simulatorId: string;
-  mo: IManagedObject;
+  mo: DeviceSimulator;
+  simulatorName: string;
   ngOnInit() {
     console.log(this.router.url.split("/").pop());
     this.simulatorId = this.router.url.split("/").pop();
     this.inventory.detail(this.simulatorId).then((result) => {
       this.mo = result.data;
+      this.resultTemplate.name = result.data.name;
+      this.simulatorName = result.data.name;
       console.log(this.mo);
     });
   }
@@ -106,24 +109,6 @@ export class CreateSimComponent implements OnInit {
       });
       }
     }
-
-    // let sortBy = "groups";
-    // if (sortBy == "groups" && measurements.filter((a) => a.fragment).length > 1 ) {
-    //     let cacheArr = [];
-    //     let countSteps = 0;
-    //     for (let i = 0; i < allSteps; i++) {
-    //         for (let j = 0; j < measurements.length; j++) {
-    //             let arrIndex = this.resultTemplate.commandQueue.findIndex((x) => { if (x && x.values && x.values[1] == measurements[j].series) { return true; } });
-    //             if (this.resultTemplate.commandQueue[arrIndex]) {
-    //                 cacheArr.push(this.resultTemplate.commandQueue[arrIndex]);
-    //                 delete this.resultTemplate.commandQueue[arrIndex];
-    //             }
-    //             countSteps++;
-    //         }
-
-    //     }
-    //     this.resultTemplate.commandQueue = cacheArr;
-    // }
     // TODO: Add alarms here!
   }
 
