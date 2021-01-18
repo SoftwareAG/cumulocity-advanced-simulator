@@ -134,25 +134,25 @@
               <input name="maximum" class="form-control" [(ngModel)]="unit" />
             </div>
           </div>
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="generateSimulatorRequest()"
-        >
-          Generate HTTP Request
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-primary"
-          style="float: right;"
-          (click)="addNewFragment()"
-        >
-          Add new fragment
-        </button>
+        </div>     
       </div>
+      <button
+      type="button"
+      class="btn btn-primary"
+      style="margin-left: 12px;"
+      (click)="generateSimulatorRequest()"
+    >
+      Generate HTTP Request
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      style="float: right; margin-right: 12px;"
+      (click)="addNewFragment()"
+    >
+      Add new fragment
+    </button>
     </div>
 
     <div class="card-inner-scroll">
