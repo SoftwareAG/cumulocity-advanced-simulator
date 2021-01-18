@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { InventoryService, IManagedObject } from "@c8y/client";
 import { DeviceSimulator } from "src/models/simulator.model";
 
@@ -10,14 +10,19 @@ import { DeviceSimulator } from "src/models/simulator.model";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
-  constructor(private router: Router, private inventory: InventoryService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private router: Router,
+    private inventory: InventoryService,
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute
+  ) {}
 
   resultTemplate = {
     instances: 1,
     state: "PAUSED",
     commandQueue: [],
     supportedOperations: {},
-    name: ""
+    name: "",
   };
   fileUrl;
   fragment: string;
@@ -40,26 +45,27 @@ export class CreateSimComponent implements OnInit {
     unit: null,
     tempType: "measurement",
   };
+  data: any;
 
-  defaultSleepMsmtConfig = ['Sleep after each measurement', 'Sleep after each measurement group'];
+  defaultSleepMsmtConfig = [
+    "Sleep after each measurement",
+    "Sleep after each measurement group",
+  ];
   selectedConfig: string = this.defaultSleepMsmtConfig[0];
   simulatorId: string;
   mo: DeviceSimulator;
   simulatorName: string;
   ngOnInit() {
-    console.log(this.router.url.split("/").pop());
-    this.simulatorId = this.router.url.split("/").pop();
-    this.inventory.detail(this.simulatorId).then((result) => {
-      this.mo = result.data;
-      this.resultTemplate.name = result.data.name;
-      this.simulatorName = result.data.name;
-      console.log(this.mo);
-    });
+    this.data = this.route.snapshot.data;
+    this.mo = (this.data.simulator.data);
+    this.simulatorName = (this.data.simulator.data.c8y_CustomSimulator.name);
+    this.resultTemplate.name = (this.data.simulator.data.c8y_CustomSimulator.name);
   }
 
   generateSimulatorRequest() {
-    
-    if (!this.newFragmentAdded) {this.resultTemplate.commandQueue = [];}
+    if (!this.newFragmentAdded) {
+      this.resultTemplate.commandQueue = [];
+    }
     let allSteps = 0;
     const measurements = [this.deepCopy(this.template)];
     for (let i = 0; i < measurements.length; i++) {
@@ -95,18 +101,26 @@ export class CreateSimComponent implements OnInit {
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
         // TODO: Add sleep here to push to resultTemplate.commandQueue
 
-        if (this.defaultSleep && this.defaultSleep !== '' && this.selectedConfig === this.defaultSleepMsmtConfig[0]) {
+        if (
+          this.defaultSleep &&
+          this.defaultSleep !== "" &&
+          this.selectedConfig === this.defaultSleepMsmtConfig[0]
+        ) {
           this.resultTemplate.commandQueue.push({
-            "type": "sleep",
-            "seconds": (value.sleep) ? value.sleep : this.defaultSleep
-        });
+            type: "sleep",
+            seconds: value.sleep ? value.sleep : this.defaultSleep,
+          });
         }
       }
-      if (this.defaultSleep && this.defaultSleep !== '' && this.selectedConfig === this.defaultSleepMsmtConfig[1]) {
+      if (
+        this.defaultSleep &&
+        this.defaultSleep !== "" &&
+        this.selectedConfig === this.defaultSleepMsmtConfig[1]
+      ) {
         this.resultTemplate.commandQueue.push({
-          "type": "sleep",
-          "seconds": (value.sleep) ? value.sleep : this.defaultSleep
-      });
+          type: "sleep",
+          seconds: value.sleep ? value.sleep : this.defaultSleep,
+        });
       }
     }
     // TODO: Add alarms here!
@@ -132,17 +146,21 @@ export class CreateSimComponent implements OnInit {
 
   addNewFragment() {
     this.newFragmentAdded = true;
-    this.fragment = '';
-    this.maxValue = '';
-    this.minValue = '';
-    this.series = '';
-    this.steps = '';
-    this.unit = '';
+    this.fragment = "";
+    this.maxValue = "";
+    this.minValue = "";
+    this.series = "";
+    this.steps = "";
+    this.unit = "";
   }
 
   downloadJSON() {
-    const blob = new Blob([JSON.stringify(this.resultTemplate)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(this.resultTemplate)], {
+      type: "application/json",
+    });
 
-    this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+    this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+      window.URL.createObjectURL(blob)
+    );
   }
 }
