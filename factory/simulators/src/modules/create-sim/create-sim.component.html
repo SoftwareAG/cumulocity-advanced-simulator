@@ -56,6 +56,7 @@
           <label for="defaultSleep"></label>
           <input
             id="defaultSleep"
+            [(ngModel)]="defaultSleep"
             class="form-control"
             placeholder="default sleep"
           />
@@ -64,7 +65,16 @@
 
       <div class="col-sm-4">
         <div class="form-group form-group-md">
-          <label>Label</label>
+          <div class="c8y-select-wrapper">
+            <select [ngModel]="selectedConfig" (ngModelChange)="onChange($event)" class="form-control">
+              <option *ngFor="let first of defaultSleepMsmtConfig">{{first}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4">
+        <div class="form-group form-group-md">
           <div class="c8y-select-wrapper">
             <select class="form-control">
               <option value="">.form-group-md</option>
@@ -75,18 +85,6 @@
 
       <div class="col-sm-4">
         <div class="form-group form-group-md">
-          <label>Label</label>
-          <div class="c8y-select-wrapper">
-            <select class="form-control">
-              <option value="">.form-group-md</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="form-group form-group-md">
-          <label>Label</label>
           <div class="c8y-select-wrapper">
             <select class="form-control">
               <option value="">.form-group-md</option>

@@ -26,6 +26,7 @@ export class CreateSimComponent implements OnInit {
   tempType: string;
   unit: string;
   configureSettings = false;
+  defaultSleep: string;
 
   template = {
     fragment: null,
@@ -37,6 +38,8 @@ export class CreateSimComponent implements OnInit {
     tempType: "measurement",
   };
 
+  defaultSleepMsmtConfig = ['Sleep after each measurement', 'Sleep after each measurement group'];
+  selectedConfig: string = this.defaultSleepMsmtConfig[0];
   simulatorId: string;
   mo: IManagedObject;
   ngOnInit() {
@@ -63,7 +66,7 @@ export class CreateSimComponent implements OnInit {
       measurements[i].unit = this.unit ? this.unit : "";
     }
 
-    console.log(measurements);
+    // console.log(measurements);
     for (let value of measurements.filter((a) => a.fragment)) {
       allSteps += +value.steps;
       value.steps = +value.steps;
@@ -84,8 +87,20 @@ export class CreateSimComponent implements OnInit {
 
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
         // TODO: Add sleep here to push to resultTemplate.commandQueue
+
+        if (this.defaultSleep && this.defaultSleep !== '' && this.selectedConfig === this.defaultSleepMsmtConfig[0]) {
+          this.resultTemplate.commandQueue.push({
+            "type": "sleep",
+            "seconds": (value.sleep) ? value.sleep : this.defaultSleep
+        });
+        }
       }
-      console.log(this.resultTemplate);
+      if (this.defaultSleep && this.defaultSleep !== '' && this.selectedConfig === this.defaultSleepMsmtConfig[1]) {
+        this.resultTemplate.commandQueue.push({
+          "type": "sleep",
+          "seconds": (value.sleep) ? value.sleep : this.defaultSleep
+      });
+      }
     }
 
     // let sortBy = "groups";
@@ -119,5 +134,10 @@ export class CreateSimComponent implements OnInit {
       values.push(+values[i] + calcStep);
     }
     return values;
+  }
+
+  onChange(newVal) {
+    // console.log(newVal);
+    this.selectedConfig = newVal;
   }
 }
