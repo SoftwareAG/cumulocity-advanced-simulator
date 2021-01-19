@@ -3,9 +3,9 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { InventoryService, IManagedObject } from "@c8y/client";
 import { DeviceSimulator } from "src/models/simulator.model";
-import { ChartDataSets, ChartOptions } from 'chart.js';
-import * as moment from 'moment';
-import { Color, Label } from 'ng2-charts';
+import { ChartDataSets, ChartOptions } from "chart.js";
+import * as moment from "moment";
+import { Color, Label } from "ng2-charts";
 
 @Component({
   selector: "app-create-sim",
@@ -40,25 +40,25 @@ export class CreateSimComponent implements OnInit {
   newFragmentAdded = false;
   displayChart = false;
 
-   lineChartData: ChartDataSets[] = [];
-   lineChartLabels: Label[] = [];
-   lineChartColors: Color[] = [
+  lineChartData: ChartDataSets[] = [];
+  lineChartLabels: Label[] = [];
+  lineChartColors: Color[] = [
     {
-      borderColor: 'black',
-      backgroundColor: 'rgb(15, 76, 123)',
+      borderColor: "black",
+      backgroundColor: "rgb(15, 76, 123)",
     },
     {
-      borderColor: 'black',
-      backgroundColor: 'rgb(224, 0, 14)',
+      borderColor: "black",
+      backgroundColor: "rgb(224, 0, 14)",
     },
     {
-      borderColor: 'black',
-      backgroundColor: 'rgb(230, 100, 0)',
+      borderColor: "black",
+      backgroundColor: "rgb(230, 100, 0)",
     },
   ];
-   lineChartLegend = true;
-   lineChartType = 'bar';
-   lineChartPlugins = [];
+  lineChartLegend = true;
+  lineChartType = "bar";
+  lineChartPlugins = [];
 
   measurements = [];
   template = {
@@ -82,9 +82,9 @@ export class CreateSimComponent implements OnInit {
   simulatorName: string;
   ngOnInit() {
     this.data = this.route.snapshot.data;
-    this.mo = (this.data.simulator.data);
-    this.simulatorName = (this.data.simulator.data.c8y_CustomSimulator.name);
-    this.resultTemplate.name = (this.data.simulator.data.c8y_CustomSimulator.name);
+    this.mo = this.data.simulator.data;
+    this.simulatorName = this.data.simulator.data.c8y_CustomSimulator.name;
+    this.resultTemplate.name = this.data.simulator.data.c8y_CustomSimulator.name;
   }
 
   generateSimulatorRequest() {
@@ -92,20 +92,32 @@ export class CreateSimComponent implements OnInit {
       this.resultTemplate.commandQueue = [];
     }
     let allSteps = 0;
-    this.measurements = [this.deepCopy(this.template)];
-    this.measurements.push(this.deepCopy(this.template))  ;
-    for (let i = 0; i < this.measurements.length; i++) {
-      let number = this.measurements[i];
-      // console.log(measurements.length);
-      this.measurements[i].fragment = this.fragment ? this.fragment : "";
-      this.measurements[i].series = this.series ? this.series : "";
-      this.measurements[i].minValue = this.minValue ? this.minValue : "";
-      this.measurements[i].maxValue = this.maxValue ? this.maxValue : "";
-      this.measurements[i].steps = this.steps ? this.steps : "";
-      this.measurements[i].unit = this.unit ? this.unit : "";
+    if (!this.newFragmentAdded) {
+      this.measurements = [this.deepCopy(this.template)];
+      // this.measurements.push(this.deepCopy(this.template));
+      for (let i = 0; i < this.measurements.length; i++) {
+        let number = this.measurements[i];
+        // console.log(measurements.length);
+        this.measurements[i].fragment = this.fragment ? this.fragment : "";
+        this.measurements[i].series = this.series ? this.series : "";
+        this.measurements[i].minValue = this.minValue ? this.minValue : "";
+        this.measurements[i].maxValue = this.maxValue ? this.maxValue : "";
+        this.measurements[i].steps = this.steps ? this.steps : "";
+        this.measurements[i].unit = this.unit ? this.unit : "";
+      }
+      console.log("Measurements: " + JSON.stringify(this.measurements));
+    } else {
+      this.measurements.push({
+        fragment: this.fragment ? this.fragment : "",
+        series: this.series ? this.series : "",
+        minValue: this.minValue ? this.minValue : "",
+        maxValue: this.maxValue ? this.maxValue : "",
+        steps: this.steps ? this.steps : "",
+        unit: this.unit ? this.unit : "",
+      });
+      console.log("Measurements: " + JSON.stringify(this.measurements));
     }
 
-    // console.log(this.measurements);
     for (let value of this.measurements.filter((a) => a.fragment)) {
       allSteps += +value.steps;
       value.steps = +value.steps;
@@ -125,7 +137,7 @@ export class CreateSimComponent implements OnInit {
         toBePushed = toBePushed.replace("SERIES", value.series);
         toBePushed = toBePushed.replace("VALUE", scaled);
         toBePushed = toBePushed.replace("UNIT", value.unit);
-        
+
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
         // TODO: Add sleep here to push to resultTemplate.commandQueue
 
@@ -153,10 +165,13 @@ export class CreateSimComponent implements OnInit {
       }
       this.displayChart = true;
       console.log(scaledArray);
-      this.lineChartData.push({data: scaledArray, label: value.series + ' (' +value.unit + ')'});
-      this.lineChartLabels = (['A','B','C','D','E','F','G','H','I','J','K','L','M',]);
-      console.log(this.range(0, scaledArray.length, 1));      
-      console.log(this.measurements);
+      this.lineChartData.push({
+        data: scaledArray,
+        label: value.series + " (" + value.unit + ")",
+      });
+      this.lineChartLabels = this.range(0, scaledArray.length, 1);
+      console.log(this.range(0, scaledArray.length, 1));
+      // console.log(this.measurements);
     }
     // TODO: Add alarms here!
   }
@@ -181,8 +196,16 @@ export class CreateSimComponent implements OnInit {
 
   addNewFragment() {
     this.newFragmentAdded = true;
-    this.measurements.push(this.deepCopy(this.template));
-    console.log(this. measurements);
+    // this.measurements.push(this.deepCopy(this.template));
+    // console.log(this. measurements);
+    this.measurements.push({
+      fragment: this.fragment ? this.fragment : "",
+      series: this.series ? this.series : "",
+      minValue: this.minValue ? this.minValue : "",
+      maxValue: this.maxValue ? this.maxValue : "",
+      steps: this.steps ? this.steps : "",
+      unit: this.unit ? this.unit : "",
+    });
     this.fragment = "";
     this.maxValue = "";
     this.minValue = "";
@@ -203,9 +226,9 @@ export class CreateSimComponent implements OnInit {
 
   range(start, end, step) {
     let arr = [];
-    for (let i = start; i <= end; i += step){
-       arr.push(i);
-    };
+    for (let i = start; i <= end; i += step) {
+      arr.push(i.toString());
+    }
     return arr;
   }
 }
