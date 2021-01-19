@@ -1,4 +1,4 @@
-<c8y-title>{{simulatorName}}</c8y-title>
+<c8y-title>{{ simulatorName }}</c8y-title>
 <c8y-action-bar-item [placement]="'left'">
   <a [routerLink]="['']" class="btn btn-link"
     ><i class="fa fw fa-arrow-circle-o-left" style="font-size: large"></i
@@ -6,7 +6,7 @@
 </c8y-action-bar-item>
 
 <c8y-drop-area>
-  <div style="width: 750px">
+  <div class="col-lg-6">
     <button
       type="button"
       class="btn btn-default"
@@ -66,8 +66,14 @@
       <div class="col-sm-4">
         <div class="form-group form-group-md">
           <div class="c8y-select-wrapper">
-            <select [ngModel]="selectedConfig" (ngModelChange)="onChange($event)" class="form-control">
-              <option *ngFor="let first of defaultSleepMsmtConfig">{{first}}</option>
+            <select
+              [ngModel]="selectedConfig"
+              (ngModelChange)="onChange($event)"
+              class="form-control"
+            >
+              <option *ngFor="let first of defaultSleepMsmtConfig">
+                {{ first }}
+              </option>
             </select>
           </div>
         </div>
@@ -134,25 +140,25 @@
               <input name="maximum" class="form-control" [(ngModel)]="unit" />
             </div>
           </div>
-        </div>     
+        </div>
       </div>
       <button
-      type="button"
-      class="btn btn-primary"
-      style="margin-left: 12px;"
-      (click)="generateSimulatorRequest()"
-    >
-      Generate HTTP Request
-    </button>
+        type="button"
+        class="btn btn-primary"
+        style="margin-left: 12px"
+        (click)="generateSimulatorRequest()"
+      >
+        Generate HTTP Request
+      </button>
 
-    <button
-      type="button"
-      class="btn btn-primary"
-      style="float: right; margin-right: 12px;"
-      (click)="addNewFragment()"
-    >
-      Add new fragment
-    </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        style="float: right; margin-right: 12px"
+        (click)="addNewFragment()"
+      >
+        Add new fragment
+      </button>
     </div>
 
     <div class="card-inner-scroll">
@@ -164,14 +170,23 @@
     </div>
 
     <a
-
-          [href]="fileUrl" 
-          download="HTTP_settings.json"
-          class="btn btn-primary"
-          (click)="downloadJSON()"
-          style="float: right;"
-        >
-          Download JSON Config
-  </a>
+      [href]="fileUrl"
+      download="HTTP_settings.json"
+      class="btn btn-primary"
+      (click)="downloadJSON()"
+      style="float: right"
+    >
+      Download JSON Config
+    </a>
+  </div>
+  <div class="col-lg-6" *ngIf="displayChart">
+    <app-simulator-chart
+      [lineChartData]="lineChartData"
+      [lineChartLabels]="lineChartLabels"
+      [lineChartLegend]="lineChartLegend"
+      [lineChartType]="lineChartType"
+      [lineChartColors]="lineChartColors"
+      [lineChartPlugins]="lineChartPlugins"
+    ></app-simulator-chart>
   </div>
 </c8y-drop-area>

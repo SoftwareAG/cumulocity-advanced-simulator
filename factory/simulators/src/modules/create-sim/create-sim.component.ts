@@ -3,6 +3,9 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { InventoryService, IManagedObject } from "@c8y/client";
 import { DeviceSimulator } from "src/models/simulator.model";
+import { ChartDataSets, ChartOptions } from 'chart.js';
+import * as moment from 'moment';
+import { Color, Label } from 'ng2-charts';
 
 @Component({
   selector: "app-create-sim",
@@ -35,7 +38,29 @@ export class CreateSimComponent implements OnInit {
   configureSettings = false;
   defaultSleep: string;
   newFragmentAdded = false;
+  displayChart = false;
 
+   lineChartData: ChartDataSets[] = [];
+   lineChartLabels: Label[] = [];
+   lineChartColors: Color[] = [
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgb(15, 76, 123)',
+    },
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgb(224, 0, 14)',
+    },
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgb(230, 100, 0)',
+    },
+  ];
+   lineChartLegend = true;
+   lineChartType = 'bar';
+   lineChartPlugins = [];
+
+  measurements = [];
   template = {
     fragment: null,
     series: null,
@@ -67,27 +92,30 @@ export class CreateSimComponent implements OnInit {
       this.resultTemplate.commandQueue = [];
     }
     let allSteps = 0;
-    const measurements = [this.deepCopy(this.template)];
-    for (let i = 0; i < measurements.length; i++) {
-      let number = measurements[i];
+    this.measurements = [this.deepCopy(this.template)];
+    this.measurements.push(this.deepCopy(this.template))  ;
+    for (let i = 0; i < this.measurements.length; i++) {
+      let number = this.measurements[i];
       // console.log(measurements.length);
-      measurements[i].fragment = this.fragment ? this.fragment : "";
-      measurements[i].series = this.series ? this.series : "";
-      measurements[i].minValue = this.minValue ? this.minValue : "";
-      measurements[i].maxValue = this.maxValue ? this.maxValue : "";
-      measurements[i].steps = this.steps ? this.steps : "";
-      measurements[i].unit = this.unit ? this.unit : "";
+      this.measurements[i].fragment = this.fragment ? this.fragment : "";
+      this.measurements[i].series = this.series ? this.series : "";
+      this.measurements[i].minValue = this.minValue ? this.minValue : "";
+      this.measurements[i].maxValue = this.maxValue ? this.maxValue : "";
+      this.measurements[i].steps = this.steps ? this.steps : "";
+      this.measurements[i].unit = this.unit ? this.unit : "";
     }
 
-    // console.log(measurements);
-    for (let value of measurements.filter((a) => a.fragment)) {
+    // console.log(this.measurements);
+    for (let value of this.measurements.filter((a) => a.fragment)) {
       allSteps += +value.steps;
       value.steps = +value.steps;
       value.minValue = +value.minValue;
       value.maxValue = +value.maxValue;
+      console.log(value);
       let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
 
       for (let scaled of scaledArray) {
+        // console.log(scaled);
         let toBePushed = `{
                               "messageId": "200",
                               "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
@@ -97,7 +125,7 @@ export class CreateSimComponent implements OnInit {
         toBePushed = toBePushed.replace("SERIES", value.series);
         toBePushed = toBePushed.replace("VALUE", scaled);
         toBePushed = toBePushed.replace("UNIT", value.unit);
-
+        
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
         // TODO: Add sleep here to push to resultTemplate.commandQueue
 
@@ -112,6 +140,7 @@ export class CreateSimComponent implements OnInit {
           });
         }
       }
+      // console.log(scaledArray);
       if (
         this.defaultSleep &&
         this.defaultSleep !== "" &&
@@ -122,6 +151,12 @@ export class CreateSimComponent implements OnInit {
           seconds: value.sleep ? value.sleep : this.defaultSleep,
         });
       }
+      this.displayChart = true;
+      console.log(scaledArray);
+      this.lineChartData.push({data: scaledArray, label: value.series + ' (' +value.unit + ')'});
+      this.lineChartLabels = (['A','B','C','D','E','F','G','H','I','J','K','L','M',]);
+      console.log(this.range(0, scaledArray.length, 1));      
+      console.log(this.measurements);
     }
     // TODO: Add alarms here!
   }
@@ -146,6 +181,8 @@ export class CreateSimComponent implements OnInit {
 
   addNewFragment() {
     this.newFragmentAdded = true;
+    this.measurements.push(this.deepCopy(this.template));
+    console.log(this. measurements);
     this.fragment = "";
     this.maxValue = "";
     this.minValue = "";
@@ -162,5 +199,13 @@ export class CreateSimComponent implements OnInit {
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
       window.URL.createObjectURL(blob)
     );
+  }
+
+  range(start, end, step) {
+    let arr = [];
+    for (let i = start; i <= end; i += step){
+       arr.push(i);
+    };
+    return arr;
   }
 }
