@@ -39,6 +39,7 @@ export class CreateSimComponent implements OnInit {
   defaultSleep: string;
   newFragmentAdded = false;
   displayChart = false;
+  scaled: any[];
 
   lineChartData: ChartDataSets[] = [];
   lineChartLabels: Label[] = [];
@@ -61,6 +62,7 @@ export class CreateSimComponent implements OnInit {
   lineChartPlugins = [];
 
   measurements = [];
+  testArray = [];
   template = {
     fragment: null,
     series: null,
@@ -71,6 +73,7 @@ export class CreateSimComponent implements OnInit {
     tempType: "measurement",
   };
   data: any;
+  scaledArray = [];
 
   defaultSleepMsmtConfig = [
     "Sleep after each measurement",
@@ -123,9 +126,24 @@ export class CreateSimComponent implements OnInit {
       value.steps = +value.steps;
       value.minValue = +value.minValue;
       value.maxValue = +value.maxValue;
-      console.log(value);
-      let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
+      console.log('VALUE '+ JSON.stringify(value));
+      
+      if (this.testArray.find(x => x.fragment === value.fragment)) {
+        const pos = this.testArray.findIndex(x => x.fragment === value.fragment);
+        console.log(pos);
+        console.log(this.testArray);
+        this.scaled = this.scale(value.minValue, value.maxValue, value.steps);
+        const nowScaled = this.scale(value.minValue, value.maxValue, value.steps);
+        this.scaledArray[pos].push(...nowScaled);
+      } else {
+        const nowScaled = this.scale(value.minValue, value.maxValue, value.steps);
+        this.testArray.push(value);
+        this.scaledArray.push(nowScaled);
+      }
 
+      console.log(this.scaledArray);
+      
+      let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
       for (let scaled of scaledArray) {
         // console.log(scaled);
         let toBePushed = `{
@@ -164,14 +182,15 @@ export class CreateSimComponent implements OnInit {
         });
       }
       this.displayChart = true;
-      console.log(scaledArray);
+      // console.log(scaledArray);
+      // console.log(value);
       this.lineChartData.push({
         data: scaledArray,
         label: value.series + " (" + value.unit + ")",
       });
       this.lineChartLabels = this.range(0, scaledArray.length, 1);
       console.log(this.range(0, scaledArray.length, 1));
-      // console.log(this.measurements);
+      console.log('Scaled '+scaledArray);
     }
     // TODO: Add alarms here!
   }
@@ -231,4 +250,8 @@ export class CreateSimComponent implements OnInit {
     }
     return arr;
   }
+
+  // displayCharts(measurement) {
+  //   if () {}
+  // }
 }
