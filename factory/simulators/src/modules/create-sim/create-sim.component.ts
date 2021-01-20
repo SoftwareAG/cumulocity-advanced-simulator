@@ -56,6 +56,22 @@ export class CreateSimComponent implements OnInit {
       borderColor: "black",
       backgroundColor: "rgb(230, 100, 0)",
     },
+    {
+      borderColor: "black",
+      backgroundColor: "rgb(0, 136, 0)",
+    },
+    {
+      borderColor: "black",
+      backgroundColor: "rgb(224, 0, 127)",
+    },
+    {
+      borderColor: "black",
+      backgroundColor: "rgb(255, 31, 45)",
+    },
+    {
+      borderColor: "black",
+      backgroundColor: "rgb(255, 240, 31)",
+    },
   ];
   lineChartLegend = true;
   lineChartType = "bar";
@@ -100,7 +116,6 @@ export class CreateSimComponent implements OnInit {
       // this.measurements.push(this.deepCopy(this.template));
       for (let i = 0; i < this.measurements.length; i++) {
         let number = this.measurements[i];
-        // console.log(measurements.length);
         this.measurements[i].fragment = this.fragment ? this.fragment : "";
         this.measurements[i].series = this.series ? this.series : "";
         this.measurements[i].minValue = this.minValue ? this.minValue : "";
@@ -108,7 +123,6 @@ export class CreateSimComponent implements OnInit {
         this.measurements[i].steps = this.steps ? this.steps : "";
         this.measurements[i].unit = this.unit ? this.unit : "";
       }
-      console.log("Measurements: " + JSON.stringify(this.measurements));
     } else {
       this.measurements.push({
         fragment: this.fragment ? this.fragment : "",
@@ -118,7 +132,6 @@ export class CreateSimComponent implements OnInit {
         steps: this.steps ? this.steps : "",
         unit: this.unit ? this.unit : "",
       });
-      console.log("Measurements: " + JSON.stringify(this.measurements));
     }
 
     for (let value of this.measurements.filter((a) => a.fragment)) {
@@ -126,12 +139,9 @@ export class CreateSimComponent implements OnInit {
       value.steps = +value.steps;
       value.minValue = +value.minValue;
       value.maxValue = +value.maxValue;
-      console.log('VALUE '+ JSON.stringify(value));
       
       if (this.testArray.find(x => x.fragment === value.fragment)) {
         const pos = this.testArray.findIndex(x => x.fragment === value.fragment);
-        console.log(pos);
-        console.log(this.testArray);
         this.scaled = this.scale(value.minValue, value.maxValue, value.steps);
         const nowScaled = this.scale(value.minValue, value.maxValue, value.steps);
         this.scaledArray[pos].push(...nowScaled);
@@ -140,12 +150,9 @@ export class CreateSimComponent implements OnInit {
         this.testArray.push(value);
         this.scaledArray.push(nowScaled);
       }
-
-      console.log(this.scaledArray);
       
       let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
-      for (let scaled of scaledArray) {
-        // console.log(scaled);
+      for (let scaled of this.scaledArray) {
         let toBePushed = `{
                               "messageId": "200",
                               "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
@@ -170,7 +177,7 @@ export class CreateSimComponent implements OnInit {
           });
         }
       }
-      // console.log(scaledArray);
+
       if (
         this.defaultSleep &&
         this.defaultSleep !== "" &&
@@ -181,22 +188,25 @@ export class CreateSimComponent implements OnInit {
           seconds: value.sleep ? value.sleep : this.defaultSleep,
         });
       }
-      this.displayChart = true;
-      // console.log(scaledArray);
-      // console.log(value);
-      this.lineChartData.push({
-        data: scaledArray,
-        label: value.series + " (" + value.unit + ")",
-      });
-      this.lineChartLabels = this.range(0, scaledArray.length, 1);
-      console.log(this.range(0, scaledArray.length, 1));
-      console.log('Scaled '+scaledArray);
+      
     }
+
+    const test = this.scaledArray.map((entry, i) => ({data: entry, label: this.testArray[i].series}));
+
+    this.displayChart = true;
+
+      this.lineChartData = test;
+      this.lineChartLabels = this.range(0, this.configureScaling(test), 1);
+
     // TODO: Add alarms here!
   }
 
   deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  configureScaling(arr: {data: number[]; label: string}[]) {
+    return Math.max(...Array.from(arr, x => x.data.length));
   }
 
   scale(min, max, steps) {
@@ -209,14 +219,11 @@ export class CreateSimComponent implements OnInit {
   }
 
   onChange(newVal) {
-    // console.log(newVal);
     this.selectedConfig = newVal;
   }
 
   addNewFragment() {
     this.newFragmentAdded = true;
-    // this.measurements.push(this.deepCopy(this.template));
-    // console.log(this. measurements);
     this.measurements.push({
       fragment: this.fragment ? this.fragment : "",
       series: this.series ? this.series : "",
@@ -251,7 +258,4 @@ export class CreateSimComponent implements OnInit {
     return arr;
   }
 
-  // displayCharts(measurement) {
-  //   if () {}
-  // }
 }
