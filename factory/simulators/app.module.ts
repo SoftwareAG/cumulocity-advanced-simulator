@@ -18,11 +18,26 @@ import { SimulatorConfigComponent } from "./src/modules/simulator-config/simulat
 import { SimulatorResolverService } from "./src/services/simulatorResolver.service";
 import { SimulatorChartComponent } from "./src/modules/simulator-chart/simulator-chart.component";
 import { C8yFactoriesModule } from "./src/modules/factories/c8yfactories.module";
+import { AlarmsComponent } from "./src/modules/alarms/alarms.component";
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
   {
     path: "createSim/:id",
-    component: CreateSimComponent,
+    
+    children: [{
+      path: "createSim",
+      component: CreateSimComponent,
+      
+    }, {
+      path: "alarms",
+      component: AlarmsComponent,
+      
+    }, {
+      path: "",
+      redirectTo: 'createSim',
+      pathMatch: 'full'
+      
+    }],
     resolve: {
       simulator: SimulatorResolverService,
     },
@@ -44,12 +59,14 @@ const appRoutes: Routes = [
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
+    AlarmsComponent,
   ],
   entryComponents: [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
+    AlarmsComponent,
   ],
   providers: [ThemeService],
   // providers: [

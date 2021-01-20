@@ -18,7 +18,7 @@ export class CustomTabFactory implements TabFactory {
                 {
                     label: 'Alarms',
                     icon: 'c8y-icon c8y-icon-alert-idle',
-                    path: 'createSim/:id/Alarms',
+                    path: 'createSim/18463756/alarms',
                     priority: 100
                 }
             );

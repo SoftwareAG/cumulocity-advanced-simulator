@@ -14,6 +14,7 @@ resolve(
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ): Observable<any>|Promise<any>|any {
+  console.log(route);
   return this.service.getSimulatorById(route.paramMap.get('id'));
 }
 }
