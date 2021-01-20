@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule as ngRouterModule, Routes } from "@angular/router";
-import { ChartsModule, ThemeService } from 'ng2-charts';
+import { ChartsModule, ThemeService } from "ng2-charts";
 import {
   CoreModule,
   BootstrapComponent,
@@ -12,12 +12,12 @@ import {
 // RECOMMENDED
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { SimulatorEntryComponent } from "./src/modules/simulator-entry/simulator-entry.component";
-import { NavFactory } from "./factories/Navigation";
+import { NavFactory } from "./src/modules/factories/Navigation";
 import { CreateSimComponent } from "./src/modules/create-sim/create-sim.component";
 import { SimulatorConfigComponent } from "./src/modules/simulator-config/simulator-config.component";
 import { SimulatorResolverService } from "./src/services/simulatorResolver.service";
 import { SimulatorChartComponent } from "./src/modules/simulator-chart/simulator-chart.component";
-
+import { C8yFactoriesModule } from "./src/modules/factories/c8yfactories.module";
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
   {
@@ -36,21 +36,22 @@ const appRoutes: Routes = [
     BsDropdownModule.forRoot(),
     ngRouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true }),
     CoreModule.forRoot(),
-    ChartsModule
+    C8yFactoriesModule,
+    ChartsModule,
   ],
   declarations: [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
-    SimulatorChartComponent
+    SimulatorChartComponent,
   ],
   entryComponents: [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
-    SimulatorChartComponent
+    SimulatorChartComponent,
   ],
-  providers:[ThemeService],
+  providers: [ThemeService],
   // providers: [
   //   { provide: HOOK_NAVIGATOR_NODES, useClass: NavFactory, multi: true}
   // ],
