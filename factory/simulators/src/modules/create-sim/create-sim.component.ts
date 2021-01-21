@@ -42,6 +42,8 @@ export class CreateSimComponent implements OnInit {
   scaled: any[];
   alarms: { category: string; alarmType: string; alarmText: string }[] = [];
   randomSelected = false;
+  configureAlarms = false;
+  configureEvents = false;
 
   selectedAlarmType: string;
   selectedAlarmText: string;
@@ -99,7 +101,7 @@ export class CreateSimComponent implements OnInit {
     { category: "Major", code: 302 },
     { category: "Minor", code: 303 },
   ];
-  selectedAlarmCategory: string;
+  selectedAlarmCategory: string = this.alarmCategories[0].category;
   defaultSleepMsmtConfig = [
     "Sleep after each measurement",
     "Sleep after each measurement group",

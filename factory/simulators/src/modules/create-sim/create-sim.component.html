@@ -9,12 +9,32 @@
   <div class="col-lg-6">
     <button
       type="button"
-      class="btn btn-default"
+      class="col-sm-4 btn btn-default"
       style="float: left"
       (click)="configureSettings = !configureSettings"
     >
       <i class="fa fa-cog"></i>&nbsp;Configure Default Settings
     </button>
+
+    <button
+      class="col-sm-4"
+      type="button"
+      class="btn btn-default"
+      style="margin-left: 12px"
+      (click)="configureAlarms = !configureAlarms"
+    >
+      <i class="fa fa-cog"></i>&nbsp;Configure Alarms
+    </button>
+
+    <button
+      type="button"
+      class="col-sm-4 btn btn-default"
+      style="float: right"
+      (click)="configureEvents = !configureEvents"
+    >
+      <i class="fa fa-cog"></i>&nbsp;Configure Events
+    </button>
+
     <br />
     <br />
     <div class="row" *ngIf="configureSettings">
@@ -99,11 +119,15 @@
         </div>
       </div>
       <div class="col-sm-4">
-      <label class="c8y-switch">
-        <input type="checkbox" [checked]="randomSelected" (change)="randomSelected=!randomSelected"/>
-        <span></span> Random ON
-      </label>
-    </div>
+        <label class="c8y-switch">
+          <input
+            type="checkbox"
+            [checked]="randomSelected"
+            (change)="randomSelected = !randomSelected"
+          />
+          <span></span> Random ON
+        </label>
+      </div>
     </div>
     <br />
     <!-- <div class="tight-grid"> -->
@@ -151,57 +175,111 @@
       <button
         type="button"
         class="btn btn-primary"
-        style="margin-left: 12px;"
+        style="margin-left: 12px"
         (click)="addNewFragment()"
       >
         Add new fragment
       </button>
-      <br>
-      <br>
-      <div class="col-sm-3">
-        <div class="form-group form-group-md">
-          <div class="c8y-select-wrapper">
-            <select class="form-control" [ngModel]="selectedAlarmCategory"
-            (ngModelChange)="onChangeOfAlarm($event)" >
-              <option *ngFor="let item of alarmCategories">{{item.category}}</option>
-            </select>
+      <br />
+      <br />
+
+      <div *ngIf="configureAlarms">
+        <div class="col-sm-3">
+          <div class="form-group form-group-md">
+            <div class="c8y-select-wrapper">
+              <select
+                class="form-control"
+                [ngModel]="selectedAlarmCategory"
+                (ngModelChange)="onChangeOfAlarm($event)"
+              >
+                <option *ngFor="let item of alarmCategories">
+                  {{ item.category }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="col-sm-4 col-xs-6">
-        <div class="form-group">
-          <input name="minimum" class="form-control" placeholder="Alarm Type" [(ngModel)]="selectedAlarmType"/>
+        <div class="col-sm-4 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Alarm Type"
+              [(ngModel)]="selectedAlarmType"
+            />
+          </div>
         </div>
-      </div>
 
-      <div class="col-sm-5 col-xs-6">
-        <div class="form-group">
-          <input name="minimum" class="form-control" placeholder="Alarm Text" [(ngModel)]="selectedAlarmText"/>
+        <div class="col-sm-5 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Alarm Text"
+              [(ngModel)]="selectedAlarmText"
+            />
+          </div>
         </div>
+        <br />
+        <button
+          type="button"
+          class="btn btn-primary"
+          style="margin-left: 12px"
+          (click)="addAlarmToArray()"
+        >
+          Add Alarm
+        </button>
       </div>
-      <br>
+      <br />
+      <br *ngIf="configureAlarms"/>
+      <div *ngIf="configureEvents">
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Type"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Text"
+            />
+          </div>
+        </div>
+        <br />
+        <button type="button" class="btn btn-primary" style="margin-left: 12px">
+          Add Event
+        </button>
+      </div>
+      <br *ngIf="configureEvents"/>
+
       <button
         type="button"
         class="btn btn-primary"
-        style="margin-left: 12px"
-        (click)="addAlarmToArray()"
-      >
-        Add Alarm
-      </button>
-      <br>
-      <br>
-
-      <button
-        type="button"
-        class="btn btn-primary"
-        style="margin-left: 12px"
+        style="position: absolute; left: 35%"
         (click)="generateSimulatorRequest()"
       >
         Generate HTTP Request
       </button>
-
-      
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div *ngIf="displayChart">
+      <app-simulator-chart
+        [lineChartData]="lineChartData"
+        [lineChartLabels]="lineChartLabels"
+        [lineChartLegend]="lineChartLegend"
+        [lineChartType]="lineChartType"
+        [lineChartColors]="lineChartColors"
+        [lineChartPlugins]="lineChartPlugins"
+      ></app-simulator-chart>
     </div>
 
     <div class="card-inner-scroll">
@@ -221,15 +299,5 @@
     >
       Download JSON Config
     </a>
-  </div>
-  <div class="col-lg-6" *ngIf="displayChart">
-    <app-simulator-chart
-      [lineChartData]="lineChartData"
-      [lineChartLabels]="lineChartLabels"
-      [lineChartLegend]="lineChartLegend"
-      [lineChartType]="lineChartType"
-      [lineChartColors]="lineChartColors"
-      [lineChartPlugins]="lineChartPlugins"
-    ></app-simulator-chart>
   </div>
 </c8y-drop-area>
