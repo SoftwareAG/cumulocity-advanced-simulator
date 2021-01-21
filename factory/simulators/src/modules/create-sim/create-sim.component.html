@@ -98,6 +98,12 @@
           </div>
         </div>
       </div>
+      <div class="col-sm-4">
+      <label class="c8y-switch">
+        <input type="checkbox" />
+        <span></span> Random ON
+      </label>
+    </div>
     </div>
     <br />
     <!-- <div class="tight-grid"> -->
@@ -145,20 +151,57 @@
       <button
         type="button"
         class="btn btn-primary"
+        style="margin-left: 12px;"
+        (click)="addNewFragment()"
+      >
+        Add new fragment
+      </button>
+      <br>
+      <br>
+      <div class="col-sm-3">
+        <div class="form-group form-group-md">
+          <div class="c8y-select-wrapper">
+            <select class="form-control" [ngModel]="selectedAlarmCategory"
+            (ngModelChange)="onChangeOfAlarm($event)" >
+              <option *ngFor="let item of alarmCategories">{{item.category}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 col-xs-6">
+        <div class="form-group">
+          <input name="minimum" class="form-control" placeholder="Alarm Type" [(ngModel)]="selectedAlarmType"/>
+        </div>
+      </div>
+
+      <div class="col-sm-5 col-xs-6">
+        <div class="form-group">
+          <input name="minimum" class="form-control" placeholder="Alarm Text" [(ngModel)]="selectedAlarmText"/>
+        </div>
+      </div>
+      <br>
+      <button
+        type="button"
+        class="btn btn-primary"
+        style="margin-left: 12px"
+        (click)="addAlarmToArray()"
+      >
+        Add Alarm
+      </button>
+      <br>
+      <br>
+
+      <button
+        type="button"
+        class="btn btn-primary"
         style="margin-left: 12px"
         (click)="generateSimulatorRequest()"
       >
         Generate HTTP Request
       </button>
 
-      <button
-        type="button"
-        class="btn btn-primary"
-        style="float: right; margin-right: 12px;"
-        (click)="addNewFragment()"
-      >
-        Add new fragment
-      </button>
+      
     </div>
 
     <div class="card-inner-scroll">
