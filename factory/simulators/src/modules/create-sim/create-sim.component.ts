@@ -13,7 +13,6 @@ import { Color, Label } from "ng2-charts";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
-  
   constructor(
     private router: Router,
     private inventory: InventoryService,
@@ -95,8 +94,10 @@ export class CreateSimComponent implements OnInit {
   };
   data: any;
   scaledArray = [];
-  alarmCategories: {category: string; code: number}[] = [
-  {category:'Critical', code: 301}, {category:'Major', code: 302}, {category:'Minor', code: 303}
+  alarmCategories: { category: string; code: number }[] = [
+    { category: "Critical", code: 301 },
+    { category: "Major", code: 302 },
+    { category: "Minor", code: 303 },
   ];
   selectedAlarmCategory: string;
   defaultSleepMsmtConfig = [
@@ -219,10 +220,7 @@ export class CreateSimComponent implements OnInit {
     this.lineChartLabels = this.range(0, this.configureScaling(test), 1);
 
     // TODO: Add alarms here!
-    if (
-      this.selectedAlarmText &&
-      this.selectedAlarmType
-    ) {
+    if (this.selectedAlarmText && this.selectedAlarmType) {
       this.alarms.push({
         category: this.selectedAlarmCategory,
         alarmText: this.selectedAlarmText,
@@ -231,7 +229,11 @@ export class CreateSimComponent implements OnInit {
       for (let alarm of this.alarms.filter((a) => a.alarmText)) {
         let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
         let toBePushed = `{
-                      "messageId": "${this.alarmCategories.find(x => x.category === this.selectedAlarmCategory).code}",
+                      "messageId": "${
+                        this.alarmCategories.find(
+                          (x) => x.category === this.selectedAlarmCategory
+                        ).code
+                      }",
                       "values": ["TYPE", "TEXT", ""], "type": "builtin"
                     }`;
 
@@ -240,10 +242,6 @@ export class CreateSimComponent implements OnInit {
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
       }
     }
-  }
-
-  isRandomSelected() {
-    this.randomSelected = true;
   }
 
   deepCopy(obj) {
@@ -256,9 +254,15 @@ export class CreateSimComponent implements OnInit {
 
   scale(min, max, steps) {
     let values = [min];
-    let calcStep = (max - min) / steps;
-    for (let i = 0; i < steps; i++) {
-      values.push(+values[i] + calcStep);
+    if (!this.randomSelected) {
+      let calcStep = (max - min) / steps;
+      for (let i = 0; i < steps; i++) {
+        values.push(+values[i] + calcStep);
+      }
+    } else {
+      for (let i = 1; i < steps; i++) {
+        values.push(Math.floor(Math.random() * (max - min)) + min);
+      }
     }
     return values;
   }
@@ -269,8 +273,6 @@ export class CreateSimComponent implements OnInit {
 
   onChangeOfAlarm(newVal) {
     this.selectedAlarmCategory = newVal;
-    console.log(newVal);
-    console.log(this.selectedAlarmCategory);
   }
 
   addAlarmToArray() {

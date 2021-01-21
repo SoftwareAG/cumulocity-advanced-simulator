@@ -100,7 +100,7 @@
       </div>
       <div class="col-sm-4">
       <label class="c8y-switch">
-        <input type="checkbox" />
+        <input type="checkbox" [checked]="randomSelected" (change)="randomSelected=!randomSelected"/>
         <span></span> Random ON
       </label>
     </div>
