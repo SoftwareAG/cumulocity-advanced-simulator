@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { InventoryService } from '@c8y/ngx-components/api';
 import { Subject } from 'rxjs';
 import { IManagedObject } from "@c8y/client";
-import { DeviceSimulator, SimulatorModel } from 'src/models/simulator.model';
+import { CustomSimulator, DeviceSimulator, SimulatorModel } from 'src/models/simulator.model';
 import { Router } from '@angular/router';
 export interface ILabels {
   ok?: string;
@@ -31,9 +31,11 @@ export class SimulatorConfigComponent implements OnInit {
 
   private closeSubject: Subject<any> = new Subject();
   simulatorTitle: string = '';
-  simModel: Partial<DeviceSimulator> = {
-    type: 'c8y_CustomSimulator',
-    c8y_CustomSimulator: {name: ''}
+  simModel: Partial<CustomSimulator> = {
+    type: 'c8y_DeviceSimulator',
+    name: '',
+    c8y_DeviceSimulator: {name: ''},
+    c8y_CustomSim: {}
   };
   public labels: ILabels = {
     ok: "Save",
@@ -45,7 +47,8 @@ export class SimulatorConfigComponent implements OnInit {
   }
 
   saveSimulatorDetails() {
-    this.simModel.c8y_CustomSimulator.name = this.simulatorTitle;
+    this.simModel.c8y_DeviceSimulator.name = this.simulatorTitle;
+    this.simModel.name = this.simulatorTitle;
     this.inventoryService.create(this.simModel).then((result) => {console.log(result);
       const simulatorId = result.data.id;
     this.router.navigate(['/createSim/' + simulatorId])});

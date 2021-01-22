@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { InventoryService, IManagedObject } from "@c8y/client";
-import { DeviceSimulator } from "src/models/simulator.model";
+import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
 import { ChartDataSets, ChartOptions } from "chart.js";
 import * as moment from "moment";
 import { Color, Label } from "ng2-charts";
@@ -111,13 +111,13 @@ export class CreateSimComponent implements OnInit {
   ];
   selectedConfig: string = this.defaultSleepMsmtConfig[0];
   simulatorId: string;
-  mo: DeviceSimulator;
+  mo: CustomSimulator;
   simulatorName: string;
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.simulatorName = this.data.simulator.data.c8y_CustomSimulator.name;
-    this.resultTemplate.name = this.data.simulator.data.c8y_CustomSimulator.name;
+    this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
+    this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
   }
 
   generateSimulatorRequest() {

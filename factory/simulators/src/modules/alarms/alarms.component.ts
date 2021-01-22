@@ -8,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
 export class AlarmsComponent implements OnInit {
 
   constructor() {
-    console.log('Inside Alarms');
   }
 
   ngOnInit() {

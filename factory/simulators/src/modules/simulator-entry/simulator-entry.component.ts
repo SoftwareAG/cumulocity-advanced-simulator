@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { IManagedObject } from "@c8y/client";
 import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
 import { SimulatorsServiceService } from '../../services/simulatorsService.service';
-import { DeviceSimulator } from 'src/models/simulator.model';
+import { CustomSimulator, DeviceSimulator } from 'src/models/simulator.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -42,7 +42,7 @@ modalUnsubscribe() {
     this.subscriptions.unsubscribe();
 }
 
-editSimulator(simulator: DeviceSimulator) {
+editSimulator(simulator: CustomSimulator) {
   console.log(simulator.id);
   this.router.navigate(['/createSim/' + simulator.id]);
 }
