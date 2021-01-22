@@ -41,12 +41,15 @@ export class CreateSimComponent implements OnInit {
   displayChart = false;
   scaled: any[];
   alarms: { category: string; alarmType: string; alarmText: string }[] = [];
+  events: { eventType: string; eventText: string }[] = [];
   randomSelected = false;
   configureAlarms = false;
   configureEvents = false;
 
   selectedAlarmType: string;
   selectedAlarmText: string;
+  selectedEventType: string;
+  selectedEventText: string;
   lineChartData: ChartDataSets[] = [];
   lineChartLabels: Label[] = [];
   lineChartColors: Color[] = [
@@ -244,6 +247,23 @@ export class CreateSimComponent implements OnInit {
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
       }
     }
+
+    if (this.selectedEventText && this.selectedEventType) {
+      this.events.push({
+        eventText: this.selectedEventText,
+        eventType: this.selectedEventType,
+      });
+      for (let event of this.events.filter((a) => a.eventText)) {
+        let toBePushed = `{
+                      "messageId": "400",
+                      "values": ["TYPE", "TEXT"], "type": "builtin"
+                    }`;
+
+        toBePushed = toBePushed.replace("TYPE", event.eventType);
+        toBePushed = toBePushed.replace("TEXT", event.eventText);
+        this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+      }
+    }
   }
 
   deepCopy(obj) {
@@ -285,6 +305,15 @@ export class CreateSimComponent implements OnInit {
     });
     this.selectedAlarmText = "";
     this.selectedAlarmType = "";
+  }
+
+  addEventToArray() {
+    this.events.push({
+      eventType: this.selectedEventType,
+      eventText: this.selectedEventText,
+    });
+    this.selectedEventText = "";
+    this.selectedEventType = "";
   }
 
   addNewFragment() {

@@ -240,6 +240,7 @@
               name="minimum"
               class="form-control"
               placeholder="Event Type"
+              [(ngModel)]="selectedEventType"
             />
           </div>
         </div>
@@ -250,11 +251,12 @@
               name="minimum"
               class="form-control"
               placeholder="Event Text"
+              [(ngModel)]="selectedEventText"
             />
           </div>
         </div>
         <br />
-        <button type="button" class="btn btn-primary" style="margin-left: 12px">
+        <button type="button" class="btn btn-primary" style="margin-left: 12px" (click)="addEventToArray()">
           Add Event
         </button>
       </div>
