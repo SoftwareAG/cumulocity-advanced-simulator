@@ -17,18 +17,6 @@ export class SimulatorsBackendService {
           'Content-Type': 'application/json'
       }
   };
-  return this.client.fetch(url, fetchOptions).then(result => {
-    if (result.status >= 200 && result.status < 300) {
-        const alert = { text: 'Measurements successfully uploaded.', type: 'success' } as Alert;
-        this.alert.add(alert);
-    } else {
-        return Promise.reject(result);
-    }
-}, error => {
-    this.alert.add({
-        text: 'An error occoured , Please try after some time.',
-        type: 'danger',
-    } as Alert);
-});
+  return this.client.fetch(url, fetchOptions);
   }
 }

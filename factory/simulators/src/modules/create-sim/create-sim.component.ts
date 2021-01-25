@@ -6,6 +6,8 @@ import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
 import { ChartDataSets, ChartOptions } from "chart.js";
 import * as moment from "moment";
 import { Color, Label } from "ng2-charts";
+import { SimulatorsBackendService } from "../../services/simulatorsBackend.service";
+import { Alert, AlertService } from "@c8y/ngx-components";
 
 @Component({
   selector: "app-create-sim",
@@ -18,7 +20,9 @@ export class CreateSimComponent implements OnInit {
     private router: Router,
     private inventory: InventoryService,
     private sanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private backendService: SimulatorsBackendService,
+    private alertService: AlertService
   ) {}
 
   resultTemplate = {
@@ -266,6 +270,20 @@ export class CreateSimComponent implements OnInit {
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
         console.log(toBePushed);
       }
+      this.backendService.connectToSimulatorsBackend().then(result => {
+        if (result.status >= 200 && result.status < 300) {
+            const alert = { text: 'Measurements successfully uploaded.', type: 'success' } as Alert;
+            this.alertService.add(alert);
+        } else {
+            return Promise.reject(result);
+        }
+    }, error => {
+        this.alertService.add({
+            text: 'An error occoured , Please try after some time.',
+            type: 'danger',
+        } as Alert);
+    });
+
     }
 
     if (this.selectedEventText && this.selectedEventType) {
