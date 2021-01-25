@@ -425,10 +425,10 @@ export class CreateSimComponent implements OnInit {
   updateCurrentFragment(val) {
     this.toDisplay = true;
     console.log(val);
-    this.fragment = val.values[0];
-    this.series = val.values[1];
-    this.value = val.values[2];
-    this.unit = val.values[3];
+    this.fragment = val.value.values[0];
+    this.series = val.value.values[1];
+    this.value = val.value.values[2];
+    this.unit = val.value.values[3];
   }
 
   reset() {

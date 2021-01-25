@@ -16,8 +16,9 @@ export class SimulatorDetailsComponent implements OnInit {
 
   updateCurrentValue(val) {
     if (val.type === 'builtin') {
-      this.currentValue.emit(val);
-      console.log(val);
+      const pos = this.commandQueue.findIndex((entry) => entry === val);
+      this.currentValue.emit({value: val, index: pos});
+      console.log('Ival '+ {value: val, index: pos});
     }
   }
 
