@@ -46,6 +46,7 @@ export class CreateSimComponent implements OnInit {
   configureAlarms = false;
   configureEvents = false;
   value: string;
+  alarmSteps: number;
 
   toDisplay = false;
   selectedAlarmType: string;
@@ -111,6 +112,12 @@ export class CreateSimComponent implements OnInit {
     "Sleep after each measurement",
     "Sleep after each measurement group",
   ];
+
+  defaultAlarmsConfig = [
+    "Generate repeated alarms",
+    "Generate alarms after each measurement",
+  ];
+  selectedAlarmConfig = this.defaultAlarmsConfig[0];
   selectedConfig: string = this.defaultSleepMsmtConfig[0];
   simulatorId: string;
   mo: CustomSimulator;
@@ -231,7 +238,7 @@ export class CreateSimComponent implements OnInit {
 
     this.displayChart = true;
     console.log("TEST " + JSON.stringify(test));
-    console.log('Sleep '+ this.defaultSleep);
+    console.log("Sleep " + this.defaultSleep);
     this.lineChartData = test;
     this.lineChartLabels = this.range(0, this.configureScaling(test), 1);
     console.log(this.configureScaleTest(test));
@@ -283,8 +290,8 @@ export class CreateSimComponent implements OnInit {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  configureScaleTest(arr: {data: number[]; label: string}[]) {
-    if (this.defaultSleep !== '') {
+  configureScaleTest(arr: { data: number[]; label: string }[]) {
+    if (this.defaultSleep !== "") {
       console.log(
         arr.map(
           (x) =>
@@ -295,7 +302,6 @@ export class CreateSimComponent implements OnInit {
             ))
         )
       );
-    
     }
   }
 
@@ -310,14 +316,14 @@ export class CreateSimComponent implements OnInit {
     //     );
     //     console.log('Length in config scaling '+ x.data);
     //   });
-      
+
     return maxScale * parseInt(this.defaultSleep);
   }
 
   arrayScalingToMax(arr: number[], max: number, sleep: string) {
     let newArr = new Array(max * parseInt(sleep)).fill(0);
-    return newArr.map((x, i) =>
-    x = (i % parseInt(sleep) == 0 ? ( arr[i / parseInt(sleep)]) : 0)
+    return newArr.map(
+      (x, i) => (x = i % parseInt(sleep) == 0 ? arr[i / parseInt(sleep)] : 0)
     );
   }
 
@@ -340,20 +346,35 @@ export class CreateSimComponent implements OnInit {
     this.selectedConfig = newVal;
   }
 
+  onChangeAlarmConfig(newVal) {
+    this.selectedAlarmConfig = newVal;
+  }
+
   onChangeOfAlarm(newVal) {
     this.selectedAlarmCategory = newVal;
   }
 
   addAlarmToArray() {
-    this.alarms.push({
-      category: this.selectedAlarmCategory,
-      alarmType: this.selectedAlarmType,
-      alarmText: this.selectedAlarmText,
-    });
-    this.selectedAlarmText = "";
-    this.selectedAlarmType = "";
+    if (this.selectedAlarmConfig === "Generate repeated alarms") {
+      const arr = [];
+      for (let i = 0; i < this.alarmSteps; i++) {
+        arr.push({
+          category: this.selectedAlarmCategory,
+          alarmType: this.selectedAlarmType,
+          alarmText: this.selectedAlarmText,
+        });
+      }
+      this.alarms.push(...arr);
+    } else {
+      this.alarms.push({
+        category: this.selectedAlarmCategory,
+        alarmType: this.selectedAlarmType,
+        alarmText: this.selectedAlarmText,
+      });
+      this.selectedAlarmText = "";
+      this.selectedAlarmType = "";
+    }
   }
-
   addEventToArray() {
     this.events.push({
       eventType: this.selectedEventType,
@@ -372,7 +393,7 @@ export class CreateSimComponent implements OnInit {
       maxValue: this.maxValue ? this.maxValue : "",
       steps: this.steps ? this.steps : "",
       unit: this.unit ? this.unit : "",
-      sleep: this.defaultSleep ? this.defaultSleep: ""
+      sleep: this.defaultSleep ? this.defaultSleep : "",
     });
     this.defaultSleep = "";
     this.fragment = "";

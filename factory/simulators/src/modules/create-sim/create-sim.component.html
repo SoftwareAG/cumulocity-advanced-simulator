@@ -102,8 +102,9 @@
       <div class="col-sm-4">
         <div class="form-group form-group-md">
           <div class="c8y-select-wrapper">
-            <select class="form-control">
-              <option value="">.form-group-md</option>
+            <select class="form-control" [ngModel]="selectedAlarmConfig"
+            (ngModelChange)="onChangeAlarmConfig($event)">
+              <option *ngFor="let first of defaultAlarmsConfig">{{first}}</option>
             </select>
           </div>
         </div>
@@ -213,7 +214,7 @@
           </div>
         </div>
 
-        <div class="col-sm-4 col-xs-6">
+        <div class="col-sm-3 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
@@ -224,13 +225,24 @@
           </div>
         </div>
 
-        <div class="col-sm-5 col-xs-6">
+        <div class="col-sm-3 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
               class="form-control"
               placeholder="Alarm Text"
               [(ngModel)]="selectedAlarmText"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Steps"
+              [(ngModel)]="alarmSteps"
             />
           </div>
         </div>
