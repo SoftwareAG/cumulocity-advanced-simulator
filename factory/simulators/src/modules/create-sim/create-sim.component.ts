@@ -45,7 +45,9 @@ export class CreateSimComponent implements OnInit {
   randomSelected = false;
   configureAlarms = false;
   configureEvents = false;
+  value: string;
 
+  toDisplay = false;
   selectedAlarmType: string;
   selectedAlarmText: string;
   selectedEventType: string;
@@ -397,5 +399,18 @@ export class CreateSimComponent implements OnInit {
       arr.push(i.toString());
     }
     return arr;
+  }
+
+  updateCurrentFragment(val) {
+    this.toDisplay = true;
+    console.log(val);
+    this.fragment = val.values[0];
+    this.series = val.values[1];
+    this.value = val.values[2];
+    this.unit = val.values[3];
+  }
+
+  reset() {
+    this.toDisplay = false;
   }
 }

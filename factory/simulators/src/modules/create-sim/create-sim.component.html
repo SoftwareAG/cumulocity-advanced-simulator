@@ -9,7 +9,7 @@
   <div class="col-lg-6">
     <button
       type="button"
-      class="col-sm-4 col-md-4 btn btn-default"
+      class="col-sm-4 col-md-4 col-xs-6 btn btn-default"
       style="float: left"
       (click)="configureSettings = !configureSettings"
     >
@@ -17,7 +17,7 @@
     </button>
 
     <button
-      class="col-sm-4 col-md-4"
+      class="col-sm-4 col-md-4 col-xs-6"
       type="button"
       class="btn btn-default"
       style="margin-left: 12px"
@@ -28,7 +28,7 @@
 
     <button
       type="button"
-      class="col-sm-4 col-md-4 btn btn-default"
+      class="col-sm-4 col-md-4 col-xs-6 btn btn-default"
       style="float: right"
       (click)="configureEvents = !configureEvents"
     >
@@ -145,22 +145,26 @@
         </div>
       </div>
       <div class="col-sm-6 col-xs-6">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!toDisplay">
           <label for="min" translate="">Min</label>
-          <input name="minimum" class="form-control" [(ngModel)]="minValue" />
+          <input name="minimum" class="form-control"[(ngModel)]="minValue" />
         </div>
       </div>
       <div class="col-sm-6 col-xs-6">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!toDisplay">
           <label for="min" translate> Max </label>
-          <input name="maximum" class="form-control" [(ngModel)]="maxValue" />
+          <input name="maximum" class="form-control"[(ngModel)]="maxValue" />
         </div>
       </div>
       <div>
         <div class="col-sm-6 col-xs-6">
-          <div class="form-group">
+          <div class="form-group" *ngIf="!toDisplay">
             <label for="min" translate> Steps * </label>
             <input name="maximum" class="form-control" [(ngModel)]="steps" />
+          </div>
+          <div class="form-group" *ngIf="toDisplay">
+            <label for="min" translate> Value </label>
+            <input name="maximum" class="form-control" [(ngModel)]="value" />
           </div>
         </div>
         <div>
@@ -179,6 +183,15 @@
         (click)="addNewFragment()"
       >
         Add new fragment
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        style="float: right;margin-right: 12px"
+        (click)="reset()"
+      >
+        Reset
       </button>
       <br />
       <br />
@@ -304,7 +317,7 @@
       ></app-simulator-chart>
     </div> -->
 
-    <app-simulator-details [commandQueue]="resultTemplate.commandQueue"></app-simulator-details>
+    <app-simulator-details [commandQueue]="resultTemplate.commandQueue" (currentValue)="updateCurrentFragment($event)"></app-simulator-details>
     
   </div>
 </c8y-drop-area>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-simulator-details',
@@ -8,9 +8,17 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SimulatorDetailsComponent implements OnInit {
 
   @Input() commandQueue;
+  @Output() currentValue = new EventEmitter();
   constructor() { }
 
   ngOnInit() {
+  }
+
+  updateCurrentValue(val) {
+    if (val.type === 'builtin') {
+      this.currentValue.emit(val);
+      console.log(val);
+    }
   }
 
 }
