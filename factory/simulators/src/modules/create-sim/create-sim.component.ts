@@ -13,6 +13,7 @@ import { Color, Label } from "ng2-charts";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
+  currentIndex: any;
   constructor(
     private router: Router,
     private inventory: InventoryService,
@@ -424,12 +425,18 @@ export class CreateSimComponent implements OnInit {
 
   updateCurrentFragment(val) {
     this.toDisplay = true;
-    console.log(val);
     this.fragment = val.value.values[0];
     this.series = val.value.values[1];
     this.value = val.value.values[2];
     this.unit = val.value.values[3];
+    this.currentIndex = val.index;
+    
   }
+
+  editCurrentFragment() {
+    this.resultTemplate.commandQueue[this.currentIndex].values = [this.fragment, this.series, this.value, this.unit];
+  }
+
 
   reset() {
     this.toDisplay = false;

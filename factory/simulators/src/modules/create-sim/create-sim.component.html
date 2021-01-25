@@ -187,6 +187,16 @@
       </button>
 
       <button
+       *ngIf="toDisplay" 
+        type="button"
+        class="btn btn-primary"
+        style="margin-left: 12px"
+        (click)="editCurrentFragment()"
+      >
+        Update fragment
+      </button>
+
+      <button
         type="button"
         class="btn btn-primary"
         style="float: right;margin-right: 12px"
