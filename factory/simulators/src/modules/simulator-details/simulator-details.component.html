@@ -1,6 +1,6 @@
 <ng-container *ngFor="let item of commandQueue; let i of commandQueue.length">
   <button type="button" class="list-group-item" (click)="updateCurrentValue(item)">
-    <i class="fa fw fa-arrow-right"></i><span *ngIf="item.type==='builtin'">&nbsp;Custom measurement  <ng-container *ngFor="let value of item.values">{{value}}&nbsp;</ng-container> </span>
-    <span *ngIf="item.type==='sleep'">&nbsp;Sleep &nbsp;{{item.seconds}} seconds </span>
+    <i *ngIf="item.type==='builtin'" class="fa fw fa-arrow-right"></i><span *ngIf="item.type==='builtin'">&nbsp;Custom measurement  <ng-container *ngFor="let value of item.values">{{value}}&nbsp;</ng-container> </span>
+    <i *ngIf="item.type==='sleep'" class="fa fw fa-clock-o"></i><span *ngIf="item.type==='sleep'">&nbsp;Sleep &nbsp;{{item.seconds}} seconds </span>
   </button>
 </ng-container>

@@ -234,6 +234,10 @@ export class CreateSimComponent implements OnInit {
           seconds: value.sleep ? value.sleep : this.defaultSleep,
         });
       }
+
+      if (this.alarms && this.selectedAlarmConfig === this.defaultAlarmsConfig[1]) {
+        this.generateAlarms();
+      }
     }
 
     const test = this.scaledArray.map((entry, i) => ({
@@ -254,35 +258,22 @@ export class CreateSimComponent implements OnInit {
         alarmText: this.selectedAlarmText,
         alarmType: this.selectedAlarmType,
       });
-      for (let alarm of this.alarms.filter((a) => a.alarmText)) {
-        let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
-        let toBePushed = `{
-                      "messageId": "${
-                        this.alarmCategories.find(
-                          (x) => x.category === this.selectedAlarmCategory
-                        ).code
-                      }",
-                      "values": ["TYPE", "TEXT", ""], "type": "builtin"
-                    }`;
 
-        toBePushed = toBePushed.replace("TYPE", alarm.alarmType);
-        toBePushed = toBePushed.replace("TEXT", alarm.alarmText);
-        this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
-        console.log(toBePushed);
-      }
-      this.backendService.connectToSimulatorsBackend().then(result => {
-        if (result.status >= 200 && result.status < 300) {
-            const alert = { text: 'Measurements successfully uploaded.', type: 'success' } as Alert;
-            this.alertService.add(alert);
-        } else {
-            return Promise.reject(result);
-        }
-    }, error => {
-        this.alertService.add({
-            text: 'An error occoured , Please try after some time.',
-            type: 'danger',
-        } as Alert);
-    });
+    this.generateAlarms();
+      
+    //   this.backendService.connectToSimulatorsBackend().then(result => {
+    //     if (result.status >= 200 && result.status < 300) {
+    //         const alert = { text: 'Measurements successfully uploaded.', type: 'success' } as Alert;
+    //         this.alertService.add(alert);
+    //     } else {
+    //         return Promise.reject(result);
+    //     }
+    // }, error => {
+    //     this.alertService.add({
+    //         text: 'An error occoured , Please try after some time.',
+    //         type: 'danger',
+    //     } as Alert);
+    // });
 
     }
 
@@ -373,8 +364,28 @@ export class CreateSimComponent implements OnInit {
     this.selectedAlarmCategory = newVal;
   }
 
+  generateAlarms() {
+    for (let alarm of this.alarms.filter((a) => a.alarmText)) {
+      let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
+      let toBePushed = `{
+                    "messageId": "${
+                      this.alarmCategories.find(
+                        (x) => x.category === this.selectedAlarmCategory
+                      ).code
+                    }",
+                    "values": ["TYPE", "TEXT", ""], "type": "builtin"
+                  }`;
+
+      toBePushed = toBePushed.replace("TYPE", alarm.alarmType);
+      toBePushed = toBePushed.replace("TEXT", alarm.alarmText);
+      this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+      console.log(toBePushed);
+    }
+  }
+
   addAlarmToArray() {
-    if (this.selectedAlarmConfig === "Generate repeated alarms") {
+    // Change the array no here. Add additional measurement option
+    if (this.selectedAlarmConfig === this.defaultAlarmsConfig[1]) {
       const arr = [];
       for (let i = 0; i < this.alarmSteps; i++) {
         arr.push({
@@ -382,6 +393,12 @@ export class CreateSimComponent implements OnInit {
           alarmType: this.selectedAlarmType,
           alarmText: this.selectedAlarmText,
         });
+        if (this.defaultSleep) {
+          arr.push({
+            type: 'sleep',
+            seconds: this.defaultSleep
+          });
+        }
       }
       this.alarms.push(...arr);
     } else {
