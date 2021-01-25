@@ -174,9 +174,16 @@ export class CreateSimComponent implements OnInit {
         this.testArray.push(value);
         this.scaledArray.push(nowScaled);
       }
-
-      let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
-      for (let scaled of this.scaledArray) {
+    }
+    console.log("Test Array " + JSON.stringify(this.testArray));
+    // let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
+    for (let value of this.testArray) {
+      console.log("VALUE" + JSON.stringify(value));
+      for (let temp of this.scale(
+        value.minValue,
+        value.maxValue,
+        value.steps
+      )) {
         let toBePushed = `{
                               "messageId": "200",
                               "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
@@ -184,10 +191,11 @@ export class CreateSimComponent implements OnInit {
 
         toBePushed = toBePushed.replace("FRAGMENT", value.fragment);
         toBePushed = toBePushed.replace("SERIES", value.series);
-        toBePushed = toBePushed.replace("VALUE", scaled);
+        toBePushed = toBePushed.replace("VALUE", temp);
         toBePushed = toBePushed.replace("UNIT", value.unit);
 
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+
         // TODO: Add sleep here to push to resultTemplate.commandQueue
 
         if (
@@ -220,10 +228,11 @@ export class CreateSimComponent implements OnInit {
     }));
 
     this.displayChart = true;
-
+    console.log("TEST " + JSON.stringify(test));
+    console.log('Sleep '+ this.defaultSleep);
     this.lineChartData = test;
     this.lineChartLabels = this.range(0, this.configureScaling(test), 1);
-
+    console.log(this.configureScaleTest(test));
     // TODO: Add alarms here!
     if (this.selectedAlarmText && this.selectedAlarmType) {
       this.alarms.push({
@@ -245,6 +254,7 @@ export class CreateSimComponent implements OnInit {
         toBePushed = toBePushed.replace("TYPE", alarm.alarmType);
         toBePushed = toBePushed.replace("TEXT", alarm.alarmText);
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+        console.log(toBePushed);
       }
     }
 
@@ -264,14 +274,49 @@ export class CreateSimComponent implements OnInit {
         this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
       }
     }
+    // console.log("Result Template " + JSON.stringify(this.resultTemplate));
   }
 
   deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
+  configureScaleTest(arr: {data: number[]; label: string}[]) {
+    if (this.defaultSleep !== '') {
+      console.log(
+        arr.map(
+          (x) =>
+            (x.data = this.arrayScalingToMax(
+              x.data,
+              x.data.length,
+              this.defaultSleep
+            ))
+        )
+      );
+    
+    }
+  }
+
   configureScaling(arr: { data: number[]; label: string }[]) {
-    return Math.max(...Array.from(arr, (x) => x.data.length));
+    let maxScale = Math.max(...Array.from(arr, (x) => x.data.length));
+    // if (this.defaultSleep) {
+    //   arr.map((x) => {
+    //     x.data = this.arrayScalingToMax(
+    //       x.data,
+    //       x.data.length * parseInt(this.defaultSleep),
+    //       this.defaultSleep
+    //     );
+    //     console.log('Length in config scaling '+ x.data);
+    //   });
+      
+    return maxScale * parseInt(this.defaultSleep);
+  }
+
+  arrayScalingToMax(arr: number[], max: number, sleep: string) {
+    let newArr = new Array(max * parseInt(sleep)).fill(0);
+    return newArr.map((x, i) =>
+    x = (i % parseInt(sleep) == 0 ? ( arr[i / parseInt(sleep)]) : 0)
+    );
   }
 
   scale(min, max, steps) {
@@ -325,7 +370,9 @@ export class CreateSimComponent implements OnInit {
       maxValue: this.maxValue ? this.maxValue : "",
       steps: this.steps ? this.steps : "",
       unit: this.unit ? this.unit : "",
+      sleep: this.defaultSleep ? this.defaultSleep: ""
     });
+    this.defaultSleep = "";
     this.fragment = "";
     this.maxValue = "";
     this.minValue = "";

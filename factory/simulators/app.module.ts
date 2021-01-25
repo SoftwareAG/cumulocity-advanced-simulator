@@ -19,6 +19,7 @@ import { SimulatorResolverService } from "./src/services/simulatorResolver.servi
 import { SimulatorChartComponent } from "./src/modules/simulator-chart/simulator-chart.component";
 import { C8yFactoriesModule } from "./src/modules/factories/c8yfactories.module";
 import { AlarmsComponent } from "./src/modules/alarms/alarms.component";
+import { SimulatorDetailsComponent } from "./src/modules/simulator-details/simulator-details.component";
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
   {
@@ -60,6 +61,7 @@ const appRoutes: Routes = [
     SimulatorConfigComponent,
     SimulatorChartComponent,
     AlarmsComponent,
+    SimulatorDetailsComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -67,6 +69,7 @@ const appRoutes: Routes = [
     SimulatorConfigComponent,
     SimulatorChartComponent,
     AlarmsComponent,
+    SimulatorDetailsComponent
   ],
   providers: [ThemeService],
   // providers: [

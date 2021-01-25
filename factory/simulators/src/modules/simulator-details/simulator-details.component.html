@@ -1,0 +1,6 @@
+<ng-container *ngFor="let item of commandQueue">
+  <button type="button" class="list-group-item">
+    <i class="fa fw fa-arrow-right"></i><span *ngIf="item.type==='builtin'">&nbsp;Custom measurement  <ng-container *ngFor="let value of item.values">{{value}}&nbsp;</ng-container> </span>
+    <span *ngIf="item.type==='sleep'">&nbsp;Sleep &nbsp;{{item.seconds}} </span>
+  </button>
+</ng-container>

@@ -270,10 +270,30 @@
       >
         Generate HTTP Request
       </button>
+      <br>
+      <br>
+
+      <div class="card-inner-scroll">
+        <div class="card-block">
+          <textarea class="form-control" rows="6">{{
+            resultTemplate | json
+          }}</textarea>
+        </div>
+      </div>
+  
+      <a
+        [href]="fileUrl"
+        download="HTTP_settings.json"
+        class="btn btn-primary"
+        (click)="downloadJSON()"
+        style="float: right"
+      >
+        Download JSON Config
+      </a>
     </div>
   </div>
   <div class="col-lg-6">
-    <div *ngIf="displayChart">
+    <!-- <div *ngIf="displayChart">
       <app-simulator-chart
         [lineChartData]="lineChartData"
         [lineChartLabels]="lineChartLabels"
@@ -282,24 +302,9 @@
         [lineChartColors]="lineChartColors"
         [lineChartPlugins]="lineChartPlugins"
       ></app-simulator-chart>
-    </div>
+    </div> -->
 
-    <div class="card-inner-scroll">
-      <div class="card-block">
-        <textarea class="form-control" rows="6">{{
-          resultTemplate | json
-        }}</textarea>
-      </div>
-    </div>
-
-    <a
-      [href]="fileUrl"
-      download="HTTP_settings.json"
-      class="btn btn-primary"
-      (click)="downloadJSON()"
-      style="float: right"
-    >
-      Download JSON Config
-    </a>
+    <app-simulator-details [commandQueue]="resultTemplate.commandQueue"></app-simulator-details>
+    
   </div>
 </c8y-drop-area>
