@@ -113,8 +113,9 @@
       <div class="col-sm-4">
         <div class="form-group form-group-md">
           <div class="c8y-select-wrapper">
-            <select class="form-control">
-              <option value="">.form-group-md</option>
+            <select class="form-control" [ngModel]="selectedEventConfig"
+            (ngModelChange)="onChangeEventConfig($event)">
+              <option *ngFor="let first of defaultEventsConfig">{{first}}</option>
             </select>
           </div>
         </div>

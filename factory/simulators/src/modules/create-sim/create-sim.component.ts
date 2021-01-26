@@ -46,7 +46,7 @@ export class CreateSimComponent implements OnInit {
   displayChart = false;
   scaled: any[];
   alarms: { category: string; alarmType: string; alarmText: string }[] = [];
-  events: { eventType: string; eventText: string }[] = [];
+  events= [];
   randomSelected = false;
   configureAlarms = false;
   configureEvents = false;
@@ -124,12 +124,19 @@ export class CreateSimComponent implements OnInit {
     "Generate alarms after each measurement",
   ];
 
+  defaultEventsConfig = [
+    "Generate repeated alarms",
+    "Generate alarms after each measurement group",
+    "Generate alarms after each measurement",
+  ];
+
   eventCategories = [
     { category: "Basic", code: 400 },
     { category: "Location Update", code: 401 },
     { category: "Location Update Device", code: 402 },
   ];
   selectedAlarmConfig = this.defaultAlarmsConfig[0];
+  selectedEventConfig = this.defaultEventsConfig[0];
   selectedEventCategory = this.eventCategories[0].category;
   selectedConfig: string = this.defaultSleepMsmtConfig[0];
   selectedLatitude: string;
@@ -236,9 +243,19 @@ export class CreateSimComponent implements OnInit {
 
         if (
           this.alarms &&
-          this.selectedAlarmConfig === this.defaultAlarmsConfig[2] && index < this.alarms.length
+          this.selectedAlarmConfig === this.defaultAlarmsConfig[2] &&
+          index < this.alarms.length
         ) {
           this.toAlarmTemplateFormat(this.alarms[index]);
+          console.log(this.alarms);
+        }
+
+        if (
+          this.events &&
+          this.selectedEventConfig === this.defaultEventsConfig[2] &&
+          index < this.events.length
+        ) {
+          this.toEventTemplateFormat(this.events[index]);
           console.log(this.alarms);
         }
       }
@@ -258,9 +275,14 @@ export class CreateSimComponent implements OnInit {
         this.alarms &&
         this.selectedAlarmConfig === this.defaultAlarmsConfig[1]
       ) {
-        console.log('INSIDE tst Array');
-        console.log(this.testArray);
         this.generateAlarms();
+      }
+
+      if (
+        this.events &&
+        this.selectedEventConfig === this.defaultEventsConfig[1]
+      ) {
+        this.generateEvents();
       }
     }
 
@@ -272,27 +294,15 @@ export class CreateSimComponent implements OnInit {
     this.displayChart = true;
     this.lineChartData = test;
     this.lineChartLabels = this.range(0, this.configureScaling(test), 1);
-    
+
     if (this.selectedAlarmConfig === this.defaultAlarmsConfig[0]) {
       this.generateAlarms();
     }
-    console.log(this.resultTemplate);
-      if (this.selectedEventText && this.selectedEventType) {
-      this.events.push({
-        eventText: this.selectedEventText,
-        eventType: this.selectedEventType,
-      });
-      for (let event of this.events.filter((a) => a.eventText)) {
-        let toBePushed = `{
-                      "messageId": "400",
-                      "values": ["TYPE", "TEXT"], "type": "builtin"
-                    }`;
 
-        toBePushed = toBePushed.replace("TYPE", event.eventType);
-        toBePushed = toBePushed.replace("TEXT", event.eventText);
-        this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
-      }
+    if (this.selectedEventConfig === this.defaultEventsConfig[0]) {
+      this.generateEvents();
     }
+    console.log(this.resultTemplate);
   }
 
   deepCopy(obj) {
@@ -363,6 +373,9 @@ export class CreateSimComponent implements OnInit {
     this.selectedAlarmCategory = newVal;
   }
 
+  onChangeEventConfig(newVal) {
+    this.selectedEventConfig = newVal;
+  }
 
   onChangeEvent(newVal) {
     this.selectedEventCategory = newVal;
@@ -371,13 +384,41 @@ export class CreateSimComponent implements OnInit {
     for (let alarm of this.alarms.filter((a) => a.alarmText)) {
       let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
       this.toAlarmTemplateFormat(alarm);
-      if (this.defaultSleep && this.selectedAlarmConfig === this.defaultAlarmsConfig[0]) {
+      if (
+        this.defaultSleep &&
+        this.selectedAlarmConfig === this.defaultAlarmsConfig[0]
+      ) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
           seconds: this.defaultSleep,
         });
       }
     }
+  }
+
+  generateEvents() {
+    for (let event of this.events.filter((a) => a.eventText)) {
+      this.toEventTemplateFormat(event);if (
+        this.defaultSleep &&
+        this.selectedAlarmConfig === this.defaultAlarmsConfig[0]
+      ) {
+        this.resultTemplate.commandQueue.push({
+          type: "sleep",
+          seconds: this.defaultSleep,
+        });
+      }
+    }
+  }
+
+  toEventTemplateFormat(event) {
+    let toBePushed = `{
+      "messageId": "400",
+      "values": ["TYPE", "TEXT"], "type": "builtin"
+    }`;
+
+    toBePushed = toBePushed.replace("TYPE", event.eventType);
+    toBePushed = toBePushed.replace("TEXT", event.eventText);
+    this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
   }
 
   toAlarmTemplateFormat(alarm) {
@@ -424,10 +465,14 @@ export class CreateSimComponent implements OnInit {
     }
   }
   addEventToArray() {
+    if (this.selectedEventCategory === this.eventCategories[0].category) {
     this.events.push({
       eventType: this.selectedEventType,
       eventText: this.selectedEventText,
     });
+  } else {
+
+  }
     this.selectedEventText = "";
     this.selectedEventType = "";
   }
