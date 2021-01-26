@@ -183,7 +183,7 @@
         style="margin-left: 12px"
         (click)="addNewFragment()"
       >
-        Add new fragment
+        Add fragment
       </button>
 
       <button
@@ -269,7 +269,22 @@
       <br />
       <br *ngIf="configureAlarms"/>
       <div *ngIf="configureEvents">
-        <div class="col-sm-6 col-xs-6">
+        <div class="col-sm-3">
+          <div class="form-group form-group-md">
+            <div class="c8y-select-wrapper">
+              <select
+                class="form-control"[ngModel]="selectedEventCategory"
+                (ngModelChange)="onChangeEvent($event)"
+                
+              >
+                <option *ngFor="let item of eventCategories">
+                  {{ item.category }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
           <div class="form-group">
             <input
               name="minimum"
@@ -280,7 +295,7 @@
           </div>
         </div>
 
-        <div class="col-sm-6 col-xs-6">
+        <div class="col-sm-5 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
           <div class="form-group">
             <input
               name="minimum"
@@ -291,6 +306,58 @@
           </div>
         </div>
         <br />
+
+        <ng-container *ngIf="selectedEventCategory !== eventCategories[0].category">
+          <br>
+          <br />
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Latitude"
+              [(ngModel)]="selectedLatitude"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6" >
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Longitude"
+              [(ngModel)]="selectedLongitude"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Altitude"
+              [(ngModel)]="selectedAltitude"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Accuracy"
+              [(ngModel)]="selectedAccuracy"
+            />
+          </div>
+        </div>
+        <br>
+        <br />
+      </ng-container>
+        
+
         <button type="button" class="btn btn-primary" style="margin-left: 12px" (click)="addEventToArray()">
           Add Event
         </button>

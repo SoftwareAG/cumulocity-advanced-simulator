@@ -123,8 +123,19 @@ export class CreateSimComponent implements OnInit {
     "Generate alarms after each measurement group",
     "Generate alarms after each measurement",
   ];
+
+  eventCategories = [
+    { category: "Basic", code: 400 },
+    { category: "Location Update", code: 401 },
+    { category: "Location Update Device", code: 402 },
+  ];
   selectedAlarmConfig = this.defaultAlarmsConfig[0];
+  selectedEventCategory = this.eventCategories[0].category;
   selectedConfig: string = this.defaultSleepMsmtConfig[0];
+  selectedLatitude: string;
+  selectedLongitude: string;
+  selectedAltitude: string;
+  selectedAccuracy: string;
   simulatorId: string;
   mo: CustomSimulator;
   simulatorName: string;
@@ -352,6 +363,10 @@ export class CreateSimComponent implements OnInit {
     this.selectedAlarmCategory = newVal;
   }
 
+
+  onChangeEvent(newVal) {
+    this.selectedEventCategory = newVal;
+  }
   generateAlarms() {
     for (let alarm of this.alarms.filter((a) => a.alarmText)) {
       let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
@@ -396,6 +411,8 @@ export class CreateSimComponent implements OnInit {
         });
       }
       this.alarms.push(...arr);
+      this.selectedAlarmText = "";
+      this.selectedAlarmType = "";
     } else {
       this.alarms.push({
         category: this.selectedAlarmCategory,
