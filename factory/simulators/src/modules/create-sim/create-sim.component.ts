@@ -284,6 +284,8 @@ export class CreateSimComponent implements OnInit {
       ) {
         this.generateEvents();
       }
+
+      // this.backendService.connectToSimulatorsBackend(this.resultTemplate);
     }
 
     const test = this.scaledArray.map((entry, i) => ({
