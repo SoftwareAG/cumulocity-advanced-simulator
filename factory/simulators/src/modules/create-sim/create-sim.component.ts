@@ -247,6 +247,8 @@ export class CreateSimComponent implements OnInit {
         this.alarms &&
         this.selectedAlarmConfig === this.defaultAlarmsConfig[1]
       ) {
+        console.log('INSIDE tst Array');
+        console.log(this.testArray);
         this.generateAlarms();
       }
     }
@@ -424,7 +426,6 @@ export class CreateSimComponent implements OnInit {
       unit: this.unit ? this.unit : "",
       sleep: this.defaultSleep ? this.defaultSleep : "",
     });
-    this.defaultSleep = "";
     this.fragment = "";
     this.maxValue = "";
     this.minValue = "";
