@@ -46,7 +46,7 @@ export class CreateSimComponent implements OnInit {
   displayChart = false;
   scaled: any[];
   alarms: { category: string; alarmType: string; alarmText: string }[] = [];
-  events= [];
+  events: {code: string; eventType: string; eventText: string}[]|{code: string; lat: string; lon: string; alt: string; accuracy: string;}[] = [];
   randomSelected = false;
   configureAlarms = false;
   configureEvents = false;
@@ -248,7 +248,6 @@ export class CreateSimComponent implements OnInit {
           index < this.alarms.length
         ) {
           this.toAlarmTemplateFormat(this.alarms[index]);
-
         }
 
         if (
@@ -398,7 +397,7 @@ export class CreateSimComponent implements OnInit {
   }
 
   generateEvents() {
-    for (let event of this.events.filter((a) => a.eventText)) {
+    for (let event of this.events) {
       this.toEventTemplateFormat(event);
       if (
         this.defaultSleep &&
@@ -414,13 +413,28 @@ export class CreateSimComponent implements OnInit {
 
   toEventTemplateFormat(event) {
     let toBePushed = `{
-      "messageId": "400",
+      "messageId": "CODE",
       "values": ["TYPE", "TEXT"], "type": "builtin"
     }`;
+    let toBePushedLoc = `{
+      "messageId": "CODE",
+      "values": ["LAT", "LON", "ALT", "ACCURACY"], "type": "builtin"
+    }`;
 
-    toBePushed = toBePushed.replace("TYPE", event.eventType);
-    toBePushed = toBePushed.replace("TEXT", event.eventText);
-    this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+    if (event.code === "400") {
+      toBePushed = toBePushed.replace("CODE", event.code);
+      toBePushed = toBePushed.replace("TYPE", event.eventType);
+      toBePushed = toBePushed.replace("TEXT", event.eventText);
+      this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+    } else {
+      toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
+      toBePushedLoc = toBePushedLoc.replace("LAT", event.lat);
+      toBePushedLoc = toBePushedLoc.replace("LON", event.lon);
+      toBePushedLoc = toBePushedLoc.replace("ALT", event.alt);
+      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.accuracy);
+      this.resultTemplate.commandQueue.push(JSON.parse(toBePushedLoc));
+    }
+    
   }
 
   toAlarmTemplateFormat(alarm) {
@@ -473,18 +487,29 @@ export class CreateSimComponent implements OnInit {
       this.selectedEventConfig === this.defaultEventsConfig[2]
     ) {
       const arr = [];
+      if (this.selectedEventCategory === this.eventCategories[0].category) {
       for (let i = 0; i < this.eventSteps; i++) {
         arr.push({
-          category: this.selectedEventCategory,
+          code: this.selectedEventCategory,
           eventType: this.selectedEventType,
           eventText: this.selectedEventText,
         });
       }
+    } else {
+        for (let i = 0; i < this.eventSteps; i++) {
+          arr.push({
+            code: this.selectedEventCategory,
+            lat: this.selectedLatitude,
+            lon: this.selectedLongitude,
+            alt: this.selectedAltitude,
+            accuracy: this.selectedAccuracy
+          });
+        }
+      }
       this.events.push(...arr);
-      this.selectedEventText = "";
-      this.selectedEventType = "";
+      // this.selectedEventText = "";
+      // this.selectedEventType = "";
     }
-
   }
 
   addNewFragment() {
