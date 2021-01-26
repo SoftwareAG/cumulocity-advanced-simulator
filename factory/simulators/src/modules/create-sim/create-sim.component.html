@@ -285,7 +285,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-4 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
+        <div class="col-sm-3 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
           <div class="form-group">
             <input
               name="minimum"
@@ -296,13 +296,24 @@
           </div>
         </div>
 
-        <div class="col-sm-5 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
+        <div class="col-sm-3 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
           <div class="form-group">
             <input
               name="minimum"
               class="form-control"
               placeholder="Event Text"
               [(ngModel)]="selectedEventText"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Steps"
+              [(ngModel)]="eventSteps"
             />
           </div>
         </div>

@@ -52,6 +52,7 @@ export class CreateSimComponent implements OnInit {
   configureEvents = false;
   value: string;
   alarmSteps: number;
+  eventSteps: number;
 
   toDisplay = false;
   selectedAlarmType: string;
@@ -247,7 +248,7 @@ export class CreateSimComponent implements OnInit {
           index < this.alarms.length
         ) {
           this.toAlarmTemplateFormat(this.alarms[index]);
-          console.log(this.alarms);
+
         }
 
         if (
@@ -256,7 +257,6 @@ export class CreateSimComponent implements OnInit {
           index < this.events.length
         ) {
           this.toEventTemplateFormat(this.events[index]);
-          console.log(this.alarms);
         }
       }
 
@@ -302,7 +302,6 @@ export class CreateSimComponent implements OnInit {
     if (this.selectedEventConfig === this.defaultEventsConfig[0]) {
       this.generateEvents();
     }
-    console.log(this.resultTemplate);
   }
 
   deepCopy(obj) {
@@ -398,9 +397,10 @@ export class CreateSimComponent implements OnInit {
 
   generateEvents() {
     for (let event of this.events.filter((a) => a.eventText)) {
-      this.toEventTemplateFormat(event);if (
+      this.toEventTemplateFormat(event);
+      if (
         this.defaultSleep &&
-        this.selectedAlarmConfig === this.defaultAlarmsConfig[0]
+        this.selectedEventConfig === this.defaultEventsConfig[0]
       ) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
@@ -465,16 +465,24 @@ export class CreateSimComponent implements OnInit {
     }
   }
   addEventToArray() {
-    if (this.selectedEventCategory === this.eventCategories[0].category) {
-    this.events.push({
-      eventType: this.selectedEventType,
-      eventText: this.selectedEventText,
-    });
-  } else {
+    if (
+      this.selectedEventConfig === this.defaultEventsConfig[0] ||
+      this.selectedEventConfig === this.defaultEventsConfig[1] ||
+      this.selectedEventConfig === this.defaultEventsConfig[2]
+    ) {
+      const arr = [];
+      for (let i = 0; i < this.eventSteps; i++) {
+        arr.push({
+          category: this.selectedEventCategory,
+          eventType: this.selectedEventType,
+          eventText: this.selectedEventText,
+        });
+      }
+      this.events.push(...arr);
+      this.selectedEventText = "";
+      this.selectedEventType = "";
+    }
 
-  }
-    this.selectedEventText = "";
-    this.selectedEventType = "";
   }
 
   addNewFragment() {
