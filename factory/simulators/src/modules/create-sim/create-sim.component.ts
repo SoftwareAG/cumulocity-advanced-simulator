@@ -108,10 +108,10 @@ export class CreateSimComponent implements OnInit {
   };
   data: any;
   scaledArray = [];
-  alarmCategories: { category: string; code: number }[] = [
-    { category: "Critical", code: 301 },
-    { category: "Major", code: 302 },
-    { category: "Minor", code: 303 },
+  alarmCategories: { category: string; code: string }[] = [
+    { category: "Critical", code: "301" },
+    { category: "Major", code: "302" },
+    { category: "Minor", code: "303" },
   ];
   selectedAlarmCategory: string = this.alarmCategories[0].category;
   defaultSleepMsmtConfig = [
@@ -126,9 +126,9 @@ export class CreateSimComponent implements OnInit {
   ];
 
   defaultEventsConfig = [
-    "Generate repeated alarms",
-    "Generate alarms after each measurement group",
-    "Generate alarms after each measurement",
+    "Generate repeated events",
+    "Generate events after each measurement group",
+    "Generate events after each measurement",
   ];
 
   eventCategories = [
@@ -425,6 +425,7 @@ export class CreateSimComponent implements OnInit {
       toBePushed = toBePushed.replace("CODE", event.code);
       toBePushed = toBePushed.replace("TYPE", event.eventType);
       toBePushed = toBePushed.replace("TEXT", event.eventText);
+      console.log(toBePushed);
       this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
     } else {
       toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
@@ -490,7 +491,7 @@ export class CreateSimComponent implements OnInit {
       if (this.selectedEventCategory === this.eventCategories[0].category) {
       for (let i = 0; i < this.eventSteps; i++) {
         arr.push({
-          code: this.selectedEventCategory,
+          code: this.eventCategories.find((x) => x.category === this.selectedEventCategory).code.toString(),
           eventType: this.selectedEventType,
           eventText: this.selectedEventText,
         });
@@ -498,7 +499,7 @@ export class CreateSimComponent implements OnInit {
     } else {
         for (let i = 0; i < this.eventSteps; i++) {
           arr.push({
-            code: this.selectedEventCategory,
+            code: this.eventCategories.find((x) => x.category === this.selectedEventCategory).code.toString(),
             lat: this.selectedLatitude,
             lon: this.selectedLongitude,
             alt: this.selectedAltitude,
@@ -507,6 +508,7 @@ export class CreateSimComponent implements OnInit {
         }
       }
       this.events.push(...arr);
+      console.log(this.events);
       // this.selectedEventText = "";
       // this.selectedEventType = "";
     }
