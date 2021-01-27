@@ -30,7 +30,7 @@
     </div>
     <div class="card-block">
       <label class="c8y-switch">
-        <input type="checkbox" (ngModelChange)="onStateChange(simulator)"/>
+        <input type="checkbox" ngModel (ngModelChange)="onStateChange(simulator)"/>
         <span></span> {{simulator.c8y_DeviceSimulator.state | lowercase}}
       </label>
     </div>

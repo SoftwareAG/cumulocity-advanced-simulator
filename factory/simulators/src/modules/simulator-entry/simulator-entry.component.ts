@@ -57,8 +57,9 @@ export class SimulatorEntryComponent implements OnInit {
       : (simulator.c8y_DeviceSimulator.state = "PAUSED");
 
     this.simService
-      .updateSimulatorManagedObject(simulator.c8y_DeviceSimulator.state)
-      .then((res) => console.log(res));
+      .updateSimulatorManagedObject(simulator)
+      .then((res) => console.log('State changed'));
+
   }
 
   onDeleteSelected(simulator) {
