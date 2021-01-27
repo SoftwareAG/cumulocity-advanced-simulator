@@ -5,7 +5,7 @@
 
 <div class="card-group">
 <ng-container *ngFor="let simulator of allSimulators">  
-  <div (click)="editSimulator(simulator)">
+  <div>
   <div class="card custom-card" >
     <div class="card-header separator" style="justify-content: space-between; height: 56px"><div class="card-title">
       <h4 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon">
@@ -16,18 +16,13 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
           <li>
-            <button type="button">
-              <i c8yIcon="cogs"></i> Create Smart Rule
+            <button type="button" (click)="editSimulator(simulator)">
+              <i c8yIcon="edit"></i> Edit Simulator
             </button>
           </li>
           <li>
-            <button type="button">
+            <button type="button" (click)="onDeleteSelected(simulator)">
               <i c8yIcon="trash"></i> Remove from list
-            </button>
-          </li>
-          <li>
-            <button type="button">
-              <i c8yIcon="floppy-o"></i> Save to library
             </button>
           </li>
         </ul>
@@ -35,7 +30,7 @@
     </div>
     <div class="card-block">
       <label class="c8y-switch">
-        <input type="checkbox" />
+        <input type="checkbox" (ngModelChange)="onStateChange(simulator)"/>
         <span></span> {{simulator.c8y_DeviceSimulator.state | lowercase}}
       </label>
     </div>
