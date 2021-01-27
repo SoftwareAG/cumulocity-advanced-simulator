@@ -8,6 +8,7 @@ import * as moment from "moment";
 import { Color, Label } from "ng2-charts";
 import { SimulatorsBackendService } from "../../services/simulatorsBackend.service";
 import { Alert, AlertService } from "@c8y/ngx-components";
+import { SimulatorsServiceService } from "../../services/simulatorsService.service";
 
 @Component({
   selector: "app-create-sim",
@@ -22,6 +23,7 @@ export class CreateSimComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private backendService: SimulatorsBackendService,
+    private simService: SimulatorsServiceService,
     private alertService: AlertService
   ) {}
 
@@ -290,7 +292,11 @@ export class CreateSimComponent implements OnInit {
         this.generateEvents();
       }
 
-      // this.backendService.connectToSimulatorsBackend(this.resultTemplate);
+      this.mo.c8y_DeviceSimulator.commandQueue.push(...this.resultTemplate.commandQueue);
+      this.simService.updateSimulatorManagedObject(this.mo).then((res) => 
+      console.log(res)
+);
+      
     }
 
     const test = this.scaledArray.map((entry, i) => ({

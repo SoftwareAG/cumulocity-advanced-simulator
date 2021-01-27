@@ -40,4 +40,8 @@ export class SimulatorsServiceService extends ManagedObjectService {
       return simulators;
     });
   }
+
+  updateSimulatorManagedObject(mo: Partial<CustomSimulator>) {
+    return this.updateManagedObject(mo);
+  }
 }

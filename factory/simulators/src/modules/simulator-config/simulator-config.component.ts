@@ -45,6 +45,7 @@ export class SimulatorConfigComponent implements OnInit {
       name: "",
       instances: 1,
       state: "PAUSED",
+      commandQueue: []
     },
     c8y_CustomSim: {},
   };
