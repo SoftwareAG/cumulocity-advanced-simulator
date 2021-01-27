@@ -424,7 +424,8 @@
       ></app-simulator-chart>
     </div> -->
 
-    <app-simulator-details [commandQueue]="resultTemplate.commandQueue" (currentValue)="updateCurrentFragment($event)"></app-simulator-details>
+    <app-simulator-details [commandQueue]="commandQueue" (currentValue)="updateCurrentFragment($event)"
+    (currentCommandQueue)="updateCommandQueue($event)"></app-simulator-details>
     
   </div>
 </c8y-drop-area>

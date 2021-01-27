@@ -34,6 +34,7 @@ export class CreateSimComponent implements OnInit {
     supportedOperations: {},
     name: "",
   };
+  commandQueue = [];
   fileUrl;
   fragment: string;
   
@@ -160,9 +161,13 @@ export class CreateSimComponent implements OnInit {
     this.mo = this.data.simulator.data;
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    // console.log(this.co)
   }
 
   generateSimulatorRequest() {
+    
+    console.log(this.mo);
     if (!this.newFragmentAdded) {
       this.resultTemplate.commandQueue = [];
     }
@@ -291,7 +296,7 @@ export class CreateSimComponent implements OnInit {
       ) {
         this.generateEvents();
       }
-
+      // this.commandQueue.push(...this.resultTemplate.commandQueue);
       this.mo.c8y_DeviceSimulator.commandQueue.push(...this.resultTemplate.commandQueue);
       this.simService.updateSimulatorManagedObject(this.mo).then((res) => 
       console.log(res)
@@ -585,6 +590,12 @@ export class CreateSimComponent implements OnInit {
     this.value = val.value.values[2];
     this.unit = val.value.values[3];
     this.currentIndex = val.index;
+  }
+
+  updateCommandQueue(newCommandQueue) {
+    this.commandQueue = newCommandQueue;
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.simService.updateSimulatorManagedObject(this.mo).then((result) => console.log(result));
   }
 
   editCurrentFragment() {

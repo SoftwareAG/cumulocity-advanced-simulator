@@ -45,7 +45,6 @@ export class SimulatorEntryComponent implements OnInit {
   }
 
   editSimulator(simulator: CustomSimulator) {
-    console.log(simulator.id);
     this.router.navigate(["/createSim/" + simulator.id]);
   }
 
@@ -75,7 +74,6 @@ export class SimulatorEntryComponent implements OnInit {
   refreshList() {
     this.simService.getAllDevices().then((simulators) => {
       this.allSimulators = simulators;
-      console.log(simulators);
     });
   }
 }
