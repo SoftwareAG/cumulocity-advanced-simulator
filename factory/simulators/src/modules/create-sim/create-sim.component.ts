@@ -34,14 +34,11 @@ export class CreateSimComponent implements OnInit {
   };
   fileUrl;
   fragment: string;
-  maxValue: string;
-  minValue: string;
-  series: string;
-  steps: string;
+  
   tempType: string;
   unit: string;
   configureSettings = false;
-  defaultSleep: string;
+  defaultSleep: string = "1";
   newFragmentAdded = false;
   displayChart = false;
   scaled: any[];
@@ -53,6 +50,15 @@ export class CreateSimComponent implements OnInit {
   value: string;
   alarmSteps: number;
   eventSteps: number;
+
+  defaultMin: string = "";
+  defaultMax: string = "";
+  defaultSteps: string = "";
+
+  maxValue: string = this.defaultMin;
+  minValue: string = this.defaultMax;
+  series: string = "";
+  steps: string = this.defaultSteps;
 
   toDisplay = false;
   selectedAlarmType: string;
@@ -365,6 +371,21 @@ export class CreateSimComponent implements OnInit {
     this.selectedConfig = newVal;
   }
 
+  onChangeMin(newVal) {
+    this.defaultMin = newVal.target.value;
+    this.minValue = this.defaultMin !== '' ? this.defaultMin : newVal.target.value;
+  }
+
+  onChangeMax(newVal) {
+    this.defaultMax = newVal.target.value;
+    this.maxValue = this.defaultMax !== '' ? this.defaultMax : newVal.target.value;
+  }
+
+  onChangeSteps(newVal) {
+    this.defaultSteps = newVal.target.value;
+    this.steps = this.defaultSteps !== '' ? this.defaultSteps : newVal.target.value;
+  }
+
   onChangeAlarmConfig(newVal) {
     this.selectedAlarmConfig = newVal;
   }
@@ -570,6 +591,15 @@ export class CreateSimComponent implements OnInit {
   }
 
   reset() {
-    this.toDisplay = false;
+    if (!this.toDisplay) {
+      this.fragment = '';
+      this.series = '';
+      this.minValue = '';
+      this.maxValue = '';
+      this.steps = '';
+      this.unit = '';
+    } else {
+      this.toDisplay = false;
+    }
   }
 }

@@ -45,6 +45,8 @@
             id="defaultMin"
             class="form-control"
             placeholder="default minimum"
+            [ngModel]="defaultMin"
+            (change)="onChangeMin($event)"
           />
         </div>
       </div>
@@ -56,6 +58,8 @@
             id="defaultMax"
             class="form-control"
             placeholder="default maximum"
+            [ngModel]="defaultMax"
+            (change)="onChangeMax($event)"
           />
         </div>
       </div>
@@ -67,6 +71,8 @@
             id="defaultSteps"
             class="form-control"
             placeholder="default steps"
+            [ngModel]="defaultSteps"
+            (change)="onChangeSteps($event)"
           />
         </div>
       </div>
