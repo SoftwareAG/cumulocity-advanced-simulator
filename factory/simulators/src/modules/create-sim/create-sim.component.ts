@@ -557,7 +557,6 @@ export class CreateSimComponent implements OnInit {
         }
       }
       this.events.push(...arr);
-      console.log(this.events);
       // this.selectedEventText = "";
       // this.selectedEventType = "";
     }
@@ -623,7 +622,6 @@ export class CreateSimComponent implements OnInit {
   }
 
   insertCurrentFragment() {
-    console.log(this.fragment);
      {
       let toBePushed = `{
         "messageId": "200",
@@ -634,12 +632,14 @@ export class CreateSimComponent implements OnInit {
       toBePushed = toBePushed.replace("SERIES", this.series);
       toBePushed = toBePushed.replace("VALUE", this.value);
       toBePushed = toBePushed.replace("UNIT", this.unit);
-
-      console.log(this.insertIndex);
-      console.log(toBePushed);
       this.commandQueue.splice(this.insertIndex + 1, 0, JSON.parse(toBePushed));
-      console.log(this.commandQueue);
+      // TODO: Insert backend call for save here
     }
+
+    this.fragment = "";
+    this.series = "";
+    this.value = "";
+    this.unit = "";
   }
 
   editCurrentFragment() {
@@ -649,6 +649,13 @@ export class CreateSimComponent implements OnInit {
       this.value,
       this.unit,
     ];
+  }
+
+  insertSleep() {
+    // console.log(this.currentIndex);
+    this.commandQueue.splice(this.insertIndex+1, 0, {type: 'sleep', seconds: this.sleepVal});
+    // TODO: Insert backend call here
+    this.sleepVal = "";
   }
 
   reset() {
