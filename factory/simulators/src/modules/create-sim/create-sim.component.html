@@ -108,9 +108,14 @@
       <div class="col-sm-4">
         <div class="form-group form-group-md">
           <div class="c8y-select-wrapper">
-            <select class="form-control" [ngModel]="selectedAlarmConfig"
-            (ngModelChange)="onChangeAlarmConfig($event)">
-              <option *ngFor="let first of defaultAlarmsConfig">{{first}}</option>
+            <select
+              class="form-control"
+              [ngModel]="selectedAlarmConfig"
+              (ngModelChange)="onChangeAlarmConfig($event)"
+            >
+              <option *ngFor="let first of defaultAlarmsConfig">
+                {{ first }}
+              </option>
             </select>
           </div>
         </div>
@@ -119,9 +124,14 @@
       <div class="col-sm-4">
         <div class="form-group form-group-md">
           <div class="c8y-select-wrapper">
-            <select class="form-control" [ngModel]="selectedEventConfig"
-            (ngModelChange)="onChangeEventConfig($event)">
-              <option *ngFor="let first of defaultEventsConfig">{{first}}</option>
+            <select
+              class="form-control"
+              [ngModel]="selectedEventConfig"
+              (ngModelChange)="onChangeEventConfig($event)"
+            >
+              <option *ngFor="let first of defaultEventsConfig">
+                {{ first }}
+              </option>
             </select>
           </div>
         </div>
@@ -153,24 +163,24 @@
         </div>
       </div>
       <div class="col-sm-6 col-xs-6">
-        <div class="form-group" *ngIf="!toDisplay">
+        <div class="form-group" *ngIf="!toDisplay && !toAddMsmtOrSleep">
           <label for="min" translate="">Min</label>
-          <input name="minimum" class="form-control"[(ngModel)]="minValue" />
+          <input name="minimum" class="form-control" [(ngModel)]="minValue" />
         </div>
       </div>
       <div class="col-sm-6 col-xs-6">
-        <div class="form-group" *ngIf="!toDisplay">
+        <div class="form-group" *ngIf="!toDisplay && !toAddMsmtOrSleep">
           <label for="min" translate> Max </label>
-          <input name="maximum" class="form-control"[(ngModel)]="maxValue" />
+          <input name="maximum" class="form-control" [(ngModel)]="maxValue" />
         </div>
       </div>
       <div>
         <div class="col-sm-6 col-xs-6">
-          <div class="form-group" *ngIf="!toDisplay">
+          <div class="form-group" *ngIf="!toDisplay && !toAddMsmtOrSleep">
             <label for="min" translate> Steps * </label>
             <input name="maximum" class="form-control" [(ngModel)]="steps" />
           </div>
-          <div class="form-group" *ngIf="toDisplay">
+          <div class="form-group" *ngIf="toDisplay || toAddMsmtOrSleep">
             <label for="min" translate> Value </label>
             <input name="maximum" class="form-control" [(ngModel)]="value" />
           </div>
@@ -187,6 +197,7 @@
       <button
         type="button"
         class="btn btn-primary"
+        *ngIf="!toAddMsmtOrSleep"
         style="margin-left: 12px"
         (click)="addNewFragment()"
       >
@@ -194,7 +205,7 @@
       </button>
 
       <button
-       *ngIf="toDisplay" 
+        *ngIf="toDisplay"
         type="button"
         class="btn btn-primary"
         style="margin-left: 12px"
@@ -204,15 +215,45 @@
       </button>
 
       <button
+        *ngIf="toAddMsmtOrSleep"
         type="button"
         class="btn btn-primary"
-        style="float: right;margin-right: 12px"
+        style="margin-left: 12px"
+        (click)="insertCurrentFragment()"
+      >
+        Insert fragment
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        style="float: right; margin-right: 12px"
         (click)="reset()"
       >
         Reset
       </button>
       <br />
       <br />
+
+      <div *ngIf="toAddMsmtOrSleep">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input name="defSl" placeholder="Sleep" class="form-control" [(ngModel)]="sleepVal" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <button
+            type="button"
+            class="btn btn-primary"
+            style="float: right;"
+          >
+            Insert Sleep
+          </button>
+        </div>
+        <br />
+        <br />
+        <br />
+      </div>
 
       <div *ngIf="configureAlarms">
         <div class="col-sm-3">
@@ -274,15 +315,15 @@
         </button>
       </div>
       <br />
-      <br *ngIf="configureAlarms"/>
+      <br *ngIf="configureAlarms" />
       <div *ngIf="configureEvents">
         <div class="col-sm-3">
           <div class="form-group form-group-md">
             <div class="c8y-select-wrapper">
               <select
-                class="form-control"[ngModel]="selectedEventCategory"
+                class="form-control"
+                [ngModel]="selectedEventCategory"
                 (ngModelChange)="onChangeEvent($event)"
-                
               >
                 <option *ngFor="let item of eventCategories">
                   {{ item.category }}
@@ -291,7 +332,10 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-3 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
+        <div
+          class="col-sm-3 col-xs-6"
+          *ngIf="selectedEventCategory === eventCategories[0].category"
+        >
           <div class="form-group">
             <input
               name="minimum"
@@ -302,7 +346,10 @@
           </div>
         </div>
 
-        <div class="col-sm-3 col-xs-6" *ngIf="selectedEventCategory === eventCategories[0].category">
+        <div
+          class="col-sm-3 col-xs-6"
+          *ngIf="selectedEventCategory === eventCategories[0].category"
+        >
           <div class="form-group">
             <input
               name="minimum"
@@ -325,62 +372,68 @@
         </div>
         <br />
 
-        <ng-container *ngIf="selectedEventCategory !== eventCategories[0].category">
-          <br>
+        <ng-container
+          *ngIf="selectedEventCategory !== eventCategories[0].category"
+        >
           <br />
-        <div class="col-sm-3 col-xs-6">
-          <div class="form-group">
-            <input
-              name="minimum"
-              class="form-control"
-              placeholder="Latitude"
-              [(ngModel)]="selectedLatitude"
-            />
+          <br />
+          <div class="col-sm-3 col-xs-6">
+            <div class="form-group">
+              <input
+                name="minimum"
+                class="form-control"
+                placeholder="Latitude"
+                [(ngModel)]="selectedLatitude"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="col-sm-3 col-xs-6" >
-          <div class="form-group">
-            <input
-              name="minimum"
-              class="form-control"
-              placeholder="Longitude"
-              [(ngModel)]="selectedLongitude"
-            />
+          <div class="col-sm-3 col-xs-6">
+            <div class="form-group">
+              <input
+                name="minimum"
+                class="form-control"
+                placeholder="Longitude"
+                [(ngModel)]="selectedLongitude"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="col-sm-3 col-xs-6">
-          <div class="form-group">
-            <input
-              name="minimum"
-              class="form-control"
-              placeholder="Altitude"
-              [(ngModel)]="selectedAltitude"
-            />
+          <div class="col-sm-3 col-xs-6">
+            <div class="form-group">
+              <input
+                name="minimum"
+                class="form-control"
+                placeholder="Altitude"
+                [(ngModel)]="selectedAltitude"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="col-sm-3 col-xs-6">
-          <div class="form-group">
-            <input
-              name="minimum"
-              class="form-control"
-              placeholder="Accuracy"
-              [(ngModel)]="selectedAccuracy"
-            />
+          <div class="col-sm-3 col-xs-6">
+            <div class="form-group">
+              <input
+                name="minimum"
+                class="form-control"
+                placeholder="Accuracy"
+                [(ngModel)]="selectedAccuracy"
+              />
+            </div>
           </div>
-        </div>
-        <br>
-        <br />
-      </ng-container>
-        
+          <br />
+          <br />
+        </ng-container>
 
-        <button type="button" class="btn btn-primary" style="margin-left: 12px" (click)="addEventToArray()">
+        <button
+          type="button"
+          class="btn btn-primary"
+          style="margin-left: 12px"
+          (click)="addEventToArray()"
+        >
           Add Event
         </button>
       </div>
-      <br *ngIf="configureEvents"/>
+      <br *ngIf="configureEvents" />
 
       <button
         type="button"
@@ -390,8 +443,8 @@
       >
         Generate HTTP Request
       </button>
-      <br>
-      <br>
+      <br />
+      <br />
 
       <div class="card-inner-scroll">
         <div class="card-block">
@@ -400,7 +453,7 @@
           }}</textarea>
         </div>
       </div>
-  
+
       <a
         [href]="fileUrl"
         download="HTTP_settings.json"
@@ -424,8 +477,11 @@
       ></app-simulator-chart>
     </div> -->
 
-    <app-simulator-details [commandQueue]="commandQueue" (currentValue)="updateCurrentFragment($event)"
-    (currentCommandQueue)="updateCommandQueue($event)"></app-simulator-details>
-    
+    <app-simulator-details
+      [commandQueue]="commandQueue"
+      (currentValue)="updateCurrentFragment($event)"
+      (currentCommandQueue)="updateCommandQueue($event)"
+      (insertSleepOrFragment)="insertSleepOrFragment($event)"
+    ></app-simulator-details>
   </div>
 </c8y-drop-area>

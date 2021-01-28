@@ -37,7 +37,7 @@ export class CreateSimComponent implements OnInit {
   commandQueue = [];
   fileUrl;
   fragment: string;
-  
+
   tempType: string;
   unit: string;
   configureSettings = false;
@@ -46,7 +46,15 @@ export class CreateSimComponent implements OnInit {
   displayChart = false;
   scaled: any[];
   alarms: { category: string; alarmType: string; alarmText: string }[] = [];
-  events: {code: string; eventType: string; eventText: string}[]|{code: string; lat: string; lon: string; alt: string; accuracy: string;}[] = [];
+  events:
+    | { code: string; eventType: string; eventText: string }[]
+    | {
+        code: string;
+        lat: string;
+        lon: string;
+        alt: string;
+        accuracy: string;
+      }[] = [];
   randomSelected = false;
   configureAlarms = false;
   configureEvents = false;
@@ -64,6 +72,8 @@ export class CreateSimComponent implements OnInit {
   steps: string = this.defaultSteps;
 
   toDisplay = false;
+  sleepVal: string = "";
+  toAddMsmtOrSleep = false;
   selectedAlarmType: string;
   selectedAlarmText: string;
   selectedEventType: string;
@@ -104,6 +114,7 @@ export class CreateSimComponent implements OnInit {
   lineChartType = "bar";
   lineChartPlugins = [];
 
+  insertIndex: number;
   measurements = [];
   testArray = [];
   template = {
@@ -166,7 +177,6 @@ export class CreateSimComponent implements OnInit {
   }
 
   generateSimulatorRequest() {
-    
     console.log(this.mo);
     if (!this.newFragmentAdded) {
       this.resultTemplate.commandQueue = [];
@@ -297,11 +307,12 @@ export class CreateSimComponent implements OnInit {
         this.generateEvents();
       }
       // this.commandQueue.push(...this.resultTemplate.commandQueue);
-      this.mo.c8y_DeviceSimulator.commandQueue.push(...this.resultTemplate.commandQueue);
-      this.simService.updateSimulatorManagedObject(this.mo).then((res) => 
-      console.log(res)
-);
-      
+      this.mo.c8y_DeviceSimulator.commandQueue.push(
+        ...this.resultTemplate.commandQueue
+      );
+      this.simService
+        .updateSimulatorManagedObject(this.mo)
+        .then((res) => console.log(res));
     }
 
     const test = this.scaledArray.map((entry, i) => ({
@@ -384,17 +395,20 @@ export class CreateSimComponent implements OnInit {
 
   onChangeMin(newVal) {
     this.defaultMin = newVal.target.value;
-    this.minValue = this.defaultMin !== '' ? this.defaultMin : newVal.target.value;
+    this.minValue =
+      this.defaultMin !== "" ? this.defaultMin : newVal.target.value;
   }
 
   onChangeMax(newVal) {
     this.defaultMax = newVal.target.value;
-    this.maxValue = this.defaultMax !== '' ? this.defaultMax : newVal.target.value;
+    this.maxValue =
+      this.defaultMax !== "" ? this.defaultMax : newVal.target.value;
   }
 
   onChangeSteps(newVal) {
     this.defaultSteps = newVal.target.value;
-    this.steps = this.defaultSteps !== '' ? this.defaultSteps : newVal.target.value;
+    this.steps =
+      this.defaultSteps !== "" ? this.defaultSteps : newVal.target.value;
   }
 
   onChangeAlarmConfig(newVal) {
@@ -467,7 +481,6 @@ export class CreateSimComponent implements OnInit {
       toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.accuracy);
       this.resultTemplate.commandQueue.push(JSON.parse(toBePushedLoc));
     }
-    
   }
 
   toAlarmTemplateFormat(alarm) {
@@ -521,21 +534,25 @@ export class CreateSimComponent implements OnInit {
     ) {
       const arr = [];
       if (this.selectedEventCategory === this.eventCategories[0].category) {
-      for (let i = 0; i < this.eventSteps; i++) {
-        arr.push({
-          code: this.eventCategories.find((x) => x.category === this.selectedEventCategory).code.toString(),
-          eventType: this.selectedEventType,
-          eventText: this.selectedEventText,
-        });
-      }
-    } else {
         for (let i = 0; i < this.eventSteps; i++) {
           arr.push({
-            code: this.eventCategories.find((x) => x.category === this.selectedEventCategory).code.toString(),
+            code: this.eventCategories
+              .find((x) => x.category === this.selectedEventCategory)
+              .code.toString(),
+            eventType: this.selectedEventType,
+            eventText: this.selectedEventText,
+          });
+        }
+      } else {
+        for (let i = 0; i < this.eventSteps; i++) {
+          arr.push({
+            code: this.eventCategories
+              .find((x) => x.category === this.selectedEventCategory)
+              .code.toString(),
             lat: this.selectedLatitude,
             lon: this.selectedLongitude,
             alt: this.selectedAltitude,
-            accuracy: this.selectedAccuracy
+            accuracy: this.selectedAccuracy,
           });
         }
       }
@@ -595,7 +612,34 @@ export class CreateSimComponent implements OnInit {
   updateCommandQueue(newCommandQueue) {
     this.commandQueue = newCommandQueue;
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.simService.updateSimulatorManagedObject(this.mo).then((result) => console.log(result));
+    this.simService
+      .updateSimulatorManagedObject(this.mo)
+      .then((result) => console.log(result));
+  }
+
+  insertSleepOrFragment(current) {
+    this.toAddMsmtOrSleep = current.bool;
+    this.insertIndex = current.index;
+  }
+
+  insertCurrentFragment() {
+    console.log(this.fragment);
+     {
+      let toBePushed = `{
+        "messageId": "200",
+        "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
+        }`;
+
+      toBePushed = toBePushed.replace("FRAGMENT", this.fragment);
+      toBePushed = toBePushed.replace("SERIES", this.series);
+      toBePushed = toBePushed.replace("VALUE", this.value);
+      toBePushed = toBePushed.replace("UNIT", this.unit);
+
+      console.log(this.insertIndex);
+      console.log(toBePushed);
+      this.commandQueue.splice(this.insertIndex + 1, 0, JSON.parse(toBePushed));
+      console.log(this.commandQueue);
+    }
   }
 
   editCurrentFragment() {
@@ -609,14 +653,16 @@ export class CreateSimComponent implements OnInit {
 
   reset() {
     if (!this.toDisplay) {
-      this.fragment = '';
-      this.series = '';
-      this.minValue = '';
-      this.maxValue = '';
-      this.steps = '';
-      this.unit = '';
+      this.fragment = "";
+      this.series = "";
+      this.minValue = "";
+      this.maxValue = "";
+      this.steps = "";
+      this.unit = "";
     } else {
       this.toDisplay = false;
     }
+
+    this.toAddMsmtOrSleep = !this.toAddMsmtOrSleep ? true : false;
   }
 }
