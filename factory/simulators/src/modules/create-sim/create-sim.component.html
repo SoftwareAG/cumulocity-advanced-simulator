@@ -9,11 +9,22 @@
   <div class="col-lg-6">
     <button
       type="button"
-      class="col-sm-4 col-md-12 col-xs-6 btn btn-default"
-      style="float: left; margin-bottom: 10px;"
+      class="col-sm-4 col-md-6 col-xs-6"
+      class="btn btn-default"
+      
       (click)="configureSettings = !configureSettings"
     >
       <i class="fa fa-cog"></i>&nbsp;Configure Default Settings
+    </button>
+
+
+    <button
+      class="col-sm-4 col-md-6 col-xs-6"
+      type="button"
+      class="btn btn-default"
+      (click)="configureMeasurements = !configureMeasurements"
+    >
+      <i class="fa fa-cog"></i>&nbsp;Configure Measurements
     </button>
 
     <button
@@ -27,12 +38,21 @@
 
     <button
       type="button"
-      class="col-sm-4 col-md-6 col-xs-6 btn btn-default"
-      style="float: right"
+      class="col-sm-4 col-md-6 col-xs-6"
+      class="btn btn-default"
       (click)="configureEvents = !configureEvents"
     >
       <i class="fa fa-cog"></i>&nbsp;Configure Events
     </button>
+
+    <button
+    type="button"
+    class="col-sm-4 col-md-6 col-xs-6"
+    class="btn btn-default"
+    (click)="configureOperations = !configureOperations"
+  >
+    <i class="fa fa-cog"></i>&nbsp;Configure Operations
+  </button>
 
     <br />
     <br />
