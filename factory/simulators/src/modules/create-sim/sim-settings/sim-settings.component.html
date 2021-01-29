@@ -19,13 +19,15 @@
       <br />
             
       <div [ngSwitch]="selectedConfig">
+        <!-- Measurements -->
         <ng-template [ngSwitchCase]="'Measurements'">
           <div class="row">
             <div class="col-sm-6">
               <div class="form-group">
                 <div class="c8y-select-wrapper">
-                  <select class="form-control ">
-                    <option *ngFor="let first of defaultConfig">{{ first }}</option>
+                  <select class="form-control" [ngModel]="selectedMsmtOption"
+                  (ngModelChange)="onChangeMsmt($event)">
+                    <option *ngFor="let first of measurementOptions">{{ first }}</option>
                   </select>
                 </div>
               </div>
@@ -33,7 +35,7 @@
 
             <div class="col-sm-6 col-xs-6">
               <div class="form-group">
-                <input name="maximum" class="form-control" placeholder="Sleep (required)"/>
+                <input name="maximum" class="form-control" placeholder="Sleep (required)" [(ngModel)]="sleep"/>
               </div>
             </div>
           </div>
@@ -41,43 +43,45 @@
           <div class="row">
             <div class="col-sm-6 col-xs-6">
               <div class="form-group">
-                <input id="fragment" class="form-control" placeholder="Fragment (required)"/>
+                <input id="fragment" class="form-control" placeholder="Fragment (required)" [(ngModel)]="fragment"/>
               </div>
             </div>
             <div class="col-sm-6 col-xs-6">
               <div class="form-group">
-                <input name="series" class="form-control" placeholder="Series (required)"/>
+                <input name="series" class="form-control" placeholder="Series (required)" [(ngModel)]="series"/>
               </div>
             </div>
             <div class="col-sm-6 col-xs-6">
               <div class="form-group">
-                <input name="minimum" class="form-control" placeholder="Minimum (required)"/>
+                <input name="minimum" class="form-control" placeholder="Minimum (required)" [(ngModel)]="minVal"/>
               </div>
             </div>
             <div class="col-sm-6 col-xs-6">
               <div class="form-group">
-                <input name="maximum" class="form-control" placeholder="Maximum (required)"/>
+                <input name="maximum" class="form-control" placeholder="Maximum (required)" [(ngModel)]="maxVal"/>
               </div>
             </div>
             <div>
               <div class="col-sm-6 col-xs-6">
                 <div class="form-group">
-                  <input name="maximum" class="form-control" placeholder="Steps (required)"/>
+                  <input name="maximum" class="form-control" placeholder="Steps (required)" [(ngModel)]="steps"/>
                 </div>
               </div>
               <div>
                 <div class="col-sm-6 col-xs-6">
                   <div class="form-group">
-                    <input name="maximum" class="form-control" placeholder="Unit (required)"/>
+                    <input name="maximum" class="form-control" placeholder="Unit (required)" [(ngModel)]="unit"/>
                   </div>
                 </div>
               </div>
               <div class="col-sm-12">
-              <button class="btn btn-default" style="float: right;"><i c8yIcon="plus-circle"></i>&nbsp;Add Measurements</button>
+              <button class="btn btn-default" style="float: right;" (click)="addMsmtToArray()"><i c8yIcon="plus-circle"></i>&nbsp;Add Measurements</button>
             </div>
             </div>
           </div>
         </ng-template>
+
+        <!-- Alarms -->
         <ng-template [ngSwitchCase]="'Alarms'">
           <div class="row">
           <div class="col-sm-3">
@@ -102,6 +106,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Alarm Type"
+                [(ngModel)]="alarmType"
               />
             </div>
           </div>
@@ -112,6 +117,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Alarm Text"
+                [(ngModel)]="alarmText"
               />
             </div>
           </div>
@@ -122,6 +128,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Steps"
+                [(ngModel)]="alarmSteps"
               />
             </div>
           </div>
@@ -131,12 +138,15 @@
             type="button"
             class="btn btn-default"
             style="float: right;"
+            (click)="addAlarmToArray()"
           ><i c8yIcon="plus-circle"></i>&nbsp;
             Add Alarms
           </button>
         </div>
         </div>
         </ng-template>
+
+        <!-- Events -->
         <ng-template [ngSwitchCase]="'Events'"><div class="row">
           <div class="col-sm-3">
             <div class="form-group form-group-md">
@@ -162,6 +172,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Event Type"
+                [(ngModel)]="eventType"
               />
             </div>
           </div>
@@ -175,6 +186,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Event Text"
+                [(ngModel)]="eventText"
               />
             </div>
           </div>
@@ -185,6 +197,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Event Steps"
+                [(ngModel)]="eventSteps"
               />
             </div>
           </div>
@@ -201,6 +214,7 @@
                   name="minimum"
                   class="form-control"
                   placeholder="Latitude"
+                  [(ngModel)]="latitude"
                 />
               </div>
             </div>
@@ -211,6 +225,7 @@
                   name="minimum"
                   class="form-control"
                   placeholder="Longitude"
+                  [(ngModel)]="longitude"
                 />
               </div>
             </div>
@@ -221,6 +236,7 @@
                   name="minimum"
                   class="form-control"
                   placeholder="Altitude"
+                  [(ngModel)]="altitude"
                 />
               </div>
             </div>
@@ -231,6 +247,7 @@
                   name="minimum"
                   class="form-control"
                   placeholder="Accuracy"
+                  [(ngModel)]="accuracy"
                 />
               </div>
             </div>
@@ -242,12 +259,13 @@
             type="button"
             class="btn btn-default"
             style="float: right"
-          ><i c8yicon="plus-circle"></i>&nbsp;
+          ><i c8yIcon="plus-circle"></i>&nbsp;
             Add Event
-          
           </button>
         </div>
         </div></ng-template>
+
+        <!-- Sleep -->
         <ng-template [ngSwitchCase]="'Sleep'"><div class="row">
           <div class="col-sm-8">
             <div class="form-group">
