@@ -20,6 +20,7 @@ import { SimulatorChartComponent } from "./src/modules/simulator-chart/simulator
 import { C8yFactoriesModule } from "./src/modules/factories/c8yfactories.module";
 import { AlarmsComponent } from "./src/modules/alarms/alarms.component";
 import { SimulatorDetailsComponent } from "./src/modules/simulator-details/simulator-details.component";
+import { SimSettingsComponent } from "./src/modules/create-sim/sim-settings/sim-settings.component";
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
   {
@@ -29,16 +30,17 @@ const appRoutes: Routes = [
       path: "createSim",
       component: CreateSimComponent,
       
+      
     }, {
       path: "alarms",
-      component: AlarmsComponent,
+      component: AlarmsComponent
       
     }, {
       path: "",
       redirectTo: 'createSim',
       pathMatch: 'full'
       
-    }],
+    },],
     resolve: {
       simulator: SimulatorResolverService,
     },
@@ -61,7 +63,8 @@ const appRoutes: Routes = [
     SimulatorConfigComponent,
     SimulatorChartComponent,
     AlarmsComponent,
-    SimulatorDetailsComponent
+    SimulatorDetailsComponent,
+    SimSettingsComponent,
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -69,7 +72,8 @@ const appRoutes: Routes = [
     SimulatorConfigComponent,
     SimulatorChartComponent,
     AlarmsComponent,
-    SimulatorDetailsComponent
+    SimulatorDetailsComponent,
+    SimSettingsComponent,
   ],
   providers: [ThemeService],
   // providers: [

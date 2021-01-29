@@ -307,13 +307,7 @@ export class CreateSimComponent implements OnInit {
         this.generateEvents();
       }
       // this.commandQueue.push(...this.resultTemplate.commandQueue);
-      this.mo.c8y_DeviceSimulator.commandQueue.push(
-        ...this.resultTemplate.commandQueue
-      );
-      this.simService
-        .updateSimulatorManagedObject(this.mo)
-        .then((res) => console.log(res));
-    }
+      
 
     const test = this.scaledArray.map((entry, i) => ({
       data: entry,
@@ -331,6 +325,14 @@ export class CreateSimComponent implements OnInit {
     if (this.selectedEventConfig === this.defaultEventsConfig[0]) {
       this.generateEvents();
     }
+
+    this.mo.c8y_DeviceSimulator.commandQueue.push(
+      ...this.resultTemplate.commandQueue
+    );
+    this.simService
+      .updateSimulatorManagedObject(this.mo)
+      .then((res) => console.log(res));
+  }
   }
 
   deepCopy(obj) {
