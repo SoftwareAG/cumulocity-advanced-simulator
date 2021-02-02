@@ -33,7 +33,7 @@ export class SimulatorDetailsComponent implements OnInit {
     if (val.type === "builtin") {
       const pos = this.commandQueue.findIndex((entry) => entry === val);
       this.currentValue.emit({ value: val, index: pos });
-      console.log("Ival " + { value: val, index: pos });
+      console.log("Ival " + JSON.stringify({ value: val, index: pos }));
     } else if (val.type === "sleep") {
       const pos = this.commandQueue.findIndex((entry) => entry === val);
       // this.currentValue.emit({value: val, index: pos});

@@ -9,7 +9,10 @@ import { SimulatorsServiceService } from "../../../services/simulatorsService.se
   styleUrls: ["./sim-settings.component.scss"],
 })
 export class SimSettingsComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private simService: SimulatorsServiceService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private simService: SimulatorsServiceService
+  ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
   displayInstructionsOrSleep = true;
@@ -42,7 +45,12 @@ export class SimSettingsComponent implements OnInit {
     alarmText: string;
     steps?: string;
   }[] = [];
-  events: { code: string; eventType: string; eventText: string; steps: string }[] &
+  events: {
+    code: string;
+    eventType: string;
+    eventText: string;
+    steps: string;
+  }[] &
     {
       code: string;
       lat: string;
@@ -108,6 +116,9 @@ export class SimSettingsComponent implements OnInit {
   toAddMsmtOrSleep = false;
   toDisplay = false;
   value: string;
+  displayEditView = false;
+
+  editMsmt: { fragment: string; series: string; value: string; unit: string };
 
   ngOnInit() {
     this.data = this.route.snapshot.data;
@@ -117,7 +128,9 @@ export class SimSettingsComponent implements OnInit {
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
 
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res));
+    this.simService
+      .updateSimulatorManagedObject(this.mo)
+      .then((res) => console.log(res));
     console.log(this.commandQueue);
   }
 
@@ -168,49 +181,48 @@ export class SimSettingsComponent implements OnInit {
     const level = this.alarmCategories.find(
       (entry) => entry.category === this.selectedAlarmCategory
     ).code;
-    for (let i=0; i< parseInt(this.alarmSteps); i++) {
-    this.alarms.push({
-      level: level,
-      alarmType: this.alarmType,
-      alarmText: this.alarmText,
-      steps: this.alarmSteps,
-    });
-  }
+    for (let i = 0; i < parseInt(this.alarmSteps); i++) {
+      this.alarms.push({
+        level: level,
+        alarmType: this.alarmType,
+        alarmText: this.alarmText,
+        steps: this.alarmSteps,
+      });
+    }
     this.alarmText = "";
     this.alarmType = "";
     this.alarmSteps = "";
   }
 
   addEventToArray() {
-    
     switch (this.selectedEventCategory) {
       case this.eventCategories[0].category:
-        for (let i = 0; i < parseInt(this.eventSteps); i++){
-        this.events.push({
-          code: this.eventCategories[0].code,
-          eventType: this.eventType,
-          eventText: this.eventText,
-          steps: this.eventSteps,
-        });
-      }
+        for (let i = 0; i < parseInt(this.eventSteps); i++) {
+          this.events.push({
+            code: this.eventCategories[0].code,
+            eventType: this.eventType,
+            eventText: this.eventText,
+            steps: this.eventSteps,
+          });
+        }
         this.eventText = "";
         this.eventType = "";
         this.eventSteps = "";
         break;
 
       case this.eventCategories[1].category || this.eventCategories[2].category:
-        for (let i = 0; i < parseInt(this.eventSteps); i++){
-        this.events.push({
-          code: this.eventCategories.find(
-            (temp) => temp.category === this.selectedEventCategory
-          ).code,
-          lat: this.latitude,
-          lon: this.longitude,
-          alt: this.altitude,
-          accuracy: this.accuracy,
-          steps: this.eventSteps,
-        });
-      }
+        for (let i = 0; i < parseInt(this.eventSteps); i++) {
+          this.events.push({
+            code: this.eventCategories.find(
+              (temp) => temp.category === this.selectedEventCategory
+            ).code,
+            lat: this.latitude,
+            lon: this.longitude,
+            alt: this.altitude,
+            accuracy: this.accuracy,
+            steps: this.eventSteps,
+          });
+        }
         this.latitude = "";
         this.longitude = "";
         this.altitude = "";
@@ -218,7 +230,6 @@ export class SimSettingsComponent implements OnInit {
         this.eventSteps = "";
         break;
     }
-  
   }
 
   deepCopy(obj) {
@@ -232,26 +243,6 @@ export class SimSettingsComponent implements OnInit {
     let allSteps = 0;
     // if (!this.newFragmentAdded) {
     //   this.measurements = [this.deepCopy(this.template)];
-    //   // this.measurements.push(this.deepCopy(this.template));
-    //   for (let i = 0; i < this.measurements.length; i++) {
-    //     let number = this.measurements[i];
-    //     this.measurements[i].fragment = this.fragment ? this.fragment : "";
-    //     this.measurements[i].series = this.series ? this.series : "";
-    //     this.measurements[i].minValue = this.minVal ? this.minVal : "";
-    //     this.measurements[i].maxValue = this.maxVal ? this.maxVal : "";
-    //     this.measurements[i].steps = this.steps ? this.steps : "";
-    //     this.measurements[i].unit = this.unit ? this.unit : "";
-    //   }
-    // } else {
-    //   this.measurements.push({
-    //     fragment: this.fragment ? this.fragment : "",
-    //     series: this.series ? this.series : "",
-    //     minValue: this.minVal ? this.minVal : "",
-    //     maxValue: this.maxVal ? this.maxVal : "",
-    //     steps: this.steps ? this.steps : "",
-    //     unit: this.unit ? this.unit : "",
-    //   });
-    // }
 
     for (let value of this.measurements.filter((a) => a.fragment)) {
       allSteps += +value.steps;
@@ -330,28 +321,13 @@ export class SimSettingsComponent implements OnInit {
         this.implementAlternateMsmst();
       }
 
-      // if (
-      //   this.alarms &&
-      //   this.selectedAlarmConfig === this.alarmConfig[0]
-      // ) {
-      //   this.generateAlarms();
-      // }
-
-      // if (
-      //   this.events &&
-      //   this.selectedEventConfig === this.eventConfig[0]
-      // ) {
-      //   this.generateEvents();
-      // }
-      // this.commandQueue.push(...this.resultTemplate.commandQueue);
-
       const test = this.scaledArray.map((entry, i) => ({
         data: entry,
         label: this.testArray[i].series,
       }));
 
       if (this.selectedAlarmConfig === this.alarmConfig[0]) {
-          this.generateAlarms();
+        this.generateAlarms();
       }
 
       if (this.selectedEventConfig === this.eventConfig[0]) {
@@ -457,16 +433,23 @@ export class SimSettingsComponent implements OnInit {
       arr.push([this.scale(val.minValue, val.maxValue, val.steps)]);
     }
     console.log(arr);
-    console.log(Math.max)
+    console.log(Math.max);
     console.log(msmts);
   }
   updateCurrentFragment(val) {
     this.toDisplay = true;
+    this.displayEditView = true;
     this.fragment = val.value.values[0];
     this.series = val.value.values[1];
     this.value = val.value.values[2];
     this.unit = val.value.values[3];
     this.currentIndex = val.index;
+    this.editMsmt = {
+      fragment: this.fragment,
+      series: this.series,
+      value: this.value,
+      unit: this.unit,
+    };
   }
 
   updateCommandQueue(newCommandQueue) {
@@ -483,7 +466,7 @@ export class SimSettingsComponent implements OnInit {
   }
 
   insertCurrentFragment() {
-     {
+    {
       let toBePushed = `{
         "messageId": "200",
         "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
@@ -496,14 +479,14 @@ export class SimSettingsComponent implements OnInit {
       this.commandQueue.splice(this.insertIndex + 1, 0, JSON.parse(toBePushed));
       // TODO: Insert backend call for save here
     }
-}
+  }
 
-onSelectInstructions() {
-  this.selectedConfig = this.defaultConfig[0];
-  this.displayInstructionsOrSleep=false;
-}
-onSelectSleep() {
-  this.selectedConfig = this.defaultConfig[3];
-  this.displayInstructionsOrSleep = false;
-}
+  onSelectInstructions() {
+    this.selectedConfig = this.defaultConfig[0];
+    this.displayInstructionsOrSleep = false;
+  }
+  onSelectSleep() {
+    this.selectedConfig = this.defaultConfig[3];
+    this.displayInstructionsOrSleep = false;
+  }
 }

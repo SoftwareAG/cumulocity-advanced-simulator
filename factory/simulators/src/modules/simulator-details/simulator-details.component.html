@@ -7,8 +7,20 @@
       (click)="updateCurrentValue(item)"
     >
       <i *ngIf="item.type === 'builtin'" class="fa fw fa-arrow-right"></i
-      ><span *ngIf="item.type === 'builtin'"
-        >&nbsp;Custom measurement
+      ><span *ngIf="item.type === 'builtin' && item.messageId === '200'"
+        >&nbsp;Custom measurement &nbsp;<em>{{item.messageId}}</em>&nbsp;
+        <ng-container *ngFor="let value of item.values"
+          >{{ value }}&nbsp;</ng-container
+        >
+      </span>
+      <span *ngIf="item.type === 'builtin' && (item.messageId === '301' || item.messageId === '302' || item.messageId === '303')"
+        >&nbsp;Custom alarm &nbsp;<em>{{item.messageId}}</em>&nbsp;
+        <ng-container *ngFor="let value of item.values"
+          >{{ value }}&nbsp;</ng-container
+        >
+      </span>
+      <span *ngIf="item.type === 'builtin' && (item.messageId === '400' || item.messageId === '401' || item.messageId === '402')"
+        >&nbsp;Custom event &nbsp;<em>{{item.messageId}}</em>&nbsp;
         <ng-container *ngFor="let value of item.values"
           >{{ value }}&nbsp;</ng-container
         >
