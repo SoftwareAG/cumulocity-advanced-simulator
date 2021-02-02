@@ -112,10 +112,9 @@ export class SimSettingsComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    // console.log(this.mo);
     this.simulatorName = this.data.simulator.data.c8y_CustomSimulator.name;
-    // this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
-    // this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
   }
 
   onChangeConfig(val) {
@@ -356,12 +355,13 @@ export class SimSettingsComponent implements OnInit {
         this.generateEvents();
       }
 
-      // this.mo.c8y_DeviceSimulator.commandQueue.push(
-      //   ...this.resultTemplate.commandQueue
-      // );
-      // this.simService
-      //   .updateSimulatorManagedObject(this.mo)
-      //   .then((res) => console.log(res));
+      this.commandQueue.push(...this.resultTemplate.commandQueue);
+      this.mo.c8y_DeviceSimulator.commandQueue.push(
+        ...this.resultTemplate.commandQueue
+      );
+      this.simService
+        .updateSimulatorManagedObject(this.mo)
+        .then((res) => console.log(res));
     }
   }
 
