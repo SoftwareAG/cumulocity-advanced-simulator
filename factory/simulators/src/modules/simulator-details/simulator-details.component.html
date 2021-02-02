@@ -1,5 +1,5 @@
 <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length">
-  <div style="display: flex">
+  <div style="display: flex" (mouseenter)="showBtns=true" (mouseleave)="showBtns=false">
     <button
       type="button"
       class="list-group-item"
@@ -17,12 +17,12 @@
       ><span *ngIf="item.type === 'sleep'"
         >&nbsp;Sleep &nbsp;{{ item.seconds }} seconds
       </span></button
-    ><button class="delete"><i
+    ><button class="delete" *ngIf="showBtns"><i
       c8y-icon="minus-circle"
       class="text-danger fa fw fa-minus-circle"
       (click)="deleteMeasurementOrSleep(item)"
     ></i></button>
-    <button class="delete"><i
+    <button class="delete" *ngIf="showBtns"><i
       c8y-icon="plus-circle"
       class="text-success fa fw fa-plus-circle"
       (click)="addSleepOrMeasurement(item)"

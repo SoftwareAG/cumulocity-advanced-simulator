@@ -11,6 +11,7 @@ export class SimulatorDetailsComponent implements OnInit {
   @Output() currentCommandQueue = new EventEmitter();
   @Output() insertSleepOrFragment = new EventEmitter();
   isInserted = false;
+  showBtns = false;
   constructor() {}
 
   ngOnInit() {}

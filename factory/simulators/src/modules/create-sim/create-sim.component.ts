@@ -173,7 +173,7 @@ export class CreateSimComponent implements OnInit {
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    // console.log(this.co)
+    console.log(this.mo);
   }
 
   generateSimulatorRequest() {
