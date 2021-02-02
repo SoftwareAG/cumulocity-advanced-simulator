@@ -40,6 +40,7 @@ export class SimulatorConfigComponent implements OnInit {
   simulatorTitle: string = "";
   simModel: Partial<CustomSimulator> = {
     type: "c8y_DeviceSimulator",
+    owner: "service_device-simulator",
     name: "",
     c8y_DeviceSimulator: {
       name: "",
@@ -47,8 +48,7 @@ export class SimulatorConfigComponent implements OnInit {
       state: "PAUSED",
       commandQueue: []
     },
-    c8y_CustomSim: {},
-    c8y_IsDevice: {}
+    c8y_CustomSim: {}
   };
   public labels: ILabels = {
     ok: "Save",

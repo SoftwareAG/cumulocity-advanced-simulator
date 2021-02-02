@@ -6,6 +6,7 @@ import { SimulatorConfigComponent } from "../simulator-config/simulator-config.c
 import { SimulatorsServiceService } from "../../services/simulatorsService.service";
 import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
 import { Router } from "@angular/router";
+import { SimulatorsBackendService } from "../../services/simulatorsBackend.service";
 
 @Component({
   selector: "app-simulator-entry",
@@ -19,7 +20,8 @@ export class SimulatorEntryComponent implements OnInit {
   constructor(
     private modalService: BsModalService,
     private simService: SimulatorsServiceService,
-    private router: Router
+    private router: Router,
+    private backend: SimulatorsBackendService
   ) {}
 
   ngOnInit() {
@@ -55,10 +57,11 @@ export class SimulatorEntryComponent implements OnInit {
       ? (simulator.c8y_DeviceSimulator.state = "RUNNING")
       : (simulator.c8y_DeviceSimulator.state = "PAUSED");
 
-    this.simService
-      .updateSimulatorManagedObject(simulator)
-      .then((res) => console.log('State changed'));
-
+    this.simService.updateSimulatorManagedObject(simulator).then((res) => {
+      console.log("State changed");
+      console.log(simulator.c8y_DeviceSimulator);
+      this.backend.connectToSimulatorsBackend(simulator.c8y_DeviceSimulator);
+    });
   }
 
   onDeleteSelected(simulator) {

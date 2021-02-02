@@ -115,6 +115,9 @@ export class SimSettingsComponent implements OnInit {
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+
+    // this.mo.c8y_DeviceSimulator.id = this.mo.id;
+    this.simService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res));
     console.log(this.commandQueue);
   }
 
