@@ -7,8 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class EditInstructionComponent implements OnInit {
 
-  @Input() editMsmt;  
-  @Input() editAlarm;
+  @Input() editedVal;  
 
   alarmText: string;
   alarmType: string;
@@ -22,14 +21,14 @@ export class EditInstructionComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    
-    if (this.editMsmt) {
+    console.log(this.editedVal);
+    if (this.editedVal.msgId === '200') {
       this.selectedEditView = 'msmts';
-    } else if (this.editAlarm) {
-      this.selectedEditView = "alarm";
-    } else if (this.eventText && this.eventType) {
+    } else if (this.editedVal.msgId.startsWith('40')) {
       this.selectedEditView = "event";
-    } else if (this.sleep) {
+    } else if (this.editedVal.msgId.startsWith('30')) {
+      this.selectedEditView = "alarm";
+    } else {
       this.selectedEditView = "sleep";
     }
   }

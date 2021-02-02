@@ -1,97 +1,121 @@
-  <div class="card">
-    <div class="card-block">
-      <h4>Edit Instruction Or Sleep</h4>
-      <br />
+<div class="card">
+  <div class="card-block">
+    <h4>Edit Instruction Or Sleep</h4>
+    <br />
 
-      <div [ngSwitch]="selectedEditView">
+    <div [ngSwitch]="selectedEditView">
       <ng-template [ngSwitchCase]="'msmts'">
         <!-- Measurements -->
-          <div class="row">
-            <div class="col-sm-6 col-xs-6">
-              <div class="form-group">
-                <input
-                  id="fragment"
-                  class="form-control"
-                  placeholder="Fragment (required)"
-                  [(ngModel)]="editMsmt.fragment"
-                />
-              </div>
+        <div class="row">
+          <div class="col-sm-6 col-xs-6">
+            <div class="form-group">
+              <input
+                id="fragment"
+                class="form-control"
+                placeholder="Fragment (required)"
+                [(ngModel)]="editedVal.fragment"
+              />
             </div>
-            <div class="col-sm-6 col-xs-6">
-              <div class="form-group">
-                <input
-                  name="series"
-                  class="form-control"
-                  placeholder="Series (required)"
-                  [(ngModel)]="editMsmt.series"
-                />
-              </div>
+          </div>
+          <div class="col-sm-6 col-xs-6">
+            <div class="form-group">
+              <input
+                name="series"
+                class="form-control"
+                placeholder="Series (required)"
+                [(ngModel)]="editedVal.series"
+              />
             </div>
-            <div class="col-sm-6 col-xs-6">
-              <div class="form-group">
-                <input
-                  name="minimum"
-                  class="form-control"
-                  placeholder="Value"
-                  [(ngModel)]="editMsmt.value"
-                />
-              </div>
-            </div>
-            <div>
-                <div class="col-sm-6 col-xs-6">
-                  <div class="form-group">
-                    <input
-                      name="maximum"
-                      class="form-control"
-                      placeholder="Unit (required)"
-                      [(ngModel)]="editMsmt.unit"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-12">
-                <button
-                  class="btn btn-default"
-                  style="float: right"
-                >
-                  <i c8yIcon="plus-circle"></i>&nbsp;Update Measurements
-                </button>
-              </div>
-            </div>
-        </ng-template>
-
-        <!-- Alarms -->
-        <ng-template [ngSwitchCase]="'alarm'">
+          </div>
           <div class="col-sm-6 col-xs-6">
             <div class="form-group">
               <input
                 name="minimum"
                 class="form-control"
-                placeholder="Alarm Type"
-                [(ngModel)]="editAlarm.alarmType"
+                placeholder="Value"
+                [(ngModel)]="editedVal.value"
               />
             </div>
           </div>
+          <div>
+            <div class="col-sm-6 col-xs-6">
+              <div class="form-group">
+                <input
+                  name="maximum"
+                  class="form-control"
+                  placeholder="Unit (required)"
+                  [(ngModel)]="editedVal.unit"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <button class="btn btn-default" style="float: right">
+              <i c8yIcon="plus-circle"></i>&nbsp;Update Measurements
+            </button>
+          </div>
+        </div>
+      </ng-template>
 
-          <div class="col-sm-6 col-xs-6">
-            <div class="form-group">
-              <input
-                name="minimum"
-                class="form-control"
-                placeholder="Alarm Text"
-                [(ngModel)]="editAlarm.alarmText"
-              />
-            </div>
-            <div class="col-sm-12">
-              <button
-                class="btn btn-default"
-                style="float: right"
-              >
-                <i c8yIcon="plus-circle"></i>&nbsp;Update Alarm
-              </button>
-            </div>
+      <!-- Alarms -->
+      <ng-template [ngSwitchCase]="'alarm'">
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Alarm Type"
+              [(ngModel)]="editedVal.alarmType"
+            />
           </div>
-        </ng-template>
+        </div>
+
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Alarm Text"
+              [(ngModel)]="editedVal.alarmText"
+            />
+          </div>
+          <div class="col-sm-12">
+            <button class="btn btn-default" style="float: right">
+              <i c8yIcon="plus-circle"></i>&nbsp;Update Alarm
+            </button>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Events -->
+      <ng-template [ngSwitchCase]="'event'">
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Type"
+              [(ngModel)]="editedVal.eventType"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Text"
+              [(ngModel)]="editedVal.eventText"
+            />
+          </div>
+          <div class="col-sm-12">
+            <button class="btn btn-default" style="float: right">
+              <i c8yIcon="plus-circle"></i>&nbsp;Update Event
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
   </div>
-</div>
 </div>

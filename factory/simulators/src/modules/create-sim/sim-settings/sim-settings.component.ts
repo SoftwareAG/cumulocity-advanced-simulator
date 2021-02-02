@@ -118,7 +118,7 @@ export class SimSettingsComponent implements OnInit {
   value: string;
   displayEditView = false;
 
-  editMsmt: { fragment: string; series: string; value: string; unit: string };
+  editMsmt;
 
   ngOnInit() {
     this.data = this.route.snapshot.data;
@@ -126,12 +126,7 @@ export class SimSettingsComponent implements OnInit {
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
-    this.simService
-      .updateSimulatorManagedObject(this.mo)
-      .then((res) => console.log(res));
-    console.log(this.commandQueue);
   }
 
   onChangeConfig(val) {
@@ -331,7 +326,6 @@ export class SimSettingsComponent implements OnInit {
       }
 
       if (this.selectedEventConfig === this.eventConfig[0]) {
-        console.log(this.events);
         this.generateEvents();
       }
 
@@ -399,7 +393,6 @@ export class SimSettingsComponent implements OnInit {
       toBePushed = toBePushed.replace("CODE", event.code);
       toBePushed = toBePushed.replace("TYPE", event.eventType);
       toBePushed = toBePushed.replace("TEXT", event.eventText);
-      console.log(toBePushed);
       this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
     } else {
       toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
@@ -432,24 +425,34 @@ export class SimSettingsComponent implements OnInit {
     for (let val of this.testArray) {
       arr.push([this.scale(val.minValue, val.maxValue, val.steps)]);
     }
-    console.log(arr);
-    console.log(Math.max);
-    console.log(msmts);
   }
+
   updateCurrentFragment(val) {
     this.toDisplay = true;
     this.displayEditView = true;
-    this.fragment = val.value.values[0];
-    this.series = val.value.values[1];
-    this.value = val.value.values[2];
-    this.unit = val.value.values[3];
     this.currentIndex = val.index;
-    this.editMsmt = {
-      fragment: this.fragment,
-      series: this.series,
-      value: this.value,
-      unit: this.unit,
-    };
+    if (val.value.messageId === "200") {
+      this.fragment = val.value.values[0];
+      this.series = val.value.values[1];
+      this.value = val.value.values[2];
+      this.unit = val.value.values[3];
+      this.editMsmt = {
+        fragment: this.fragment,
+        series: this.series,
+        value: this.value,
+        unit: this.unit,
+        msgId: val.value.messageId
+      };
+    } else if (val.value.messageId.startsWith("30")) {
+      this.alarmType = val.value.values[0];
+      this.alarmText = val.value.values[1];
+      this.editMsmt = { alarmType: this.alarmType, alarmText: this.alarmText, msgId: val.value.messageId };
+      this.alarmType 
+    } else if (val.value.messageId.startsWith("40")) {
+      this.eventType = val.value.values[0];
+      this.eventText = val.value.values[1];
+      this.editMsmt = { eventType: this.eventType, eventText: this.eventText, msgId: val.value.messageId };
+    }
   }
 
   updateCommandQueue(newCommandQueue) {
@@ -484,9 +487,11 @@ export class SimSettingsComponent implements OnInit {
   onSelectInstructions() {
     this.selectedConfig = this.defaultConfig[0];
     this.displayInstructionsOrSleep = false;
+    this.displayEditView = false;
   }
   onSelectSleep() {
     this.selectedConfig = this.defaultConfig[3];
     this.displayInstructionsOrSleep = false;
+    this.displayEditView = false;
   }
 }
