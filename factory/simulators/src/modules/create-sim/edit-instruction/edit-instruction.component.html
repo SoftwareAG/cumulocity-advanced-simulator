@@ -1,28 +1,7 @@
-
-<div class="col-lg-6">
-  <app-simulator-details [commandQueue]="commandQueue" (currentValue)="updateCurrentFragment($event)"
-  (currentCommandQueue)="updateCommandQueue($event)"
-  (insertSleepOrFragment)="insertSleepOrFragment($event)"></app-simulator-details>
-  <br>
-  <!-- {{resultTemplate.commandQueue | json }} -->
-  <div class="tight-grid">
-    <div class="col-xs-6">
-      <button title="Add instruction" class="btn-add-block" (click)="onSelectInstructions()">
-        <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add instruction
-      </button>
-    </div>
-    <div class="col-xs-6">
-      <button title="Add sleep" class="btn-add-block" (click)="onSelectSleep()">
-        <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Add sleep
-      </button>
-    </div>
-  </div>
-</div>
-
 <div class="col-lg-6">
   <div class="card" *ngIf="!displayInstructionsOrSleep">
     <div class="card-block">
-      <h4>Add Instructions</h4>
+      <h4>Edit Instruction Or Sleep</h4>
       <br>
       <div class="row">
         <div class="col-md-12">
@@ -378,7 +357,3 @@
       </button>
     </div>
   </div>
-</div>
-</div>
-
-

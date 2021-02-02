@@ -112,9 +112,10 @@ export class SimSettingsComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.simulatorName = this.data.simulator.data.c8y_CustomSimulator.name;
+    this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    console.log(this.commandQueue);
   }
 
   onChangeConfig(val) {
