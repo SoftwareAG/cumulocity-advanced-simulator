@@ -12,6 +12,7 @@ export class SimSettingsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private simService: SimulatorsServiceService) {}
 
   resultTemplate = { commandQueue: [], name: "" };
+  displayInstructionsOrSleep = true;
   defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
   alarmCategories = [
     { category: "Critical", code: "301" },
@@ -491,5 +492,14 @@ export class SimSettingsComponent implements OnInit {
       this.commandQueue.splice(this.insertIndex + 1, 0, JSON.parse(toBePushed));
       // TODO: Insert backend call for save here
     }
+}
+
+onSelectInstructions() {
+  this.selectedConfig = this.defaultConfig[0];
+  this.displayInstructionsOrSleep=false;
+}
+onSelectSleep() {
+  this.selectedConfig = this.defaultConfig[3];
+  this.displayInstructionsOrSleep = false;
 }
 }
