@@ -15,7 +15,7 @@ export class SimSettingsComponent implements OnInit {
   ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
-  displayInstructionsOrSleep = true;
+  displayInstructionsOrSleep = false;
   defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
   alarmCategories = [
     { category: "Critical", code: "301" },
@@ -529,13 +529,13 @@ export class SimSettingsComponent implements OnInit {
 
   onSelectInstructions() {
     this.selectedConfig = this.defaultConfig[0];
-    this.displayInstructionsOrSleep = false;
+    this.displayInstructionsOrSleep = true;
     this.displayEditView = false;
   }
 
   onSelectSleep() {
     this.selectedConfig = this.defaultConfig[3];
-    this.displayInstructionsOrSleep = false;
+    this.displayInstructionsOrSleep = true;
     this.displayEditView = false;
   }
 

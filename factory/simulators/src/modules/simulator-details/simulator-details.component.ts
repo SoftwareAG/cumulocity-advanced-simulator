@@ -60,6 +60,7 @@ export class SimulatorDetailsComponent implements OnInit {
       this.commandQueue[pos].values[1] = this.measurement.msmt.series;
       this.commandQueue[pos].values[2] = this.measurement.msmt.value;
       this.commandQueue[pos].values[3] = this.measurement.msmt.unit;
+      // Insert backend save here
     }
   }
 

@@ -27,7 +27,6 @@ export class EditInstructionComponent implements OnInit {
   
 
   ngOnInit() {
-    console.log(this.editedVal);
     if (this.editedVal.msmt.msgId === '200') {
       this.selectedEditView = 'msmts';
     } else if (this.editedVal.msmt.msgId.startsWith('40')) {
@@ -45,8 +44,6 @@ export class EditInstructionComponent implements OnInit {
   }
 
   updateMsmt() {
-    // console.log(this.editedVal);
-    // this.updatedVal.emit(this.editedVal);
     this.edited = this.editedVal;
     this.emitToDetailView();
   }
