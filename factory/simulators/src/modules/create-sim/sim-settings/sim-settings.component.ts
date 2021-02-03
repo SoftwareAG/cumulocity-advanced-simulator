@@ -118,6 +118,7 @@ export class SimSettingsComponent implements OnInit {
   value: string;
   displayEditView = false;
 
+  alternateMsmts = [];
   editMsmt;
 
   ngOnInit() {
@@ -173,6 +174,7 @@ export class SimSettingsComponent implements OnInit {
   }
 
   addAlarmToArray() {
+    this.newFragmentAdded = true;
     const level = this.alarmCategories.find(
       (entry) => entry.category === this.selectedAlarmCategory
     ).code;
@@ -232,6 +234,7 @@ export class SimSettingsComponent implements OnInit {
   }
 
   generateRequest() {
+    // this.resultTemplate.commandQueue = [];
     if (!this.newFragmentAdded) {
       this.resultTemplate.commandQueue = [];
     }
@@ -329,14 +332,16 @@ export class SimSettingsComponent implements OnInit {
         this.generateEvents();
       }
 
-      this.commandQueue.push(...this.resultTemplate.commandQueue);
-      this.mo.c8y_DeviceSimulator.commandQueue.push(
-        ...this.resultTemplate.commandQueue
-      );
-      this.simService
-        .updateSimulatorManagedObject(this.mo)
-        .then((res) => console.log(res));
+      // this.commandQueue.push(...this.resultTemplate.commandQueue);
+  
+    
     }
+    this.commandQueue.push(
+      ...this.resultTemplate.commandQueue
+    );
+    //   this.simService
+    //     .updateSimulatorManagedObject(this.mo)
+    //     .then((res) => console.log(res));
   }
 
   scale(min, max, steps) {
@@ -420,11 +425,40 @@ export class SimSettingsComponent implements OnInit {
   }
 
   implementAlternateMsmst() {
-    const arr = [];
-    const msmts = [];
-    for (let val of this.testArray) {
-      arr.push([this.scale(val.minValue, val.maxValue, val.steps)]);
+    let arr = [];
+    let newArr = [];
+    let test = [];
+    this.testArray.forEach((entry) =>
+      arr.push({
+        values: this.scale(entry.minValue, entry.maxValue, entry.steps),
+        fragment: entry.fragment,
+        series: entry.series,
+        unit: entry.unit,
+      })
+    );
+    arr.forEach((entry) => {
+      entry.values.forEach((val) =>
+        newArr.push({
+          value: val,
+          fragment: entry.fragment,
+          series: entry.series,
+          unit: entry.unit,
+        })
+      )}
+    );
+    let num = 1;
+    // for (let i = 0; i<newArr.length; i+num) {
+    // test.push([newArr.filter((entry) => entry.fragment === newArr[i].fragment)]);
+    // num = newArr.filter((entry) => entry.fragment === newArr[i].fragment).length;
+    // }
+    console.log(test);
+    let max = Math.max(...arr.map((x) => (x = parseInt(x.length))));
+    for (let i = 0; i < max; i++) {
+      this.alternateMsmts.push(...this.extractArrayValuesByColumn(arr, i));
     }
+    this.alternateMsmts = this.alternateMsmts.filter(
+      (entry) => entry !== undefined
+    );
   }
 
   updateCurrentFragment(val) {
@@ -441,17 +475,25 @@ export class SimSettingsComponent implements OnInit {
         series: this.series,
         value: this.value,
         unit: this.unit,
-        msgId: val.value.messageId
+        msgId: val.value.messageId,
       };
     } else if (val.value.messageId.startsWith("30")) {
       this.alarmType = val.value.values[0];
       this.alarmText = val.value.values[1];
-      this.editMsmt = { alarmType: this.alarmType, alarmText: this.alarmText, msgId: val.value.messageId };
-      this.alarmType 
+      this.editMsmt = {
+        alarmType: this.alarmType,
+        alarmText: this.alarmText,
+        msgId: val.value.messageId,
+      };
+      this.alarmType;
     } else if (val.value.messageId.startsWith("40")) {
       this.eventType = val.value.values[0];
       this.eventText = val.value.values[1];
-      this.editMsmt = { eventType: this.eventType, eventText: this.eventText, msgId: val.value.messageId };
+      this.editMsmt = {
+        eventType: this.eventType,
+        eventText: this.eventText,
+        msgId: val.value.messageId,
+      };
     }
   }
 
@@ -489,9 +531,18 @@ export class SimSettingsComponent implements OnInit {
     this.displayInstructionsOrSleep = false;
     this.displayEditView = false;
   }
+
   onSelectSleep() {
     this.selectedConfig = this.defaultConfig[3];
     this.displayInstructionsOrSleep = false;
     this.displayEditView = false;
+  }
+
+  extractArrayValuesByColumn(arr, col) {
+    let msmts = [];
+    for (var i = 0; i < arr.length; i++) {
+      msmts.push(arr[i][col]);
+    }
+    return msmts;
   }
 }
