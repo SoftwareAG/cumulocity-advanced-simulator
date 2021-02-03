@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-edit-instruction',
@@ -7,7 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class EditInstructionComponent implements OnInit {
 
-  @Input() editedVal;  
+  @Input() editedVal;
+  @Output() updatedVal = new EventEmitter();
 
   alarmText: string;
   alarmType: string;
@@ -22,15 +23,20 @@ export class EditInstructionComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.editedVal);
-    if (this.editedVal.msgId === '200') {
+    if (this.editedVal.msmt.msgId === '200') {
       this.selectedEditView = 'msmts';
-    } else if (this.editedVal.msgId.startsWith('40')) {
+    } else if (this.editedVal.msmt.msgId.startsWith('40')) {
       this.selectedEditView = "event";
-    } else if (this.editedVal.msgId.startsWith('30')) {
+    } else if (this.editedVal.msmt.msgId.startsWith('30')) {
       this.selectedEditView = "alarm";
     } else {
       this.selectedEditView = "sleep";
     }
+  }
+
+  updateMsmt() {
+    console.log(this.editedVal);
+    this.updatedVal.emit(this.editedVal);
   }
 
 }

@@ -317,7 +317,7 @@ export class SimSettingsComponent implements OnInit {
 
       if (this.selectedMsmtOption === this.measurementOptions[1]) {
         this.implementAlternateMsmst();
-      }
+      }    
 
       const test = this.scaledArray.map((entry, i) => ({
         data: entry,
@@ -427,7 +427,6 @@ export class SimSettingsComponent implements OnInit {
   implementAlternateMsmst() {
     let arr = [];
     let newArr = [];
-    let test = [];
     this.testArray.forEach((entry) =>
       arr.push({
         values: this.scale(entry.minValue, entry.maxValue, entry.steps),
@@ -446,19 +445,21 @@ export class SimSettingsComponent implements OnInit {
         })
       )}
     );
-    let num = 1;
-    // for (let i = 0; i<newArr.length; i+num) {
-    // test.push([newArr.filter((entry) => entry.fragment === newArr[i].fragment)]);
-    // num = newArr.filter((entry) => entry.fragment === newArr[i].fragment).length;
-    // }
-    console.log(test);
-    let max = Math.max(...arr.map((x) => (x = parseInt(x.length))));
+    let arrObj = this.groupBy(newArr, 'fragment');
+    let finalArr = [];
+    finalArr.push((Object.values(arrObj)));
+    console.log(finalArr);
+    let max = Math.max(...finalArr.map((x) => (x = parseInt(x.length))));
+    console.log(max);
     for (let i = 0; i < max; i++) {
-      this.alternateMsmts.push(...this.extractArrayValuesByColumn(arr, i));
+      console.log('hh');
+      this.extractArrayValuesByColumn(finalArr, i);
+      this.alternateMsmts.push(...this.extractArrayValuesByColumn(finalArr, i));
     }
     this.alternateMsmts = this.alternateMsmts.filter(
       (entry) => entry !== undefined
     );
+    console.log(this.alternateMsmts);
   }
 
   updateCurrentFragment(val) {
@@ -470,30 +471,30 @@ export class SimSettingsComponent implements OnInit {
       this.series = val.value.values[1];
       this.value = val.value.values[2];
       this.unit = val.value.values[3];
-      this.editMsmt = {
+      this.editMsmt = {msmt: {
         fragment: this.fragment,
         series: this.series,
         value: this.value,
         unit: this.unit,
         msgId: val.value.messageId,
-      };
+      }, index: val.index};
     } else if (val.value.messageId.startsWith("30")) {
       this.alarmType = val.value.values[0];
       this.alarmText = val.value.values[1];
-      this.editMsmt = {
+      this.editMsmt = {alarm: {
         alarmType: this.alarmType,
         alarmText: this.alarmText,
         msgId: val.value.messageId,
-      };
+      }, index: val.index};
       this.alarmType;
     } else if (val.value.messageId.startsWith("40")) {
       this.eventType = val.value.values[0];
       this.eventText = val.value.values[1];
-      this.editMsmt = {
+      this.editMsmt = {event: {
         eventType: this.eventType,
         eventText: this.eventText,
         msgId: val.value.messageId,
-      };
+      }, index: val.index};
     }
   }
 
@@ -544,5 +545,23 @@ export class SimSettingsComponent implements OnInit {
       msmts.push(arr[i][col]);
     }
     return msmts;
+  }
+
+  groupBy(array, prop) {
+    var grouped = {};
+    for (var i=0; i<array.length; i++) {
+      var p = array[i][prop];
+      if (!grouped[p]) { grouped[p] = []; }
+      grouped[p].push(array[i]);
+    }
+    return grouped;
+  }
+
+  msmtUpdated(val) {
+    const pos = val.index;
+    this.commandQueue[pos].values[0] = val.msmt.fragment;
+    this.commandQueue[pos].values[1] = val.msmt.series;
+    this.commandQueue[pos].values[2] = val.msmt.value;
+    this.commandQueue[pos].values[3] = val.msmt.unit;
   }
 }

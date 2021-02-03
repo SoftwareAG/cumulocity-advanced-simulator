@@ -13,7 +13,7 @@
                 id="fragment"
                 class="form-control"
                 placeholder="Fragment (required)"
-                [(ngModel)]="editedVal.fragment"
+                [(ngModel)]="editedVal.msmt.fragment"
               />
             </div>
           </div>
@@ -23,7 +23,7 @@
                 name="series"
                 class="form-control"
                 placeholder="Series (required)"
-                [(ngModel)]="editedVal.series"
+                [(ngModel)]="editedVal.msmt.series"
               />
             </div>
           </div>
@@ -33,7 +33,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Value"
-                [(ngModel)]="editedVal.value"
+                [(ngModel)]="editedVal.msmt.value"
               />
             </div>
           </div>
@@ -44,13 +44,13 @@
                   name="maximum"
                   class="form-control"
                   placeholder="Unit (required)"
-                  [(ngModel)]="editedVal.unit"
+                  [(ngModel)]="editedVal.msmt.unit"
                 />
               </div>
             </div>
           </div>
           <div class="col-sm-12">
-            <button class="btn btn-default" style="float: right">
+            <button class="btn btn-default" style="float: right" (click)="updateMsmt()">
               <i c8yIcon="plus-circle"></i>&nbsp;Update Measurements
             </button>
           </div>
@@ -65,7 +65,7 @@
               name="minimum"
               class="form-control"
               placeholder="Alarm Type"
-              [(ngModel)]="editedVal.alarmType"
+              [(ngModel)]="editedVal.alarm.alarmType"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@
               name="minimum"
               class="form-control"
               placeholder="Alarm Text"
-              [(ngModel)]="editedVal.alarmText"
+              [(ngModel)]="editedVal.alarm.alarmText"
             />
           </div>
           <div class="col-sm-12">
@@ -95,7 +95,7 @@
               name="minimum"
               class="form-control"
               placeholder="Event Type"
-              [(ngModel)]="editedVal.eventType"
+              [(ngModel)]="editedVal.event.eventType"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@
               name="minimum"
               class="form-control"
               placeholder="Event Text"
-              [(ngModel)]="editedVal.eventText"
+              [(ngModel)]="editedVal.event.eventText"
             />
           </div>
           <div class="col-sm-12">
