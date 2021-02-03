@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { EditedMeasurement } from 'src/models/editedMeasurement.model';
+import { UpdateInstructionsService } from '../../../services/updateInstructions.service';
 
 @Component({
   selector: 'app-edit-instruction',
@@ -10,6 +12,7 @@ export class EditInstructionComponent implements OnInit {
   @Input() editedVal;
   @Output() updatedVal = new EventEmitter();
 
+  constructor(private updatedService: UpdateInstructionsService) { }
   alarmText: string;
   alarmType: string;
 
@@ -19,7 +22,9 @@ export class EditInstructionComponent implements OnInit {
   sleep: string;
 
   selectedEditView: string;
-  constructor() { }
+
+  edited: EditedMeasurement;
+  
 
   ngOnInit() {
     console.log(this.editedVal);
@@ -34,9 +39,18 @@ export class EditInstructionComponent implements OnInit {
     }
   }
 
-  updateMsmt() {
-    console.log(this.editedVal);
-    this.updatedVal.emit(this.editedVal);
+
+  emitToDetailView(){
+    this.updatedService.setEditedMeasurement(this.edited);
   }
+
+  updateMsmt() {
+    // console.log(this.editedVal);
+    // this.updatedVal.emit(this.editedVal);
+    this.edited = this.editedVal;
+    this.emitToDetailView();
+  }
+
+ 
 
 }
