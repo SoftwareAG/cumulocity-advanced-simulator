@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IManagedObject } from "@c8y/client";
+import { Subscription } from "rxjs";
+import { UpdateInstructionsService } from "../../../services/updateInstructions.service";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
 
 @Component({
@@ -11,7 +13,7 @@ import { SimulatorsServiceService } from "../../../services/simulatorsService.se
 export class SimSettingsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
-    private simService: SimulatorsServiceService
+    private simService: SimulatorsServiceService, private service: UpdateInstructionsService
   ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
@@ -120,6 +122,7 @@ export class SimSettingsComponent implements OnInit {
 
   alternateMsmts = [];
   editMsmt;
+  subscription = new Subscription();
 
   ngOnInit() {
     this.data = this.route.snapshot.data;
@@ -127,6 +130,7 @@ export class SimSettingsComponent implements OnInit {
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.subscription = this.service.castInstructionsOrSleep.subscribe((val) => { this.displayInstructionsOrSleep = val; if (val) {this.displayEditView = false;}});
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
   }
 

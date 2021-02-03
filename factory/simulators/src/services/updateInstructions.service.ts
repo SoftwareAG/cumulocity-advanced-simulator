@@ -8,7 +8,10 @@ import { EditedMeasurement } from "src/models/editedMeasurement.model";
 })
 export class UpdateInstructionsService {
   private editedMsmtObserver = new BehaviorSubject<EditedMeasurement>(null);
-  castMeasurement = this.editedMsmtObserver.asObservable();
+  private addInstructionOrSleepObserver = new BehaviorSubject<boolean>(false);
+  castMeasurement = this.editedMsmtObserver.asObservable();  
+  castInstructionsOrSleep = this.addInstructionOrSleepObserver.asObservable();  
+
   constructor() {}
 
   getEditedMeasurements(): Observable<EditedMeasurement> {
@@ -17,5 +20,9 @@ export class UpdateInstructionsService {
 
   setEditedMeasurement(edited: EditedMeasurement) {
     this.editedMsmtObserver.next(edited);
+  }
+
+  setInstructionsView(val: boolean) {
+    this.addInstructionOrSleepObserver.next(val);
   }
 }

@@ -39,6 +39,7 @@ export class SimulatorDetailsComponent implements OnInit {
     this.isInserted = true;
     const pos = this.commandQueue.findIndex((entry) => entry === item);
     this.insertSleepOrFragment.emit({ bool: this.isInserted, index: pos });
+    this.fetchAddInstructionsOrSleepView();
   }
 
   updateCurrentValue(val) {
@@ -64,7 +65,13 @@ export class SimulatorDetailsComponent implements OnInit {
     }
   }
 
+  fetchAddInstructionsOrSleepView() {
+    this.service.setInstructionsView(true);
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
+
+
 }
