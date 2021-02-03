@@ -557,11 +557,4 @@ export class SimSettingsComponent implements OnInit {
     return grouped;
   }
 
-  msmtUpdated(val) {
-    const pos = val.index;
-    this.commandQueue[pos].values[0] = val.msmt.fragment;
-    this.commandQueue[pos].values[1] = val.msmt.series;
-    this.commandQueue[pos].values[2] = val.msmt.value;
-    this.commandQueue[pos].values[3] = val.msmt.unit;
-  }
 }

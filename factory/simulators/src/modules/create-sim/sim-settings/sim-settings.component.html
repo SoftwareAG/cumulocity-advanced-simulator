@@ -20,7 +20,7 @@
 </div>
 
 <div class="col-lg-6">
-  <app-edit-instruction [editedVal]="editMsmt" (updatedVal)="msmtUpdated($event)" *ngIf="displayEditView"></app-edit-instruction>
+  <app-edit-instruction [editedVal]="editMsmt" *ngIf="displayEditView"></app-edit-instruction>
   <div class="card" *ngIf="!displayInstructionsOrSleep && !displayEditView">
     <div class="card-block">
       <h4>Add Instructions</h4>
