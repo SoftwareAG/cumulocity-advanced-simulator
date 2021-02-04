@@ -24,8 +24,9 @@ export class SimAlarmsComponent implements OnInit {
   alarmType: string;
   alarmText: string;
   alarmSteps: string;
+  alarmSleep: string;
 
-  alarm: {alarm: {level: string; alarmType: string; alarmText: string; alarmSteps: string; alarmConfig: string;}};
+  alarm: {alarm: {level: string; alarmType: string; alarmText: string; alarmSteps: string; alarmSleep?: string; alarmConfig: string;}};
   constructor() { }
 
   ngOnInit() {
@@ -50,6 +51,7 @@ export class SimAlarmsComponent implements OnInit {
       alarmType: this.alarmType,
       alarmText: this.alarmText,
       alarmSteps: this.alarmSteps,
+      alarmSleep: this.alarmSleep,
       alarmConfig: this.selectedAlarmConfig
     }};
     this.alarmEmitter.emit(this.alarm);

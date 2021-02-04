@@ -4,7 +4,7 @@ import { IManagedObject } from "@c8y/client";
 import { Subscription } from "rxjs";
 import { UpdateInstructionsService } from "../../../services/updateInstructions.service";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
-import { HelperService } from "src/services/helper.service";
+import { HelperService } from "../../../services/helper.service";
 
 @Component({
   selector: "app-sim-settings",
@@ -85,6 +85,7 @@ export class SimSettingsComponent implements OnInit {
     alarmType: string;
     alarmText: string;
     steps: string;
+    sleep: string;
   };
 
   eventType: string;
@@ -177,6 +178,7 @@ export class SimSettingsComponent implements OnInit {
       alarmText: val.alarm.alarmText,
       alarmType: val.alarm.alarmType,
       steps: val.alarm.alarmSteps,
+      sleep: val.alarm.alarmSleep
     };
     this.selectedAlarmConfig = val.alarm.alarmConfig;
     for (let i = 0; i < parseInt(this.currentAlarm.steps); i++) {
@@ -335,6 +337,7 @@ export class SimSettingsComponent implements OnInit {
 
       // this.commandQueue.push(...this.resultTemplate.commandQueue);
     }
+    this.displayAlarmsOnly();
     this.commandQueue.push(...this.resultTemplate.commandQueue);
     //   this.simService
     //     .updateSimulatorManagedObject(this.mo)
@@ -348,15 +351,16 @@ export class SimSettingsComponent implements OnInit {
       let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
       this.toAlarmTemplateFormat(alarm);
       if (
-        this.currentMeasurement.sleep &&
+        this.currentAlarm.sleep &&
         this.selectedAlarmConfig === this.alarmConfig[0]
       ) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
-          seconds: this.currentMeasurement.sleep,
+          seconds: this.currentAlarm.sleep,
         });
       }
     }
+    console.log(this.resultTemplate.commandQueue);
   }
 
   generateEvents() {
@@ -510,8 +514,6 @@ export class SimSettingsComponent implements OnInit {
     this.insertIndex = current.index;
   }
 
- 
-
   onSelectInstructions() {
     this.selectedConfig = this.defaultConfig[0];
     this.displayInstructionsOrSleep = true;
@@ -522,6 +524,12 @@ export class SimSettingsComponent implements OnInit {
     this.selectedConfig = this.defaultConfig[3];
     this.displayInstructionsOrSleep = true;
     this.displayEditView = false;
+  }
+
+  displayAlarmsOnly() {
+    if (this.alarms.length && !this.testArray.length) {
+      this.generateAlarms();
+    }
   }
 
  
