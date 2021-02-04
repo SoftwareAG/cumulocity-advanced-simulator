@@ -20,12 +20,12 @@ export class SimSettingsComponent implements OnInit {
   resultTemplate = { commandQueue: [], name: "" };
   displayInstructionsOrSleep = false;
   defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
+  selectedConfig: string = this.defaultConfig[0];
   alarmCategories = [
     { category: "Critical", code: "301" },
     { category: "Major", code: "302" },
     { category: "Minor", code: "303" },
   ];
-  selectedConfig: string = this.defaultConfig[0];
   selectedAlarmCategory = this.alarmCategories[0].category;
 
   eventCategories = [
@@ -78,9 +78,12 @@ export class SimSettingsComponent implements OnInit {
     unit: string;
   };
 
-  alarmType: string;
-  alarmText: string;
-  alarmSteps: string;
+  currentAlarm: {
+    level: string;
+    alarmType: string;
+    alarmText: string;
+    steps: string;
+  };
 
   eventType: string;
   eventText: string;
@@ -143,14 +146,6 @@ export class SimSettingsComponent implements OnInit {
     this.selectedConfig = val;
   }
 
-  onChangeOfAlarm(val) {
-    this.selectedAlarmCategory = val;
-  }
-
-  onChangeOfAlarmConfig(val) {
-    this.selectedAlarmConfig = val;
-  }
-
   onChangeEvent(val) {
     this.selectedEventCategory = val;
   }
@@ -168,27 +163,24 @@ export class SimSettingsComponent implements OnInit {
       steps: val.measurement.steps,
       unit: val.measurement.unit,
       sleep: val.measurement.sleep,
-    }
+    };
     this.measurements.push(this.currentMeasurement);
     this.newFragmentAdded = true;
   }
 
-  addAlarmToArray() {
+  addAlarmToArray(val) {
     this.newFragmentAdded = true;
-    const level = this.alarmCategories.find(
-      (entry) => entry.category === this.selectedAlarmCategory
-    ).code;
-    for (let i = 0; i < parseInt(this.alarmSteps); i++) {
-      this.alarms.push({
-        level: level,
-        alarmType: this.alarmType,
-        alarmText: this.alarmText,
-        steps: this.alarmSteps,
-      });
+    this.currentAlarm = {
+      level: val.alarm.level,
+      alarmText: val.alarm.alarmText,
+      alarmType: val.alarm.alarmType,
+      steps: val.alarm.alarmSteps,
+    };
+    this.selectedAlarmConfig = val.alarm.alarmConfig;
+    for (let i = 0; i < parseInt(this.currentAlarm.steps); i++) {
+      this.alarms.push(this.currentAlarm);
     }
-    this.alarmText = "";
-    this.alarmType = "";
-    this.alarmSteps = "";
+    console.log(this.alarms);
   }
 
   addEventToArray() {
@@ -269,8 +261,7 @@ export class SimSettingsComponent implements OnInit {
         this.scaledArray.push(nowScaled);
       }
     }
-    console.log(this.testArray);
-    // let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
+
     for (let value of this.testArray) {
       for (const { temp, index } of this.scale(
         value.minValue,
@@ -291,7 +282,10 @@ export class SimSettingsComponent implements OnInit {
 
         // TODO: Add sleep here to push to resultTemplate.commandQueue
 
-        if (this.currentMeasurement.sleep && this.currentMeasurement.sleep !== "") {
+        if (
+          this.currentMeasurement.sleep &&
+          this.currentMeasurement.sleep !== ""
+        ) {
           this.resultTemplate.commandQueue.push({
             type: "sleep",
             seconds: value.sleep ? value.sleep : this.currentMeasurement.sleep,
@@ -324,7 +318,9 @@ export class SimSettingsComponent implements OnInit {
         label: this.testArray[i].series,
       }));
 
+      // console.log(this.selectedAlarmConfig);
       if (this.selectedAlarmConfig === this.alarmConfig[0]) {
+        
         this.generateAlarms();
       }
 
@@ -359,7 +355,10 @@ export class SimSettingsComponent implements OnInit {
     for (let alarm of this.alarms.filter((a) => a.alarmText)) {
       let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
       this.toAlarmTemplateFormat(alarm);
-      if (this.currentMeasurement.sleep && this.selectedAlarmConfig === this.alarmConfig[0]) {
+      if (
+        this.currentMeasurement.sleep &&
+        this.selectedAlarmConfig === this.alarmConfig[0]
+      ) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
           seconds: this.currentMeasurement.sleep,
@@ -371,7 +370,10 @@ export class SimSettingsComponent implements OnInit {
   generateEvents() {
     for (let event of this.events) {
       this.toEventTemplateFormat(event);
-      if (this.currentMeasurement.sleep && this.selectedEventConfig === this.eventConfig[0]) {
+      if (
+        this.currentMeasurement.sleep &&
+        this.selectedEventConfig === this.eventConfig[0]
+      ) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
           seconds: this.currentMeasurement.sleep,
@@ -478,17 +480,16 @@ export class SimSettingsComponent implements OnInit {
         index: val.index,
       };
     } else if (val.value.messageId.startsWith("30")) {
-      this.alarmType = val.value.values[0];
-      this.alarmText = val.value.values[1];
+      this.currentAlarm.alarmType = val.value.values[0];
+      this.currentAlarm.alarmText = val.value.values[1];
       this.editMsmt = {
         alarm: {
-          alarmType: this.alarmType,
-          alarmText: this.alarmText,
+          alarmType: this.currentAlarm.alarmType,
+          alarmText: this.currentAlarm.alarmText,
           msgId: val.value.messageId,
         },
         index: val.index,
       };
-      this.alarmType;
     } else if (val.value.messageId.startsWith("40")) {
       this.eventType = val.value.values[0];
       this.eventText = val.value.values[1];
@@ -523,7 +524,10 @@ export class SimSettingsComponent implements OnInit {
         "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
         }`;
 
-      toBePushed = toBePushed.replace("FRAGMENT", this.currentMeasurement.fragment);
+      toBePushed = toBePushed.replace(
+        "FRAGMENT",
+        this.currentMeasurement.fragment
+      );
       toBePushed = toBePushed.replace("SERIES", this.currentMeasurement.series);
       toBePushed = toBePushed.replace("VALUE", this.value);
       toBePushed = toBePushed.replace("UNIT", this.currentMeasurement.unit);

@@ -1,13 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 
 @Component({
-  selector: 'app-sim-measurements',
-  templateUrl: './sim-measurements.component.html',
-  styleUrls: ['./sim-measurements.component.scss']
+  selector: "app-sim-measurements",
+  templateUrl: "./sim-measurements.component.html",
+  styleUrls: ["./sim-measurements.component.scss"],
 })
 export class SimMeasurementsComponent implements OnInit {
-
-
   @Output() msmt = new EventEmitter();
   measurementOptions = [
     "Measurement series one after another",
@@ -23,12 +21,21 @@ export class SimMeasurementsComponent implements OnInit {
   steps: string;
   unit: string;
 
-  measurement;
+  measurement: {
+    measurement: {
+      fragment: string;
+      series: string;
+      minValue: string;
+      maxValue: string;
+      steps: string;
+      unit: string;
+      sleep: string;
+    };
+  };
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onChangeMsmt(val) {
     this.selectedMsmtOption = val;
@@ -36,15 +43,17 @@ export class SimMeasurementsComponent implements OnInit {
 
   addMsmtToArray() {
     // this.newFragmentAdded = true;
-    this.measurement = ({measurement: {
-      fragment: this.fragment ? this.fragment : "",
-      series: this.series ? this.series : "",
-      minValue: this.minVal ? this.minVal : "",
-      maxValue: this.maxVal ? this.maxVal : "",
-      steps: this.steps ? this.steps : "",
-      unit: this.unit ? this.unit : "",
-      sleep: this.sleep ? this.sleep : "",
-    }});
+    this.measurement = {
+      measurement: {
+        fragment: this.fragment ? this.fragment : "",
+        series: this.series ? this.series : "",
+        minValue: this.minVal ? this.minVal : "",
+        maxValue: this.maxVal ? this.maxVal : "",
+        steps: this.steps ? this.steps : "",
+        unit: this.unit ? this.unit : "",
+        sleep: this.sleep ? this.sleep : "",
+      },
+    };
     this.msmt.emit(this.measurement);
     this.fragment = "";
     this.maxVal = "";
@@ -53,5 +62,4 @@ export class SimMeasurementsComponent implements OnInit {
     this.steps = "";
     this.unit = "";
   }
-
 }
