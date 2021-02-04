@@ -13,7 +13,7 @@
                 id="fragment"
                 class="form-control"
                 placeholder="Fragment (required)"
-                [(ngModel)]="editedVal.msmt.fragment"
+                [(ngModel)]="editedVal.value.values[0]"
               />
             </div>
           </div>
@@ -23,7 +23,7 @@
                 name="series"
                 class="form-control"
                 placeholder="Series (required)"
-                [(ngModel)]="editedVal.msmt.series"
+                [(ngModel)]="editedVal.value.values[1]"
               />
             </div>
           </div>
@@ -33,7 +33,7 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Value"
-                [(ngModel)]="editedVal.msmt.value"
+                [(ngModel)]="editedVal.value.values[2]"
               />
             </div>
           </div>
@@ -44,7 +44,7 @@
                   name="maximum"
                   class="form-control"
                   placeholder="Unit (required)"
-                  [(ngModel)]="editedVal.msmt.unit"
+                  [(ngModel)]="editedVal.value.values[3]"
                 />
               </div>
             </div>

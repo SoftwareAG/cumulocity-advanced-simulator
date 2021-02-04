@@ -1,7 +1,7 @@
 
 <div class="col-lg-6">
-  <app-simulator-details [commandQueue]="commandQueue" (currentValue)="updateCurrentFragment($event)"
-  (currentCommandQueue)="updateCommandQueue($event)"
+  <app-simulator-details
+  (currentCommandQueue)="updateCommandQueue($event)" (currentValue)="updateCurrent($event)"
   (insertSleepOrFragment)="insertSleepOrFragment($event)"></app-simulator-details>
   <br>
   <!-- {{resultTemplate.commandQueue | json }} -->
@@ -45,7 +45,7 @@
       <div [ngSwitch]="selectedConfig">
         <!-- Measurements -->
         <ng-template [ngSwitchCase]="'Measurements'">
-         <app-sim-measurements (msmt)="addMeasurementToArray($event)"></app-sim-measurements>
+         <app-sim-measurements></app-sim-measurements>
         </ng-template>
 
         <!-- Alarms -->
@@ -195,7 +195,7 @@
     
     <div class="col-sm-8">
       <br>
-      <button class="btn btn-success" style="float: right" [disabled]="!newFragmentAdded" (click)="generateRequest()">
+      <button class="btn btn-success" style="float: right" (click)="generateRequest()">
          Generate Instructions
       </button>
     </div>

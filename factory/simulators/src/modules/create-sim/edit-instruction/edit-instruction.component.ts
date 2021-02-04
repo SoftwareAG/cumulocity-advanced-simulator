@@ -27,11 +27,11 @@ export class EditInstructionComponent implements OnInit {
   
 
   ngOnInit() {
-    if (this.editedVal.msmt.msgId === '200') {
+    if (this.editedVal.value.messageId === '200') {
       this.selectedEditView = 'msmts';
-    } else if (this.editedVal.msmt.msgId.startsWith('40')) {
+    } else if (this.editedVal.value.messageId.startsWith('40')) {
       this.selectedEditView = "event";
-    } else if (this.editedVal.msmt.msgId.startsWith('30')) {
+    } else if (this.editedVal.value.messageId.startsWith('30')) {
       this.selectedEditView = "alarm";
     } else {
       this.selectedEditView = "sleep";

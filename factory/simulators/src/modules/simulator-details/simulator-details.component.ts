@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { Subject, Subscription } from "rxjs";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 import { UpdateInstructionsService } from "../../services/updateInstructions.service";
@@ -9,7 +10,7 @@ import { UpdateInstructionsService } from "../../services/updateInstructions.ser
   styleUrls: ["./simulator-details.component.less"],
 })
 export class SimulatorDetailsComponent implements OnInit {
-  @Input() commandQueue;
+  commandQueue;
   @Output() currentValue = new EventEmitter();
   @Output() currentCommandQueue = new EventEmitter();
   @Output() insertSleepOrFragment = new EventEmitter();
@@ -17,7 +18,10 @@ export class SimulatorDetailsComponent implements OnInit {
   showBtns = false;
   measurement: EditedMeasurement;
   subscription: Subscription;
-  constructor(private service: UpdateInstructionsService) {}
+  constructor(
+    private service: UpdateInstructionsService,
+    private settingsService: SimulatorSettingsService
+  ) {}
 
   ngOnInit() {
     this.subscription = this.service.castMeasurement.subscribe((obs) => {
@@ -26,11 +30,13 @@ export class SimulatorDetailsComponent implements OnInit {
         this.editCurrent();
       }
     });
+    this.settingsService.fetchCommandQueue().then((result) => {
+      this.commandQueue = result;
+    });
   }
 
   deleteMeasurementOrSleep(item) {
     const pos = this.commandQueue.findIndex((entry) => entry === item);
-    console.log(pos);
     this.commandQueue.splice(pos, 1);
     this.currentCommandQueue.emit(this.commandQueue);
   }
@@ -65,6 +71,4 @@ export class SimulatorDetailsComponent implements OnInit {
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
-
 }

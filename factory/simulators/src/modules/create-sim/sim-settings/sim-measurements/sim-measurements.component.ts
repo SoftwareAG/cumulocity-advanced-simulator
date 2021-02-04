@@ -1,4 +1,6 @@
+import { TitleCasePipe } from "@angular/common";
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
 @Component({
   selector: "app-sim-measurements",
@@ -22,7 +24,7 @@ export class SimMeasurementsComponent implements OnInit {
   unit: string;
 
   measurement: {
-    measurement: {
+
       fragment: string;
       series: string;
       minValue: string;
@@ -30,10 +32,12 @@ export class SimMeasurementsComponent implements OnInit {
       steps: string;
       unit: string;
       sleep: string;
-    };
+
   };
 
-  constructor() {}
+  measurements = [];
+
+  constructor(private service: SimulatorSettingsService) {}
 
   ngOnInit() {}
 
@@ -44,7 +48,7 @@ export class SimMeasurementsComponent implements OnInit {
   addMsmtToArray() {
     // this.newFragmentAdded = true;
     this.measurement = {
-      measurement: {
+
         fragment: this.fragment ? this.fragment : "",
         series: this.series ? this.series : "",
         minValue: this.minVal ? this.minVal : "",
@@ -52,9 +56,10 @@ export class SimMeasurementsComponent implements OnInit {
         steps: this.steps ? this.steps : "",
         unit: this.unit ? this.unit : "",
         sleep: this.sleep ? this.sleep : "",
-      },
+
     };
-    this.msmt.emit(this.measurement);
+    this.measurements.push(this.measurement);
+    this.service.setMeasurements(this.measurements);
     this.fragment = "";
     this.maxVal = "";
     this.minVal = "";
@@ -62,4 +67,5 @@ export class SimMeasurementsComponent implements OnInit {
     this.steps = "";
     this.unit = "";
   }
+
 }

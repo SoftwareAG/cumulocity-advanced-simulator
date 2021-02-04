@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { IManagedObject } from "@c8y/client";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
 import { HelperService } from "../../../services/helper.service";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
 @Component({
   selector: "app-sim-settings",
@@ -13,7 +14,8 @@ export class SimSettingsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private simService: SimulatorsServiceService,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private simSettings: SimulatorSettingsService
   ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
@@ -139,20 +141,6 @@ export class SimSettingsComponent implements OnInit {
     this.selectedEventConfig = val;
   }
 
-  addMeasurementToArray(val) {
-    this.currentMeasurement = {
-      fragment: val.measurement.fragment,
-      series: val.measurement.series,
-      minValue: val.measurement.minValue,
-      maxValue: val.measurement.maxValue,
-      steps: val.measurement.steps,
-      unit: val.measurement.unit,
-      sleep: val.measurement.sleep,
-    };
-    this.measurements.push(this.currentMeasurement);
-    this.newFragmentAdded = true;
-  }
-
   addAlarmToArray(val) {
     this.newFragmentAdded = true;
     this.currentAlarm = {
@@ -160,13 +148,12 @@ export class SimSettingsComponent implements OnInit {
       alarmText: val.alarm.alarmText,
       alarmType: val.alarm.alarmType,
       steps: val.alarm.alarmSteps,
-      sleep: val.alarm.alarmSleep
+      sleep: val.alarm.alarmSleep,
     };
     this.selectedAlarmConfig = val.alarm.alarmConfig;
     for (let i = 0; i < parseInt(this.currentAlarm.steps); i++) {
       this.alarms.push(this.currentAlarm);
     }
-
   }
 
   addEventToArray() {
@@ -212,271 +199,11 @@ export class SimSettingsComponent implements OnInit {
   }
 
   generateRequest() {
-    // this.resultTemplate.commandQueue = [];
-    if (!this.newFragmentAdded) {
-      this.resultTemplate.commandQueue = [];
-    }
-    let allSteps = 0;
-    // if (!this.newFragmentAdded) {
-    //   this.measurements = [this.deepCopy(this.template)];
-
-    for (let value of this.measurements.filter((a) => a.fragment)) {
-      allSteps += +value.steps;
-      value.steps = +value.steps;
-      value.minValue = +value.minValue;
-      value.maxValue = +value.maxValue;
-
-      if (this.testArray.find((x) => x.fragment === value.fragment)) {
-        const pos = this.testArray.findIndex(
-          (x) => x.fragment === value.fragment
-        );
-
-        const nowScaled = this.helperService.scale(
-          value.minValue,
-          value.maxValue,
-          value.steps,
-          this.randomSelected
-        );
-        this.scaledArray[pos].push(...nowScaled);
-      } else {
-        const nowScaled = this.helperService.scale(
-          value.minValue,
-          value.maxValue,
-          value.steps,
-          this.randomSelected
-        );
-        this.testArray.push(value);
-        this.scaledArray.push(nowScaled);
-      }
-    }
-
-    for (let value of this.testArray) {
-      for (const { temp, index } of this.helperService.scale(
-        value.minValue,
-        value.maxValue,
-        value.steps,
-        this.randomSelected
-      ).map((temp, index) => ({ temp, index }))) {
-        let toBePushed = `{
-                              "messageId": "200",
-                              "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
-                              }`;
-
-        toBePushed = toBePushed.replace("FRAGMENT", value.fragment);
-        toBePushed = toBePushed.replace("SERIES", value.series);
-        toBePushed = toBePushed.replace("VALUE", temp);
-        toBePushed = toBePushed.replace("UNIT", value.unit);
-
-        this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
-
-        // TODO: Add sleep here to push to resultTemplate.commandQueue
-
-        if (
-          this.currentMeasurement.sleep &&
-          this.currentMeasurement.sleep !== ""
-        ) {
-          this.resultTemplate.commandQueue.push({
-            type: "sleep",
-            seconds: value.sleep ? value.sleep : this.currentMeasurement.sleep,
-          });
-        }
-
-        if (
-          this.alarms &&
-          this.selectedAlarmConfig === this.alarmConfig[1] &&
-          index < this.alarms.length
-        ) {
-          this.toAlarmTemplateFormat(this.alarms[index]);
-        }
-
-        if (
-          this.events &&
-          this.selectedEventConfig === this.eventConfig[1] &&
-          index < this.events.length
-        ) {
-          this.toEventTemplateFormat(this.events[index]);
-        }
-      }
-
-      // if (this.selectedMsmtOption === this.measurementOptions[1]) {
-      //   this.implementAlternateMsmst();
-      // }
-
-      const test = this.scaledArray.map((entry, i) => ({
-        data: entry,
-        label: this.testArray[i].series,
-      }));
-
-      if (this.selectedAlarmConfig === this.alarmConfig[0]) {
-        
-        this.generateAlarms();
-      }
-
-      if (this.selectedEventConfig === this.eventConfig[0]) {
-        this.generateEvents();
-      }
-
-      // this.commandQueue.push(...this.resultTemplate.commandQueue);
-    }
-    this.displayAlarmsOnly();
-    this.commandQueue.push(...this.resultTemplate.commandQueue);
-    //   this.simService
-    //     .updateSimulatorManagedObject(this.mo)
-    //     .then((res) => console.log(res));
+    
+    this.simSettings.generateRequest();
+    // console.log(this.simSettings.commandQueue);
   }
 
-  
-
-  generateAlarms() {
-    for (let alarm of this.alarms.filter((a) => a.alarmText)) {
-      let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
-      this.toAlarmTemplateFormat(alarm);
-      if (
-        this.currentAlarm.sleep &&
-        this.selectedAlarmConfig === this.alarmConfig[0]
-      ) {
-        this.resultTemplate.commandQueue.push({
-          type: "sleep",
-          seconds: this.currentAlarm.sleep,
-        });
-      }
-    }
-  }
-
-  generateEvents() {
-    for (let event of this.events) {
-      this.toEventTemplateFormat(event);
-      if (
-        this.currentMeasurement.sleep &&
-        this.selectedEventConfig === this.eventConfig[0]
-      ) {
-        this.resultTemplate.commandQueue.push({
-          type: "sleep",
-          seconds: this.currentMeasurement.sleep,
-        });
-      }
-    }
-  }
-
-  toEventTemplateFormat(event) {
-    let toBePushed = `{
-      "messageId": "CODE",
-      "values": ["TYPE", "TEXT"], "type": "builtin"
-    }`;
-    let toBePushedLoc = `{
-      "messageId": "CODE",
-      "values": ["LAT", "LON", "ALT", "ACCURACY"], "type": "builtin"
-    }`;
-
-    if (event.code === "400") {
-      toBePushed = toBePushed.replace("CODE", event.code);
-      toBePushed = toBePushed.replace("TYPE", event.eventType);
-      toBePushed = toBePushed.replace("TEXT", event.eventText);
-      this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
-    } else {
-      toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
-      toBePushedLoc = toBePushedLoc.replace("LAT", event.lat);
-      toBePushedLoc = toBePushedLoc.replace("LON", event.lon);
-      toBePushedLoc = toBePushedLoc.replace("ALT", event.alt);
-      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.accuracy);
-      this.resultTemplate.commandQueue.push(JSON.parse(toBePushedLoc));
-    }
-  }
-
-  toAlarmTemplateFormat(alarm) {
-    let toBePushed = `{
-      "messageId": "CODE",
-      "values": ["TYPE", "TEXT", ""], "type": "builtin"
-    }`;
-
-    toBePushed = toBePushed.replace("CODE", alarm.level);
-    toBePushed = toBePushed.replace("TYPE", alarm.alarmType);
-    toBePushed = toBePushed.replace("TEXT", alarm.alarmText);
-    this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
-  }
-
-  implementAlternateMsmst() {
-    let arr = [];
-    let newArr = [];
-    let random = false;
-    this.testArray.forEach((entry) =>
-      arr.push({
-        values: this.helperService.scale(entry.minValue, entry.maxValue, entry.steps, false),
-        fragment: entry.fragment,
-        series: entry.series,
-        unit: entry.unit,
-      })
-    );
-    arr.forEach((entry) => {
-      entry.values.forEach((val) =>
-        newArr.push({
-          value: val,
-          fragment: entry.fragment,
-          series: entry.series,
-          unit: entry.unit,
-        })
-      );
-    });
-    let arrObj = this.helperService.groupBy(newArr, "fragment");
-    let finalArr = [];
-    finalArr.push(Object.values(arrObj));
-    console.log(finalArr);
-    let max = Math.max(...finalArr.map((x) => (x = parseInt(x.length))));
-    console.log(max);
-    for (let i = 0; i < max; i++) {
-      console.log("hh");
-      this.helperService.extractArrayValuesByColumn(finalArr, i);
-      this.alternateMsmts.push(...this.helperService.extractArrayValuesByColumn(finalArr, i));
-    }
-    this.alternateMsmts = this.alternateMsmts.filter(
-      (entry) => entry !== undefined
-    );
-    console.log(this.alternateMsmts);
-  }
-
-  updateCurrentFragment(val) {
-    this.toDisplay = true;
-    this.displayEditView = true;
-    this.currentIndex = val.index;
-    if (val.value.messageId === "200") {
-      this.currentMeasurement.fragment = val.value.values[0];
-      this.currentMeasurement.series = val.value.values[1];
-      this.value = val.value.values[2];
-      this.currentMeasurement.unit = val.value.values[3];
-      this.editMsmt = {
-        msmt: {
-          fragment: this.currentMeasurement.fragment,
-          series: this.currentMeasurement.series,
-          value: this.value,
-          unit: this.currentMeasurement.unit,
-          msgId: val.value.messageId,
-        },
-        index: val.index,
-      };
-    } else if (val.value.messageId.startsWith("30")) {
-      this.currentAlarm.alarmType = val.value.values[0];
-      this.currentAlarm.alarmText = val.value.values[1];
-      this.editMsmt = {
-        alarm: {
-          alarmType: this.currentAlarm.alarmType,
-          alarmText: this.currentAlarm.alarmText,
-          msgId: val.value.messageId,
-        },
-        index: val.index,
-      };
-    } else if (val.value.messageId.startsWith("40")) {
-      this.eventType = val.value.values[0];
-      this.eventText = val.value.values[1];
-      this.editMsmt = {
-        event: {
-          eventType: this.eventType,
-          eventText: this.eventText,
-          msgId: val.value.messageId,
-        },
-        index: val.index,
-      };
-    }
-  }
 
   updateCommandQueue(newCommandQueue) {
     this.commandQueue = newCommandQueue;
@@ -503,10 +230,11 @@ export class SimSettingsComponent implements OnInit {
     this.displayEditView = false;
   }
 
-  displayAlarmsOnly() {
-    if (this.alarms.length && !this.testArray.length) {
-      this.generateAlarms();
-    }
+  updateCurrent(val) {
+    this.displayEditView = true;
+    this.displayInstructionsOrSleep = false;
+    this.editMsmt = val;
+    console.log(val);
   }
 
  
