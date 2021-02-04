@@ -13,7 +13,8 @@ import { SimulatorsServiceService } from "../../../services/simulatorsService.se
 export class SimSettingsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
-    private simService: SimulatorsServiceService, private service: UpdateInstructionsService
+    private simService: SimulatorsServiceService,
+    private service: UpdateInstructionsService
   ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
@@ -33,11 +34,6 @@ export class SimSettingsComponent implements OnInit {
     { category: "Location Update Device", code: "400" },
   ];
 
-  measurementOptions = [
-    "Measurement series one after another",
-    "Alternate measurement series",
-  ];
-  selectedMsmtOption = this.measurementOptions[0];
   selectedEventCategory = this.eventCategories[0].category;
   measurements = [];
   newFragmentAdded = false;
@@ -72,13 +68,15 @@ export class SimSettingsComponent implements OnInit {
   ];
   selectedEventConfig: string = this.eventConfig[0];
 
-  sleep: string;
-  fragment: string;
-  series: string;
-  minVal: string;
-  maxVal: string;
-  steps: string;
-  unit: string;
+  currentMeasurement: {
+    sleep: string;
+    fragment: string;
+    series: string;
+    minValue: string;
+    maxValue: string;
+    steps: string;
+    unit: string;
+  };
 
   alarmType: string;
   alarmText: string;
@@ -130,16 +128,19 @@ export class SimSettingsComponent implements OnInit {
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    this.subscription = this.service.castInstructionsOrSleep.subscribe((val) => { this.displayInstructionsOrSleep = val; if (val) {this.displayEditView = false;}});
+    this.subscription = this.service.castInstructionsOrSleep.subscribe(
+      (val) => {
+        this.displayInstructionsOrSleep = val;
+        if (val) {
+          this.displayEditView = false;
+        }
+      }
+    );
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
   }
 
   onChangeConfig(val) {
     this.selectedConfig = val;
-  }
-
-  onChangeMsmt(val) {
-    this.selectedMsmtOption = val;
   }
 
   onChangeOfAlarm(val) {
@@ -158,23 +159,18 @@ export class SimSettingsComponent implements OnInit {
     this.selectedEventConfig = val;
   }
 
-  addMsmtToArray() {
+  addMeasurementToArray(val) {
+    this.currentMeasurement = {
+      fragment: val.measurement.fragment,
+      series: val.measurement.series,
+      minValue: val.measurement.minValue,
+      maxValue: val.measurement.maxValue,
+      steps: val.measurement.steps,
+      unit: val.measurement.unit,
+      sleep: val.measurement.sleep,
+    }
+    this.measurements.push(this.currentMeasurement);
     this.newFragmentAdded = true;
-    this.measurements.push({
-      fragment: this.fragment ? this.fragment : "",
-      series: this.series ? this.series : "",
-      minValue: this.minVal ? this.minVal : "",
-      maxValue: this.maxVal ? this.maxVal : "",
-      steps: this.steps ? this.steps : "",
-      unit: this.unit ? this.unit : "",
-      sleep: this.sleep ? this.sleep : "",
-    });
-    this.fragment = "";
-    this.maxVal = "";
-    this.minVal = "";
-    this.series = "";
-    this.steps = "";
-    this.unit = "";
   }
 
   addAlarmToArray() {
@@ -273,7 +269,7 @@ export class SimSettingsComponent implements OnInit {
         this.scaledArray.push(nowScaled);
       }
     }
-
+    console.log(this.testArray);
     // let scaledArray = this.scale(value.minValue, value.maxValue, value.steps);
     for (let value of this.testArray) {
       for (const { temp, index } of this.scale(
@@ -295,10 +291,10 @@ export class SimSettingsComponent implements OnInit {
 
         // TODO: Add sleep here to push to resultTemplate.commandQueue
 
-        if (this.sleep && this.sleep !== "") {
+        if (this.currentMeasurement.sleep && this.currentMeasurement.sleep !== "") {
           this.resultTemplate.commandQueue.push({
             type: "sleep",
-            seconds: value.sleep ? value.sleep : this.sleep,
+            seconds: value.sleep ? value.sleep : this.currentMeasurement.sleep,
           });
         }
 
@@ -319,9 +315,9 @@ export class SimSettingsComponent implements OnInit {
         }
       }
 
-      if (this.selectedMsmtOption === this.measurementOptions[1]) {
-        this.implementAlternateMsmst();
-      }    
+      // if (this.selectedMsmtOption === this.measurementOptions[1]) {
+      //   this.implementAlternateMsmst();
+      // }
 
       const test = this.scaledArray.map((entry, i) => ({
         data: entry,
@@ -337,12 +333,8 @@ export class SimSettingsComponent implements OnInit {
       }
 
       // this.commandQueue.push(...this.resultTemplate.commandQueue);
-  
-    
     }
-    this.commandQueue.push(
-      ...this.resultTemplate.commandQueue
-    );
+    this.commandQueue.push(...this.resultTemplate.commandQueue);
     //   this.simService
     //     .updateSimulatorManagedObject(this.mo)
     //     .then((res) => console.log(res));
@@ -367,10 +359,10 @@ export class SimSettingsComponent implements OnInit {
     for (let alarm of this.alarms.filter((a) => a.alarmText)) {
       let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
       this.toAlarmTemplateFormat(alarm);
-      if (this.sleep && this.selectedAlarmConfig === this.alarmConfig[0]) {
+      if (this.currentMeasurement.sleep && this.selectedAlarmConfig === this.alarmConfig[0]) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
-          seconds: this.sleep,
+          seconds: this.currentMeasurement.sleep,
         });
       }
     }
@@ -379,10 +371,10 @@ export class SimSettingsComponent implements OnInit {
   generateEvents() {
     for (let event of this.events) {
       this.toEventTemplateFormat(event);
-      if (this.sleep && this.selectedEventConfig === this.eventConfig[0]) {
+      if (this.currentMeasurement.sleep && this.selectedEventConfig === this.eventConfig[0]) {
         this.resultTemplate.commandQueue.push({
           type: "sleep",
-          seconds: this.sleep,
+          seconds: this.currentMeasurement.sleep,
         });
       }
     }
@@ -447,16 +439,16 @@ export class SimSettingsComponent implements OnInit {
           series: entry.series,
           unit: entry.unit,
         })
-      )}
-    );
-    let arrObj = this.groupBy(newArr, 'fragment');
+      );
+    });
+    let arrObj = this.groupBy(newArr, "fragment");
     let finalArr = [];
-    finalArr.push((Object.values(arrObj)));
+    finalArr.push(Object.values(arrObj));
     console.log(finalArr);
     let max = Math.max(...finalArr.map((x) => (x = parseInt(x.length))));
     console.log(max);
     for (let i = 0; i < max; i++) {
-      console.log('hh');
+      console.log("hh");
       this.extractArrayValuesByColumn(finalArr, i);
       this.alternateMsmts.push(...this.extractArrayValuesByColumn(finalArr, i));
     }
@@ -471,34 +463,43 @@ export class SimSettingsComponent implements OnInit {
     this.displayEditView = true;
     this.currentIndex = val.index;
     if (val.value.messageId === "200") {
-      this.fragment = val.value.values[0];
-      this.series = val.value.values[1];
+      this.currentMeasurement.fragment = val.value.values[0];
+      this.currentMeasurement.series = val.value.values[1];
       this.value = val.value.values[2];
-      this.unit = val.value.values[3];
-      this.editMsmt = {msmt: {
-        fragment: this.fragment,
-        series: this.series,
-        value: this.value,
-        unit: this.unit,
-        msgId: val.value.messageId,
-      }, index: val.index};
+      this.currentMeasurement.unit = val.value.values[3];
+      this.editMsmt = {
+        msmt: {
+          fragment: this.currentMeasurement.fragment,
+          series: this.currentMeasurement.series,
+          value: this.value,
+          unit: this.currentMeasurement.unit,
+          msgId: val.value.messageId,
+        },
+        index: val.index,
+      };
     } else if (val.value.messageId.startsWith("30")) {
       this.alarmType = val.value.values[0];
       this.alarmText = val.value.values[1];
-      this.editMsmt = {alarm: {
-        alarmType: this.alarmType,
-        alarmText: this.alarmText,
-        msgId: val.value.messageId,
-      }, index: val.index};
+      this.editMsmt = {
+        alarm: {
+          alarmType: this.alarmType,
+          alarmText: this.alarmText,
+          msgId: val.value.messageId,
+        },
+        index: val.index,
+      };
       this.alarmType;
     } else if (val.value.messageId.startsWith("40")) {
       this.eventType = val.value.values[0];
       this.eventText = val.value.values[1];
-      this.editMsmt = {event: {
-        eventType: this.eventType,
-        eventText: this.eventText,
-        msgId: val.value.messageId,
-      }, index: val.index};
+      this.editMsmt = {
+        event: {
+          eventType: this.eventType,
+          eventText: this.eventText,
+          msgId: val.value.messageId,
+        },
+        index: val.index,
+      };
     }
   }
 
@@ -522,10 +523,10 @@ export class SimSettingsComponent implements OnInit {
         "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
         }`;
 
-      toBePushed = toBePushed.replace("FRAGMENT", this.fragment);
-      toBePushed = toBePushed.replace("SERIES", this.series);
+      toBePushed = toBePushed.replace("FRAGMENT", this.currentMeasurement.fragment);
+      toBePushed = toBePushed.replace("SERIES", this.currentMeasurement.series);
       toBePushed = toBePushed.replace("VALUE", this.value);
-      toBePushed = toBePushed.replace("UNIT", this.unit);
+      toBePushed = toBePushed.replace("UNIT", this.currentMeasurement.unit);
       this.commandQueue.splice(this.insertIndex + 1, 0, JSON.parse(toBePushed));
       // TODO: Insert backend call for save here
     }
@@ -553,12 +554,13 @@ export class SimSettingsComponent implements OnInit {
 
   groupBy(array, prop) {
     var grouped = {};
-    for (var i=0; i<array.length; i++) {
+    for (var i = 0; i < array.length; i++) {
       var p = array[i][prop];
-      if (!grouped[p]) { grouped[p] = []; }
+      if (!grouped[p]) {
+        grouped[p] = [];
+      }
       grouped[p].push(array[i]);
     }
     return grouped;
   }
-
 }
