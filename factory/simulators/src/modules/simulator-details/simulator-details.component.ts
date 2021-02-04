@@ -35,13 +35,6 @@ export class SimulatorDetailsComponent implements OnInit {
     this.currentCommandQueue.emit(this.commandQueue);
   }
 
-  addSleepOrMeasurement(item) {
-    this.isInserted = true;
-    const pos = this.commandQueue.findIndex((entry) => entry === item);
-    this.insertSleepOrFragment.emit({ bool: this.isInserted, index: pos });
-    this.fetchAddInstructionsOrSleepView();
-  }
-
   updateCurrentValue(val) {
     if (val.type === "builtin") {
       const pos = this.commandQueue.findIndex((entry) => entry === val);

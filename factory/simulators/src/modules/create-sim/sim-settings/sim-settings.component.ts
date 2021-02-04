@@ -510,24 +510,7 @@ export class SimSettingsComponent implements OnInit {
     this.insertIndex = current.index;
   }
 
-  insertCurrentFragment() {
-    {
-      let toBePushed = `{
-        "messageId": "200",
-        "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
-        }`;
-
-      toBePushed = toBePushed.replace(
-        "FRAGMENT",
-        this.currentMeasurement.fragment
-      );
-      toBePushed = toBePushed.replace("SERIES", this.currentMeasurement.series);
-      toBePushed = toBePushed.replace("VALUE", this.value);
-      toBePushed = toBePushed.replace("UNIT", this.currentMeasurement.unit);
-      this.commandQueue.splice(this.insertIndex + 1, 0, JSON.parse(toBePushed));
-      // TODO: Insert backend call for save here
-    }
-  }
+ 
 
   onSelectInstructions() {
     this.selectedConfig = this.defaultConfig[0];
