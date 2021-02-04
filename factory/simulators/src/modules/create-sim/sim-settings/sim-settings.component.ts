@@ -20,12 +20,6 @@ export class SimSettingsComponent implements OnInit {
   displayInstructionsOrSleep = false;
   defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
   selectedConfig: string = this.defaultConfig[0];
-  alarmCategories = [
-    { category: "Critical", code: "301" },
-    { category: "Major", code: "302" },
-    { category: "Minor", code: "303" },
-  ];
-  selectedAlarmCategory = this.alarmCategories[0].category;
 
   eventCategories = [
     { category: "Basic", code: "400" },
@@ -313,7 +307,6 @@ export class SimSettingsComponent implements OnInit {
         label: this.testArray[i].series,
       }));
 
-      // console.log(this.selectedAlarmConfig);
       if (this.selectedAlarmConfig === this.alarmConfig[0]) {
         
         this.generateAlarms();
@@ -348,7 +341,6 @@ export class SimSettingsComponent implements OnInit {
         });
       }
     }
-    console.log(this.resultTemplate.commandQueue);
   }
 
   generateEvents() {
@@ -393,14 +385,11 @@ export class SimSettingsComponent implements OnInit {
 
   toAlarmTemplateFormat(alarm) {
     let toBePushed = `{
-      "messageId": "${
-        this.alarmCategories.find(
-          (x) => x.category === this.selectedAlarmCategory
-        ).code
-      }",
+      "messageId": "CODE",
       "values": ["TYPE", "TEXT", ""], "type": "builtin"
     }`;
 
+    toBePushed = toBePushed.replace("CODE", alarm.level);
     toBePushed = toBePushed.replace("TYPE", alarm.alarmType);
     toBePushed = toBePushed.replace("TEXT", alarm.alarmText);
     this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
