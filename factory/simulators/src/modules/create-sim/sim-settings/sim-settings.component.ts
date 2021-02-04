@@ -4,6 +4,7 @@ import { IManagedObject } from "@c8y/client";
 import { Subscription } from "rxjs";
 import { UpdateInstructionsService } from "../../../services/updateInstructions.service";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
+import { HelperService } from "src/services/helper.service";
 
 @Component({
   selector: "app-sim-settings",
@@ -14,7 +15,8 @@ export class SimSettingsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private simService: SimulatorsServiceService,
-    private service: UpdateInstructionsService
+    private service: UpdateInstructionsService,
+    private helperService: HelperService
   ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
@@ -180,7 +182,7 @@ export class SimSettingsComponent implements OnInit {
     for (let i = 0; i < parseInt(this.currentAlarm.steps); i++) {
       this.alarms.push(this.currentAlarm);
     }
-    console.log(this.alarms);
+
   }
 
   addEventToArray() {
@@ -245,17 +247,19 @@ export class SimSettingsComponent implements OnInit {
           (x) => x.fragment === value.fragment
         );
 
-        const nowScaled = this.scale(
+        const nowScaled = this.helperService.scale(
           value.minValue,
           value.maxValue,
-          value.steps
+          value.steps,
+          this.randomSelected
         );
         this.scaledArray[pos].push(...nowScaled);
       } else {
-        const nowScaled = this.scale(
+        const nowScaled = this.helperService.scale(
           value.minValue,
           value.maxValue,
-          value.steps
+          value.steps,
+          this.randomSelected
         );
         this.testArray.push(value);
         this.scaledArray.push(nowScaled);
@@ -263,10 +267,11 @@ export class SimSettingsComponent implements OnInit {
     }
 
     for (let value of this.testArray) {
-      for (const { temp, index } of this.scale(
+      for (const { temp, index } of this.helperService.scale(
         value.minValue,
         value.maxValue,
-        value.steps
+        value.steps,
+        this.randomSelected
       ).map((temp, index) => ({ temp, index }))) {
         let toBePushed = `{
                               "messageId": "200",
@@ -336,20 +341,7 @@ export class SimSettingsComponent implements OnInit {
     //     .then((res) => console.log(res));
   }
 
-  scale(min, max, steps) {
-    let values = [min];
-    if (!this.randomSelected) {
-      let calcStep = (max - min) / steps;
-      for (let i = 0; i < steps; i++) {
-        values.push(+values[i] + calcStep);
-      }
-    } else {
-      for (let i = 1; i < steps; i++) {
-        values.push(Math.floor(Math.random() * (max - min)) + min);
-      }
-    }
-    return values;
-  }
+  
 
   generateAlarms() {
     for (let alarm of this.alarms.filter((a) => a.alarmText)) {
@@ -425,9 +417,10 @@ export class SimSettingsComponent implements OnInit {
   implementAlternateMsmst() {
     let arr = [];
     let newArr = [];
+    let random = false;
     this.testArray.forEach((entry) =>
       arr.push({
-        values: this.scale(entry.minValue, entry.maxValue, entry.steps),
+        values: this.helperService.scale(entry.minValue, entry.maxValue, entry.steps, false),
         fragment: entry.fragment,
         series: entry.series,
         unit: entry.unit,
@@ -443,7 +436,7 @@ export class SimSettingsComponent implements OnInit {
         })
       );
     });
-    let arrObj = this.groupBy(newArr, "fragment");
+    let arrObj = this.helperService.groupBy(newArr, "fragment");
     let finalArr = [];
     finalArr.push(Object.values(arrObj));
     console.log(finalArr);
@@ -451,8 +444,8 @@ export class SimSettingsComponent implements OnInit {
     console.log(max);
     for (let i = 0; i < max; i++) {
       console.log("hh");
-      this.extractArrayValuesByColumn(finalArr, i);
-      this.alternateMsmts.push(...this.extractArrayValuesByColumn(finalArr, i));
+      this.helperService.extractArrayValuesByColumn(finalArr, i);
+      this.alternateMsmts.push(...this.helperService.extractArrayValuesByColumn(finalArr, i));
     }
     this.alternateMsmts = this.alternateMsmts.filter(
       (entry) => entry !== undefined
@@ -548,23 +541,5 @@ export class SimSettingsComponent implements OnInit {
     this.displayEditView = false;
   }
 
-  extractArrayValuesByColumn(arr, col) {
-    let msmts = [];
-    for (var i = 0; i < arr.length; i++) {
-      msmts.push(arr[i][col]);
-    }
-    return msmts;
-  }
-
-  groupBy(array, prop) {
-    var grouped = {};
-    for (var i = 0; i < array.length; i++) {
-      var p = array[i][prop];
-      if (!grouped[p]) {
-        grouped[p] = [];
-      }
-      grouped[p].push(array[i]);
-    }
-    return grouped;
-  }
+ 
 }
