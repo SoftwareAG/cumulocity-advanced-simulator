@@ -3,6 +3,7 @@ import { HelperService } from "./helper.service";
 import { IManagedObject } from "@c8y/client";
 import { MeasurementsService } from "./measurements.service";
 import { AlarmsService } from "./alarms.service";
+import { Event } from "@models/events.model";
 
 @Injectable({
   providedIn: "root",
@@ -10,21 +11,19 @@ import { AlarmsService } from "./alarms.service";
 export class SimulatorSettingsService {
   resultTemplate = { commandQueue: [], name: "" };
   measurements = [];
-  events: {
-    code: string;
-    eventType: string;
-    eventText: string;
-    steps: string;
-  }[] &
-    {
-      code: string;
-      lat: string;
-      lon: string;
-      alt: string;
-      accuracy: string;
-      steps: string;
-    }[] = [];
-  
+  newFragmentAdded = false;
+  alarms: {
+    level?: string;
+    alarmType: string;
+    alarmText: string;
+    steps?: string;
+  }[] = [];
+  events: Event[];
+  alarmConfig = [
+    "Generate repeated alarms",
+    "Alternate measurements with alarms",
+  ];
+  selectedAlarmConfig: string = this.alarmConfig[0];
   eventConfig = [
     "Generate repeated alarms",
     "Alternate measurements with alarms",
@@ -66,6 +65,10 @@ export class SimulatorSettingsService {
 
   
 
+  setEvents(events: Event[]) {
+    this.events = events;
+  }
+
   fetchCommandQueue() {
     return new Promise((resolve, reject) => {resolve(this.commandQueue)});
   }
@@ -92,7 +95,7 @@ export class SimulatorSettingsService {
             seconds: value.sleep,
           });
         }
-
+        this.currentMeasurement = this.measurementService.uniqueMeasurementsArray[this.measurementService.uniqueMeasurementsArray.length - 1];
         if (
           this.alarmsService.alarms &&
           this.alarmsService.selectedAlarmConfig === this.alarmsService.alarmConfig[1] &&

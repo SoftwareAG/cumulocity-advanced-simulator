@@ -24,6 +24,9 @@ import { SimSettingsComponent } from "./src/modules/create-sim/sim-settings/sim-
 import { EditInstructionComponent } from "./src/modules/create-sim/edit-instruction/edit-instruction.component";
 import { SimMeasurementsComponent } from "./src/modules/create-sim/sim-settings/sim-measurements/sim-measurements.component";
 import { SimAlarmsComponent } from "./src/modules/create-sim/sim-settings/sim-alarms/sim-alarms.component";
+import { SimSleepComponent } from "./src/modules/create-sim/sim-settings/sim-sleep/sim-sleep.component";
+import { SimEventsComponent } from "./src/modules/create-sim/sim-settings/sim-events/sim-events.component";
+
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
   {
@@ -70,6 +73,8 @@ const appRoutes: Routes = [
     SimSettingsComponent,
     EditInstructionComponent,
     SimMeasurementsComponent,
+    SimEventsComponent,
+    SimSleepComponent,
     SimAlarmsComponent
   ],
   entryComponents: [
@@ -82,6 +87,8 @@ const appRoutes: Routes = [
     SimSettingsComponent,
     EditInstructionComponent,
     SimMeasurementsComponent,
+    SimEventsComponent,
+    SimSleepComponent,
     SimAlarmsComponent
   ],
   providers: [ThemeService],
