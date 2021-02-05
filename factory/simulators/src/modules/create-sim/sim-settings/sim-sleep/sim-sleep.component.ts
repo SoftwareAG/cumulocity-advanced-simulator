@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SimulatorSettingsService } from 'src/services/simulatorSettings.service';
+import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 
 @Component({
   selector: 'app-sim-sleep',

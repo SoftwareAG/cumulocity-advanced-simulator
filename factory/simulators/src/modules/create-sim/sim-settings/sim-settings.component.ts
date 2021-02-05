@@ -59,10 +59,6 @@ export class SimSettingsComponent implements OnInit {
   };
 
 
-  latitude: string;
-  longitude: string;
-  altitude: string;
-  accuracy: string;
 
   randomSelected = false;
 

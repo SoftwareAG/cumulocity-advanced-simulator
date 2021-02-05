@@ -4,7 +4,7 @@
     "baseUrl": "./",
     "paths": {
       "@models/*": [
-        "models/*"
+        "./models/*"
       ],
       "@services/*": [
         "./src/services/*"

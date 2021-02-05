@@ -3,6 +3,7 @@ import { HelperService } from "./helper.service";
 import { IManagedObject } from "@c8y/client";
 import { MeasurementsService } from "./measurements.service";
 import { AlarmsService } from "./alarms.service";
+import { Event } from "@models/events.model";
 
 @Injectable({
   providedIn: "root",
@@ -28,20 +29,7 @@ export class SimulatorSettingsService {
     alarmText: string;
     steps?: string;
   }[] = [];
-  events: {
-    code: string;
-    eventType: string;
-    eventText: string;
-    steps: string;
-  }[] &
-    {
-      code: string;
-      lat: string;
-      lon: string;
-      alt: string;
-      accuracy: string;
-      steps: string;
-    }[] = [];
+  events: Event[];
   alarmConfig = [
     "Generate repeated alarms",
     "Alternate measurements with alarms",
@@ -118,6 +106,10 @@ export class SimulatorSettingsService {
 
   setMeasurements(measurements) {
     this.measurementService.measurements = measurements;
+  }
+
+  setEvents(events: Event[]) {
+    this.events = events;
   }
 
   fetchCommandQueue() {
