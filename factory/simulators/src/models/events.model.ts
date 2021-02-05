@@ -26,5 +26,5 @@ export interface Event {
     longitude?: string;
     altitude?: string;
     accuracy?: string;
-    geoCordinate?: GeoCoordinate;
+    geoCoordinate?: GeoCoordinate;
 }

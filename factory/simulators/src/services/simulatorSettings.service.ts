@@ -138,7 +138,7 @@ export class SimulatorSettingsService {
             seconds: value.sleep,
           });
         }
-
+        this.currentMeasurement = this.measurementService.uniqueMeasurementsArray[this.measurementService.uniqueMeasurementsArray.length - 1];
         if (
           this.alarms &&
           this.selectedAlarmConfig === this.alarmConfig[1] &&
