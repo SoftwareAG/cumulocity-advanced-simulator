@@ -9,25 +9,7 @@ import { AlarmsService } from "./alarms.service";
 })
 export class SimulatorSettingsService {
   resultTemplate = { commandQueue: [], name: "" };
-  displayInstructionsOrSleep = false;
-  defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
-  selectedConfig: string = this.defaultConfig[0];
-
-  eventCategories = [
-    { category: "Basic", code: "400" },
-    { category: "Location Update", code: "400" },
-    { category: "Location Update Device", code: "400" },
-  ];
-
-  selectedEventCategory = this.eventCategories[0].category;
   measurements = [];
-  newFragmentAdded = false;
-  alarms: {
-    level?: string;
-    alarmType: string;
-    alarmText: string;
-    steps?: string;
-  }[] = [];
   events: {
     code: string;
     eventType: string;
@@ -42,11 +24,7 @@ export class SimulatorSettingsService {
       accuracy: string;
       steps: string;
     }[] = [];
-  alarmConfig = [
-    "Generate repeated alarms",
-    "Alternate measurements with alarms",
-  ];
-  selectedAlarmConfig: string = this.alarmConfig[0];
+  
   eventConfig = [
     "Generate repeated alarms",
     "Alternate measurements with alarms",
@@ -63,14 +41,6 @@ export class SimulatorSettingsService {
     unit: string;
   };
 
-  currentAlarm: {
-    level: string;
-    alarmType: string;
-    alarmText: string;
-    steps: string;
-    sleep: string;
-  };
-
   eventType: string;
   eventText: string;
 
@@ -83,32 +53,10 @@ export class SimulatorSettingsService {
 
   randomSelected = false;
 
-  template = {
-    fragment: null,
-    series: null,
-    minValue: null,
-    maxValue: null,
-    steps: null,
-    unit: null,
-    tempType: "measurement",
-  };
-
-  uniqueMeasurementsArray = [];
-  scaledArray = [];
-
   mo: IManagedObject;
   data: any;
   simulatorName: string;
   commandQueue = [];
-  currentIndex: number;
-  insertIndex: number;
-  toAddMsmtOrSleep = false;
-  toDisplay = false;
-  value: string;
-  displayEditView = false;
-
-  alternateMsmts = [];
-  editMsmt;
 
   constructor(
     private helperService: HelperService,
@@ -116,9 +64,7 @@ export class SimulatorSettingsService {
     private alarmsService: AlarmsService
   ) {}
 
-  setMeasurements(measurements) {
-    this.measurementService.measurements = measurements;
-  }
+  
 
   fetchCommandQueue() {
     return new Promise((resolve, reject) => {resolve(this.commandQueue)});
@@ -148,11 +94,11 @@ export class SimulatorSettingsService {
         }
 
         if (
-          this.alarms &&
-          this.selectedAlarmConfig === this.alarmConfig[1] &&
-          index < this.alarms.length
+          this.alarmsService.alarms &&
+          this.alarmsService.selectedAlarmConfig === this.alarmsService.alarmConfig[1] &&
+          index < this.alarmsService.alarms.length
         ) {
-          let toBePushedAlarms = this.alarmsService.toAlarmTemplateFormat(this.alarms[index]);
+          let toBePushedAlarms = this.alarmsService.toAlarmTemplateFormat(this.alarmsService.alarms[index]);
           this.resultTemplate.commandQueue.push(JSON.parse(toBePushedAlarms));
         }
 
@@ -165,7 +111,7 @@ export class SimulatorSettingsService {
         }
       }
 
-      if (this.selectedAlarmConfig === this.alarmConfig[0]) {
+      if (this.alarmsService.selectedAlarmConfig === this.alarmsService.alarmConfig[0]) {
         this.alarmsService.generateAlarms();
       }
 
@@ -224,7 +170,7 @@ export class SimulatorSettingsService {
   }
 
   displayAlarmsWithoutMeasurements() {
-    if (this.alarms.length && !this.uniqueMeasurementsArray.length) {
+    if (this.alarmsService.alarms.length && !this.measurementService.uniqueMeasurementsArray.length) {
       this.alarmsService.generateAlarms();
     }
   }

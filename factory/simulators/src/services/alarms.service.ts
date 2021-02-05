@@ -7,8 +7,14 @@ export class AlarmsService {
 
 constructor() { }
 alarms = [];
-
-
+alarmConfig = [
+  "Generate repeated alarms",
+  "Alternate measurements with alarms",
+];
+selectedAlarmConfig: string = this.alarmConfig[0];
+setAlarms(alarms) {
+  this.alarms = alarms;
+}
 generateAlarms() {
   for (let alarm of this.alarms.filter((a) => a.alarmText)) {
     let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };

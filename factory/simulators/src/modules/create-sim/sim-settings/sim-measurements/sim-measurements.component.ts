@@ -1,5 +1,6 @@
 import { TitleCasePipe } from "@angular/common";
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
 @Component({
@@ -37,7 +38,7 @@ export class SimMeasurementsComponent implements OnInit {
 
   measurements = [];
 
-  constructor(private service: SimulatorSettingsService) {}
+  constructor(private service: MeasurementsService) {}
 
   ngOnInit() {}
 
