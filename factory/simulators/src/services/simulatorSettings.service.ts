@@ -66,7 +66,7 @@ export class SimulatorSettingsService {
 
   
 
-  fetchCommandQueue() {
+  fetchCommandQueue(): Promise<any[]> {
     return new Promise((resolve, reject) => {resolve(this.commandQueue)});
   }
 

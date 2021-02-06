@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-import { Subject, Subscription } from "rxjs";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 import { UpdateInstructionsService } from "../../services/updateInstructions.service";
 
@@ -17,19 +16,12 @@ export class SimulatorDetailsComponent implements OnInit {
   isInserted = false;
   showBtns = false;
   measurement: EditedMeasurement;
-  subscription: Subscription;
   constructor(
     private service: UpdateInstructionsService,
     private settingsService: SimulatorSettingsService
   ) {}
 
   ngOnInit() {
-    this.subscription = this.service.castMeasurement.subscribe((obs) => {
-      this.measurement = obs;
-      if (this.measurement) {
-        this.editCurrent();
-      }
-    });
     this.settingsService.fetchCommandQueue().then((result) => {
       this.commandQueue = result;
     });
@@ -45,15 +37,13 @@ export class SimulatorDetailsComponent implements OnInit {
     if (val.type === "builtin") {
       const pos = this.commandQueue.findIndex((entry) => entry === val);
       this.currentValue.emit({ value: val, index: pos });
-      console.log("Ival " + JSON.stringify({ value: val, index: pos }));
     } else if (val.type === "sleep") {
       const pos = this.commandQueue.findIndex((entry) => entry === val);
-      // this.currentValue.emit({value: val, index: pos});
-      console.log("Ival " + JSON.stringify({ value: val, index: pos }));
+      this.currentValue.emit({value: val, index: pos});
     }
   }
 
-  editCurrent() {
+  editCurrent() {    
     const pos = this.measurement.index;
     if (this.measurement.msmt.msgId === "200") {
       this.commandQueue[pos].values[0] = this.measurement.msmt.fragment;
@@ -69,6 +59,5 @@ export class SimulatorDetailsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }

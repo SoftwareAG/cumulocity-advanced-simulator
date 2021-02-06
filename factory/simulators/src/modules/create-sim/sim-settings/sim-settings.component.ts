@@ -199,11 +199,11 @@ export class SimSettingsComponent implements OnInit {
   }
 
   generateRequest() {
-    
-    this.simSettings.generateRequest();
-    // console.log(this.simSettings.commandQueue);
+    this.simSettings.fetchCommandQueue().then((res) => {
+      this.commandQueue = res;
+      this.simSettings.generateRequest();
+    });
   }
-
 
   updateCommandQueue(newCommandQueue) {
     this.commandQueue = newCommandQueue;
@@ -236,6 +236,4 @@ export class SimSettingsComponent implements OnInit {
     this.editMsmt = val;
     console.log(val);
   }
-
- 
 }

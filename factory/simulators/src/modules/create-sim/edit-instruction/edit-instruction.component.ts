@@ -1,18 +1,27 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EditedMeasurement } from 'src/models/editedMeasurement.model';
-import { UpdateInstructionsService } from '../../../services/updateInstructions.service';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { EditedMeasurement } from "src/models/editedMeasurement.model";
 
 @Component({
-  selector: 'app-edit-instruction',
-  templateUrl: './edit-instruction.component.html',
-  styleUrls: ['./edit-instruction.component.scss']
+  selector: "app-edit-instruction",
+  templateUrl: "./edit-instruction.component.html",
+  styleUrls: ["./edit-instruction.component.scss"],
 })
 export class EditInstructionComponent implements OnInit {
+  editedValue;
+  newValue = { fragment: "", series: "", value: "", unit: "" };
+  @Input() set editedVal(val) {
+    this.editedValue = val;
+    this.switchEditTemplate();
+  }
 
-  @Input() editedVal;
+  get editedVal() {
+    return this.editedValue;
+  }
+  @Input() commandQueue;
+  @Input() mo;
   @Output() updatedVal = new EventEmitter();
 
-  constructor(private updatedService: UpdateInstructionsService) { }
+  constructor() {}
   alarmText: string;
   alarmType: string;
 
@@ -22,32 +31,46 @@ export class EditInstructionComponent implements OnInit {
   sleep: string;
 
   selectedEditView: string;
-
+  toEmit = false;
   edited: EditedMeasurement;
-  
 
-  ngOnInit() {
-    if (this.editedVal.value.messageId === '200') {
-      this.selectedEditView = 'msmts';
-    } else if (this.editedVal.value.messageId.startsWith('40')) {
-      this.selectedEditView = "event";
-    } else if (this.editedVal.value.messageId.startsWith('30')) {
-      this.selectedEditView = "alarm";
-    } else {
+  ngOnInit() {}
+
+  updateMsmt() {
+    for (let i = 0; i < Object.keys(this.newValue).length; i++) {
+      this.editedValue.value.values[i] = this.newValue[
+        Object.keys(this.newValue)[i]
+      ];
+    }
+    // TODO: Implement backend save 
+  }
+
+  switchEditTemplate() {
+    
+    if (this.editedValue.value.type === "sleep") {
       this.selectedEditView = "sleep";
+    } else if (this.editedValue.value.messageId === "200") {
+      this.selectedEditView = "msmts";
+      for (let i = 0; i < Object.keys(this.newValue).length; i++) {
+        this.newValue[
+          Object.keys(this.newValue)[i]
+        ] = this.editedValue.value.values[i];
+      }
+    } else if (this.editedValue.value.messageId.startsWith("30")) {
+      this.selectedEditView = "alarm";
     }
   }
 
-
-  emitToDetailView(){
-    this.updatedService.setEditedMeasurement(this.edited);
+  editFragment(val) {
+    this.newValue.fragment = val;
   }
-
-  updateMsmt() {
-    this.edited = this.editedVal;
-    this.emitToDetailView();
+  editSeries(val) {
+    this.newValue.series = val;
   }
-
- 
-
+  editValue(val) {
+    this.newValue.value = val;
+  }
+  editUnit(val) {
+    this.newValue.unit = val;
+  }
 }
