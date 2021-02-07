@@ -30,12 +30,10 @@ export class SimulatorEntryComponent implements OnInit {
 
   openAddNewSimulatorDialog() {
     const modal = this.modalService.show(SimulatorConfigComponent);
-    // modal.content.device = this.device;
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
-          console.log(result);
-          // this.existing_trips.push(result);
+          
         }
         this.modalUnsubscribe();
       })
@@ -59,7 +57,6 @@ export class SimulatorEntryComponent implements OnInit {
 
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
       console.log("State changed");
-      console.log(simulator.c8y_DeviceSimulator);
       this.backend.connectToSimulatorsBackend(simulator.c8y_DeviceSimulator);
     });
   }

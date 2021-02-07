@@ -36,14 +36,17 @@ export class SimAlarmsComponent implements OnInit {
   
   onChangeOfAlarmConfig(val) {
     this.selectedAlarmConfig = val;
+    this.service.selectedAlarmConfig = this.selectedAlarmConfig;
   }
 
   
   onChangeOfAlarm(val) {
     this.selectedAlarmCategory = val;
+    this.service.selectedAlarmCategory = this.selectedAlarmCategory;
   }
 
   addAlarmToArray() {
+    for (let i = 0; i < parseInt(this.alarmSteps); i++) {
     const level = this.alarmCategories.find(
       (entry) => entry.category === this.selectedAlarmCategory
     ).code;
@@ -56,6 +59,7 @@ export class SimAlarmsComponent implements OnInit {
       alarmConfig: this.selectedAlarmConfig
     };
     this.alarms.push(this.currentAlarm);
+  }
     this.service.setAlarms(this.alarms);
     this.alarmText = "";
     this.alarmType = "";

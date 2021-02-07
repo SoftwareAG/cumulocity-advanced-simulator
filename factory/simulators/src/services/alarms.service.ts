@@ -12,13 +12,24 @@ alarmConfig = [
   "Alternate measurements with alarms",
 ];
 selectedAlarmConfig: string = this.alarmConfig[0];
+
+alarmCategories = [
+  { category: "Critical", code: "301" },
+  { category: "Major", code: "302" },
+  { category: "Minor", code: "303" },
+];
+selectedAlarmCategory = this.alarmCategories[0].category;
+
 setAlarms(alarms) {
   this.alarms = alarms;
 }
 generateAlarms() {
+  let toBePushed = [];
   for (let alarm of this.alarms.filter((a) => a.alarmText)) {
     let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
-    this.toAlarmTemplateFormat(alarm);
+    toBePushed.push(JSON.parse(this.toAlarmTemplateFormat(alarm)));
+    // FIXME: Add sleep 
+    
     // if (
     //   alarm.sleep &&
     //   this.selectedAlarmConfig === this.alarmConfig[0]
@@ -29,6 +40,7 @@ generateAlarms() {
     //   });
     // }
   }
+  return toBePushed;
 }
 
 toAlarmTemplateFormat(alarm) {

@@ -1,8 +1,7 @@
 
 <div class="col-lg-6">
-  <app-simulator-details
-  (currentCommandQueue)="updateCommandQueue($event)" (currentValue)="updateCurrent($event)"
-  (insertSleepOrFragment)="insertSleepOrFragment($event)"></app-simulator-details>
+  <app-simulator-details [commandQueue]="commandQueue"
+  (currentCommandQueue)="updateCommandQueue($event)" (currentValue)="updateCurrent($event)"></app-simulator-details>
   <br>
   <!-- {{resultTemplate.commandQueue | json }} -->
   <div class="tight-grid">
@@ -50,7 +49,7 @@
 
         <!-- Alarms -->
         <ng-template [ngSwitchCase]="'Alarms'">
-          <app-sim-alarms (alarmEmitter)="addAlarmToArray($event)"></app-sim-alarms>
+          <app-sim-alarms></app-sim-alarms>
         </ng-template>
 
         <!-- Events -->

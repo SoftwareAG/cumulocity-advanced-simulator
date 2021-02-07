@@ -42,11 +42,12 @@ export class EditInstructionComponent implements OnInit {
         Object.keys(this.newValue)[i]
       ];
     }
-    // TODO: Implement backend save 
+    // TODO: Implement save in MO 
   }
 
   switchEditTemplate() {
     
+    // FIXME: Add editValue cast to alarms, events and sleep
     if (this.editedValue.value.type === "sleep") {
       this.selectedEditView = "sleep";
     } else if (this.editedValue.value.messageId === "200") {

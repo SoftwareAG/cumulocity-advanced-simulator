@@ -2,9 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { IManagedObject } from "@c8y/client";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
-import { HelperService } from "../../../services/helper.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -14,8 +12,7 @@ export class SimSettingsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private simService: SimulatorsServiceService,
-    private helperService: HelperService,
-    private simSettings: SimulatorSettingsService
+    private simSettings: SimulatorSettingsService,
   ) {}
 
   resultTemplate = { commandQueue: [], name: "" };
@@ -23,9 +20,6 @@ export class SimSettingsComponent implements OnInit {
   defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
   selectedConfig: string = this.defaultConfig[0];
 
- 
-
-  measurements = [];
   newFragmentAdded = false;
   alarms: {
     level?: string;
@@ -40,41 +34,7 @@ export class SimSettingsComponent implements OnInit {
   ];
   selectedAlarmConfig: string = this.alarmConfig[0];
 
-  currentMeasurement: {
-    sleep: string;
-    fragment: string;
-    series: string;
-    minValue: string;
-    maxValue: string;
-    steps: string;
-    unit: string;
-  };
-
-  currentAlarm: {
-    level: string;
-    alarmType: string;
-    alarmText: string;
-    steps: string;
-    sleep: string;
-  };
-
-
-
   randomSelected = false;
-
-  template = {
-    fragment: null,
-    series: null,
-    minValue: null,
-    maxValue: null,
-    steps: null,
-    unit: null,
-    tempType: "measurement",
-  };
-
-  testArray = [];
-  scaledArray = [];
-
   mo: IManagedObject;
   data: any;
   simulatorName: string;
@@ -83,10 +43,8 @@ export class SimSettingsComponent implements OnInit {
   insertIndex: number;
   toAddMsmtOrSleep = false;
   toDisplay = false;
-  value: string;
   displayEditView = false;
 
-  alternateMsmts = [];
   editMsmt;
 
   ngOnInit() {
@@ -95,6 +53,7 @@ export class SimSettingsComponent implements OnInit {
     this.simulatorName = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.resultTemplate.name = this.data.simulator.data.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.simSettings.setCommandQueue(this.commandQueue);
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
   }
 
@@ -102,30 +61,12 @@ export class SimSettingsComponent implements OnInit {
     this.selectedConfig = val;
   }
 
-
-  addAlarmToArray(val) {
-    this.newFragmentAdded = true;
-    this.currentAlarm = {
-      level: val.alarm.level,
-      alarmText: val.alarm.alarmText,
-      alarmType: val.alarm.alarmType,
-      steps: val.alarm.alarmSteps,
-      sleep: val.alarm.alarmSleep,
-    };
-    this.selectedAlarmConfig = val.alarm.alarmConfig;
-    for (let i = 0; i < parseInt(this.currentAlarm.steps); i++) {
-      this.alarms.push(this.currentAlarm);
-    }
-  }
-
-  deepCopy(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
-
   generateRequest() {
-    this.simSettings.fetchCommandQueue().then((res) => {
-      this.commandQueue = res;
-      this.simSettings.generateRequest();
+    const template = this.simSettings.generateRequest();
+    this.commandQueue.push(...template);
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+      console.log(res);
     });
   }
 
@@ -135,11 +76,6 @@ export class SimSettingsComponent implements OnInit {
     this.simService
       .updateSimulatorManagedObject(this.mo)
       .then((result) => console.log(result));
-  }
-
-  insertSleepOrFragment(current) {
-    this.toAddMsmtOrSleep = current.bool;
-    this.insertIndex = current.index;
   }
 
   onSelectInstructions() {
@@ -158,6 +94,5 @@ export class SimSettingsComponent implements OnInit {
     this.displayEditView = true;
     this.displayInstructionsOrSleep = false;
     this.editMsmt = val;
-    console.log(val);
   }
 }

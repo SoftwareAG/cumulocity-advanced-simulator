@@ -59,8 +59,8 @@ export class SimMeasurementsComponent implements OnInit {
         sleep: this.sleep ? this.sleep : "",
 
     };
-    this.measurements.push(this.measurement);
-    this.service.setMeasurements(this.measurements);
+    this.service.measurements.push(this.measurement);
+    // this.service.setMeasurements(this.measurements);
     this.fragment = "";
     this.maxVal = "";
     this.minVal = "";
