@@ -16,8 +16,6 @@ export class SimEventsComponent implements OnInit {
     { category: "Location Update", code: "401" },
     { category: "Location Update Device", code: "402" },
   ];
-  
-  events: Event[] = [];
 
   protected geoCoordinate: GeoCoordinate = {};
 
@@ -44,7 +42,7 @@ export class SimEventsComponent implements OnInit {
     if (this.selectedEventCategory === this.eventCategories[0].category){
 
       for (let i = 0; i < parseInt(this.eventSteps); i++) {
-        this.events.push({
+        this.service.events.push({
           code: this.eventCategories[0].code,
           eventType: this.eventType,
           eventText: this.eventText,
@@ -56,7 +54,7 @@ export class SimEventsComponent implements OnInit {
       this.eventSteps = "";
     } else {
       for (let i = 0; i < parseInt(this.eventSteps); i++) {
-        this.events.push({
+        this.service.events.push({
           code: this.eventCategories.find(
             (temp) => temp.category === this.selectedEventCategory
           ).code,
@@ -68,8 +66,6 @@ export class SimEventsComponent implements OnInit {
       this.eventSteps = "";
       
     }
-    
-    this.service.setEvents(this.events);
   }
 
 

@@ -58,9 +58,8 @@ export class SimAlarmsComponent implements OnInit {
       alarmSleep: this.alarmSleep,
       alarmConfig: this.selectedAlarmConfig
     };
-    this.alarms.push(this.currentAlarm);
+    this.service.alarms.push(this.currentAlarm);
   }
-    this.service.setAlarms(this.alarms);
     this.alarmText = "";
     this.alarmType = "";
     this.alarmSteps = "";

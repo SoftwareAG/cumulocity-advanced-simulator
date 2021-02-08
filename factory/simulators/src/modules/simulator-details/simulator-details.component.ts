@@ -42,13 +42,12 @@ export class SimulatorDetailsComponent implements OnInit {
 
   editCurrent() {    
     const pos = this.measurement.index;
-    if (this.measurement.msmt.msgId === "200") {
-      this.commandQueue[pos].values[0] = this.measurement.msmt.fragment;
-      this.commandQueue[pos].values[1] = this.measurement.msmt.series;
-      this.commandQueue[pos].values[2] = this.measurement.msmt.value;
-      this.commandQueue[pos].values[3] = this.measurement.msmt.unit;
+      for (let i=0; i<this.commandQueue[pos].length; i++) {
+        this.commandQueue[pos].values[i] = this.measurement.msmt[Object.keys(this.measurement.msmt)[i]];
+      }
+
       // TODO: Insert backend save here and edit for alarms, events and sleep
-    }
+    
   }
 
   fetchAddInstructionsOrSleepView() {
