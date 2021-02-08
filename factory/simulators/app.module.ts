@@ -33,7 +33,7 @@ const appRoutes: Routes = [
     path: "createSim/:id",
     
     children: [{
-      path: "createInstructions",
+      path: "instructions",
       component: CreateSimComponent,
       
       
@@ -43,7 +43,7 @@ const appRoutes: Routes = [
       
     }, {
       path: "",
-      redirectTo: 'createInstructions',
+      redirectTo: 'instructions',
       pathMatch: 'full'
       
     },],

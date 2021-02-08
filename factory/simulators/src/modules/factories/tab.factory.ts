@@ -20,7 +20,7 @@ export class CustomTabFactory implements TabFactory {
                 {
                     label: 'Instructions',
                     icon: 'sort-amount-asc',
-                    path: `createSim/${id}/createInstructions`,
+                    path: `createSim/${id}/instructions`,
                     priority: 100
                 },
                 {
