@@ -3,14 +3,19 @@
   <br>
   <!-- {{resultTemplate.commandQueue | json }} -->
   <div class="tight-grid">
-    <div class="col-xs-6">
+    <div class="col-xs-4">
       <button title="Add instruction" class="btn-add-block" (click)="onSelectInstructions()">
         <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add instructions
       </button>
     </div>
-    <div class="col-xs-6">
+    <div class="col-xs-4">
       <button title="Add sleep" class="btn-add-block" (click)="onSelectSleep()">
         <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Add sleep
+      </button>
+    </div>
+    <div class="col-xs-4">
+      <button title="Add sleep" class="btn-add-block" (click)="onSelectSleep()">
+        <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Clear all Instructions
       </button>
     </div>
   </div>
