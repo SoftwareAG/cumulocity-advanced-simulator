@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { EditedEvent } from "@models/events.model";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 
 @Component({
@@ -10,14 +11,14 @@ export class EditInstructionComponent implements OnInit {
   editedValue;
   newValue = { fragment: "", series: "", value: "", unit: "" };
   newAlarm = { alarmText: "", alarmType: "" };
-  newEvent: {
-    eventText?: string;
-    eventType?: string;
-    eventLatitude?: string;
-    eventLongitude?: string;
-    eventAltitude?: string;
-    eventAccuracy?: string;
-  } = { eventText: "", eventType: "", eventAccuracy: "", eventLatitude: "", eventLongitude: "", eventAltitude: "" };
+  newEvent: EditedEvent = {
+    eventText: "",
+    eventType: "",
+    eventAccuracy: "",
+    eventLatitude: "",
+    eventLongitude: "",
+    eventAltitude: "",
+  };
 
   @Input() set editedVal(val) {
     this.editedValue = val;
@@ -65,18 +66,18 @@ export class EditInstructionComponent implements OnInit {
 
   updateBasicEvent() {
     if (this.editedValue.value.messageId === "400") {
-    for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
-      this.editedValue.value.values[i] = this.newEvent[
-        Object.keys(this.newEvent)[i]
-      ];
+      for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
+        this.editedValue.value.values[i] = this.newEvent[
+          Object.keys(this.newEvent)[i]
+        ];
+      }
+    } else {
+      for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
+        this.editedValue.value.values[i] = this.newEvent[
+          Object.keys(this.newEvent)[i + 2]
+        ];
+      }
     }
-  } else {
-    for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
-    this.editedValue.value.values[i] = this.newEvent[
-      Object.keys(this.newEvent)[i+2]
-    ];
-  }
-  }
   }
 
   switchEditTemplate() {

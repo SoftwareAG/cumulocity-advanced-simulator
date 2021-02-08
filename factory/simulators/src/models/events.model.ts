@@ -28,3 +28,12 @@ export interface Event {
     accuracy?: string;
     geoCoordinate?: GeoCoordinate;
 }
+
+export interface EditedEvent {
+    eventText?: string;
+    eventType?: string;
+    eventLatitude?: string;
+    eventLongitude?: string;
+    eventAltitude?: string;
+    eventAccuracy?: string;
+  }
