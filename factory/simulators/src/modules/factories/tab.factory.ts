@@ -13,13 +13,21 @@ export class CustomTabFactory implements TabFactory {
     get(): Observable<Tab[] | Tab> | Promise<Tab[] | Tab> | Tab[] | Tab {
         const tabArray = new Array<Tab>();
         const url = this.router.url;
-        if (url && /createSim/.test(url)) {
+        const id = ((url.match(/\d+/g))[0]).toString();
+        if (url) {
             tabArray.push(
+
+                {
+                    label: 'Instructions',
+                    icon: 'sort-amount-asc',
+                    path: `createSim/${id}/createInstructions`,
+                    priority: 100
+                },
                 {
                     label: 'Alarms',
                     icon: 'c8y-icon c8y-icon-alert-idle',
-                    path: 'createSim/18463756/alarms',
-                    priority: 100
+                    path: `createSim/${id}/alarms`,
+                    priority: 99
                 }
             );
         }
