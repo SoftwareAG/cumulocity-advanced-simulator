@@ -97,6 +97,7 @@ export class EditInstructionComponent implements OnInit {
 
   updateSleep() {
     if (this.editedValue.value.seconds) {
+      this.editedValue.value.seconds = this.newSleep;
       this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
       this.updateCommandQueueInManagedObject(this.mo, 'Sleep');
     }
@@ -106,6 +107,7 @@ export class EditInstructionComponent implements OnInit {
     // FIXME: Add editValue cast to alarms, events and sleep
     if (this.editedValue.value.type === "sleep") {
       this.selectedEditView = "sleep";
+      this.newSleep = this.editedValue.value.seconds;
     } else if (this.editedValue.value.messageId === "200") {
       this.selectedEditView = "msmts";
       for (let i = 0; i < Object.keys(this.newValue).length; i++) {
@@ -186,7 +188,6 @@ export class EditInstructionComponent implements OnInit {
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
     this.simulatorervice.updateSimulatorManagedObject(mo).then(
       (res) => {
-        console.log(res);
         const alert = {
           text: `${type} updated successfully.`,
           type: "success",
@@ -195,7 +196,7 @@ export class EditInstructionComponent implements OnInit {
       },
       (error) => {
         const alert = {
-          text: `Failed to save selected ${type}.`,
+          text: `Failed to save selected ${type.toLowerCase()}.`,
           type: "danger",
         } as Alert;
         this.alertService.add(alert);
