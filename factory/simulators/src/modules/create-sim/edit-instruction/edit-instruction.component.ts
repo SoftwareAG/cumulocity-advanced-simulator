@@ -5,6 +5,8 @@ import { IManagedObject } from "@c8y/client";
 import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
+import { ActivatedRoute } from "@angular/router";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
 @Component({
   selector: "app-edit-instruction",
@@ -12,7 +14,24 @@ import { EditedMeasurement } from "src/models/editedMeasurement.model";
   styleUrls: ["./edit-instruction.component.scss"],
 })
 export class EditInstructionComponent implements OnInit {
+  alarmText: string;
+  alarmType: string;
+  
+  eventText: string;
+  eventType: string;
+  
+  sleep: string;
+  
+  selectedEditView: string;
+  toEmit = false;
+  edited: EditedMeasurement;
+  data: any;
+  
+  mo: IManagedObject;
   editedValue;
+  commandQueue = [];
+
+
   newValue = { fragment: "", series: "", value: "", unit: "" };
   newAlarm = { alarmType: "", alarmText: ""};
   newEvent: EditedEvent = {
@@ -33,27 +52,22 @@ export class EditInstructionComponent implements OnInit {
   get editedVal() {
     return this.editedValue;
   }
-  @Input() commandQueue;
-  @Input() mo;
+  
   @Output() updatedVal = new EventEmitter();
 
   constructor(
+    private route: ActivatedRoute,
     private alertService: AlertService,
-    private simulatorervice: SimulatorsServiceService
+    private simulatorervice: SimulatorsServiceService,
+    private simSettings: SimulatorSettingsService
   ) {}
-  alarmText: string;
-  alarmType: string;
 
-  eventText: string;
-  eventType: string;
-
-  sleep: string;
-
-  selectedEditView: string;
-  toEmit = false;
-  edited: EditedMeasurement;
-
-  ngOnInit() {}
+  ngOnInit() {
+    this.data = this.route.snapshot.data;
+    this.mo = this.data.simulator.data;
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.simSettings.setCommandQueue(this.commandQueue);
+  }
 
   updateMsmt() {
     for (let i = 0; i < Object.keys(this.newValue).length; i++) {

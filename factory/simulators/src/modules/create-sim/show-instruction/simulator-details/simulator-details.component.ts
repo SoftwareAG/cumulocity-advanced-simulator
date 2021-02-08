@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { SimMeasurementsComponent } from "@modules/create-sim/sim-settings/sim-measurements/sim-measurements.component";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
-import { UpdateInstructionsService } from "../../services/updateInstructions.service";
+import { UpdateInstructionsService } from "@services/updateInstructions.service";
 
 @Component({
   selector: "app-simulator-details",

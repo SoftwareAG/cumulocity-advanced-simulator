@@ -9,7 +9,6 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
   styleUrls: ["./sim-measurements.component.scss"],
 })
 export class SimMeasurementsComponent implements OnInit {
-  @Output() msmt = new EventEmitter();
   measurementOptions = [
     "Measurement series one after another",
     "Alternate measurement series",
@@ -46,6 +45,10 @@ export class SimMeasurementsComponent implements OnInit {
     this.selectedMsmtOption = val;
   }
 
+  removeMeasurementFromArray() {
+
+  }
+
   addMsmtToArray() {
     // this.newFragmentAdded = true;
     this.measurement = {
@@ -59,14 +62,8 @@ export class SimMeasurementsComponent implements OnInit {
         sleep: this.sleep ? this.sleep : "",
 
     };
+
     this.service.measurements.push(this.measurement);
-    // this.service.setMeasurements(this.measurements);
-    this.fragment = "";
-    this.maxVal = "";
-    this.minVal = "";
-    this.series = "";
-    this.steps = "";
-    this.unit = "";
   }
 
 }

@@ -16,6 +16,12 @@ setMeasurements(measurements) {
   this.measurements = measurements;
 }
 
+public fetchMeasurements(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      resolve(this.measurements);
+    });
+}
+
 createUniqueMeasurementsArray() {
   for (let value of this.measurements.filter((a) => a.fragment)) {
     value.steps = +value.steps;

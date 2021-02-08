@@ -19,9 +19,10 @@ import { SimulatorResolverService } from "./src/services/simulatorResolver.servi
 import { SimulatorChartComponent } from "./src/modules/simulator-chart/simulator-chart.component";
 import { C8yFactoriesModule } from "./src/modules/factories/c8yfactories.module";
 import { AlarmsComponent } from "./src/modules/alarms/alarms.component";
-import { SimulatorDetailsComponent } from "./src/modules/simulator-details/simulator-details.component";
+import { SimulatorDetailsComponent } from "./src/modules/create-sim/show-instruction/simulator-details/simulator-details.component";
 import { SimSettingsComponent } from "./src/modules/create-sim/sim-settings/sim-settings.component";
 import { EditInstructionComponent } from "./src/modules/create-sim/edit-instruction/edit-instruction.component";
+import { ShowInstructionComponent } from "./src/modules/create-sim/show-instruction/show-instruction.component";
 import { SimMeasurementsComponent } from "./src/modules/create-sim/sim-settings/sim-measurements/sim-measurements.component";
 import { SimAlarmsComponent } from "./src/modules/create-sim/sim-settings/sim-alarms/sim-alarms.component";
 import { SimSleepComponent } from "./src/modules/create-sim/sim-settings/sim-sleep/sim-sleep.component";
@@ -75,6 +76,7 @@ const appRoutes: Routes = [
     SimMeasurementsComponent,
     SimEventsComponent,
     SimSleepComponent,
+    ShowInstructionComponent,
     SimAlarmsComponent
   ],
   entryComponents: [
@@ -89,6 +91,7 @@ const appRoutes: Routes = [
     SimMeasurementsComponent,
     SimEventsComponent,
     SimSleepComponent,
+    ShowInstructionComponent,
     SimAlarmsComponent
   ],
   providers: [ThemeService],

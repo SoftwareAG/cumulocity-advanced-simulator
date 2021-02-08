@@ -1,1 +1,18 @@
-<app-sim-settings></app-sim-settings>
+<div class="col-lg-6">
+    <div *ngFor="let first of measurementSeries; let i = index;">
+        <app-sim-settings></app-sim-settings>
+    </div>
+    <div class="col-sm-8">
+        <br>
+        <button class="btn btn-success" style="float: right" (click)="generateRequest();">
+            Generate Series
+        </button>
+    </div>
+</div>
+
+<div class="col-lg-6">
+    <app-show-instruction></app-show-instruction>
+    <app-edit-instruction [editedVal]="editMsmt" *ngIf="displayEditView"></app-edit-instruction>
+</div>
+
+
