@@ -112,7 +112,7 @@ export class EditInstructionComponent implements OnInit {
       this.selectedEditView = "event";
       for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
         this.newEvent[
-          Object.keys(this.newEvent)[i]
+          Object.keys(this.newEvent)[i+2]
         ] = this.editedValue.value.values[i];
       }
     }
