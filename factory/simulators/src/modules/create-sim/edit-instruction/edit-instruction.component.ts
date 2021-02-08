@@ -23,6 +23,7 @@ export class EditInstructionComponent implements OnInit {
     eventLongitude: "",
     eventAltitude: "",
   };
+  newSleep: string;
 
   @Input() set editedVal(val) {
     this.editedValue = val;
@@ -60,7 +61,6 @@ export class EditInstructionComponent implements OnInit {
         Object.keys(this.newValue)[i]
       ];
     }
-    const pos = this.editedValue.index;
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.updateCommandQueueInManagedObject(this.mo, 'Measurement');
     
@@ -72,7 +72,6 @@ export class EditInstructionComponent implements OnInit {
         Object.keys(this.newAlarm)[i]
       ];
     }
-    const pos = this.editedValue.index;
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.updateCommandQueueInManagedObject(this.mo, 'Alarm');
     
@@ -92,9 +91,15 @@ export class EditInstructionComponent implements OnInit {
         ];
       }
     }
-    const pos = this.editedValue.index;
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.updateCommandQueueInManagedObject(this.mo, 'Event');
+  }
+
+  updateSleep() {
+    if (this.editedValue.value.seconds) {
+      this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+      this.updateCommandQueueInManagedObject(this.mo, 'Sleep');
+    }
   }
 
   switchEditTemplate() {
@@ -173,6 +178,9 @@ export class EditInstructionComponent implements OnInit {
   }
   editEventAccuracy(val) {
     this.newEvent.eventAccuracy = val;
+  }
+  editSleep(val) {
+    this.newSleep = val;
   }
 
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {

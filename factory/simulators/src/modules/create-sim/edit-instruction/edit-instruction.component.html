@@ -126,7 +126,7 @@
       </ng-template>
 
       <ng-template [ngSwitchCase]="'event'">
-        <div class="col-sm-6 col-xs-6">
+        <div class="col-sm-3 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
@@ -138,7 +138,7 @@
           </div>
         </div>
 
-        <div class="col-sm-6 col-xs-6">
+        <div class="col-sm-3 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
@@ -150,7 +150,7 @@
           </div>
         </div>
 
-        <div class="col-sm-6 col-xs-6">
+        <div class="col-sm-3 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
@@ -162,7 +162,7 @@
           </div>
         </div>
 
-        <div class="col-sm-6 col-xs-6">
+        <div class="col-sm-3 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
@@ -179,7 +179,24 @@
           </div>
         </div>
       </ng-template>
-      <ng-template [ngSwitchCase]="'sleep'"></ng-template>
+      <ng-template [ngSwitchCase]="'sleep'">
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Sleep (seconds)"
+              [ngModel]="editedVal.value.seconds"
+              (ngModelChange)="editSleep($event)"
+            />
+          </div>
+        </div>
+        <div class="col-sm-6 col-xs-6">
+          <button class="btn btn-primary" style="float: right" (click)="updateSleep()">
+            Update Sleep
+          </button>
+        </div>
+      </ng-template>
     </div>
   </div>
 </div>
