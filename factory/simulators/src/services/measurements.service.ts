@@ -12,6 +12,10 @@ uniqueMeasurementsArray = [];
 scaledArray = [];
 randomSelected = false;
 
+setMeasurements(measurements) {
+  this.measurements = measurements;
+}
+
 createUniqueMeasurementsArray() {
   for (let value of this.measurements.filter((a) => a.fragment)) {
     value.steps = +value.steps;

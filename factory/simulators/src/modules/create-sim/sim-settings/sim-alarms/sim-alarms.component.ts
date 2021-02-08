@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AlarmsService } from '@services/alarms.service';
 
 @Component({
   selector: 'app-sim-alarms',
@@ -25,9 +26,9 @@ export class SimAlarmsComponent implements OnInit {
   alarmText: string;
   alarmSteps: string;
   alarmSleep: string;
-
-  alarm: {alarm: {level: string; alarmType: string; alarmText: string; alarmSteps: string; alarmSleep?: string; alarmConfig: string;}};
-  constructor() { }
+  alarms = [];
+  currentAlarm: {level: string; alarmType: string; alarmText: string; alarmSteps: string; alarmSleep?: string; alarmConfig: string;};
+  constructor(private service: AlarmsService) { }
 
   ngOnInit() {
   }
@@ -35,26 +36,30 @@ export class SimAlarmsComponent implements OnInit {
   
   onChangeOfAlarmConfig(val) {
     this.selectedAlarmConfig = val;
+    this.service.selectedAlarmConfig = this.selectedAlarmConfig;
   }
 
   
   onChangeOfAlarm(val) {
     this.selectedAlarmCategory = val;
+    this.service.selectedAlarmCategory = this.selectedAlarmCategory;
   }
 
   addAlarmToArray() {
+    for (let i = 0; i < parseInt(this.alarmSteps); i++) {
     const level = this.alarmCategories.find(
       (entry) => entry.category === this.selectedAlarmCategory
     ).code;
-    this.alarm = {alarm:{
+    this.currentAlarm = {
       level: level,
       alarmType: this.alarmType,
       alarmText: this.alarmText,
       alarmSteps: this.alarmSteps,
       alarmSleep: this.alarmSleep,
       alarmConfig: this.selectedAlarmConfig
-    }};
-    this.alarmEmitter.emit(this.alarm);
+    };
+    this.service.alarms.push(this.currentAlarm);
+  }
     this.alarmText = "";
     this.alarmType = "";
     this.alarmSteps = "";

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { Event } from '@models/events.model';
 import { GeoCoordinate } from '@models/geoCoordinate.model';
+import { EventsService } from '@services/events.service';
 
 @Component({
   selector: 'app-sim-events',
@@ -13,13 +13,11 @@ export class SimEventsComponent implements OnInit {
 
   eventCategories = [
     { category: "Basic", code: "400" },
-    { category: "Location Update", code: "400" },
-    { category: "Location Update Device", code: "400" },
+    { category: "Location Update", code: "401" },
+    { category: "Location Update Device", code: "402" },
   ];
-  
-  events: Event[] = [];
 
-  private geoCoordinate: GeoCoordinate = {};
+  protected geoCoordinate: GeoCoordinate = {};
 
   eventType: string;
   eventText: string;
@@ -35,7 +33,7 @@ export class SimEventsComponent implements OnInit {
   selectedEventConfig: string = this.eventConfig[0];
   selectedEventCategory = this.eventCategories[0].category;
 
-  constructor(private service: SimulatorSettingsService) { }
+  constructor(private service: EventsService) { }
 
   ngOnInit() {
   }
@@ -44,7 +42,7 @@ export class SimEventsComponent implements OnInit {
     if (this.selectedEventCategory === this.eventCategories[0].category){
 
       for (let i = 0; i < parseInt(this.eventSteps); i++) {
-        this.events.push({
+        this.service.events.push({
           code: this.eventCategories[0].code,
           eventType: this.eventType,
           eventText: this.eventText,
@@ -56,7 +54,7 @@ export class SimEventsComponent implements OnInit {
       this.eventSteps = "";
     } else {
       for (let i = 0; i < parseInt(this.eventSteps); i++) {
-        this.events.push({
+        this.service.events.push({
           code: this.eventCategories.find(
             (temp) => temp.category === this.selectedEventCategory
           ).code,
@@ -68,16 +66,16 @@ export class SimEventsComponent implements OnInit {
       this.eventSteps = "";
       
     }
-    
-    this.service.setEvents(this.events);
   }
 
 
   onChangeEvent(val) {
     this.selectedEventCategory = val;
+    this.service.selectedEventCategory = this.selectedEventCategory;
   }
 
   onChangeOfEventConfig(val) {
     this.selectedEventConfig = val;
+    this.service.selectedEventConfig = this.selectedEventConfig;
   }
 }

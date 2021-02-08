@@ -1,123 +1,50 @@
 import { Injectable } from "@angular/core";
 import { HelperService } from "./helper.service";
-import { IManagedObject } from "@c8y/client";
 import { MeasurementsService } from "./measurements.service";
 import { AlarmsService } from "./alarms.service";
-import { Event } from "@models/events.model";
+import { EventsService } from "./events.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SimulatorSettingsService {
   resultTemplate = { commandQueue: [], name: "" };
-  displayInstructionsOrSleep = false;
-  defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Sleep"];
-  selectedConfig: string = this.defaultConfig[0];
-
-  eventCategories = [
-    { category: "Basic", code: "400" },
-    { category: "Location Update", code: "400" },
-    { category: "Location Update Device", code: "400" },
-  ];
-
-  selectedEventCategory = this.eventCategories[0].category;
-  measurements = [];
-  newFragmentAdded = false;
-  alarms: {
-    level?: string;
-    alarmType: string;
-    alarmText: string;
-    steps?: string;
-  }[] = [];
-  events: Event[];
+  
   alarmConfig = [
     "Generate repeated alarms",
     "Alternate measurements with alarms",
   ];
   selectedAlarmConfig: string = this.alarmConfig[0];
   eventConfig = [
-    "Generate repeated alarms",
-    "Alternate measurements with alarms",
+    "Generate repeated events",
+    "Alternate measurements with events",
   ];
   selectedEventConfig: string = this.eventConfig[0];
 
-  currentMeasurement: {
-    sleep: string;
-    fragment: string;
-    series: string;
-    minValue: string;
-    maxValue: string;
-    steps: string;
-    unit: string;
-  };
-
-  currentAlarm: {
-    level: string;
-    alarmType: string;
-    alarmText: string;
-    steps: string;
-    sleep: string;
-  };
-
-  eventType: string;
-  eventText: string;
-
-  eventSteps: string;
-
-  latitude: string;
-  longitude: string;
-  altitude: string;
-  accuracy: string;
-
   randomSelected = false;
 
-  template = {
-    fragment: null,
-    series: null,
-    minValue: null,
-    maxValue: null,
-    steps: null,
-    unit: null,
-    tempType: "measurement",
-  };
-
-  uniqueMeasurementsArray = [];
-  scaledArray = [];
-
-  mo: IManagedObject;
-  data: any;
-  simulatorName: string;
   commandQueue = [];
-  currentIndex: number;
-  insertIndex: number;
-  toAddMsmtOrSleep = false;
-  toDisplay = false;
-  value: string;
-  displayEditView = false;
-
-  alternateMsmts = [];
-  editMsmt;
 
   constructor(
     private helperService: HelperService,
     private measurementService: MeasurementsService,
-    private alarmsService: AlarmsService
+    private alarmsService: AlarmsService,
+    private eventsService: EventsService
   ) {}
 
-  setMeasurements(measurements) {
-    this.measurementService.measurements = measurements;
+  fetchCommandQueue(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      resolve(this.commandQueue);
+    });
   }
 
-  setEvents(events: Event[]) {
-    this.events = events;
-  }
-
-  fetchCommandQueue() {
-    return new Promise((resolve, reject) => {resolve(this.commandQueue)});
+  setCommandQueue(commandQueue) {
+    this.commandQueue = commandQueue;
   }
 
   generateRequest() {
     this.resultTemplate.commandQueue = [];
+    
     this.measurementService.createUniqueMeasurementsArray();
 
     for (let value of this.measurementService.uniqueMeasurementsArray) {
@@ -138,86 +65,72 @@ export class SimulatorSettingsService {
             seconds: value.sleep,
           });
         }
-        this.currentMeasurement = this.measurementService.uniqueMeasurementsArray[this.measurementService.uniqueMeasurementsArray.length - 1];
+        // FIXME: get alarm config value directly from the sim-alarm component, preferably in the object.
+        // Similarly for events and sleep
         if (
-          this.alarms &&
-          this.selectedAlarmConfig === this.alarmConfig[1] &&
-          index < this.alarms.length
+          this.alarmsService.alarms &&
+          this.alarmsService.selectedAlarmConfig ===
+            this.alarmsService.alarmConfig[1] &&
+          index < this.alarmsService.alarms.length
         ) {
-          let toBePushedAlarms = this.alarmsService.toAlarmTemplateFormat(this.alarms[index]);
+          let toBePushedAlarms = this.alarmsService.toAlarmTemplateFormat(
+            this.alarmsService.alarms[index]
+          );
           this.resultTemplate.commandQueue.push(JSON.parse(toBePushedAlarms));
         }
 
         if (
-          this.events &&
+          this.eventsService.events &&
           this.selectedEventConfig === this.eventConfig[1] &&
-          index < this.events.length
+          index < this.eventsService.events.length
         ) {
-          this.toEventTemplateFormat(this.events[index]);
+          let toBePushedEvents = this.eventsService.toEventTemplateFormat(
+            this.eventsService.events[index]
+          );
+          this.resultTemplate.commandQueue.push(JSON.parse(toBePushedEvents));
         }
       }
 
-      if (this.selectedAlarmConfig === this.alarmConfig[0]) {
-        this.alarmsService.generateAlarms();
+      if (
+        this.alarmsService.selectedAlarmConfig ===
+        this.alarmsService.alarmConfig[0]
+      ) {
+        this.resultTemplate.commandQueue.push(...this.alarmsService.generateAlarms());
       }
 
-      if (this.selectedEventConfig === this.eventConfig[0]) {
-        this.generateEvents();
+      if (this.eventsService.selectedEventConfig === this.eventsService.eventConfig[0]) {
+        this.resultTemplate.commandQueue.push(...this.eventsService.generateEvents());
       }
     }
     this.displayAlarmsWithoutMeasurements();
-    this.commandQueue.push(...this.resultTemplate.commandQueue);
-    // Save to backend
-    //   this.simService
-    //     .updateSimulatorManagedObject(this.mo)
-    //     .then((res) => console.log(res));
-  }
-
-  // Create array containing unique fragments
-
-  generateEvents() {
-    for (let event of this.events) {
-      this.toEventTemplateFormat(event);
-      if (
-        this.currentMeasurement.sleep &&
-        this.selectedEventConfig === this.eventConfig[0]
-      ) {
-        this.resultTemplate.commandQueue.push({
-          type: "sleep",
-          seconds: this.currentMeasurement.sleep,
-        });
-      }
-    }
-  }
-
-  toEventTemplateFormat(event) {
-    let toBePushed = `{
-    "messageId": "CODE",
-    "values": ["TYPE", "TEXT"], "type": "builtin"
-  }`;
-    let toBePushedLoc = `{
-    "messageId": "CODE",
-    "values": ["LAT", "LON", "ALT", "ACCURACY"], "type": "builtin"
-  }`;
-
-    if (event.code === "400") {
-      toBePushed = toBePushed.replace("CODE", event.code);
-      toBePushed = toBePushed.replace("TYPE", event.eventType);
-      toBePushed = toBePushed.replace("TEXT", event.eventText);
-      this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
-    } else {
-      toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
-      toBePushedLoc = toBePushedLoc.replace("LAT", event.lat);
-      toBePushedLoc = toBePushedLoc.replace("LON", event.lon);
-      toBePushedLoc = toBePushedLoc.replace("ALT", event.alt);
-      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.accuracy);
-      this.resultTemplate.commandQueue.push(JSON.parse(toBePushedLoc));
-    }
+    this.displayEventsWithoutMeasurements();
+    this.resetUsedArrays();
+    return this.resultTemplate.commandQueue;
   }
 
   displayAlarmsWithoutMeasurements() {
-    if (this.alarms.length && !this.uniqueMeasurementsArray.length) {
-      this.alarmsService.generateAlarms();
+    if (
+      this.alarmsService.alarms.length &&
+      !this.resultTemplate.commandQueue.length
+    ) {
+      this.resultTemplate.commandQueue.push(...this.alarmsService.generateAlarms());
+
     }
+  }
+
+  displayEventsWithoutMeasurements() {
+    if (
+      this.eventsService.events.length &&
+      !this.resultTemplate.commandQueue.length
+    ) {
+      this.resultTemplate.commandQueue.push(...this.eventsService.generateEvents());
+    }
+  }
+
+  resetUsedArrays() {
+    this.measurementService.measurements = [];
+    this.measurementService.uniqueMeasurementsArray = [];
+    this.alarmsService.alarms = [];
+    this.eventsService.events = [];
   }
 }

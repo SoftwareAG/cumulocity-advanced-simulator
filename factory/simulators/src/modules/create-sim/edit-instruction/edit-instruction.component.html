@@ -13,7 +13,8 @@
                 id="fragment"
                 class="form-control"
                 placeholder="Fragment (required)"
-                [(ngModel)]="editedVal.value.values[0]"
+                [ngModel]="editedValue.value.values[0]"
+                (ngModelChange)="editFragment($event)"
               />
             </div>
           </div>
@@ -23,7 +24,8 @@
                 name="series"
                 class="form-control"
                 placeholder="Series (required)"
-                [(ngModel)]="editedVal.value.values[1]"
+                [ngModel]="editedValue.value.values[1]"
+                (ngModelChange)="editSeries($event)"
               />
             </div>
           </div>
@@ -33,7 +35,8 @@
                 name="minimum"
                 class="form-control"
                 placeholder="Value"
-                [(ngModel)]="editedVal.value.values[2]"
+                [ngModel]="editedValue.value.values[2]"
+                (ngModelChange)="editValue($event)"
               />
             </div>
           </div>
@@ -44,14 +47,15 @@
                   name="maximum"
                   class="form-control"
                   placeholder="Unit (required)"
-                  [(ngModel)]="editedVal.value.values[3]"
+                  [ngModel]="editedValue.value.values[3]"
+                  (ngModelChange)="editUnit($event)"
                 />
               </div>
             </div>
           </div>
           <div class="col-sm-12">
-            <button class="btn btn-default" style="float: right" (click)="updateMsmt()">
-              <i c8yIcon="plus-circle"></i>&nbsp;Update Measurements
+            <button class="btn btn-primary" style="float: right" (click)="updateMsmt()">
+              Update Measurements
             </button>
           </div>
         </div>
@@ -65,7 +69,8 @@
               name="minimum"
               class="form-control"
               placeholder="Alarm Type"
-              [(ngModel)]="editedVal.alarm.alarmType"
+              [ngModel]="editedVal.value.values[0]"
+              (ngModelChange)="editAlarmType($event)"
             />
           </div>
         </div>
@@ -76,26 +81,27 @@
               name="minimum"
               class="form-control"
               placeholder="Alarm Text"
-              [(ngModel)]="editedVal.alarm.alarmText"
+              [ngModel]="editedVal.value.values[1]"
+              (ngModelChange)="editAlarmText($event)"
             />
           </div>
           <div class="col-sm-12">
-            <button class="btn btn-default" style="float: right">
-              <i c8yIcon="plus-circle"></i>&nbsp;Update Alarm
+            <button class="btn btn-primary" style="float: right" (click)="updateAlarm()">Update Alarm
             </button>
           </div>
         </div>
       </ng-template>
 
       <!-- Events -->
-      <ng-template [ngSwitchCase]="'event'">
+      <ng-template [ngSwitchCase]="'basicevent'">
         <div class="col-sm-6 col-xs-6">
           <div class="form-group">
             <input
               name="minimum"
               class="form-control"
               placeholder="Event Type"
-              [(ngModel)]="editedVal.event.eventType"
+              [ngModel]="editedVal.value.values[0]"
+              (ngModelChange)="editEventType($event)"
             />
           </div>
         </div>
@@ -106,14 +112,88 @@
               name="minimum"
               class="form-control"
               placeholder="Event Text"
-              [(ngModel)]="editedVal.event.eventText"
+              [ngModel]="editedVal.value.values[1]"
+              (ngModelChange)="editEventText($event)"
             />
           </div>
           <div class="col-sm-12">
-            <button class="btn btn-default" style="float: right">
-              <i c8yIcon="plus-circle"></i>&nbsp;Update Event
+            <button class="btn btn-primary" style="float: right" (click)="updateBasicEvent()">
+              Update Event
             </button>
           </div>
+        </div>
+      </ng-template>
+
+      <ng-template [ngSwitchCase]="'event'">
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Type"
+              [ngModel]="editedVal.value.values[0]"
+              (ngModelChange)="editEventLatitude($event)"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Type"
+              [ngModel]="editedVal.value.values[1]"
+              (ngModelChange)="editEventLongitude($event)"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Type"
+              [ngModel]="editedVal.value.values[2]"
+              (ngModelChange)="editEventAltitude($event)"
+            />
+          </div>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Event Text"
+              [ngModel]="editedVal.value.values[3]"
+              (ngModelChange)="editEventAccuracy($event)"
+            />
+          </div>
+          <div class="col-sm-12">
+            <button class="btn btn-primary" style="float: right" (click)="updateBasicEvent()">
+              Update Event
+            </button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template [ngSwitchCase]="'sleep'">
+        <div class="col-sm-6 col-xs-6">
+          <div class="form-group">
+            <input
+              name="minimum"
+              class="form-control"
+              placeholder="Sleep (seconds)"
+              [ngModel]="editedVal.value.seconds"
+              (ngModelChange)="editSleep($event)"
+            />
+          </div>
+        </div>
+        <div class="col-sm-6 col-xs-6">
+          <button class="btn btn-primary" style="float: right" (click)="updateSleep()">
+            Update Sleep
+          </button>
         </div>
       </ng-template>
     </div>

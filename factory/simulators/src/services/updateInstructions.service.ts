@@ -7,10 +7,12 @@ import { EditedMeasurement } from "src/models/editedMeasurement.model";
   providedIn: "root",
 })
 export class UpdateInstructionsService {
-  private editedMsmtObserver = new BehaviorSubject<EditedMeasurement>(null);
+  private editedMsmtObserver = new BehaviorSubject(null);
   private addInstructionOrSleepObserver = new BehaviorSubject<boolean>(false);
+  private editView = new BehaviorSubject<boolean>(false);
   castMeasurement = this.editedMsmtObserver.asObservable();  
   castInstructionsOrSleep = this.addInstructionOrSleepObserver.asObservable();  
+  castEditView = this.editView.asObservable();  
 
   constructor() {}
 
@@ -18,11 +20,15 @@ export class UpdateInstructionsService {
     return this.editedMsmtObserver.asObservable();
   }
 
-  setEditedMeasurement(edited: EditedMeasurement) {
+  setEditedMeasurement(edited) {
     this.editedMsmtObserver.next(edited);
   }
 
   setInstructionsView(val: boolean) {
     this.addInstructionOrSleepObserver.next(val);
+  }
+
+  setEditView(val: boolean) {
+    this.editView.next(val);
   }
 }
