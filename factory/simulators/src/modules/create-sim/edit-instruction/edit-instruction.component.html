@@ -101,7 +101,7 @@
               name="minimum"
               class="form-control"
               placeholder="Event Type"
-              [ngModel]="editedVal.value.values[1]"
+              [ngModel]="editedVal.value.values[0]"
               (ngModelChange)="editEventType($event)"
             />
           </div>
@@ -113,7 +113,7 @@
               name="minimum"
               class="form-control"
               placeholder="Event Text"
-              [ngModel]="editedVal.value.values[0]"
+              [ngModel]="editedVal.value.values[1]"
               (ngModelChange)="editEventText($event)"
             />
           </div>

@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Alert, AlertService } from "@c8y/ngx-components";
 import { EditedEvent } from "@models/events.model";
+import { IManagedObject } from "@c8y/client";
+import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
+import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 
 @Component({
@@ -10,10 +14,10 @@ import { EditedMeasurement } from "src/models/editedMeasurement.model";
 export class EditInstructionComponent implements OnInit {
   editedValue;
   newValue = { fragment: "", series: "", value: "", unit: "" };
-  newAlarm = { alarmText: "", alarmType: "" };
+  newAlarm = { alarmType: "", alarmText: ""};
   newEvent: EditedEvent = {
-    eventText: "",
     eventType: "",
+    eventText: "",
     eventAccuracy: "",
     eventLatitude: "",
     eventLongitude: "",
@@ -32,7 +36,10 @@ export class EditInstructionComponent implements OnInit {
   @Input() mo;
   @Output() updatedVal = new EventEmitter();
 
-  constructor() {}
+  constructor(
+    private alertService: AlertService,
+    private simulatorervice: SimulatorsServiceService
+  ) {}
   alarmText: string;
   alarmType: string;
 
@@ -53,7 +60,10 @@ export class EditInstructionComponent implements OnInit {
         Object.keys(this.newValue)[i]
       ];
     }
-    // TODO: Implement save in MO
+    const pos = this.editedValue.index;
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.mo, 'Measurement');
+    
   }
 
   updateAlarm() {
@@ -62,6 +72,10 @@ export class EditInstructionComponent implements OnInit {
         Object.keys(this.newAlarm)[i]
       ];
     }
+    const pos = this.editedValue.index;
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.mo, 'Alarm');
+    
   }
 
   updateBasicEvent() {
@@ -78,6 +92,9 @@ export class EditInstructionComponent implements OnInit {
         ];
       }
     }
+    const pos = this.editedValue.index;
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.mo, 'Event');
   }
 
   switchEditTemplate() {
@@ -112,7 +129,7 @@ export class EditInstructionComponent implements OnInit {
       this.selectedEditView = "event";
       for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
         this.newEvent[
-          Object.keys(this.newEvent)[i+2]
+          Object.keys(this.newEvent)[i + 2]
         ] = this.editedValue.value.values[i];
       }
     }
@@ -156,5 +173,26 @@ export class EditInstructionComponent implements OnInit {
   }
   editEventAccuracy(val) {
     this.newEvent.eventAccuracy = val;
+  }
+
+  updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
+    this.simulatorervice.updateSimulatorManagedObject(mo).then(
+      (res) => {
+        console.log(res);
+        const alert = {
+          text: `${type} updated successfully.`,
+          type: "success",
+        } as Alert;
+        this.alertService.add(alert);
+      },
+      (error) => {
+        const alert = {
+          text: `Failed to save selected ${type}.`,
+          type: "danger",
+        } as Alert;
+        this.alertService.add(alert);
+      }
+    );
+    
   }
 }
