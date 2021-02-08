@@ -15,7 +15,6 @@ import { SimulatorsBackendService } from "../../services/simulatorsBackend.servi
 })
 export class SimulatorEntryComponent implements OnInit {
   subscriptions = new Subscription();
-  isChecked = false;
   allSimulators: IManagedObject[];
   constructor(
     private modalService: BsModalService,
@@ -33,7 +32,6 @@ export class SimulatorEntryComponent implements OnInit {
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
-          
         }
         this.modalUnsubscribe();
       })
@@ -49,11 +47,9 @@ export class SimulatorEntryComponent implements OnInit {
   }
 
   onStateChange(simulator) {
-    this.isChecked = !this.isChecked;
-
-    this.isChecked
-      ? (simulator.c8y_DeviceSimulator.state = "RUNNING")
-      : (simulator.c8y_DeviceSimulator.state = "PAUSED");
+    simulator.c8y_DeviceSimulator.state === "RUNNING"
+      ? (simulator.c8y_DeviceSimulator.state = "PAUSED")
+      : (simulator.c8y_DeviceSimulator.state = "RUNNING");
 
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
       console.log("State changed");
