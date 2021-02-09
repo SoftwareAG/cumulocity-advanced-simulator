@@ -18,6 +18,7 @@ export class CreateSimComponent implements OnInit {
 
   displayEditView = false;
   displayInstructionsView = false;
+  editedVal;
   
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +40,8 @@ export class CreateSimComponent implements OnInit {
   updateViewState(val) {
     this.displayEditView = val.editView;
     this.displayInstructionsView = val.instructionsView;
+    this.editedVal = val.editedValue;
+    console.log(val.editedValue);
   }
 
 

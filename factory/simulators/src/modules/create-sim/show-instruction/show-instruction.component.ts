@@ -32,8 +32,8 @@ export class ShowInstructionComponent implements OnInit {
   updateCurrent(val) {
     this.displayEditView = true;
     this.displayInstructionsOrSleep = false;
-    this.currentViewState.emit({editView: this.displayEditView, instructionsView: this.displayInstructionsOrSleep});
     this.editMeasurements = val;
+    this.currentViewState.emit({editView: this.displayEditView, instructionsView: this.displayInstructionsOrSleep, editedValue: this.editMeasurements});
   }
   onSelectInstructions() {
 //    this.selectedConfig = this.defaultConfig[0];
