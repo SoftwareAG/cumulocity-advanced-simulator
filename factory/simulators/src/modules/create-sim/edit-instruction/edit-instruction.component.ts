@@ -14,6 +14,16 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
   styleUrls: ["./edit-instruction.component.scss"],
 })
 export class EditInstructionComponent implements OnInit {
+  addInstructionsMode = false;
+  editInstructionsMode = false;
+  displayEditView = false;
+  displayAddView = false;
+
+  defaultConfig: string[] = ["Measurements", "Alarms", "Events", "Basic Event", "Sleep"];
+  selectedConfig: string = this.defaultConfig[0];
+  onChangeConfig(val) {
+    this.selectedEditView = val;
+  }
   alarmText: string;
   alarmType: string;
   
@@ -119,25 +129,25 @@ export class EditInstructionComponent implements OnInit {
 
   switchEditTemplate() {
     // FIXME: Add editValue cast to alarms, events and sleep
-    if (this.editedValue.value.type === "sleep") {
-      this.selectedEditView = "sleep";
+    if (this.editedValue.value.type === "Sleep") {
+      this.selectedEditView = "Sleep";
       this.newSleep = this.editedValue.value.seconds;
     } else if (this.editedValue.value.messageId === "200") {
-      this.selectedEditView = "msmts";
+      this.selectedEditView = "Measurements";
       for (let i = 0; i < Object.keys(this.newValue).length; i++) {
         this.newValue[
           Object.keys(this.newValue)[i]
         ] = this.editedValue.value.values[i];
       }
     } else if (this.editedValue.value.messageId.startsWith("30")) {
-      this.selectedEditView = "alarm";
+      this.selectedEditView = "Alarms";
       for (let i = 0; i < Object.keys(this.newAlarm).length; i++) {
         this.newAlarm[
           Object.keys(this.newAlarm)[i]
         ] = this.editedValue.value.values[i];
       }
     } else if (this.editedValue.value.messageId === "400") {
-      this.selectedEditView = "basicevent";
+      this.selectedEditView = "Basic Event";
       for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
         this.newEvent[
           Object.keys(this.newEvent)[i]
@@ -197,6 +207,41 @@ export class EditInstructionComponent implements OnInit {
   }
   editSleep(val) {
     this.newSleep = val;
+  }
+
+  displayInstructionsOrSleep = false;
+  editMeasurements;
+
+  
+
+  updateCurrent(val) {
+    this.displayEditView = true;
+    this.displayInstructionsOrSleep = false;
+    this.editMeasurements = val;
+  }
+  clearAllInstructions() {
+
+  }
+  onSelectInstructions() {
+    //    this.selectedConfig = this.defaultConfig[0];
+    this.selectedEditView = "Measurements";
+    this.displayInstructionsOrSleep = true;
+    this.displayAddView = true;
+    this.displayEditView = false;
+  }
+
+  onSelectSleep() {
+    //  this.selectedConfig = this.defaultConfig[3];
+    this.displayInstructionsOrSleep = true;
+    this.displayEditView = false;
+  }
+
+  updateCommandQueue(newCommandQueue) {
+    this.commandQueue = newCommandQueue;
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.simulatorervice
+      .updateSimulatorManagedObject(this.mo)
+      .then((result) => console.log(result));
   }
 
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {

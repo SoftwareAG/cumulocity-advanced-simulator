@@ -11,8 +11,9 @@
 </div>
 
 <div class="col-lg-6">
-    <app-show-instruction></app-show-instruction>
-    <app-edit-instruction *ngIf="false"></app-edit-instruction>
+    <app-show-instruction [commandQueue]="commandQueue"></app-show-instruction>
+    <app-edit-instruction></app-edit-instruction>
 </div>
-
-
+<!--
+ (currentCommandQueue)="updateCommandQueue($event)" (currentValue)="updateCurrent($event)"
+-->
