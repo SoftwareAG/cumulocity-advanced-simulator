@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-sm-12">
+  <div class="col-sm-6">
     <div class="form-group">
       <div class="c8y-select-wrapper">
         <select
@@ -14,7 +14,13 @@
       </div>
     </div>
   </div>
+  <div class="col-sm-6">
+    <div class="form-group">
+      <input name="sleep" class="form-control" placeholder="Sleep (required)" [(ngModel)]="sleep" />
+    </div>
+  </div>
 </div>
+
 
 <div class="row">
   <div class="col-sm-6">
@@ -27,6 +33,7 @@
       />
     </div>
   </div>
+
   <div class="col-sm-6">
     <div class="form-group">
       <input
@@ -38,11 +45,7 @@
     </div>
   </div>
 
-  <div class="col-sm-6">
-    <div class="form-group">
-      <input name="sleep" class="form-control" placeholder="Sleep (required)" [(ngModel)]="sleep" />
-    </div>
-  </div>
+
   <div>
     <div class="col-sm-6">
       <div class="form-group">
@@ -52,7 +55,7 @@
   </div>
 
 
-  <div class="col-sm-4">
+  <div class="col-sm-6">
     <div class="form-group">
       <input
         name="minimum"
@@ -63,48 +66,47 @@
       />
     </div>
   </div>
-  <div>
-    <div class="col-sm-4">
-      <div class="form-group">
-        <input
-        name="steps"
+
+  <div class="col-sm-6">
+    <div class="form-group">
+      <input
+      name="maximum"
         class="form-control"
-        title="Number of values between Minimum and Maximum"
-        placeholder="Steps (required)"
-        [(ngModel)]="steps"
+        title="Ending value of this series"
+        placeholder="Maximum (required)"
+        [(ngModel)]="maxVal"
         />
       </div>
+  </div>
+  
+  <div class="col-sm-6">
+    <div class="form-group">
+      <input
+      name="steps"
+      class="form-control"
+      title="Number of values between Minimum and Maximum"
+      placeholder="Steps (required)"
+      [(ngModel)]="steps"
+      />
     </div>
-    <div class="col-sm-4">
-      <div class="form-group">
-        <input
-          name="maximum"
-          class="form-control"
-          title="Ending value of this series"
-          placeholder="Maximum (required)"
-          [(ngModel)]="maxVal"
-        />
-      </div>
-    </div>
+  </div>
+      
+      
 
-
-
-
-    <div class="col-sm-12">
-      <button
-        class="btn btn-default"
-        style="float: right"
-        (click)="addMsmtToArray()"
-      >
-        <i c8yIcon="plus-circle"></i>&nbsp;Add Series
-      </button>
-      <button
-        class="btn btn-danger"
-        style="float: right;margin-right:5px;"
-        (click)="removeMeasurementFromArray()"
-      >
-        <i c8yIcon="minus-circle"></i>&nbsp;Delete Series
-      </button>
-    </div>
+  <div class="col-sm-12">
+    <button
+      class="btn btn-default"
+      style="float: right"
+      (click)="addMsmtToArray()"
+    >
+      <i c8yIcon="plus-circle"></i>&nbsp;Add another Series
+    </button>
+    <button
+      class="btn btn-danger"
+      style="float: right;margin-right:5px;"
+      (click)="removeMeasurementFromArray()"
+    >
+      <i c8yIcon="minus-circle"></i>&nbsp;Delete Series
+    </button>
   </div>
 </div>
