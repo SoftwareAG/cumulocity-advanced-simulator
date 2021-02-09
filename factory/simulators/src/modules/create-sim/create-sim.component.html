@@ -1,33 +1,54 @@
 <div class="col-lg-6">
-    <app-sim-settings [header]="addseries" [isExpanded]="true"></app-sim-settings>
-    <div *ngFor="let first of measurementSeries; let i = index;">
-        <app-sim-settings [header]="addedSeries" [isExpanded]="isExpanded"></app-sim-settings>   
-    </div>
-    <div class="col-sm-8">
-        <br>
-        <button class="btn btn-success" style="float: right" (click)="generateRequest();">
-            Generate Instructions
-        </button>
-    </div>
+  <app-sim-settings [header]="addseries" [isExpanded]="true"></app-sim-settings>
+  <div *ngFor="let first of measurementSeries; let i = index">
+    <app-sim-settings
+      [header]="addedSeries"
+      [measurement]="first"
+      [isExpanded]="isExpanded"
+    ></app-sim-settings>
+  </div>
+
+  <div class="col-sm-8">
+    <br />
+    <button
+      class="btn btn-success"
+      style="float: right"
+      (click)="generateRequest()"
+    >
+      Generate Instructions
+    </button>
+  </div>
 </div>
 
 <div class="col-lg-6">
-    <app-show-instruction></app-show-instruction>
-    <app-edit-instruction *ngIf="false"></app-edit-instruction>
+  <app-show-instruction
+    [mo]="mo"
+    (currentViewState)="updateViewState($event)"
+  ></app-show-instruction>
+  <app-edit-instruction
+    [mo]="mo"
+    *ngIf="this.displayEditView"
+  ></app-edit-instruction>
 </div>
 
-<ng-template #addedSeries><div style="display: flex;"><h4>Added Series</h4><button class="transparent" 
-    (click)="isExpanded = !isExpanded"
-    [attr.aria-expanded]="isExpanded" 
-    aria-controls="collapseBasic"
-  >
-    <i c8yIcon="caret-down"></i>
-  </button>
-  
-  <div id="collapseBasic" 
-    class="collapse" 
-    [collapse]="!isExpanded" 
-    [isAnimated]="true"
-  >
-  </div></div></ng-template>
+<ng-template #addedSeries let-measurement="measurement"
+  ><div style="display: flex">
+    <h4>Added Series</h4>
+   &nbsp; <em>{{measurement.fragment}}</em>&nbsp;
+    <button
+      class="transparent"
+      (click)="isExpanded = !isExpanded"
+      [attr.aria-expanded]="isExpanded"
+      aria-controls="collapseBasic"
+    >
+      <i c8yIcon="caret-down"></i>
+    </button>
+
+    <div
+      id="collapseBasic"
+      class="collapse"
+      [collapse]="!isExpanded"
+      [isAnimated]="true"
+    ></div></div
+></ng-template>
 <ng-template #addseries><h4>Add Series</h4></ng-template>

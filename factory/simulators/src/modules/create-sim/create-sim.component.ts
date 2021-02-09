@@ -15,6 +15,9 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
+
+  displayEditView = false;
+  displayInstructionsView = false;
   
   constructor(
     private route: ActivatedRoute,
@@ -28,9 +31,14 @@ export class CreateSimComponent implements OnInit {
     this.mo = this.data.simulator.data;
     this.measurementsService.fetchMeasurements().then((result)=>{
       this.measurementSeries = result;
-      this.measurementSeries.push({});
+      // this.measurementSeries.push({});
     });
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
+  }
+
+  updateViewState(val) {
+    this.displayEditView = val.editView;
+    this.displayInstructionsView = val.instructionsView;
   }
 
 

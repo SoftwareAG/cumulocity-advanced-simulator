@@ -14,8 +14,20 @@ export class SimSettingsComponent implements OnInit {
     private simSettings: SimulatorSettingsService,
   ) {}
 
+  msmt;
+  templateCtx;
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
+  @Input() set measurement(measurement) {
+    this.msmt = measurement;
+    this.templateCtx={measurement: this.msmt};
+    console.log(this.msmt);
+  };
+
+  get measurement() {
+    return this.msmt;
+  }
+  // templateCtx = {measurement: this.totalEstimate};
   resultTemplate = { commandQueue: [], name: "" };
   
 

@@ -1,7 +1,7 @@
 <div class="card" >
     <div class="card-block">
       <ng-container
-      *ngTemplateOutlet="header"
+      *ngTemplateOutlet="header; context:templateCtx"
     >
     </ng-container>
    <div *ngIf="isExpanded">

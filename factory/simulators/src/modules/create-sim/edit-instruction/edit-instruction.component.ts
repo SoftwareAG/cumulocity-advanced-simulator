@@ -27,7 +27,7 @@ export class EditInstructionComponent implements OnInit {
   edited: EditedMeasurement;
   data: any;
   
-  mo: IManagedObject;
+  @Input() mo: IManagedObject;
   editedValue;
   commandQueue = [];
 
@@ -63,8 +63,6 @@ export class EditInstructionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.data = this.route.snapshot.data;
-    this.mo = this.data.simulator.data;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
   }
