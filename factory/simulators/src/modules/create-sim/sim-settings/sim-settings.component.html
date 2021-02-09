@@ -1,6 +1,10 @@
-<div class="card">
+<div class="card" >
     <div class="card-block">
-      <h4>Add Series</h4>
+      <ng-container
+      *ngTemplateOutlet="header"
+    >
+    </ng-container>
+   <div *ngIf="isExpanded">
       <br>
       <div class="row">
         <div class="col-md-12">
@@ -40,6 +44,6 @@
           <app-sim-sleep></app-sim-sleep>
         </ng-template>
 
-    
+      </div>
   </div>
 </div>

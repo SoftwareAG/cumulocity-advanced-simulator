@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
@@ -14,7 +14,10 @@ export class SimSettingsComponent implements OnInit {
     private simSettings: SimulatorSettingsService,
   ) {}
 
+  @Input() header: TemplateRef<any>;
+  @Input() isExpanded: boolean;
   resultTemplate = { commandQueue: [], name: "" };
+  
 
   newFragmentAdded = false;
   alarms: {
