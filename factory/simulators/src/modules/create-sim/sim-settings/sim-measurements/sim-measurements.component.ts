@@ -1,5 +1,5 @@
 import { TitleCasePipe } from "@angular/common";
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
@@ -9,6 +9,24 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
   styleUrls: ["./sim-measurements.component.scss"],
 })
 export class SimMeasurementsComponent implements OnInit {
+
+  @Input() set measure(measurement) {
+    if (measurement !== undefined) {
+    this.measurement = measurement;
+    console.log(this.measurement);
+    this.fragment = this.measurement.fragment;
+    this.series = this.measurement.series;
+    this.minVal = this.measurement.minValue;
+    this.maxVal = this.measurement.maxValue;
+    this.unit = this.measurement.unit;
+    this.steps = this.measurement.steps;
+    }
+  }
+
+  get measure() {
+    return this.measurement;
+  }
+  
   measurementOptions = [
     "Measurement series one after another",
     "Alternate measurement series",

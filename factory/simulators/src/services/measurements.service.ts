@@ -18,7 +18,7 @@ setMeasurements(measurements) {
 
 public fetchMeasurements(): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      resolve([{fragment: 'dlvalue', series: 'test', unit: 'km'}]);
+      resolve([{fragment: 'dlvalue', series: 'test', unit: 'km', minValue: '0', maxValue: '10', steps: '4'}]);
     });
 }
 
