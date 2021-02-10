@@ -99,7 +99,7 @@
       style="float: right"
       (click)="addMsmtToArray()"
     >
-      <i c8yIcon="plus-circle"></i>&nbsp;Add another Series
+      <i *ngIf="!isNotFirst" c8yIcon="plus-circle"></i>&nbsp;{{selectedButton}}
     </button>
     <button
       class="btn btn-danger"

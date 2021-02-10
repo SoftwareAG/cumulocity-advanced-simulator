@@ -1,4 +1,5 @@
 <div class="col-lg-6">
+  <div class="settings">
   <app-sim-settings [header]="addseries" [isExpanded]="true"></app-sim-settings>
   <div *ngFor="let first of measurementSeries; let i = index">
     <app-sim-settings
@@ -6,13 +7,13 @@
       [measurement]="first"
       [isExpanded]="first.active"
     ></app-sim-settings>
-  </div>
-
+</div>
+</div>
   <div class="col-sm-8">
     <br />
     <button
       class="btn btn-success"
-      style="float: right; position: sticky;"
+      style="float: right; top: 0; z-index: 2; position: sticky;"
       (click)="generateRequest()"
     >
       Generate Instructions

@@ -22,6 +22,7 @@ export class SimMeasurementsComponent implements OnInit {
     this.maxVal = this.measurement.maxValue;
     this.unit = this.measurement.unit;
     this.steps = this.measurement.steps;
+    this.selectedButton = 'Duplicate Measurement'
     }
   }
 
@@ -34,7 +35,7 @@ export class SimMeasurementsComponent implements OnInit {
     "Alternate measurement series",
   ];
   selectedMsmtOption = this.measurementOptions[0];
-
+  selectedButton: string = 'Add Measurement';
   sleep: string;
   fragment: string;
   series: string;
