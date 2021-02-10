@@ -104,7 +104,6 @@ export class SimulatorSettingsService {
     }
     this.displayAlarmsWithoutMeasurements();
     this.displayEventsWithoutMeasurements();
-    this.resetUsedArrays();
     return this.resultTemplate.commandQueue;
   }
 

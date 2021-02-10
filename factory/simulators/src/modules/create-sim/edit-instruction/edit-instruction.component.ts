@@ -73,6 +73,10 @@ export class EditInstructionComponent implements OnInit {
         Object.keys(this.newValue)[i]
       ];
     }
+
+    this.editedValue.value.values[0] = this.newAlarm.alarmType;
+    this.editedValue.value.values[1] = this.newAlarm.alarmText;
+
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.updateCommandQueueInManagedObject(this.mo, 'Measurement');
     
@@ -116,6 +120,7 @@ export class EditInstructionComponent implements OnInit {
   }
 
   switchEditTemplate() {
+    // console.log(this)
     // FIXME: Add editValue cast to alarms, events and sleep
     if (this.editedValue.value.type === "sleep") {
       this.selectedEditView = "sleep";

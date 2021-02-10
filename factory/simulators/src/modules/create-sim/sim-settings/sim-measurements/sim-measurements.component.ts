@@ -93,7 +93,7 @@ export class SimMeasurementsComponent implements OnInit {
     }
 
     this.service.measurements.push(this.measurement);
-    this.service.measurementSeries.push(this.measurement);
+    // this.service.measurementSeries.push(this.measurement);
   }
 
 }

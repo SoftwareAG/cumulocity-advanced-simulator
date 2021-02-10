@@ -30,6 +30,7 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.measurementsService.fetchMeasurements(this.mo).then((result)=>{
       this.measurementSeries = result.map((measurement) =>({...measurement, active: false}));
       // this.measurementSeries.push({});
@@ -49,11 +50,14 @@ export class CreateSimComponent implements OnInit {
     const template = this.simSettings.generateRequest();
     this.commandQueue.push(...template);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    // this.mo.c8y_MeasurementSeries.push(...this.measurementsService.measurementSeries);
+    this.mo.c8y_MeasurementSeries.push(...this.measurementsService.measurements);
     console.log(this.mo.c8y_MeasurementSeries);
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
       console.log(res);
+      this.measurementSeries = res.c8y_MeasurementSeries;
+      this.simSettings.resetUsedArrays();
     });
+    
   }
 
 
