@@ -1,6 +1,7 @@
 <div class="col-lg-6">
+    <app-sim-settings [header]="addseries" [isExpanded]="true"></app-sim-settings>
     <div *ngFor="let first of measurementSeries; let i = index;">
-        <app-sim-settings></app-sim-settings>
+        <app-sim-settings [header]="addedSeries" [isExpanded]="isExpanded"></app-sim-settings>   
     </div>
     <div class="col-sm-8">
         <br>
@@ -14,6 +15,19 @@
     <app-show-instruction [commandQueue]="commandQueue"></app-show-instruction>
     <app-edit-instruction></app-edit-instruction>
 </div>
-<!--
- (currentCommandQueue)="updateCommandQueue($event)" (currentValue)="updateCurrent($event)"
--->
+
+<ng-template #addedSeries><div style="display: flex;"><h4>Added Series</h4><button class="transparent" 
+    (click)="isExpanded = !isExpanded"
+    [attr.aria-expanded]="isExpanded" 
+    aria-controls="collapseBasic"
+  >
+    <i c8yIcon="caret-down"></i>
+  </button>
+  
+  <div id="collapseBasic" 
+    class="collapse" 
+    [collapse]="!isExpanded" 
+    [isAnimated]="true"
+  >
+  </div></div></ng-template>
+<ng-template #addseries><h4>Add Series</h4></ng-template>

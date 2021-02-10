@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { RouterModule as ngRouterModule, Routes } from "@angular/router";
 import { ChartsModule, ThemeService } from "ng2-charts";
 import {
@@ -11,6 +12,7 @@ import {
 // import { SimulatorEntryComponent } from './src/modules/simulator-entry/simulator-entry.component';
 // RECOMMENDED
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { SimulatorEntryComponent } from "./src/modules/simulator-entry/simulator-entry.component";
 import { NavFactory } from "./src/modules/factories/Navigation";
 import { CreateSimComponent } from "./src/modules/create-sim/create-sim.component";
@@ -55,6 +57,8 @@ const appRoutes: Routes = [
 
 @NgModule({
   imports: [
+    AccordionModule.forRoot(),
+    CollapseModule.forRoot(),
     BrowserAnimationsModule,
     RouterModule.forRoot(),
     BsDropdownModule.forRoot(),

@@ -14,6 +14,7 @@ export class CreateSimComponent implements OnInit {
   commandQueue = [];
   data;
   mo;
+  isExpanded = false;
   
   constructor(
     private route: ActivatedRoute,
