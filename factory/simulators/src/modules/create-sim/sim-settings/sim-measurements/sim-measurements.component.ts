@@ -10,10 +10,12 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 })
 export class SimMeasurementsComponent implements OnInit {
 
+  isNotFirst = false;
   @Input() set measure(measurement) {
     if (measurement !== undefined) {
     this.measurement = measurement;
     console.log(this.measurement);
+    this.isNotFirst = true;
     this.fragment = this.measurement.fragment;
     this.series = this.measurement.series;
     this.minVal = this.measurement.minValue;
@@ -80,8 +82,18 @@ export class SimMeasurementsComponent implements OnInit {
         sleep: this.sleep ? this.sleep : "",
 
     };
+    if (!this.isNotFirst) {
+      this.fragment = "";
+      this.sleep = "";
+      this.maxVal = "";
+      this.minVal = "";
+      this.steps = "";
+      this.unit = "";
+      this.series = "";
+    }
 
     this.service.measurements.push(this.measurement);
+    this.service.measurementSeries.push(this.measurement);
   }
 
 }

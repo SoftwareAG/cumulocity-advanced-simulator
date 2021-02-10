@@ -31,7 +31,8 @@ export class CreateSimComponent implements OnInit {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
     this.measurementsService.fetchMeasurements().then((result)=>{
-      this.measurementSeries = result;
+      this.measurementSeries = result.map((measurement) =>({...measurement, active: false}));
+      
       // this.measurementSeries.push({});
     });
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;

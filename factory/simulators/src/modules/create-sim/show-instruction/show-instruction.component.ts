@@ -14,8 +14,9 @@ export class ShowInstructionComponent implements OnInit {
   displayInstructionsOrSleep = false;
   editMeasurements;
   @Input() mo: IManagedObject;
+  @Input() commandQueue;
   @Output() currentViewState = new EventEmitter();
-  commandQueue = [];
+  // commandQueue = [];
 
   constructor(
     private route: ActivatedRoute,

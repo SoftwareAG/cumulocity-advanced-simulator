@@ -4,7 +4,7 @@
     <app-sim-settings
       [header]="addedSeries"
       [measurement]="first"
-      [isExpanded]="isExpanded"
+      [isExpanded]="first.active"
     ></app-sim-settings>
   </div>
 
@@ -35,11 +35,12 @@
 <ng-template #addedSeries let-measurement="measurement"
   ><div style="display: flex">
     <h4>Added Series</h4>
-   &nbsp; <em>{{measurement.fragment}}</em>&nbsp;
+    &nbsp; <em>{{ measurement.fragment }}</em
+    >&nbsp;
     <button
       class="transparent"
-      (click)="isExpanded = !isExpanded"
-      [attr.aria-expanded]="isExpanded"
+      (click)="measurement.active=!measurement.active"
+      [attr.aria-expanded]="measurement.active"
       aria-controls="collapseBasic"
     >
       <i c8yIcon="caret-down"></i>
@@ -48,7 +49,7 @@
     <div
       id="collapseBasic"
       class="collapse"
-      [collapse]="!isExpanded"
+      [collapse]="!measurement.active"
       [isAnimated]="true"
     ></div></div
 ></ng-template>
