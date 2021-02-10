@@ -21,7 +21,6 @@ export class SimSettingsComponent implements OnInit {
   @Input() set measurement(measurement) {
     this.msmt = measurement;
     this.templateCtx={measurement: this.msmt};
-    console.log(this.msmt);
   };
 
   get measurement() {

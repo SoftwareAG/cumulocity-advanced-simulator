@@ -48,7 +48,8 @@ export class SimulatorConfigComponent implements OnInit {
       state: "PAUSED",
       commandQueue: []
     },
-    c8y_CustomSim: {}
+    c8y_CustomSim: {},
+    c8y_MeasurementSeries: []
   };
   public labels: ILabels = {
     ok: "Save",

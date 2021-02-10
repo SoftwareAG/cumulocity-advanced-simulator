@@ -12,7 +12,7 @@
     <br />
     <button
       class="btn btn-success"
-      style="float: right"
+      style="float: right; position: sticky;"
       (click)="generateRequest()"
     >
       Generate Instructions
@@ -23,6 +23,7 @@
 <div class="col-lg-6">
   <app-show-instruction
     [mo]="mo"
+    [commandQueue]="commandQueue"
     (currentViewState)="updateViewState($event)"
   ></app-show-instruction>
   <app-edit-instruction

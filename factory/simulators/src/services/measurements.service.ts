@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { CustomSimulator, DeviceSimulator } from "@models/simulator.model";
 import { HelperService } from "./helper.service";
 
 @Injectable({
@@ -16,28 +17,10 @@ export class MeasurementsService {
     this.measurements = measurements;
   }
 
-  public fetchMeasurements(): Promise<any[]> {
+  public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      resolve([
-        {
-          fragment: "dlval",
-          series: "en",
-          unit: "km",
-          minValue: "0",
-          maxValue: "10",
-          steps: "3",
-          sleep: "1",
-        },
-        {
-          fragment: "ppval",
-          series: "gg",
-          unit: "l",
-          minValue: "0",
-          maxValue: "15",
-          steps: "5",
-          sleep: "1",
-        },
-      ]);
+      this.measurementSeries = mo.c8y_MeasurementSeries;
+      resolve(this.measurementSeries);
     });
   }
 
