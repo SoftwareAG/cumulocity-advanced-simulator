@@ -1,19 +1,36 @@
+<c8y-action-bar-item [placement]="'right'" [itemClass]="'btn-group'">
+  <div class="btn-group" role="group" *ngFor="let item of actionButtons">
+    <button
+      type="button"
+      [ngClass]="currentSelection === item ? 'btn btn-primary' : 'btn btn-default'"
+      (click)="selectButton(item)"
+    >
+    {{item}}
+    </button>
+  </div>
+</c8y-action-bar-item>
 <div class="col-lg-6">
   <div class="settings">
-  <app-sim-settings [header]="addseries" [isExpanded]="true"></app-sim-settings>
-  <div *ngFor="let first of measurementSeries; let i = index">
     <app-sim-settings
-      [header]="addedSeries"
-      [measurement]="first"
-      [isExpanded]="first.active"
+      *ngIf="viewNewSeries"
+      [header]="addseries"
+      [isExpanded]="true"
     ></app-sim-settings>
-</div>
-</div>
+    <ng-container *ngIf="!viewNewSeries">
+      <div *ngFor="let first of measurementSeries; let i = index">
+        <app-sim-settings
+          [header]="addedSeries"
+          [measurement]="first"
+          [isExpanded]="first.active"
+        ></app-sim-settings>
+      </div>
+    </ng-container>
+  </div>
   <div class="col-sm-8">
     <br />
     <button
       class="btn btn-success"
-      style="float: right; top: 0; z-index: 2; position: sticky;"
+      style="float: right; top: 0; z-index: 2; position: sticky"
       (click)="generateRequest()"
     >
       Generate Instructions
@@ -36,12 +53,15 @@
 
 <ng-template #addedSeries let-measurement="measurement"
   ><div style="display: flex">
-    <h4>Added Series</h4>
+    <h4>Measurement Series</h4>
     &nbsp; <em>{{ measurement.fragment }}</em
+    >&nbsp; &nbsp; <em>{{ measurement.series }}</em
+    >&nbsp; &nbsp; <em>{{ measurement.unit }}</em
     >&nbsp;
+
     <button
       class="transparent"
-      (click)="measurement.active=!measurement.active"
+      (click)="measurement.active = !measurement.active"
       [attr.aria-expanded]="measurement.active"
       aria-controls="collapseBasic"
     >

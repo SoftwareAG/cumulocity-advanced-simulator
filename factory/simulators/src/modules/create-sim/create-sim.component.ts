@@ -10,13 +10,16 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 })
 
 export class CreateSimComponent implements OnInit {
-  measurementSeries = [{}];
+  measurementSeries = [];
   commandQueue = [];
   data;
   mo;
   isExpanded = false;
 
+  viewNewSeries = true;
+  actionButtons = ['New Series', 'Existing series'];
   displayEditView = false;
+  currentSelection: string = this.actionButtons[0];
   displayInstructionsView = false;
   editedVal;
   
@@ -60,7 +63,14 @@ export class CreateSimComponent implements OnInit {
     
   }
 
-
+  selectButton(item: string) {
+    this.currentSelection = item;
+    const activeElement = document.activeElement;
+    if (activeElement && activeElement instanceof HTMLButtonElement) {
+      activeElement.blur();
+    }
+    this.currentSelection === this.actionButtons[0] ? this.viewNewSeries = true : this.viewNewSeries = false;
+  }
 
 
 }
