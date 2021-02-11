@@ -13,19 +13,21 @@ export class SimSettingsComponent implements OnInit {
     private simService: SimulatorsServiceService,
     private simSettings: SimulatorSettingsService,
   ) {}
-
+  selectedSeries;
   msmt;
   alrm;
   templateCtx;
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
-  @Input() set measurement(measurement) {
-    this.msmt = measurement;
-    this.templateCtx={item: this.msmt};
+  @Input() set series(value) {
+    this.selectedSeries = value;
+    this.templateCtx={item: this.selectedSeries};
+    this.switchBetweenTypes();
+    console.log(this.selectedSeries);
   };
 
-  get measurement() {
-    return this.msmt;
+  get series() {
+    return this.selectedSeries;
   }
 
   @Input() set alarm(alarm) {
@@ -74,6 +76,15 @@ export class SimSettingsComponent implements OnInit {
 
   ngOnInit() {
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
+  }
+
+  switchBetweenTypes() {
+    if (this.selectedSeries.fragment !== undefined && this.selectedSeries.series !== undefined) {
+      this.selectedConfig = this.defaultConfig[0];
+    } else if (this.selectedSeries.alarmType !== undefined && this.selectedSeries.alarmText !== undefined) {
+      this.selectedConfig = this.defaultConfig[1];
+    }
+    console.log(this.selectedSeries);
   }
 
 

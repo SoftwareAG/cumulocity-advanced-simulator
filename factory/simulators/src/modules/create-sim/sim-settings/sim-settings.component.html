@@ -26,12 +26,12 @@
       <div [ngSwitch]="selectedConfig">
         <!-- Measurements -->
         <ng-template [ngSwitchCase]="'Measurements'">
-         <app-sim-measurements [measure]="msmt"></app-sim-measurements>
+         <app-sim-measurements [seriesVal]="selectedSeries"></app-sim-measurements>
         </ng-template>
 
         <!-- Alarms -->
         <ng-template [ngSwitchCase]="'Alarms'">
-          <app-sim-alarms [alarm]="alarm"></app-sim-alarms>
+          <app-sim-alarms [seriesVal]="selectedSeries"></app-sim-alarms>
         </ng-template>
 
         <!-- Events -->

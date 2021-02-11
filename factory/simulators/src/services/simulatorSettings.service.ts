@@ -3,6 +3,7 @@ import { HelperService } from "./helper.service";
 import { MeasurementsService } from "./measurements.service";
 import { AlarmsService } from "./alarms.service";
 import { EventsService } from "./events.service";
+import { CustomSimulator } from "@models/simulator.model";
 
 @Injectable({
   providedIn: "root",
@@ -25,6 +26,9 @@ export class SimulatorSettingsService {
 
   commandQueue = [];
 
+  allSeries = [];
+  allTypesSeries = [];
+
   constructor(
     private helperService: HelperService,
     private measurementService: MeasurementsService,
@@ -36,6 +40,11 @@ export class SimulatorSettingsService {
     return new Promise((resolve, reject) => {
       resolve(this.commandQueue);
     });
+  }
+
+  fetchAllSeries(mo: CustomSimulator): Promise<any[]> {
+    this.allTypesSeries = mo.c8y_Series;
+    return new Promise((resolve, reject) => resolve(this.allTypesSeries));
   }
 
   setCommandQueue(commandQueue) {
@@ -131,5 +140,6 @@ export class SimulatorSettingsService {
     this.measurementService.uniqueMeasurementsArray = [];
     this.alarmsService.alarms = [];
     this.eventsService.events = [];
+    this.allSeries = [];
   }
 }

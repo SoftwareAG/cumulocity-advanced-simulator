@@ -11,7 +11,7 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 export class SimMeasurementsComponent implements OnInit {
 
   isNotFirst = false;
-  @Input() set measure(measurement) {
+  @Input() set seriesVal(measurement) {
     if (measurement !== undefined && measurement.fragment !== undefined) {
     this.measurement = measurement;
     console.log(this.measurement);
@@ -26,7 +26,7 @@ export class SimMeasurementsComponent implements OnInit {
     }
   }
 
-  get measure() {
+  get seriesVal() {
     return this.measurement;
   }
   
@@ -58,7 +58,7 @@ export class SimMeasurementsComponent implements OnInit {
 
   measurements = [];
 
-  constructor(private service: MeasurementsService) {}
+  constructor(private service: MeasurementsService, private simService: SimulatorSettingsService) {}
 
   ngOnInit() {}
 
@@ -94,6 +94,7 @@ export class SimMeasurementsComponent implements OnInit {
     }
 
     this.service.measurements.push(this.measurement);
+    this.simService.allSeries.push(this.measurement);
     // this.service.measurementSeries.push(this.measurement);
   }
 

@@ -40,10 +40,12 @@ export class CreateSimComponent implements OnInit {
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     const promiseOfMeasurements = this.measurementsService.fetchMeasurements(this.mo);
     const promiseOfAlarms = this.alarmService.fetchAlarms(this.mo);
-    Promise.all([promiseOfMeasurements, promiseOfAlarms]).then(([resultMeasurements, resultAlarms]) =>{
-      this.measurementSeries = resultMeasurements.map((measurement) => ({...measurement, active: false}));
-      this.alarmSeries = resultAlarms.map((alarm) => ({...alarm, active: false}));
-    });
+    // Promise.all([promiseOfMeasurements, promiseOfAlarms]).then(([resultMeasurements, resultAlarms]) =>{
+    //   this.measurementSeries = resultMeasurements.map((measurement) => ({...measurement, active: false}));
+    //   this.alarmSeries = resultAlarms.map((alarm) => ({...alarm, active: false}));
+    // });
+    console.log(this.mo.c8y_Series);
+    this.simSettings.fetchAllSeries(this.mo).then((res) => this.measurementSeries = res.map((entry) => ({...entry, active: false})));
 
     // this.measurementSeries = result.map((measurement) =>({...measurement, active: false}));
   }
@@ -60,14 +62,16 @@ export class CreateSimComponent implements OnInit {
     const template = this.simSettings.generateRequest();
     this.commandQueue.push(...template);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.mo.c8y_MeasurementSeries.push(...this.measurementsService.measurements);
-    this.mo.c8y_AlarmSeries.push(...this.alarmService.alarms);
-    console.log(this.mo.c8y_MeasurementSeries);
-    console.log(this.mo.c8y_AlarmSeries);
+    this.mo.c8y_Series.push(...this.simSettings.allSeries);
+    
+    // this.mo.c8y_MeasurementSeries.push(...this.measurementsService.measurements);
+    // this.mo.c8y_AlarmSeries.push(...this.alarmService.alarms);
+    
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
       console.log(res);
-      this.measurementSeries = res.c8y_MeasurementSeries;
-      this.alarmSeries = res.c8y_AlarmSeries;
+      this.measurementSeries = res.c8y_Series;
+      console.log(this.measurementSeries);
+      // this.alarmSeries = res.c8y_AlarmSeries;
       this.simSettings.resetUsedArrays();
     });
     

@@ -20,7 +20,7 @@
       <div *ngFor="let first of measurementSeries; let i = index">
         <app-sim-settings
           [header]="addedSeries"
-          [measurement]="first"
+          [series]="first"
           [isExpanded]="first.active"
         ></app-sim-settings>
       </div>

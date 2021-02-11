@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AlarmsService } from "@services/alarms.service";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
 @Component({
   selector: "app-sim-alarms",
@@ -10,7 +11,7 @@ export class SimAlarmsComponent implements OnInit {
   selectedAlarm;
   isNotFirst = false;
   selectedButton = 'Add Alarm';
-  @Input() set alarm(val) {
+  @Input() set seriesVal(val) {
     if (val !== undefined && val.alarmType !== undefined) { 
     this.selectedAlarm = val;
     this.isNotFirst = true;
@@ -20,7 +21,7 @@ export class SimAlarmsComponent implements OnInit {
     this.selectedButton = 'Duplicate Alarm'
     }
   }
-  get alarm() {
+  get seriesVal() {
     return this.selectedAlarm;
   }
   @Output() alarmEmitter = new EventEmitter();
@@ -50,7 +51,7 @@ export class SimAlarmsComponent implements OnInit {
     alarmSleep?: string;
     alarmConfig: string;
   };
-  constructor(private service: AlarmsService) {}
+  constructor(private service: AlarmsService, private simService: SimulatorSettingsService) {}
 
   ngOnInit() {}
 
@@ -78,7 +79,9 @@ export class SimAlarmsComponent implements OnInit {
         alarmConfig: this.selectedAlarmConfig,
       };
       this.service.alarms.push(this.currentAlarm);
+      
     }
+    this.simService.allSeries.push(this.currentAlarm);
     this.alarmText = "";
     this.alarmType = "";
     this.alarmSteps = "";
