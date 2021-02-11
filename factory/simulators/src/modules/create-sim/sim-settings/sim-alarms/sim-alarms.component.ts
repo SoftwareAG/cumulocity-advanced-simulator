@@ -1,13 +1,28 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AlarmsService } from '@services/alarms.service';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AlarmsService } from "@services/alarms.service";
 
 @Component({
-  selector: 'app-sim-alarms',
-  templateUrl: './sim-alarms.component.html',
-  styleUrls: ['./sim-alarms.component.scss']
+  selector: "app-sim-alarms",
+  templateUrl: "./sim-alarms.component.html",
+  styleUrls: ["./sim-alarms.component.scss"],
 })
 export class SimAlarmsComponent implements OnInit {
-
+  selectedAlarm;
+  isNotFirst = false;
+  selectedButton = 'Add Alarm';
+  @Input() set alarm(val) {
+    if (val !== undefined && val.alarmType !== undefined) { 
+    this.selectedAlarm = val;
+    this.isNotFirst = true;
+    this.alarmType = val.alarmType;
+    this.alarmText = val.alarmText;
+    this.alarmSteps = val.alarmSteps;
+    this.selectedButton = 'Duplicate Alarm'
+    }
+  }
+  get alarm() {
+    return this.selectedAlarm;
+  }
   @Output() alarmEmitter = new EventEmitter();
   alarmCategories = [
     { category: "Critical", code: "301" },
@@ -27,19 +42,23 @@ export class SimAlarmsComponent implements OnInit {
   alarmSteps: string;
   alarmSleep: string;
   alarms = [];
-  currentAlarm: {level: string; alarmType: string; alarmText: string; alarmSteps: string; alarmSleep?: string; alarmConfig: string;};
-  constructor(private service: AlarmsService) { }
+  currentAlarm: {
+    level: string;
+    alarmType: string;
+    alarmText: string;
+    alarmSteps: string;
+    alarmSleep?: string;
+    alarmConfig: string;
+  };
+  constructor(private service: AlarmsService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  
   onChangeOfAlarmConfig(val) {
     this.selectedAlarmConfig = val;
     this.service.selectedAlarmConfig = this.selectedAlarmConfig;
   }
 
-  
   onChangeOfAlarm(val) {
     this.selectedAlarmCategory = val;
     this.service.selectedAlarmCategory = this.selectedAlarmCategory;
@@ -47,24 +66,21 @@ export class SimAlarmsComponent implements OnInit {
 
   addAlarmToArray() {
     for (let i = 0; i < parseInt(this.alarmSteps); i++) {
-    const level = this.alarmCategories.find(
-      (entry) => entry.category === this.selectedAlarmCategory
-    ).code;
-    this.currentAlarm = {
-      level: level,
-      alarmType: this.alarmType,
-      alarmText: this.alarmText,
-      alarmSteps: this.alarmSteps,
-      alarmSleep: this.alarmSleep,
-      alarmConfig: this.selectedAlarmConfig
-    };
-    this.service.alarms.push(this.currentAlarm);
-  }
+      const level = this.alarmCategories.find(
+        (entry) => entry.category === this.selectedAlarmCategory
+      ).code;
+      this.currentAlarm = {
+        level: level,
+        alarmType: this.alarmType,
+        alarmText: this.alarmText,
+        alarmSteps: this.alarmSteps,
+        alarmSleep: this.alarmSleep,
+        alarmConfig: this.selectedAlarmConfig,
+      };
+      this.service.alarms.push(this.currentAlarm);
+    }
     this.alarmText = "";
     this.alarmType = "";
     this.alarmSteps = "";
   }
-
-
-
 }

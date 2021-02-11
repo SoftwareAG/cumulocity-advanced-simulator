@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { AlarmService } from "@c8y/ngx-components/api";
+import { AlarmsService } from "@services/alarms.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
@@ -11,6 +13,7 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 
 export class CreateSimComponent implements OnInit {
   measurementSeries = [];
+  alarmSeries = [];
   commandQueue = [];
   data;
   mo;
@@ -27,6 +30,7 @@ export class CreateSimComponent implements OnInit {
     private route: ActivatedRoute,
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
+    private alarmService: AlarmsService,
     private simService: SimulatorsServiceService
   ) {}
     
@@ -34,11 +38,14 @@ export class CreateSimComponent implements OnInit {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    this.measurementsService.fetchMeasurements(this.mo).then((result)=>{
-      this.measurementSeries = result.map((measurement) =>({...measurement, active: false}));
-      // this.measurementSeries.push({});
+    const promiseOfMeasurements = this.measurementsService.fetchMeasurements(this.mo);
+    const promiseOfAlarms = this.alarmService.fetchAlarms(this.mo);
+    Promise.all([promiseOfMeasurements, promiseOfAlarms]).then(([resultMeasurements, resultAlarms]) =>{
+      this.measurementSeries = resultMeasurements.map((measurement) => ({...measurement, active: false}));
+      this.alarmSeries = resultAlarms.map((alarm) => ({...alarm, active: false}));
     });
-    // this.mo.c8y_DeviceSimulator.id = this.mo.id;
+
+    // this.measurementSeries = result.map((measurement) =>({...measurement, active: false}));
   }
 
   updateViewState(val) {
@@ -54,10 +61,13 @@ export class CreateSimComponent implements OnInit {
     this.commandQueue.push(...template);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.mo.c8y_MeasurementSeries.push(...this.measurementsService.measurements);
+    this.mo.c8y_AlarmSeries.push(...this.alarmService.alarms);
     console.log(this.mo.c8y_MeasurementSeries);
+    console.log(this.mo.c8y_AlarmSeries);
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
       console.log(res);
       this.measurementSeries = res.c8y_MeasurementSeries;
+      this.alarmSeries = res.c8y_AlarmSeries;
       this.simSettings.resetUsedArrays();
     });
     

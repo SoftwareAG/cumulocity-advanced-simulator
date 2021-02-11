@@ -15,16 +15,29 @@ export class SimSettingsComponent implements OnInit {
   ) {}
 
   msmt;
+  alrm;
   templateCtx;
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
   @Input() set measurement(measurement) {
     this.msmt = measurement;
-    this.templateCtx={measurement: this.msmt};
+    this.templateCtx={item: this.msmt};
   };
 
   get measurement() {
     return this.msmt;
+  }
+
+  @Input() set alarm(alarm) {
+    if (alarm !== undefined) {
+    this.alrm = alarm;
+    this.selectedConfig = this.defaultConfig[1];
+    this.templateCtx={item: this.alrm};}
+  };
+
+  get alarm() {
+    this.selectedConfig = this.defaultConfig[1];
+    return this.alrm;
   }
   // templateCtx = {measurement: this.totalEstimate};
   resultTemplate = { commandQueue: [], name: "" };

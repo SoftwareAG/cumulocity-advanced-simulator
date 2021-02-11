@@ -86,7 +86,7 @@
       style="float: right"
       (click)="addAlarmToArray()"
     >
-      <i c8yIcon="plus-circle"></i>&nbsp; Add Alarms
+      <i *ngIf="!isNotFirst" c8yIcon="plus-circle"></i>&nbsp; {{selectedButton}}
     </button>
   </div>
 </div>

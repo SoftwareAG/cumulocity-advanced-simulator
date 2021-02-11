@@ -12,7 +12,7 @@ export class SimMeasurementsComponent implements OnInit {
 
   isNotFirst = false;
   @Input() set measure(measurement) {
-    if (measurement !== undefined) {
+    if (measurement !== undefined && measurement.fragment !== undefined) {
     this.measurement = measurement;
     console.log(this.measurement);
     this.isNotFirst = true;
