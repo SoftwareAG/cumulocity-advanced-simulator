@@ -84,6 +84,8 @@ export class SimSettingsComponent implements OnInit {
       this.selectedConfig = this.defaultConfig[1];
     } else if (this.selectedSeries.code !== undefined && this.selectedSeries.eventType !== undefined) {
       this.selectedConfig = this.defaultConfig[2];
+    } else if (this.selectedSeries.code !== undefined && this.selectedSeries.geoCoordinate !== undefined) {
+      this.selectedConfig = this.defaultConfig[2];
     }
 
     // TODO: Add checks for Event Location and Location Device Update types

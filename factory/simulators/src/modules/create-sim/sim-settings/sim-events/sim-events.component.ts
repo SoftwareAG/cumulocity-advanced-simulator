@@ -15,10 +15,19 @@ export class SimEventsComponent implements OnInit {
     if (event !== undefined && event.code !== undefined) {
       this.selectedEvent = event;
       this.selectedEventCategory = this.eventCategories.filter((x) => x.code===event.code)[0].category;
+      this.eventSteps = event.steps;
+      if (event.code=== '400') {
       this.eventType = event.eventType;
       this.eventText = event.eventText;
-      this.eventSteps = event.steps;
+      
+      } else {
+        this.geoCoordinate.latitude = event.geoCoordinate.latitude;
+        this.geoCoordinate.longitude = event.geoCoordinate.longitude;
+        this.geoCoordinate.altitude = event.geoCoordinate.altitude;
+        this.geoCoordinate.accuracy = event.geoCoordinate.accuracy;
+      }
     }
+
   }
 
   get seriesVal() {
