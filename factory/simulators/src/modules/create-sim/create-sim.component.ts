@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { AlarmService } from "@c8y/ngx-components/api";
+import { AlarmsService } from "@services/alarms.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
@@ -10,17 +12,26 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 })
 
 export class CreateSimComponent implements OnInit {
-  measurementSeries = [{}];
+  measurementSeries = [];
+  alarmSeries = [];
   commandQueue = [];
   data;
   mo;
   isExpanded = false;
+
+  viewNewSeries = true;
+  actionButtons = ['New Series', 'Existing series'];
+  displayEditView = false;
+  currentSelection: string = this.actionButtons[0];
+  displayInstructionsView = false;
+  editedVal;
   editedValue;
   
   constructor(
     private route: ActivatedRoute,
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
+    private alarmService: AlarmsService,
     private simService: SimulatorsServiceService
   ) {}
   
@@ -31,12 +42,14 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.measurementsService.fetchMeasurements().then((result)=>{
-      this.measurementSeries = result;
-      this.measurementSeries.push({});
-    });
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    // this.mo.c8y_DeviceSimulator.id = this.mo.id;
+    this.simSettings.fetchAllSeries(this.mo).then((res) => this.measurementSeries = res.map((entry) => ({...entry, active: false})));
+  }
+
+  updateViewState(val) {
+    this.displayEditView = val.editView;
+    this.displayInstructionsView = val.instructionsView;
+    this.editedVal = val.editedValue;
   }
 
 
@@ -44,12 +57,22 @@ export class CreateSimComponent implements OnInit {
     const template = this.simSettings.generateRequest();
     this.commandQueue.push(...template);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.mo.c8y_Series.push(...this.simSettings.allSeries);
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
-      console.log(res);
+      this.measurementSeries = res.c8y_Series;
+      this.simSettings.resetUsedArrays();
     });
+    
   }
 
-
+  selectButton(item: string) {
+    this.currentSelection = item;
+    const activeElement = document.activeElement;
+    if (activeElement && activeElement instanceof HTMLButtonElement) {
+      activeElement.blur();
+    }
+    this.currentSelection === this.actionButtons[0] ? this.viewNewSeries = true : this.viewNewSeries = false;
+  }
 
 
 }

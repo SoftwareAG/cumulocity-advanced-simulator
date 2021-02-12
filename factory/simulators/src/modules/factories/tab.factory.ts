@@ -13,8 +13,9 @@ export class CustomTabFactory implements TabFactory {
     get(): Observable<Tab[] | Tab> | Promise<Tab[] | Tab> | Tab[] | Tab {
         const tabArray = new Array<Tab>();
         const url = this.router.url;
-        const id = ((url.match(/\d+/g))[0]).toString();
-        if (url) {
+        
+        if (url && (url.match(/\d+/g))[0] !== null) {
+            const id = ((url.match(/\d+/g))[0]).toString();
             tabArray.push(
 
                 {

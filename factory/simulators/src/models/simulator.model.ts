@@ -32,4 +32,5 @@ export interface CustomSimulator extends IManagedObject {
     id?: string;
     state?: string;
   };
+  c8y_MeasurementSeries: [];
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CustomSimulator } from '@models/simulator.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,19 @@ alarmCategories = [
   { category: "Minor", code: "303" },
 ];
 selectedAlarmCategory = this.alarmCategories[0].category;
+alarmSeries = [];
 
 setAlarms(alarms) {
   this.alarms = alarms;
 }
+
+public fetchAlarms(mo: CustomSimulator): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    this.alarmSeries = mo.c8y_AlarmSeries;
+    resolve(this.alarmSeries);
+  });
+} 
+
 generateAlarms() {
   let toBePushed = [];
   for (let alarm of this.alarms.filter((a) => a.alarmText)) {

@@ -12,6 +12,7 @@ import { UpdateInstructionsService } from '@services/updateInstructions.service'
   styleUrls: ['./show-instruction.component.less']
 })
 export class ShowInstructionComponent implements OnInit {
+  @Input() mo;
   @Input() commandQueue;
   @Output() currentValue = new EventEmitter();
   @Output() currentCommandQueue = new EventEmitter();

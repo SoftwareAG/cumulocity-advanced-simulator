@@ -1,7 +1,7 @@
 <div class="card" >
     <div class="card-block">
       <ng-container
-      *ngTemplateOutlet="header"
+      *ngTemplateOutlet="header; context:templateCtx"
     >
     </ng-container>
    <div *ngIf="isExpanded">
@@ -26,17 +26,17 @@
       <div [ngSwitch]="selectedConfig">
         <!-- Measurements -->
         <ng-template [ngSwitchCase]="'Measurements'">
-         <app-sim-measurements></app-sim-measurements>
+         <app-sim-measurements [seriesVal]="selectedSeries"></app-sim-measurements>
         </ng-template>
 
         <!-- Alarms -->
         <ng-template [ngSwitchCase]="'Alarms'">
-          <app-sim-alarms></app-sim-alarms>
+          <app-sim-alarms [seriesVal]="selectedSeries"></app-sim-alarms>
         </ng-template>
 
         <!-- Events -->
         <ng-template [ngSwitchCase]="'Events'">
-          <app-sim-events></app-sim-events>
+          <app-sim-events [seriesVal]="selectedSeries"></app-sim-events>
         </ng-template>
 
         <!-- Sleep -->

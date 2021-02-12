@@ -19,6 +19,7 @@ import { Instruction } from "@models/instruction.model";
   styleUrls: ["./edit-instruction.component.less"],
 })
 export class EditInstructionComponent implements OnInit {
+  @Input() mo;
   defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
   allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ]; 
   editedValue = {};
@@ -35,8 +36,6 @@ export class EditInstructionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.data = this.route.snapshot.data;
-    this.mo = this.data.simulator.data;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
   }
@@ -101,7 +100,7 @@ export class EditInstructionComponent implements OnInit {
   edited: EditedMeasurement;
   data: any;
   
-  mo: IManagedObject;
+  // mo: IManagedObject;
   commandQueue = [];
 
 

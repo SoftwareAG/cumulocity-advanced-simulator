@@ -64,10 +64,10 @@ export class EventsService {
       return toBePushed;
     } else {
       toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
-      toBePushedLoc = toBePushedLoc.replace("LAT", event.lat);
-      toBePushedLoc = toBePushedLoc.replace("LON", event.lon);
-      toBePushedLoc = toBePushedLoc.replace("ALT", event.alt);
-      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.accuracy);
+      toBePushedLoc = toBePushedLoc.replace("LAT", event.geoCoordinate.latitude);
+      toBePushedLoc = toBePushedLoc.replace("LON", event.geoCoordinate.longitude);
+      toBePushedLoc = toBePushedLoc.replace("ALT", event.geoCoordinate.altitude);
+      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.geoCoordinate.accuracy);
       return toBePushedLoc;
     }
   }
