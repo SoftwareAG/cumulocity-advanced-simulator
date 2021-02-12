@@ -15,6 +15,7 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
+  editedValue;
   
   constructor(
     private route: ActivatedRoute,
@@ -22,6 +23,10 @@ export class CreateSimComponent implements OnInit {
     private measurementsService: MeasurementsService,
     private simService: SimulatorsServiceService
   ) {}
+  
+  getCurrentValue(event){
+    this.editedValue = event;
+  }
     
   ngOnInit() {
     this.data = this.route.snapshot.data;
@@ -30,6 +35,7 @@ export class CreateSimComponent implements OnInit {
       this.measurementSeries = result;
       this.measurementSeries.push({});
     });
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
   }
 

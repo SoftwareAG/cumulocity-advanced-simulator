@@ -1,173 +1,56 @@
 <div class="tight-grid">
   <div class="col-xs-4">
-    <button title="Add instruction" class="btn-add-block" (click)="onSelectInstructions()">
+    <button title="Add instruction" class="btn-add-block" (click)="onAddInstruction()">
       <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add instructions
     </button>
   </div>
   <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" (click)="onSelectSleep()">
+    <button title="Add sleep" class="btn-add-block" (click)="onAddSleep()">
       <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Add sleep
     </button>
   </div>
   <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" (click)="clearAllInstructions()">
+    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
       <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Clear all Instructions
     </button>
   </div>
 </div>
 
-
-
-
-<section *ngIf="displayAddView">
-  <h4>Add Instruction</h4>
-  <select class="form-control" [ngModel]="selectedConfig" (ngModelChange)="onChangeConfig($event)">
-    <option *ngFor="let first of defaultConfig">{{ first }}</option>
-  </select>
-</section>
-
-<section *ngIf="displayEditView">
-  <h4>Edit Instruction</h4>
-
-</section>
-
 <section *ngIf="displayAddView||displayEditView">
   <div class="card">
     <div class="card-block">
+      <div *ngIf="displayAddView">
+        <h4>Add Instruction</h4>
+        <br>
+        <select class="form-control" [(ngModel)]="selectedEditView">
+          <option *ngFor="let first of defaultConfig">{{ first }}</option>
+        </select>
+        <br>
+      </div>
+      <div *ngIf="displayEditView">
+        <h4>Edit Instruction</h4>
+      </div>
+      <br>
 
-
-      <h4>Edit Instruction</h4>
-      <br />
 
       <div [ngSwitch]="selectedEditView">
-        <ng-template [ngSwitchCase]="'Measurements'">
-          <!-- Measurements -->
+        <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
           <div class="row">
-            <div class="col-sm-6 col-xs-6">
+            <div class="col-xs-6" *ngFor="let entry of form">
               <div class="form-group">
-                <input id="fragment" class="form-control" placeholder="Fragment (required)"
-                  [ngModel]="editedValue.value.values[0]" (ngModelChange)="editFragment($event)" />
+                <label>{{entry.label}}</label>
+                <input id="{{entry.name}}" [required]="entry.required" class="form-control" [(ngModel)]="editedValue[entry.name]"
+                 placeholder="{{entry.placeholder}} {{(entry.required) ? '(required)' : '(optional)'}}">
               </div>
             </div>
-            <div class="col-sm-6 col-xs-6">
-              <div class="form-group">
-                <input name="series" class="form-control" placeholder="Series (required)"
-                  [ngModel]="editedValue.value.values[1]" (ngModelChange)="editSeries($event)" />
-              </div>
-            </div>
-            <div class="col-sm-6 col-xs-6">
-              <div class="form-group">
-                <input name="minimum" class="form-control" placeholder="Value" [ngModel]="editedValue.value.values[2]"
-                  (ngModelChange)="editValue($event)" />
-              </div>
-            </div>
-            <div>
-              <div class="col-sm-6 col-xs-6">
-                <div class="form-group">
-                  <input name="maximum" class="form-control" placeholder="Unit (required)"
-                    [ngModel]="editedValue.value.values[3]" (ngModelChange)="editUnit($event)" />
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-12">
-              <button class="btn btn-primary" style="float: right" (click)="updateMsmt()">
-                Update Measurements
+            <div class="col-xs-12">
+              <button class="btn btn-primary" style="float: right" (click)="addOrUpdateInstruction(i)">
+                {{(displayAddView) ? "Add" : "Update"}} {{defaultConfig[i]}}
               </button>
             </div>
           </div>
         </ng-template>
-
-        <!-- Alarms -->
-        <ng-template [ngSwitchCase]="'Alarms'">
-          <div class="col-sm-6 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Alarm Type" [ngModel]="editedVal.value.values[0]"
-                (ngModelChange)="editAlarmType($event)" />
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Alarm Text" [ngModel]="editedVal.value.values[1]"
-                (ngModelChange)="editAlarmText($event)" />
-            </div>
-            <div class="col-sm-12">
-              <button class="btn btn-primary" style="float: right" (click)="updateAlarm()">Update Alarm
-              </button>
-            </div>
-          </div>
-        </ng-template>
-
-        <!-- Events -->
-        <ng-template [ngSwitchCase]="'Basic Event'">
-          <div class="col-sm-6 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Event Type" [ngModel]="editedVal.value.values[0]"
-                (ngModelChange)="editEventType($event)" />
-            </div>
-          </div>
-
-          <div class="col-sm-6 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Event Text" [ngModel]="editedVal.value.values[1]"
-                (ngModelChange)="editEventText($event)" />
-            </div>
-            <div class="col-sm-12">
-              <button class="btn btn-primary" style="float: right" (click)="updateBasicEvent()">
-                Update Event
-              </button>
-            </div>
-          </div>
-        </ng-template>
-
-        <ng-template [ngSwitchCase]="'Events'">
-          <div class="col-sm-3 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Event Type" [ngModel]="editedVal.value.values[0]"
-                (ngModelChange)="editEventLatitude($event)" />
-            </div>
-          </div>
-
-          <div class="col-sm-3 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Event Type" [ngModel]="editedVal.value.values[1]"
-                (ngModelChange)="editEventLongitude($event)" />
-            </div>
-          </div>
-
-          <div class="col-sm-3 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Event Type" [ngModel]="editedVal.value.values[2]"
-                (ngModelChange)="editEventAltitude($event)" />
-            </div>
-          </div>
-
-          <div class="col-sm-3 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Event Text" [ngModel]="editedVal.value.values[3]"
-                (ngModelChange)="editEventAccuracy($event)" />
-            </div>
-            <div class="col-sm-12">
-              <button class="btn btn-primary" style="float: right" (click)="updateBasicEvent()">
-                Update Event
-              </button>
-            </div>
-          </div>
-        </ng-template>
-
-        <ng-template [ngSwitchCase]="'Sleep'">
-          <div class="col-sm-6 col-xs-6">
-            <div class="form-group">
-              <input name="minimum" class="form-control" placeholder="Sleep (seconds)"
-                [ngModel]="editedVal.value.seconds" (ngModelChange)="editSleep($event)" />
-            </div>
-          </div>
-          <div class="col-sm-6 col-xs-6">
-            <button class="btn btn-primary" style="float: right" (click)="updateSleep()">
-              Update Sleep
-            </button>
-          </div>
-        </ng-template>
+        
       </div>
     </div>
   </div>

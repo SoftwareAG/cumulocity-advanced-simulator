@@ -55,7 +55,7 @@ export class SimulatorSettingsService {
           value,
           temp
         );
-        this.resultTemplate.commandQueue.push(JSON.parse(toBePushed));
+        this.resultTemplate.commandQueue.push(toBePushed);
 
         // Add sleep after inserting measurement
 

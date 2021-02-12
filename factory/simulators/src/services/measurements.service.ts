@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HelperService } from './helper.service';
+import { AlarmInstruction, BasicEventInstruction, MeasurementInstruction, SleepInstruction, EventInstruction } from '@models/instruction.model';
+import { keyframes } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +16,10 @@ randomSelected = false;
 
 setMeasurements(measurements) {
   this.measurements = measurements;
+}
+
+pushToMeasurements(measurements) {
+  this.measurements.push(measurements);
 }
 
 public fetchMeasurements(): Promise<any[]> {
@@ -63,7 +69,8 @@ toMeasurementTemplate(measurement, value) {
   toBePushed = toBePushed.replace("SERIES", measurement.series);
   toBePushed = toBePushed.replace("VALUE", value);
   toBePushed = toBePushed.replace("UNIT", measurement.unit);
-  return toBePushed;
+  return JSON.parse(toBePushed);
 }
+
 
 }

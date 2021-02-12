@@ -9,21 +9,7 @@ import { UpdateInstructionsService } from '@services/updateInstructions.service'
 @Component({
   selector: 'app-show-instruction',
   templateUrl: './show-instruction.component.html',
-  /*styles: [`.fa-minus-circle:before {
-              position: relative;
-              top: 35%;
-              margin-left: 2px;
-            }
-
-            .delete {
-              background-color: transparent;
-              background-repeat: no-repeat;
-              border: none;
-              cursor: pointer;
-              overflow: hidden;
-              outline: none;
-            }`]*/
-    styleUrls: ['./show-instruction.component.css']
+  styleUrls: ['./show-instruction.component.less']
 })
 export class ShowInstructionComponent implements OnInit {
   @Input() commandQueue;
