@@ -23,7 +23,6 @@ export class SimSettingsComponent implements OnInit {
     this.selectedSeries = value;
     this.templateCtx={item: this.selectedSeries};
     this.switchBetweenTypes();
-    console.log(this.selectedSeries);
   };
 
   get series() {
@@ -83,8 +82,12 @@ export class SimSettingsComponent implements OnInit {
       this.selectedConfig = this.defaultConfig[0];
     } else if (this.selectedSeries.alarmType !== undefined && this.selectedSeries.alarmText !== undefined) {
       this.selectedConfig = this.defaultConfig[1];
+    } else if (this.selectedSeries.code !== undefined && this.selectedSeries.eventType !== undefined) {
+      this.selectedConfig = this.defaultConfig[2];
     }
-    console.log(this.selectedSeries);
+
+    // TODO: Add checks for Event Location and Location Device Update types
+    // TODO: Checks for individual sleep instructions
   }
 
 

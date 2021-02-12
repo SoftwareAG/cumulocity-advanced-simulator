@@ -10,15 +10,20 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 export class SimAlarmsComponent implements OnInit {
   selectedAlarm;
   isNotFirst = false;
-  selectedButton = 'Add Alarm';
+  selectedButton = "Add Alarm";
   @Input() set seriesVal(val) {
-    if (val !== undefined && val.alarmType !== undefined) { 
-    this.selectedAlarm = val;
-    this.isNotFirst = true;
-    this.alarmType = val.alarmType;
-    this.alarmText = val.alarmText;
-    this.alarmSteps = val.alarmSteps;
-    this.selectedButton = 'Duplicate Alarm'
+    if (val !== undefined && val.alarmType !== undefined) {
+      console.log("val alarm");
+      console.log(val);
+      this.selectedAlarm = val;
+      this.isNotFirst = true;
+      this.alarmType = val.alarmType;
+      this.alarmText = val.alarmText;
+      this.alarmSteps = val.alarmSteps;
+      this.alarmSleep = val.alarmSleep;
+      this.selectedAlarmConfig = val.alarmConfig;
+      this.selectedAlarmCategory = this.alarmCategories.filter((x) => x.code === val.level)[0].category;
+      this.selectedButton = "Duplicate Alarm";
     }
   }
   get seriesVal() {
@@ -51,7 +56,10 @@ export class SimAlarmsComponent implements OnInit {
     alarmSleep?: string;
     alarmConfig: string;
   };
-  constructor(private service: AlarmsService, private simService: SimulatorSettingsService) {}
+  constructor(
+    private service: AlarmsService,
+    private simService: SimulatorSettingsService
+  ) {}
 
   ngOnInit() {}
 
@@ -79,7 +87,6 @@ export class SimAlarmsComponent implements OnInit {
         alarmConfig: this.selectedAlarmConfig,
       };
       this.service.alarms.push(this.currentAlarm);
-      
     }
     this.simService.allSeries.push(this.currentAlarm);
     this.alarmText = "";

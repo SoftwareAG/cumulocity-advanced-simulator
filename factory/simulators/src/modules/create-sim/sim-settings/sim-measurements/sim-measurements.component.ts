@@ -22,6 +22,7 @@ export class SimMeasurementsComponent implements OnInit {
     this.maxVal = this.measurement.maxValue;
     this.unit = this.measurement.unit;
     this.steps = this.measurement.steps;
+    this.sleep = this.measurement.sleep;
     this.selectedButton = 'Duplicate Measurement'
     }
   }
