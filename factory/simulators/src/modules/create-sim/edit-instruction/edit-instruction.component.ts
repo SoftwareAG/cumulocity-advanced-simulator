@@ -11,6 +11,7 @@ import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm } 
 import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
+import { Instruction } from "@models/instruction.model";
 
 @Component({
   selector: "app-edit-instruction",
@@ -42,13 +43,14 @@ export class EditInstructionComponent implements OnInit {
 
 
   addOrUpdateInstruction(index: number) {
-    const editedValueCopy = {};
-    console.info(this.editedValue);
+    const editedValueCopy: Instruction = {};
     for(const entry of this.allForms[index]){
       editedValueCopy[entry.name] = this.editedValue[entry.name];
     }
-    
-    const commandQueueEntry = this.measurementsService.toMeasurementTemplate(editedValueCopy, editedValueCopy['value']);
+
+    const commandQueueEntry = this.instructionService.instructionToCommand(editedValueCopy);
+    console.info(commandQueueEntry);
+    //const commandQueueEntry = this.measurementsService.toMeasurementTemplate(editedValueCopy, editedValueCopy['value']);
     if(this.displayAddView){
       this.commandQueue.push(commandQueueEntry);
     }else{

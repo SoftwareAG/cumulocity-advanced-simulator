@@ -7,6 +7,29 @@ import { AlarmInstruction, BasicEventInstruction, EventInstruction, MeasurementI
 export class InstructionService {
 
   constructor() { } 
+
+  private commandQueueEntryTemplate(messageId: string, values){
+    return `{
+      "messageId": ${messageId},
+      "type": "builtin",
+      "values": ${JSON.stringify(values)}, 
+    }`;
+  }
+
+
+  instructionToCommand(instruction: MeasurementInstruction | AlarmInstruction | BasicEventInstruction | EventInstruction | SleepInstruction): string {
+    let commandQueueEntry;
+    switch(instruction.type){
+      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.value, instruction.unit]); break;
+      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
+      case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.alarmType, instruction.alarmText]); break;
+      case 'Event': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
+      case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep]); break;
+
+    }
+    return commandQueueEntry;
+  }
+
   
   commandQueueEntryToInstruction(commandQueueEntry): MeasurementInstruction | AlarmInstruction | BasicEventInstruction | EventInstruction | SleepInstruction {
     if (commandQueueEntry.type === "Sleep") {
@@ -55,6 +78,6 @@ export class InstructionService {
     }
   }
 
-  
+
 
 }
