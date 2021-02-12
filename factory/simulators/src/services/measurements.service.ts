@@ -1,6 +1,10 @@
+
 import { Injectable } from "@angular/core";
 import { CustomSimulator, DeviceSimulator } from "@models/simulator.model";
-import { HelperService } from "./helper.service";
+import { HelperService } from './helper.service';
+import { AlarmInstruction, BasicEventInstruction, MeasurementInstruction, SleepInstruction, EventInstruction } from '@models/instruction.model';
+import { keyframes } from '@angular/animations';
+
 
 @Injectable({
   providedIn: "root",
@@ -17,7 +21,11 @@ export class MeasurementsService {
     this.measurements = measurements;
   }
 
-  public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
+pushToMeasurements(measurements) {
+  this.measurements.push(measurements);
+}
+
+public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
     return new Promise((resolve, reject) => {
       this.measurementSeries = mo.c8y_MeasurementSeries;
       resolve(this.measurementSeries);
@@ -63,10 +71,12 @@ export class MeasurementsService {
   "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
   }`;
 
-    toBePushed = toBePushed.replace("FRAGMENT", measurement.fragment);
-    toBePushed = toBePushed.replace("SERIES", measurement.series);
-    toBePushed = toBePushed.replace("VALUE", value);
-    toBePushed = toBePushed.replace("UNIT", measurement.unit);
-    return toBePushed;
-  }
+  toBePushed = toBePushed.replace("FRAGMENT", measurement.fragment);
+  toBePushed = toBePushed.replace("SERIES", measurement.series);
+  toBePushed = toBePushed.replace("VALUE", value);
+  toBePushed = toBePushed.replace("UNIT", measurement.unit);
+  return JSON.parse(toBePushed);
+}
+
+
 }

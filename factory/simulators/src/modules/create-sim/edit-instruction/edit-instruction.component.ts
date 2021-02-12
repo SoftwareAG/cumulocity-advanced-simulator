@@ -7,47 +7,100 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 import { ActivatedRoute } from "@angular/router";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
+import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm } from "./inputFields.const";
+import { MeasurementsService } from "@services/measurements.service";
+import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
+import { InstructionService } from "@services/Instruction.service";
 
 @Component({
   selector: "app-edit-instruction",
   templateUrl: "./edit-instruction.component.html",
-  styleUrls: ["./edit-instruction.component.scss"],
+  styleUrls: ["./edit-instruction.component.less"],
 })
 export class EditInstructionComponent implements OnInit {
-  alarmText: string;
-  alarmType: string;
+  @Input() mo;
+  defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
+  allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ]; 
+  editedValue = {};
+  editedValueIndex: number;
+
+
+  constructor(
+    private route: ActivatedRoute,
+    private alertService: AlertService,
+    private simulatorervice: SimulatorsServiceService,
+    private simSettings: SimulatorSettingsService,
+    private measurementsService: MeasurementsService,
+    private instructionService: InstructionService
+  ) { }
+
+  ngOnInit() {
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.simSettings.setCommandQueue(this.commandQueue);
+  }
+
+
+  addOrUpdateInstruction(index: number) {
+    const editedValueCopy = {};
+    console.info(this.editedValue);
+    for(const entry of this.allForms[index]){
+      editedValueCopy[entry.name] = this.editedValue[entry.name];
+    }
+    
+    const commandQueueEntry = this.measurementsService.toMeasurementTemplate(editedValueCopy, editedValueCopy['value']);
+    if(this.displayAddView){
+      this.commandQueue.push(commandQueueEntry);
+    }else{
+      this.commandQueue[this.editedValueIndex] = commandQueueEntry;
+    }
+
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.mo, this.defaultConfig[index]);
+  }
+
+  displayEditView = false;
+  displayAddView = false;
   
-  eventText: string;
-  eventType: string;
-  
-  sleep: string;
+  onAddSleep() {
+    this.selectedEditView = "Sleep";
+    this.displayAddView = true;
+    this.displayEditView = false;
+    this.editedValue = {};
+  }
+
+  onAddInstruction() {
+    this.selectedEditView = "Measurement";
+    this.displayAddView = true;
+    this.displayEditView = false;
+    this.editedValue = {};
+  }
+
+  @Input() set editedVal(val) {
+    if (val) {
+      this.editedValueIndex = val['index'];
+      const instruction = this.instructionService.commandQueueEntryToInstruction(val['value']);
+      this.selectedEditView = instruction.type;
+      this.editedValue = instruction;
+      this.displayAddView = false;
+      this.displayEditView = true;
+    }
+  }
+
+  onClearAllInstructions() {
+    this.commandQueue = [];
+  }
+
+
+
   
   selectedEditView: string;
   toEmit = false;
   edited: EditedMeasurement;
   data: any;
   
-  @Input() mo: IManagedObject;
-  editedValue;
+  // mo: IManagedObject;
   commandQueue = [];
 
-
-  newValue = { fragment: "", series: "", value: "", unit: "" };
-  newAlarm = { alarmType: "", alarmText: ""};
-  newEvent: EditedEvent = {
-    eventType: "",
-    eventText: "",
-    eventAccuracy: "",
-    eventLatitude: "",
-    eventLongitude: "",
-    eventAltitude: "",
-  };
-  newSleep: string;
-
-  @Input() set editedVal(val) {
-    this.editedValue = val;
-    this.switchEditTemplate();
-  }
 
   get editedVal() {
     return this.editedValue;
@@ -55,151 +108,23 @@ export class EditInstructionComponent implements OnInit {
   
   @Output() updatedVal = new EventEmitter();
 
-  constructor(
-    private route: ActivatedRoute,
-    private alertService: AlertService,
-    private simulatorervice: SimulatorsServiceService,
-    private simSettings: SimulatorSettingsService
-  ) {}
 
-  ngOnInit() {
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    this.simSettings.setCommandQueue(this.commandQueue);
+  displayInstructionsOrSleep = false;
+
+
+  updateCurrent(val) {
+    this.displayEditView = true;
+    this.displayInstructionsOrSleep = false;
   }
 
-  updateMsmt() {
-    for (let i = 0; i < Object.keys(this.newValue).length; i++) {
-      this.editedValue.value.values[i] = this.newValue[
-        Object.keys(this.newValue)[i]
-      ];
-    }
 
-    this.editedValue.value.values[0] = this.newAlarm.alarmType;
-    this.editedValue.value.values[1] = this.newAlarm.alarmText;
 
+  updateCommandQueue(newCommandQueue) {
+    this.commandQueue = newCommandQueue;
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, 'Measurement');
-    
-  }
-
-  updateAlarm() {
-    for (let i = 0; i < Object.keys(this.newAlarm).length; i++) {
-      this.editedValue.value.values[i] = this.newAlarm[
-        Object.keys(this.newAlarm)[i]
-      ];
-    }
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, 'Alarm');
-    
-  }
-
-  updateBasicEvent() {
-    if (this.editedValue.value.messageId === "400") {
-      for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
-        this.editedValue.value.values[i] = this.newEvent[
-          Object.keys(this.newEvent)[i]
-        ];
-      }
-    } else {
-      for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
-        this.editedValue.value.values[i] = this.newEvent[
-          Object.keys(this.newEvent)[i + 2]
-        ];
-      }
-    }
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, 'Event');
-  }
-
-  updateSleep() {
-    if (this.editedValue.value.seconds) {
-      this.editedValue.value.seconds = this.newSleep;
-      this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-      this.updateCommandQueueInManagedObject(this.mo, 'Sleep');
-    }
-  }
-
-  switchEditTemplate() {
-    // console.log(this)
-    // FIXME: Add editValue cast to alarms, events and sleep
-    if (this.editedValue.value.type === "sleep") {
-      this.selectedEditView = "sleep";
-      this.newSleep = this.editedValue.value.seconds;
-    } else if (this.editedValue.value.messageId === "200") {
-      this.selectedEditView = "msmts";
-      for (let i = 0; i < Object.keys(this.newValue).length; i++) {
-        this.newValue[
-          Object.keys(this.newValue)[i]
-        ] = this.editedValue.value.values[i];
-      }
-    } else if (this.editedValue.value.messageId.startsWith("30")) {
-      this.selectedEditView = "alarm";
-      for (let i = 0; i < Object.keys(this.newAlarm).length; i++) {
-        this.newAlarm[
-          Object.keys(this.newAlarm)[i]
-        ] = this.editedValue.value.values[i];
-      }
-    } else if (this.editedValue.value.messageId === "400") {
-      this.selectedEditView = "basicevent";
-      for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
-        this.newEvent[
-          Object.keys(this.newEvent)[i]
-        ] = this.editedValue.value.values[i];
-      }
-    } else if (
-      this.editedValue.value.messageId === "401" ||
-      this.editedValue.value.messageId === "402"
-    ) {
-      this.selectedEditView = "event";
-      for (let i = 0; i < Object.keys(this.newEvent).length; i++) {
-        this.newEvent[
-          Object.keys(this.newEvent)[i + 2]
-        ] = this.editedValue.value.values[i];
-      }
-    }
-  }
-
-  editFragment(val) {
-    this.newValue.fragment = val;
-  }
-  editSeries(val) {
-    this.newValue.series = val;
-  }
-  editValue(val) {
-    this.newValue.value = val;
-  }
-  editUnit(val) {
-    this.newValue.unit = val;
-  }
-
-  editAlarmText(val) {
-    this.newAlarm.alarmText = val;
-  }
-  editAlarmType(val) {
-    this.newAlarm.alarmType = val;
-  }
-
-  editEventText(val) {
-    this.newEvent.eventText = val;
-  }
-  editEventType(val) {
-    this.newEvent.eventType = val;
-  }
-
-  editEventLatitude(val) {
-    this.newEvent.eventLatitude = val;
-  }
-  editEventLongitude(val) {
-    this.newEvent.eventLongitude = val;
-  }
-  editEventAltitude(val) {
-    this.newEvent.eventAltitude = val;
-  }
-  editEventAccuracy(val) {
-    this.newEvent.eventAccuracy = val;
-  }
-  editSleep(val) {
-    this.newSleep = val;
+    this.simulatorervice
+      .updateSimulatorManagedObject(this.mo)
+      .then((result) => console.log(result));
   }
 
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {

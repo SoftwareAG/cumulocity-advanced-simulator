@@ -25,6 +25,7 @@ export class CreateSimComponent implements OnInit {
   currentSelection: string = this.actionButtons[0];
   displayInstructionsView = false;
   editedVal;
+  editedValue;
   
   constructor(
     private route: ActivatedRoute,
@@ -33,6 +34,10 @@ export class CreateSimComponent implements OnInit {
     private alarmService: AlarmsService,
     private simService: SimulatorsServiceService
   ) {}
+  
+  getCurrentValue(event){
+    this.editedValue = event;
+  }
     
   ngOnInit() {
     this.data = this.route.snapshot.data;

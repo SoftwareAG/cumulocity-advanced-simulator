@@ -51,11 +51,12 @@
   <app-show-instruction
     [mo]="mo"
     [commandQueue]="commandQueue"
+    (currentValue)="getCurrentValue($event)"
     (currentViewState)="updateViewState($event)"
   ></app-show-instruction>
   <app-edit-instruction
     [mo]="mo"
-    [editedVal]="editedVal"
+    [editedVal]="editedValue"
     *ngIf="this.displayEditView"
   ></app-edit-instruction>
 </div>
