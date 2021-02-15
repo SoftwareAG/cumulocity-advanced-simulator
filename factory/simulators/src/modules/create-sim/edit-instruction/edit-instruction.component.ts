@@ -11,6 +11,7 @@ import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm } 
 import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
+import { Instruction, Instruction2 } from "@models/instruction.model";
 
 @Component({
   selector: "app-edit-instruction",
@@ -19,7 +20,9 @@ import { InstructionService } from "@services/Instruction.service";
 })
 export class EditInstructionComponent implements OnInit {
   @Input() mo;
-  defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
+  @Input() commandQueue;
+
+  readonly defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
   allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ]; 
   editedValue = {};
   editedValueIndex: number;
@@ -35,19 +38,28 @@ export class EditInstructionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    this.simSettings.setCommandQueue(this.commandQueue);
+    
   }
 
 
   addOrUpdateInstruction(index: number) {
-    const editedValueCopy = {};
-    console.info(this.editedValue);
+    let editedValueCopy: Instruction | Instruction2 = {};
     for(const entry of this.allForms[index]){
+      if (entry.required === true && !this.editedValue[entry.name]){
+        this.alertService.add({
+          text: `Not all required fields are filled.`,
+          type: "danger",
+        });
+        return;
+      }
       editedValueCopy[entry.name] = this.editedValue[entry.name];
     }
+    editedValueCopy.type = this.defaultConfig[index];
+    console.info(this.allForms[index], index, editedValueCopy);
+
+    const commandQueueEntry = this.instructionService.instructionToCommand(editedValueCopy as Instruction);
+    console.info(this.displayAddView, this.commandQueue, commandQueueEntry, this.editedValueIndex);
     
-    const commandQueueEntry = this.measurementsService.toMeasurementTemplate(editedValueCopy, editedValueCopy['value']);
     if(this.displayAddView){
       this.commandQueue.push(commandQueueEntry);
     }else{
@@ -56,6 +68,7 @@ export class EditInstructionComponent implements OnInit {
 
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.updateCommandQueueInManagedObject(this.mo, this.defaultConfig[index]);
+    this.simSettings.setCommandQueue(this.commandQueue);
   }
 
   displayEditView = false;
@@ -98,9 +111,6 @@ export class EditInstructionComponent implements OnInit {
   edited: EditedMeasurement;
   data: any;
   
-  // mo: IManagedObject;
-  commandQueue = [];
-
 
   get editedVal() {
     return this.editedValue;

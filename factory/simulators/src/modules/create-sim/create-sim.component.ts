@@ -62,7 +62,6 @@ export class CreateSimComponent implements OnInit {
   }
 
   updateViewState(val) {
-    this.displayEditView = val.editView;
     this.displayInstructionsView = val.instructionsView;
     this.editedVal = val.editedValue;
   }
