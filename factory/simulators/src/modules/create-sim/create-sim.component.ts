@@ -21,7 +21,6 @@ export class CreateSimComponent implements OnInit {
 
   viewNewSeries = true;
   actionButtons = ['New Series', 'Existing series'];
-  displayEditView = false;
   currentSelection: string = this.actionButtons[0];
   displayInstructionsView = false;
   editedVal;
@@ -42,12 +41,11 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue.filter(a => a);
     this.simSettings.fetchAllSeries(this.mo).then((res) => this.measurementSeries = res.map((entry) => ({...entry, active: false})));
   }
 
   updateViewState(val) {
-    this.displayEditView = val.editView;
     this.displayInstructionsView = val.instructionsView;
     this.editedVal = val.editedValue;
   }

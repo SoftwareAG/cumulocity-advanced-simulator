@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlarmInstruction, BasicEventInstruction, EventInstruction, MeasurementInstruction, SleepInstruction } from '@models/instruction.model';
+import { Instruction } from '@models/instruction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,29 +9,30 @@ export class InstructionService {
   constructor() { } 
 
   private commandQueueEntryTemplate(messageId: string, values){
-    return `{
-      "messageId": ${messageId},
-      "type": "builtin",
-      "values": ${JSON.stringify(values)}, 
-    }`;
+    return {
+      messageId: messageId,
+      type: 'builtin',
+      values: values, 
+    };
   }
 
 
-  instructionToCommand(instruction: MeasurementInstruction | AlarmInstruction | BasicEventInstruction | EventInstruction | SleepInstruction): string {
+  instructionToCommand(instruction: Instruction) {
     let commandQueueEntry;
     switch(instruction.type){
       case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.value, instruction.unit]); break;
-      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
+      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('400', [instruction.eventType, instruction.eventText]); break;
       case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.alarmType, instruction.alarmText]); break;
       case 'Event': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
       case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep]); break;
 
     }
+    
     return commandQueueEntry;
   }
 
   
-  commandQueueEntryToInstruction(commandQueueEntry): MeasurementInstruction | AlarmInstruction | BasicEventInstruction | EventInstruction | SleepInstruction {
+  commandQueueEntryToInstruction(commandQueueEntry): Instruction {
     if (commandQueueEntry.type === "Sleep") {
       return {
         type: 'Sleep',

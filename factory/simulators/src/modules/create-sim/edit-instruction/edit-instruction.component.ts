@@ -20,6 +20,8 @@ import { Instruction } from "@models/instruction.model";
 })
 export class EditInstructionComponent implements OnInit {
   @Input() mo;
+  @Input() commandQueue;
+
   defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
   allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ]; 
   editedValue = {};
@@ -36,20 +38,27 @@ export class EditInstructionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    this.simSettings.setCommandQueue(this.commandQueue);
+    
   }
 
 
   addOrUpdateInstruction(index: number) {
-    const editedValueCopy: Instruction = {};
+    let editedValueCopy: Instruction = { type: this.defaultConfig[index] };
     for(const entry of this.allForms[index]){
+      if (entry.required === true && !this.editedValue[entry.name]){
+        this.alertService.add({
+          text: `Not all required fields are filled.`,
+          type: "danger",
+        });
+        return;
+      }
       editedValueCopy[entry.name] = this.editedValue[entry.name];
     }
+    console.info(this.allForms[index], index, editedValueCopy);
 
     const commandQueueEntry = this.instructionService.instructionToCommand(editedValueCopy);
-    console.info(commandQueueEntry);
-    //const commandQueueEntry = this.measurementsService.toMeasurementTemplate(editedValueCopy, editedValueCopy['value']);
+    console.info(this.displayAddView, this.commandQueue, commandQueueEntry, this.editedValueIndex);
+    
     if(this.displayAddView){
       this.commandQueue.push(commandQueueEntry);
     }else{
@@ -58,6 +67,7 @@ export class EditInstructionComponent implements OnInit {
 
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.updateCommandQueueInManagedObject(this.mo, this.defaultConfig[index]);
+    this.simSettings.setCommandQueue(this.commandQueue);
   }
 
   displayEditView = false;
@@ -100,9 +110,6 @@ export class EditInstructionComponent implements OnInit {
   edited: EditedMeasurement;
   data: any;
   
-  // mo: IManagedObject;
-  commandQueue = [];
-
 
   get editedVal() {
     return this.editedValue;

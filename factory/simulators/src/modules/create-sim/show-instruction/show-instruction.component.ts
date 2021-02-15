@@ -24,7 +24,7 @@ export class ShowInstructionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    
+    console.info(this.commandQueue);
   }
 
   deleteMeasurementOrSleep(item) {
