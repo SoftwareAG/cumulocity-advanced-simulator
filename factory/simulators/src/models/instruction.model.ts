@@ -1,10 +1,13 @@
 import { GeoCoordinate } from "./geoCoordinate.model";
 
 
-export type Instruction = MeasurementInstruction | AlarmInstruction | BasicEventInstruction | SleepInstruction | EventInstruction | Instruction2;
+export type Instruction = MeasurementInstruction | AlarmInstruction | BasicEventInstruction | SleepInstruction | EventInstruction;
 
+export enum InstructionCategory {
+    'Measurement', 'Alarm', 'Event', 'Sleep', 'BasicEvent'
+}
 export interface Instruction2 {
-    type: string;
+    type?: string;
 }
 
 export interface MeasurementInstruction extends Instruction2 {

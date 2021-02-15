@@ -11,7 +11,7 @@ import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm } 
 import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
-import { Instruction } from "@models/instruction.model";
+import { Instruction, Instruction2 } from "@models/instruction.model";
 
 @Component({
   selector: "app-edit-instruction",
@@ -22,7 +22,7 @@ export class EditInstructionComponent implements OnInit {
   @Input() mo;
   @Input() commandQueue;
 
-  defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
+  readonly defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
   allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ]; 
   editedValue = {};
   editedValueIndex: number;
@@ -43,7 +43,7 @@ export class EditInstructionComponent implements OnInit {
 
 
   addOrUpdateInstruction(index: number) {
-    let editedValueCopy: Instruction = { type: this.defaultConfig[index] };
+    let editedValueCopy: Instruction | Instruction2 = {};
     for(const entry of this.allForms[index]){
       if (entry.required === true && !this.editedValue[entry.name]){
         this.alertService.add({
@@ -54,9 +54,10 @@ export class EditInstructionComponent implements OnInit {
       }
       editedValueCopy[entry.name] = this.editedValue[entry.name];
     }
+    editedValueCopy.type = this.defaultConfig[index];
     console.info(this.allForms[index], index, editedValueCopy);
 
-    const commandQueueEntry = this.instructionService.instructionToCommand(editedValueCopy);
+    const commandQueueEntry = this.instructionService.instructionToCommand(editedValueCopy as Instruction);
     console.info(this.displayAddView, this.commandQueue, commandQueueEntry, this.editedValueIndex);
     
     if(this.displayAddView){
