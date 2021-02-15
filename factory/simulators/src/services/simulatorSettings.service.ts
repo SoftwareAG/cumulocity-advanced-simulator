@@ -142,4 +142,8 @@ export class SimulatorSettingsService {
     this.eventsService.events = [];
     this.allSeries = [];
   }
+
+  deleteMeasurementsFromCommandQueue(minMeasurement, maxMeasurement, commandQueue) {
+
+  }
 }

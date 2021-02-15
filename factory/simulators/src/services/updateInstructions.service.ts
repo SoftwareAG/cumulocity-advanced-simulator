@@ -10,9 +10,11 @@ export class UpdateInstructionsService {
   private editedMsmtObserver = new BehaviorSubject(null);
   private addInstructionOrSleepObserver = new BehaviorSubject<boolean>(false);
   private editView = new BehaviorSubject<boolean>(false);
+  private deleteMeasurement = new BehaviorSubject(null);
   castMeasurement = this.editedMsmtObserver.asObservable();  
   castInstructionsOrSleep = this.addInstructionOrSleepObserver.asObservable();  
-  castEditView = this.editView.asObservable();  
+  castEditView = this.editView.asObservable();
+  catDeleteMeasurement = this.deleteMeasurement.asObservable();
 
   constructor() {}
 
@@ -30,5 +32,9 @@ export class UpdateInstructionsService {
 
   setEditView(val: boolean) {
     this.editView.next(val);
+  }
+
+  setDeletedMeasurement(val) {
+    this.deleteMeasurement.next(val);
   }
 }
