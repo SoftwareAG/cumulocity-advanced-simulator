@@ -4,6 +4,8 @@ import { MeasurementsService } from "./measurements.service";
 import { AlarmsService } from "./alarms.service";
 import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
+import { InstructionService } from "./Instruction.service";
+import { Instruction } from "@models/instruction.model";
 
 @Injectable({
   providedIn: "root",
@@ -32,6 +34,7 @@ export class SimulatorSettingsService {
   constructor(
     private helperService: HelperService,
     private measurementService: MeasurementsService,
+    private instructionService: InstructionService,
     private alarmsService: AlarmsService,
     private eventsService: EventsService
   ) {}
@@ -55,20 +58,28 @@ export class SimulatorSettingsService {
     this.resultTemplate.commandQueue = [];
     
     this.measurementService.createUniqueMeasurementsArray();
-
+    console.info(this.measurementService.uniqueMeasurementsArray);
     for (let value of this.measurementService.uniqueMeasurementsArray) {
       for (const { temp, index } of this.helperService
         .scale(value.minValue, value.maxValue, value.steps, this.randomSelected)
         .map((temp, index) => ({ temp, index }))) {
-        let toBePushed = this.measurementService.toMeasurementTemplate(
-          value,
-          temp
-        );
+          
+          const instruction: Instruction = {
+            fragment: value.fragment,
+            series: value.series,
+            unit: value.unit,
+            color: value.color,
+            type: 'Measurement',
+            value: temp
+          };
+          
+          let toBePushed = this.instructionService.instructionToCommand(instruction);
+          console.info(temp, value, instruction, toBePushed);
         this.resultTemplate.commandQueue.push(toBePushed);
 
         // Add sleep after inserting measurement
 
-        if (value.sleep && value.sleep !== "") {
+        if (value.sleep && value.sleep !== +"") {
           this.resultTemplate.commandQueue.push({
             type: "sleep",
             seconds: value.sleep,

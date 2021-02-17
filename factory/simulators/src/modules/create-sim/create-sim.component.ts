@@ -82,16 +82,6 @@ export class CreateSimComponent implements OnInit {
     }
   }
 
-  generateRequest() {
-    const template = this.simSettings.generateRequest();
-    this.commandQueue.push(...template);
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.mo.c8y_Series.push(...this.simSettings.allSeries);
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
-      this.measurementSeries = res.c8y_Series;
-      this.simSettings.resetUsedArrays();
-    });
-  }
 
   selectButton(item: string) {
     this.currentSelection = item;

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CommandQueueEntry } from '@models/commandQueue.model';
 import { Instruction } from '@models/instruction.model';
 
 @Injectable({
@@ -8,38 +9,37 @@ export class InstructionService {
 
   constructor() { } 
 
-  private commandQueueEntryTemplate(messageId: string, values){
+  private commandQueueEntryTemplate(messageId: string, values): CommandQueueEntry {
     return {
       messageId: messageId,
       type: 'builtin',
-      values: values, 
+      values: values
     };
   }
 
 
-  instructionToCommand(instruction: Instruction) {
+  instructionToCommand(instruction: Instruction): CommandQueueEntry {
     let commandQueueEntry;
     switch(instruction.type){
-      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.value, instruction.unit]); break;
+      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
       case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('400', [instruction.eventType, instruction.eventText]); break;
       case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.alarmType, instruction.alarmText]); break;
       case 'Event': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
       case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep]); break;
-
     }
-    
+    if(instruction.color){ commandQueueEntry.color = instruction.color; }
     return commandQueueEntry;
   }
 
   
-  commandQueueEntryToInstruction(commandQueueEntry): Instruction {
-    if (commandQueueEntry.type === "Sleep") {
+  commandQueueEntryToInstruction(commandQueueEntry: CommandQueueEntry): Instruction {
+    if (commandQueueEntry.type === 'sleep') {
       return {
         type: 'Sleep',
         sleep: commandQueueEntry.seconds
       };
     }
-
+    console.error(commandQueueEntry);
     if (commandQueueEntry.messageId === '200') {
       return {
         type: 'Measurement',

@@ -1,15 +1,11 @@
-<div style="display: block">
+<div>
+
   <canvas
-    baseChart
-    height="120"
-    [datasets]="lineChartData"
-    [labels]="lineChartLabels"
-    [options]="{
-      bezierCurve : false
-  }"
-    [colors]="lineChartColors"
-    [legend]="lineChartLegend"
-    [chartType]="lineChartType"
-    [plugins]="lineChartPlugins"
+  baseChart
+  height="120"
+  [datasets]="lineChartData"
+  [options]="lineChartOptions"
+  [colors]="lineChartColors"
+  [chartType]="lineChartType"
   ></canvas>
 </div>

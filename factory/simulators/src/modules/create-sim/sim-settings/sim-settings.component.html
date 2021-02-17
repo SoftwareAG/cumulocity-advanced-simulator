@@ -1,4 +1,4 @@
-<div class="card" >
+<div class="card" [style.background]="selectedColor">
     <div class="card-block">
       <ng-container
       *ngTemplateOutlet="header; context:templateCtx"
@@ -12,7 +12,7 @@
             <div class="c8y-select-wrapper">
               <select
                 class="form-control"
-                [ngModel]="selectedConfig"
+                [(ngModel)]="selectedConfig"
                 (ngModelChange)="onChangeConfig($event)"
               >
                 <option *ngFor="let first of defaultConfig">{{ first }}</option>
@@ -21,29 +21,34 @@
           </div>
         </div>
       </div>
-      <br />
-
+      
       <div [ngSwitch]="selectedConfig">
-        <!-- Measurements -->
-        <ng-template [ngSwitchCase]="'Measurements'">
-         <app-sim-measurements [seriesVal]="selectedSeries"></app-sim-measurements>
+        <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
+          <div class="row">
+            <div class="col-xs-4" *ngFor="let entry of form">
+              <div class="form-group">
+                <label>{{entry.label}}</label>
+                <input id="{{entry.name}}" [required]="entry.required" class="form-control"
+                  [(ngModel)]="instructionValue[entry.name]"
+                  placeholder="{{entry.placeholder}} {{(entry.required) ? '(required)' : '(optional)'}}">
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <button  class="btn {{(selectedSeries)? 'btn-default' : 'btn-success'}}" (click)="updateSeries(i);" style="float: right">
+                {{ (selectedSeries)? 'Update' : 'Add' }} {{defaultConfig[i]}}
+              </button>
+              <select class="form-control" style="max-width:200px;margin-right:20px;float:right;" [(ngModel)]="selectedColor">
+                <option *ngFor="let entry of reducedColors" [style.background]="entry">{{ entry }}</option>
+              </select>
+            </div>
+          </div>
         </ng-template>
-
-        <!-- Alarms -->
-        <ng-template [ngSwitchCase]="'Alarms'">
-          <app-sim-alarms [seriesVal]="selectedSeries"></app-sim-alarms>
-        </ng-template>
-
-        <!-- Events -->
-        <ng-template [ngSwitchCase]="'Events'">
-          <app-sim-events [seriesVal]="selectedSeries"></app-sim-events>
-        </ng-template>
-
-        <!-- Sleep -->
-        <ng-template [ngSwitchCase]="'Sleep'">
-          <app-sim-sleep></app-sim-sleep>
-        </ng-template>
-
       </div>
+
+
+
+
+
+
   </div>
 </div>

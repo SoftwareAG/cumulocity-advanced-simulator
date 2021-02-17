@@ -7,11 +7,12 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 import { ActivatedRoute } from "@angular/router";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm } from "./inputFields.const";
+import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm, DefaultConfig } from "../../../models/inputFields.const";
 import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
 import { Instruction, Instruction2 } from "@models/instruction.model";
+import { CommandQueueEntry } from "@models/commandQueue.model";
 
 @Component({
   selector: "app-edit-instruction",
@@ -20,12 +21,16 @@ import { Instruction, Instruction2 } from "@models/instruction.model";
 })
 export class EditInstructionComponent implements OnInit {
   @Input() mo;
-  @Input() commandQueue;
+  @Input() commandQueue: CommandQueueEntry[];
+  @Input() displayEditView = false;
+  @Input() displayAddView = false;
+  selectedEditView: string;
+  defaultConfig: string[] = DefaultConfig;
+  allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ];
 
-  readonly defaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
-  allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ]; 
-  editedValue = {};
-  editedValueIndex: number;
+  commandQueueEntry: CommandQueueEntry | {};
+  instructionValue: Instruction | Instruction2 = {};
+  commandQueueEntryIndex: number;
 
 
   constructor(
@@ -43,27 +48,31 @@ export class EditInstructionComponent implements OnInit {
 
 
   addOrUpdateInstruction(index: number) {
-    let editedValueCopy: Instruction | Instruction2 = {};
+    let instructionValue: Instruction | Instruction2 = {};
     for(const entry of this.allForms[index]){
-      if (entry.required === true && !this.editedValue[entry.name]){
+      if (entry.required === true && !this.instructionValue[entry.name]){
         this.alertService.add({
           text: `Not all required fields are filled.`,
           type: "danger",
         });
         return;
       }
-      editedValueCopy[entry.name] = this.editedValue[entry.name];
+      instructionValue[entry.name] = this.instructionValue[entry.name];
     }
-    editedValueCopy.type = this.defaultConfig[index];
-    console.info(this.allForms[index], index, editedValueCopy);
+    instructionValue.type = this.defaultConfig[index];
+    console.info(this.allForms[index], index, instructionValue);
 
-    const commandQueueEntry = this.instructionService.instructionToCommand(editedValueCopy as Instruction);
-    console.info(this.displayAddView, this.commandQueue, commandQueueEntry, this.editedValueIndex);
+    const commandQueueEntry = this.instructionService.instructionToCommand(instructionValue as Instruction);
+    console.info(this.displayAddView, this.commandQueue, instructionValue, this.commandQueueEntryIndex);
     
     if(this.displayAddView){
-      this.commandQueue.push(commandQueueEntry);
+      if(this.commandQueueEntryIndex){ 
+        this.commandQueue.splice(this.commandQueueEntryIndex, 0, commandQueueEntry);
+      }else{
+        this.commandQueue.push(commandQueueEntry);
+      }
     }else{
-      this.commandQueue[this.editedValueIndex] = commandQueueEntry;
+      this.commandQueue[this.commandQueueEntryIndex] = commandQueueEntry;
     }
 
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
@@ -71,50 +80,48 @@ export class EditInstructionComponent implements OnInit {
     this.simSettings.setCommandQueue(this.commandQueue);
   }
 
-  displayEditView = false;
-  displayAddView = false;
+  
   
   onAddSleep() {
     this.selectedEditView = "Sleep";
     this.displayAddView = true;
     this.displayEditView = false;
-    this.editedValue = {};
+    this.instructionValue = {};
   }
 
   onAddInstruction() {
     this.selectedEditView = "Measurement";
     this.displayAddView = true;
     this.displayEditView = false;
-    this.editedValue = {};
+    this.instructionValue = {};
   }
 
-  @Input() set editedVal(val) {
-    if (val) {
-      this.editedValueIndex = val['index'];
-      const instruction = this.instructionService.commandQueueEntryToInstruction(val['value']);
+  @Input() set editedValue(value: CommandQueueEntry) {
+    console.error('test!!');
+    if (value) {
+      this.commandQueueEntryIndex = this.commandQueue.findIndex((entry) => entry === value);
+      const instruction = this.instructionService.commandQueueEntryToInstruction(value);
       this.selectedEditView = instruction.type;
-      this.editedValue = instruction;
+      this.instructionValue = instruction;
       this.displayAddView = false;
       this.displayEditView = true;
     }
   }
 
-  onClearAllInstructions() {
-    this.commandQueue = [];
+  onDuplicateInstruction() {
+    this.commandQueue.splice(this.commandQueueEntryIndex, 0, JSON.parse(JSON.stringify(this.commandQueue[this.commandQueueEntryIndex])));
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.mo, 'Duplication');
+    this.simSettings.setCommandQueue(this.commandQueue);
   }
 
+  onClearAllInstructions() {}
 
 
   
-  selectedEditView: string;
   toEmit = false;
   edited: EditedMeasurement;
   data: any;
-  
-
-  get editedVal() {
-    return this.editedValue;
-  }
   
   @Output() updatedVal = new EventEmitter();
 

@@ -2,7 +2,7 @@
 import { Injectable } from "@angular/core";
 import { CustomSimulator, DeviceSimulator } from "@models/simulator.model";
 import { HelperService } from './helper.service';
-import { AlarmInstruction, BasicEventInstruction, MeasurementInstruction, SleepInstruction, EventInstruction } from '@models/instruction.model';
+import { AlarmInstruction, BasicEventInstruction, MeasurementInstruction, SleepInstruction, EventInstruction, SeriesMeasurementInstruction } from '@models/instruction.model';
 import { keyframes } from '@angular/animations';
 
 
@@ -10,18 +10,21 @@ import { keyframes } from '@angular/animations';
   providedIn: "root",
 })
 export class MeasurementsService {
-  constructor(private helperService: HelperService) {}
-  measurements = [];
-  measurementSeries = [];
-  uniqueMeasurementsArray = [];
+  uniqueMeasurementsArray: SeriesMeasurementInstruction[] = [];
+  measurements: SeriesMeasurementInstruction[] = [];
+  measurementSeries: SeriesMeasurementInstruction[] = [];
   scaledArray = [];
   randomSelected = false;
 
-  setMeasurements(measurements) {
-    this.measurements = measurements;
-  }
+  
+  constructor(private helperService: HelperService) {}
 
-pushToMeasurements(measurements) {
+setMeasurements(measurements: SeriesMeasurementInstruction[]) {
+  this.measurements = measurements;
+}
+
+pushToMeasurements(measurements: SeriesMeasurementInstruction) {
+  console.error(measurements);
   this.measurements.push(measurements);
 }
 
@@ -63,10 +66,11 @@ public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
         this.scaledArray.push(nowScaled);
       }
     }
+    console.info('uniqueMeasurementsArray', this.uniqueMeasurementsArray);
   }
 
-  toMeasurementTemplate(measurement, value) {
-    let toBePushed = `{
+toMeasurementTemplate(measurement, value) {
+  let toBePushed = `{
   "messageId": "200",
   "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
   }`;

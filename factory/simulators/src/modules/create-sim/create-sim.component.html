@@ -1,83 +1,93 @@
-<c8y-action-bar-item [placement]="'right'" [itemClass]="'btn-group'">
-  <div class="btn-group" role="group" *ngFor="let item of actionButtons">
-    <button
-      type="button"
-      [ngClass]="currentSelection === item ? 'btn btn-primary' : 'btn btn-default'"
-      (click)="selectButton(item)"
-    >
-    {{item}}
-    </button>
+<div class="row">
+  <c8y-action-bar-item [placement]="'right'" [itemClass]="'btn-group'">
+    <div class="btn-group" role="group" *ngFor="let item of actionButtons">
+      <button
+        type="button"
+        [ngClass]="currentSelection === item ? 'btn btn-primary' : 'btn btn-default'"
+        (click)="selectButton(item)"
+      >
+      {{item}}
+      </button>
+    </div>
+  </c8y-action-bar-item>
+  <div class="col-lg-6">
+    <div class="settings">
+      <app-sim-settings
+        *ngIf="viewNewSeries"
+        [header]="addseries"
+        [commandQueue]="commandQueue"
+        [isExpanded]="true"
+      ></app-sim-settings>
+
+      <ng-container>
+        <div *ngFor="let first of measurementSeries; let i = index">
+          <app-sim-settings
+            [header]="addedSeries"
+            [series]="first"
+            [isExpanded]="first.active"
+          ></app-sim-settings>
+        </div>
+      </ng-container>
+
+      <ng-container>
+        <div *ngFor="let first of alarmSeries; let i = index">
+          <app-sim-settings
+            [header]="addedSeries"
+            [alarm]="first"
+            [isExpanded]="first.active"
+          ></app-sim-settings>
+        </div>
+      </ng-container>
+    </div>
+    
+    <div *ngIf="false" class="col-sm-8">
+      <br />
+      <button
+        class="btn btn-success"
+        style="float: right; top: 0; z-index: 2; position: sticky"
+      >
+        Generate Instructions
+      </button>
+    </div>
   </div>
-</c8y-action-bar-item>
-<div class="col-lg-6">
-  <div class="settings">
-    <app-sim-settings
-      *ngIf="viewNewSeries"
-      [header]="addseries"
-      [isExpanded]="true"
-    ></app-sim-settings>
-    <ng-container *ngIf="!viewNewSeries">
-      <div *ngFor="let first of measurementSeries; let i = index">
-        <app-sim-settings
-          [header]="addedSeries"
-          [series]="first"
-          [isExpanded]="first.active"
-        ></app-sim-settings>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="!viewNewSeries">
-      <div *ngFor="let first of alarmSeries; let i = index">
-        <app-sim-settings
-          [header]="addedSeries"
-          [alarm]="first"
-          [isExpanded]="first.active"
-        ></app-sim-settings>
-      </div>
-    </ng-container>
+
+  <div class="col-lg-6">
+    <app-show-instruction
+      [mo]="mo"
+      [commandQueue]="commandQueue"
+      (currentValue)="getCurrentValue($event)"
+      (currentViewState)="updateViewState($event)"
+      ></app-show-instruction>
   </div>
-  <div class="col-sm-8">
-    <br />
-    <button
-      class="btn btn-success"
-      style="float: right; top: 0; z-index: 2; position: sticky"
-      (click)="generateRequest()"
-    >
-      Generate Instructions
-    </button>
+</div>
+<div class="row">
+  <h1>Overview and Estimations</h1>
+  <div class="col-xs-6">
+    <h3>Just one Cycle</h3>
+    <app-simulator-chart [commandQueue]="commandQueue"></app-simulator-chart>
+  </div>
+  <div class="col-xs-6">
+    <h3>Multiple Runthroughs</h3>
+    <app-simulator-chart [commandQueue]="commandQueue" [numberOfRuns]="3"></app-simulator-chart>
   </div>
 </div>
 
-<div class="col-lg-6">
-  <app-show-instruction
-    [mo]="mo"
-    [commandQueue]="commandQueue"
-    (currentValue)="getCurrentValue($event)"
-    (currentViewState)="updateViewState($event)"
-    ></app-show-instruction>
-    <app-edit-instruction
-    [mo]="mo"
-    [commandQueue]="commandQueue"
-    [editedVal]="editedValue"
-  ></app-edit-instruction>
-</div>
-
-<ng-template #addedSeries let-item="item"
-  ><div style="display: flex">
+<ng-template #addedSeries let-item="item">
+  <div style="cursor:pointer;display: flex" (click)="item.active = !item.active">
     <ng-container *ngIf="item.fragment && item.series"><h4>Measurement Series</h4>
     &nbsp; <em>{{ item.fragment }}</em
     >&nbsp; &nbsp; <em>{{ item.series }}</em
     >&nbsp; &nbsp; <em>{{ item.unit }}</em
     >&nbsp;</ng-container>
 
-    <ng-container *ngIf="item.alarmText && item.alarmType"><h4>Alarm Series</h4>
-      &nbsp; <em>{{ item.alarmType }}</em
-      >&nbsp; &nbsp; <em>{{ item.alarmText }}</em
-      >&nbsp;</ng-container>
+    <ng-container *ngIf="item.alarmText && item.alarmType">
+      <h4>Alarm Series</h4>
+      &nbsp; <em>{{ item.alarmType }}</em>&nbsp; &nbsp; <em>{{ item.alarmText }}</em>&nbsp;</ng-container>
 
       <ng-container *ngIf="item.eventType && item.eventText"><h4>Basic Event Series</h4>
-        &nbsp; <em>{{ item.eventType }}</em
-        >&nbsp; &nbsp; <em>{{ item.eventText }}</em
-        >&nbsp;</ng-container>
+        &nbsp; <em>{{ item.eventType }}</em>
+        &nbsp; &nbsp; <em>{{ item.eventText }}</em>
+        &nbsp;</ng-container>
 
         <ng-container *ngIf="item.geoCoordinate"><h4>Location Event Series</h4>
           &nbsp; <em>{{ item.geoCoordinate.latitude }}</em
@@ -87,18 +97,13 @@
         </ng-container>
     <button
       class="transparent"
-      (click)="item.active = !item.active"
-      [attr.aria-expanded]="item.active"
       aria-controls="collapseBasic"
-    >
+      [attr.aria-expanded]="item.active">
       <i c8yIcon="caret-down"></i>
     </button>
 
-    <div
-      id="collapseBasic"
-      class="collapse"
-      [collapse]="!item.active"
-      [isAnimated]="true"
-    ></div></div
-></ng-template>
+    <div id="collapseBasic" class="collapse" [collapse]="!item.active" [isAnimated]="true"></div>
+
+  </div>
+</ng-template>
 <ng-template #addseries><h4>Add Series</h4></ng-template>
