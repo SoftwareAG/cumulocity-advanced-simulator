@@ -5,6 +5,7 @@ export interface InputField {
     label?: string;
 }
 
+export const DefaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
 
 export const MeasurementsForm: InputField[] = [
     {
@@ -31,8 +32,29 @@ export const MeasurementsForm: InputField[] = [
         placeholder: 'Value',
         required: true
     }
-
 ];
+
+export const SeriesMeasurementsForm: InputField[] = [
+    ...MeasurementsForm.filter((a) => a.name !== 'value'),
+    {
+        name: 'minValue',
+        label: 'Minimum:',
+        placeholder: 'Value',
+        required: true
+    },
+    {
+        name: 'maxValue',
+        label: 'Maximum:',
+        placeholder: 'Value',
+        required: true
+    },
+    {
+        name: 'steps',
+        label: 'Steps:',
+        placeholder: 'Value',
+        required: true
+    }
+]
 
 export const AlarmsForm: InputField[] = [
     {
@@ -50,6 +72,10 @@ export const AlarmsForm: InputField[] = [
 
 ];
 
+export const SeriesAlarmsForm: InputField[] = [
+    ...AlarmsForm
+]
+
 export const BasicEventsForm: InputField[] = [
     {
         name: 'eventType',
@@ -64,6 +90,10 @@ export const BasicEventsForm: InputField[] = [
         required: true
     }
 
+];
+
+export const SeriesBasicEventsForm: InputField[] = [
+    ...BasicEventsForm
 ];
 
 export const EventsForm: InputField[] = [
@@ -94,6 +124,10 @@ export const EventsForm: InputField[] = [
     }
 ];
 
+export const SeriesEventsForm: InputField[] = [
+    ...EventsForm
+];
+
 export const SleepForm: InputField[] = [
     {
         name: 'sleep',
@@ -101,4 +135,8 @@ export const SleepForm: InputField[] = [
         placeholder: 'Sleep (in Seconds)',
         required: true
     }
+];
+
+export const SeriesSleepForm: InputField[] = [
+    ...SleepForm
 ];
