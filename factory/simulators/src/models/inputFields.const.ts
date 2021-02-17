@@ -3,6 +3,7 @@ export interface InputField {
     placeholder: string;
     required: boolean;
     label?: string;
+    type?: 'select' | 'numberField';
 }
 
 export const DefaultConfig: string[] = ["Measurement", "Alarm", "Event", "BasicEvent", "Sleep"];
@@ -12,7 +13,8 @@ export const MeasurementsForm: InputField[] = [
         name: 'fragment',
         label: 'Fragment:',
         placeholder: 'Value',
-        required: true
+        required: true,
+        type: 'select'
     },
     {
         name: 'series',

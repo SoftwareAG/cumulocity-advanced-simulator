@@ -13,6 +13,7 @@
   <div class="col-lg-6">
     <div class="settings">
       <app-sim-settings
+        [mo]="mo"
         *ngIf="viewNewSeries"
         [header]="addseries"
         [commandQueue]="commandQueue"
@@ -22,6 +23,7 @@
       <ng-container>
         <div *ngFor="let first of measurementSeries; let i = index">
           <app-sim-settings
+            [mo]="mo"
             [header]="addedSeries"
             [series]="first"
             [isExpanded]="first.active"
@@ -32,6 +34,7 @@
       <ng-container>
         <div *ngFor="let first of alarmSeries; let i = index">
           <app-sim-settings
+            [mo]="mo"
             [header]="addedSeries"
             [alarm]="first"
             [isExpanded]="first.active"
@@ -64,11 +67,11 @@
   <h1>Overview and Estimations</h1>
   <div class="col-xs-6">
     <h3>Just one Cycle</h3>
-    <app-simulator-chart [commandQueue]="commandQueue"></app-simulator-chart>
+    <app-simulator-chart></app-simulator-chart>
   </div>
   <div class="col-xs-6">
     <h3>Multiple Runthroughs</h3>
-    <app-simulator-chart [commandQueue]="commandQueue" [numberOfRuns]="3"></app-simulator-chart>
+    <app-simulator-chart [numberOfRuns]="3"></app-simulator-chart>
   </div>
 </div>
 
