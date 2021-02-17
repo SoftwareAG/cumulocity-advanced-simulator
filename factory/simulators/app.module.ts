@@ -28,6 +28,7 @@ import { SimMeasurementsComponent } from "./src/modules/create-sim/sim-settings/
 import { SimAlarmsComponent } from "./src/modules/create-sim/sim-settings/sim-alarms/sim-alarms.component";
 import { SimSleepComponent } from "./src/modules/create-sim/sim-settings/sim-sleep/sim-sleep.component";
 import { SimEventsComponent } from "./src/modules/create-sim/sim-settings/sim-events/sim-events.component";
+import { SupportedOperationsComponent } from "@modules/supported-operations/supported-operations.component";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -42,6 +43,10 @@ const appRoutes: Routes = [
     }, {
       path: "alarms",
       component: AlarmsComponent
+      
+    }, {
+      path: "operations",
+      component: SupportedOperationsComponent
       
     }, {
       path: "",
@@ -79,7 +84,8 @@ const appRoutes: Routes = [
     SimEventsComponent,
     SimSleepComponent,
     ShowInstructionComponent,
-    SimAlarmsComponent
+    SimAlarmsComponent,
+    SupportedOperationsComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -93,7 +99,8 @@ const appRoutes: Routes = [
     SimEventsComponent,
     SimSleepComponent,
     ShowInstructionComponent,
-    SimAlarmsComponent
+    SimAlarmsComponent,
+    SupportedOperationsComponent
   ],
   providers: [ThemeService],
   // providers: [

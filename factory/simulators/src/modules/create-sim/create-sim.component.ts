@@ -5,12 +5,13 @@ import { AlarmsService } from "@services/alarms.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
+import { UpdateInstructionsService } from "@services/updateInstructions.service";
+import { isEqual } from "lodash";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
   styleUrls: ["./create-sim.component.less"],
 })
-
 export class CreateSimComponent implements OnInit {
   measurementSeries = [];
   alarmSeries = [];
@@ -20,26 +21,44 @@ export class CreateSimComponent implements OnInit {
   isExpanded = false;
 
   viewNewSeries = true;
-  actionButtons = ['New Series', 'Existing series'];
+  actionButtons = ["New Series", "Existing series"];
+  displayEditView = false;
   currentSelection: string = this.actionButtons[0];
   displayInstructionsView = false;
   editedVal;
   editedValue;
-  
+  deletedMeasurement;
+
   constructor(
     private route: ActivatedRoute,
-    private simSettings: SimulatorSettingsService
+    private simSettings: SimulatorSettingsService,
+    private measurementsService: MeasurementsService,
+    private alarmService: AlarmsService,
+    private simService: SimulatorsServiceService,
+    private instructionsService: UpdateInstructionsService
   ) {}
-  
-  getCurrentValue(event){
+
+  getCurrentValue(event) {
     this.editedValue = event;
   }
-    
+
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue.filter(a => a);
-    this.simSettings.fetchAllSeries(this.mo).then((res) => this.measurementSeries = res.map((entry) => ({...entry, active: false})));
+    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.instructionsService.catDeleteMeasurement.subscribe((data) => {
+      this.deletedMeasurement = data;
+      this.deleteSeries(data);
+    });
+    this.simSettings
+      .fetchAllSeries(this.mo)
+      .then(
+        (res) =>
+          (this.measurementSeries = res.map((entry) => ({
+            ...entry,
+            active: false,
+          })))
+      );
   }
 
   updateViewState(val) {
@@ -47,14 +66,31 @@ export class CreateSimComponent implements OnInit {
     this.editedVal = val.editedValue;
   }
 
+  deleteSeries(val) {
+
+    if (val) {
+      
+      const minimumOfSeries = this.measurementsService.toMeasurementTemplate(val, val.minValue);
+      const maximumOfSeries = this.measurementsService.toMeasurementTemplate(val, val.maxValue);
+      const positionOfMinimum = this.commandQueue.findIndex((value) =>
+        isEqual(value, minimumOfSeries)
+      );
+      const positionOfMaximum = this.commandQueue.findIndex((value) => isEqual(value, maximumOfSeries));
+      this.commandQueue.splice(positionOfMinimum, positionOfMaximum-positionOfMinimum+1);
+
+      // TODO: add call to save to backend
+    }
+  }
+
+
   selectButton(item: string) {
     this.currentSelection = item;
     const activeElement = document.activeElement;
     if (activeElement && activeElement instanceof HTMLButtonElement) {
       activeElement.blur();
     }
-    this.currentSelection === this.actionButtons[0] ? this.viewNewSeries = true : this.viewNewSeries = false;
+    this.currentSelection === this.actionButtons[0]
+      ? (this.viewNewSeries = true)
+      : (this.viewNewSeries = false);
   }
-
-
 }

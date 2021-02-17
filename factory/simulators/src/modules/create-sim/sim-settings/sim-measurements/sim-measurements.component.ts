@@ -4,6 +4,7 @@ import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SeriesMeasurementInstruction } from "@models/instruction.model";
 import { Colors } from "@models/colors.const";
+import { UpdateInstructionsService } from "@services/updateInstructions.service";
 
 @Component({
   selector: "app-sim-measurements",
@@ -11,28 +12,27 @@ import { Colors } from "@models/colors.const";
   styleUrls: ["./sim-measurements.component.scss"],
 })
 export class SimMeasurementsComponent implements OnInit {
-
   isNotFirst = false;
   @Input() set seriesVal(measurement: SeriesMeasurementInstruction) {
     if (measurement !== undefined && measurement.fragment !== undefined) {
-    this.measurement = measurement;
-    console.log(this.measurement);
-    this.isNotFirst = true;
-    this.fragment = this.measurement.fragment;
-    this.series = this.measurement.series;
-    this.minVal = this.measurement.minValue;
-    this.maxVal = this.measurement.maxValue;
-    this.unit = this.measurement.unit;
-    this.steps = this.measurement.steps;
-    this.sleep = this.measurement.sleep;
-    this.selectedButton = 'Duplicate Measurement'
+      this.measurement = measurement;
+      console.log(this.measurement);
+      this.isNotFirst = true;
+      this.fragment = this.measurement.fragment;
+      this.series = this.measurement.series;
+      this.minVal = this.measurement.minValue;
+      this.maxVal = this.measurement.maxValue;
+      this.unit = this.measurement.unit;
+      this.steps = this.measurement.steps;
+      this.sleep = this.measurement.sleep;
+      this.selectedButton = "Duplicate Measurement";
     }
   }
 
   get seriesVal() {
     return this.measurement;
   }
-  
+
   measurementOptions = [
     "Measurement series one after another",
     "Alternate measurement series",
@@ -51,7 +51,11 @@ export class SimMeasurementsComponent implements OnInit {
   measurement: SeriesMeasurementInstruction;
   measurements: SeriesMeasurementInstruction[] = [];
 
-  constructor(private service: MeasurementsService, private simService: SimulatorSettingsService) {}
+  constructor(
+    private service: MeasurementsService,
+    private simService: SimulatorSettingsService,
+    private instructionsService: UpdateInstructionsService
+  ) {}
 
   ngOnInit() {}
 
@@ -60,7 +64,13 @@ export class SimMeasurementsComponent implements OnInit {
   }
 
   removeMeasurementFromArray() {
-
+    // console.log(
+    //   this.service.toMeasurementTemplate(
+    //     this.measurement,
+    //     this.measurement.minValue
+    //   )
+    // );
+    this.instructionsService.setDeletedMeasurement(this.measurement);
   }
 
   addMeasurementToArray() {
@@ -90,5 +100,4 @@ export class SimMeasurementsComponent implements OnInit {
     this.simService.allSeries.push(this.measurement);
     // this.service.measurementSeries.push(this.measurement);
   }
-
 }

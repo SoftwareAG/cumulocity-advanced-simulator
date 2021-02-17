@@ -14,7 +14,7 @@ export class CustomTabFactory implements TabFactory {
         const tabArray = new Array<Tab>();
         const url = this.router.url;
         
-        if (url && (url.match(/\d+/g))[0] !== null) {
+        if (url && (url.match(/\d+/g))) {
             const id = ((url.match(/\d+/g))[0]).toString();
             tabArray.push(
 
@@ -25,10 +25,16 @@ export class CustomTabFactory implements TabFactory {
                     priority: 100
                 },
                 {
+                    label: 'Supported Operations',
+                    icon: 'gamepad',
+                    path: `createSim/${id}/operations`,
+                    priority: 99
+                },
+                {
                     label: 'Alarms',
                     icon: 'c8y-icon c8y-icon-alert-idle',
                     path: `createSim/${id}/alarms`,
-                    priority: 99
+                    priority: 98
                 }
             );
         }

@@ -46,11 +46,11 @@ export class SimulatorConfigComponent implements OnInit {
       name: "",
       instances: 1,
       state: "PAUSED",
-      commandQueue: []
+      commandQueue: [],
+      c8y_SupportedOperations: [],
     },
     c8y_CustomSim: {},
     c8y_Series: [],
-    // c8y_AlarmSeries: []
   };
   public labels: ILabels = {
     ok: "Save",
@@ -71,7 +71,6 @@ export class SimulatorConfigComponent implements OnInit {
       const simulatorId = result.data.id;
       this.router.navigate(["/createSim/" + simulatorId]);
     });
-    // console.log(this.simulatorTitle);
   }
 
   onDismiss(event) {

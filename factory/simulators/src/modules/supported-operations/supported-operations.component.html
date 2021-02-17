@@ -1,0 +1,15 @@
+<div class="row">
+<div class="col-lg-6">
+  <ul class="list-group">
+    <ng-container *ngFor="let operation of defaultSupportedOperations"> 
+    <li class="list-group-item"><label class="c8y-switch">
+      <input type="checkbox" [(ngModel)]="operation.isActive"/>
+      <span></span>{{operation.name}}&nbsp;&nbsp;<small class="text-muted">{{operation.fragment}}</small>
+    </label></li> 
+  </ng-container> 
+  </ul>
+  <button title="Add custom operation" class="btn-add-block">
+    <i c8y-icon="plus-square" class="fa fw fa-plus-square"></i> Add custom operation
+  </button>
+</div>
+</div>
