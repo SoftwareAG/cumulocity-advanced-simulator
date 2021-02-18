@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Event } from '@models/events.model';
+import { BasicEventInstruction, EventInstruction } from "@models/instruction.model";
 
 @Injectable({
   providedIn: "root",
@@ -71,4 +72,10 @@ export class EventsService {
       return toBePushedLoc;
     }
   }
+
+  
+pushToEvents(events: EventInstruction | BasicEventInstruction) {
+  console.error(events);
+  // this.events.push(events);
+}
 }

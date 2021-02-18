@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AlarmInstruction } from '@models/instruction.model';
 import { CustomSimulator } from '@models/simulator.model';
 
 @Injectable({
@@ -64,6 +65,11 @@ toAlarmTemplateFormat(alarm) {
   toBePushedAlarms = toBePushedAlarms.replace("TEXT", alarm.alarmText);
   return toBePushedAlarms;
   
+}
+
+pushToAlarms(alarms: AlarmInstruction) {
+  console.log(alarms);
+  this.alarms.push(alarms);
 }
 
 

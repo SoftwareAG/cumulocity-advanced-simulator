@@ -2,11 +2,25 @@ import { Component, Input, OnInit, TemplateRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-import { DefaultConfig, SeriesMeasurementsForm, SeriesAlarmsForm, SeriesBasicEventsForm, SeriesEventsForm, SeriesSleepForm } from "@models/inputFields.const";
-import { SeriesInstruction, SeriesMeasurementInstruction } from "@models/instruction.model";
+import {
+  DefaultConfig,
+  SeriesMeasurementsForm,
+  SeriesAlarmsForm,
+  SeriesBasicEventsForm,
+  SeriesEventsForm,
+  SeriesSleepForm,
+} from "@models/inputFields.const";
+import {
+  AlarmInstruction,
+  BasicEventInstruction,
+  SeriesInstruction,
+  SeriesMeasurementInstruction,
+} from "@models/instruction.model";
 import { MeasurementsService } from "@services/measurements.service";
 import { ColorsReduced } from "@models/colors.const";
 import { CommandQueueEntry } from "@models/commandQueue.model";
+import { AlarmsService } from "@services/alarms.service";
+import { EventsService } from "@services/events.service";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -14,22 +28,48 @@ import { CommandQueueEntry } from "@models/commandQueue.model";
 })
 export class SimSettingsComponent implements OnInit {
   reducedColors = ColorsReduced;
-  selectedColor: string = '#fff';
+  selectedColor: string = "#fff";
   defaultConfig: string[] = DefaultConfig;
-  allForms = [SeriesMeasurementsForm, SeriesAlarmsForm, SeriesBasicEventsForm, SeriesEventsForm, SeriesSleepForm];
+  allForms = [
+    SeriesMeasurementsForm,
+    SeriesAlarmsForm,
+    SeriesBasicEventsForm,
+    SeriesEventsForm,
+    SeriesSleepForm,
+  ];
   selectedConfig = this.defaultConfig[0];
-  instructionValue: Partial <SeriesInstruction> = {};
+  instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
+  selectedCategory: string;
 
-  updateSeries(index: number){
+  constructor(
+    private route: ActivatedRoute,
+    private simService: SimulatorsServiceService,
+    private simSettings: SimulatorSettingsService,
+    private measurementsService: MeasurementsService,
+    private alarmService: AlarmsService,
+    private eventsService: EventsService
+  ) {}
+
+  updateSeries(index: number) {
     console.log(index, this.instructionValue);
-
-      this.instructionValue.color = this.selectedColor;
-      this.measurementsService.pushToMeasurements(this.instructionValue as SeriesMeasurementInstruction);
-      this.simSettings.allSeries.push(this.instructionValue);
+    this.instructionValue.color = this.selectedColor;
+    if (this.instructionValue.type === 'Measurement') {
+    this.measurementsService.pushToMeasurements(
+      this.instructionValue as SeriesMeasurementInstruction
+    );
+    } else if (this.instructionValue.type === 'Alarm') {
+      this.alarmService.pushToAlarms(this.instructionValue as AlarmInstruction);
+    } else if (this.instructionValue.type === 'BasicEvent') {
+      this.eventsService.pushToEvents(this.instructionValue as BasicEventInstruction);
+    }
+    this.simSettings.allSeries.push(this.instructionValue);
     this.generateRequest();
   }
 
+  onChange() {
+    console.log(this.selectedCategory);
+  }
 
   @Input() commandQueue: CommandQueueEntry[];
   mo;
@@ -44,18 +84,8 @@ export class SimSettingsComponent implements OnInit {
       this.measurementSeries = res.c8y_Series;
       this.simSettings.resetUsedArrays();
     });
-    
   }
 
-
-
-
-  constructor(
-    private route: ActivatedRoute,
-    private simService: SimulatorsServiceService,
-    private simSettings: SimulatorSettingsService,
-    private measurementsService: MeasurementsService
-  ) {}
   msmt;
   alrm;
   templateCtx;
@@ -65,9 +95,9 @@ export class SimSettingsComponent implements OnInit {
     console.error(value);
     this.selectedSeries = value;
     this.instructionValue = value;
-    this.templateCtx={item: this.selectedSeries};
+    this.templateCtx = { item: this.selectedSeries };
     //this.switchBetweenTypes();
-  };
+  }
 
   get series() {
     return this.selectedSeries;
@@ -75,10 +105,11 @@ export class SimSettingsComponent implements OnInit {
 
   @Input() set alarm(alarm) {
     if (alarm !== undefined) {
-    this.alrm = alarm;
-    this.selectedConfig = this.defaultConfig[1];
-    this.templateCtx={item: this.alrm};}
-  };
+      this.alrm = alarm;
+      this.selectedConfig = this.defaultConfig[1];
+      this.templateCtx = { item: this.alrm };
+    }
+  }
 
   get alarm() {
     this.selectedConfig = this.defaultConfig[1];
@@ -86,7 +117,6 @@ export class SimSettingsComponent implements OnInit {
   }
   // templateCtx = {measurement: this.totalEstimate};
   resultTemplate = { commandQueue: [], name: "" };
-  
 
   newFragmentAdded = false;
   alarms: {
@@ -100,7 +130,7 @@ export class SimSettingsComponent implements OnInit {
     "Generate repeated alarms",
     "Alternate measurements with alarms",
   ];
-  
+
   selectedAlarmConfig: string = this.alarmConfig[0];
 
   randomSelected = false;
@@ -114,11 +144,10 @@ export class SimSettingsComponent implements OnInit {
     this.selectedConfig = value;
   }
 
-
   ngOnInit() {
     // this.mo.c8y_DeviceSimulator.id = this.mo.id;
   }
-/*
+  /*
   switchBetweenTypes() {
     if (this.selectedSeries.fragment !== undefined && this.selectedSeries.series !== undefined) {
       this.selectedConfig = this.defaultConfig[0];
@@ -134,5 +163,4 @@ export class SimSettingsComponent implements OnInit {
     // TODO: Checks for individual sleep instructions
   }
 */
-
 }
