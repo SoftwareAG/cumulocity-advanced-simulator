@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AlarmService } from "@c8y/ngx-components/api";
+import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
@@ -15,7 +16,7 @@ import { isEqual } from "lodash";
 export class CreateSimComponent implements OnInit {
   measurementSeries = [];
   alarmSeries = [];
-  commandQueue = [];
+  commandQueue: CommandQueueEntry[] = [];
   data;
   mo;
   isExpanded = false;
@@ -46,10 +47,14 @@ export class CreateSimComponent implements OnInit {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.simSettings.setCommandQueue(this.commandQueue);
+
+
     this.instructionsService.catDeleteMeasurement.subscribe((data) => {
       this.deletedMeasurement = data;
       this.deleteSeries(data);
     });
+
     this.simSettings
       .fetchAllSeries(this.mo)
       .then(

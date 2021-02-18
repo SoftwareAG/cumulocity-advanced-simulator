@@ -72,7 +72,7 @@ export class SimSettingsComponent implements OnInit {
   }
 
   @Input() commandQueue: CommandQueueEntry[];
-  mo;
+  @Input() mo;
   measurementSeries = [];
 
   generateRequest() {

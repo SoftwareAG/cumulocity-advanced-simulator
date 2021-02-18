@@ -1,44 +1,63 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommandQueueEntry } from '@models/commandQueue.model';
+import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-simulator-chart',
   templateUrl: './simulator-chart.component.html',
   styleUrls: ['./simulator-chart.component.less']
 })
-export class SimulatorChartComponent implements OnInit {
-  public lineChartData: ChartDataSets[];
-  @Input() public commandQueue: CommandQueueEntry[];
-  @Input() public numberOfRuns: number = 1;
-  
-  constructor() { }
-  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+export class SimulatorChartComponent implements OnInit, OnDestroy {
+  public lineChartData: ChartDataSets[] = [];
+  public commandQueue: CommandQueueEntry[] = [];
+  private commandQueueSubscription: Subscription;
 
+  @Input() public numberOfRuns: number = 1;
+  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+  
+  constructor(private simSettings: SimulatorSettingsService) { }
+
+  ngOnDestroy(): void {
+    if (this.commandQueueSubscription){
+      this.commandQueueSubscription.unsubscribe( );
+    }
+  }
+  
   ngOnInit() {
+    this.commandQueueSubscription = this.simSettings.commandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
+      this.commandQueue = commandQueue;
+      this.createDataSetFromCommandQueue();
+      console.info("fetchedCommandQueue");
+    });
+
+  }
+
+  createDataSetFromCommandQueue(){
     const dataSet = [];
     console.error(this.commandQueue);
-    for(let i = 0; i < this.numberOfRuns; i++){
-      for(const entry of this.commandQueue){
-        if(entry.type === 'sleep'){
-          for (let i = 0; i < entry.seconds; i++){
+    for (let i = 0; i < this.numberOfRuns; i++) {
+      for (const entry of this.commandQueue) {
+        if (entry.type === 'sleep') {
+          for (let i = 0; i < entry.seconds; i++) {
             dataSet[dataSet.length - 1].data.push({ x: dataSet[dataSet.length - 1].data.length, y: 0 });
           }
           continue;
         }
-        
+
         const found = dataSet.find((a) => {
-          if (a.label === entry.values[1] ){
+          if (a.label === entry.values[1]) {
             return a;
           }
         });
-        
-        if(found){
-          found.data.push({x: found.data.length, y: +entry.values[3]});
-        }else{
+
+        if (found) {
+          found.data.push({ x: found.data.length, y: +entry.values[3] });
+        } else {
           dataSet.push({
-            data: [{x: 0, y: +entry.values[3]}],
+            data: [{ x: 0, y: +entry.values[3] }],
             label: entry.values[1],
             lineTension: 0
           });

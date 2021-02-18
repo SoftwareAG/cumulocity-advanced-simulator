@@ -6,11 +6,16 @@ import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
 import { Instruction } from "@models/instruction.model";
+import { CommandQueueEntry } from "@models/commandQueue.model";
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class SimulatorSettingsService {
+  commandQueueUpdate = new BehaviorSubject<CommandQueueEntry[]>([]);
+  commandQueueUpdate$ = this.commandQueueUpdate.asObservable();
+  
   resultTemplate = { commandQueue: [], name: "" };
   
   alarmConfig = [
@@ -26,7 +31,7 @@ export class SimulatorSettingsService {
 
   randomSelected = false;
 
-  commandQueue = [];
+  commandQueue: CommandQueueEntry[] = [];
 
   allSeries = [];
   allTypesSeries = [];
@@ -39,19 +44,15 @@ export class SimulatorSettingsService {
     private eventsService: EventsService
   ) {}
 
-  fetchCommandQueue(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      resolve(this.commandQueue);
-    });
-  }
-
   fetchAllSeries(mo: CustomSimulator): Promise<any[]> {
     this.allTypesSeries = mo.c8y_Series;
     return new Promise((resolve, reject) => resolve(this.allTypesSeries));
   }
 
-  setCommandQueue(commandQueue) {
+  setCommandQueue(commandQueue: CommandQueueEntry[]) {
+    console.log('setCommandqueue', commandQueue);
     this.commandQueue = commandQueue;
+    this.commandQueueUpdate.next(commandQueue);
   }
 
   generateRequest() {
