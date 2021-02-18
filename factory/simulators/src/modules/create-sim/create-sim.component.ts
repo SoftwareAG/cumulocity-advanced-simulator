@@ -29,6 +29,7 @@ export class CreateSimComponent implements OnInit {
   editedVal;
   editedValue;
   deletedMeasurement;
+  simulatorTitle: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,6 +47,7 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
+    this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
 

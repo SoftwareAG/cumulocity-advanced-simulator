@@ -13,6 +13,8 @@ import {
 import {
   AlarmInstruction,
   BasicEventInstruction,
+  EventInstruction,
+  InstructionCategory,
   SeriesInstruction,
   SeriesMeasurementInstruction,
 } from "@models/instruction.model";
@@ -29,7 +31,7 @@ import { EventsService } from "@services/events.service";
 export class SimSettingsComponent implements OnInit {
   reducedColors = ColorsReduced;
   selectedColor: string = "#fff";
-  defaultConfig: string[] = DefaultConfig;
+  defaultConfig: InstructionCategory[] = DefaultConfig;
   allForms = [
     SeriesMeasurementsForm,
     SeriesAlarmsForm,
@@ -40,7 +42,6 @@ export class SimSettingsComponent implements OnInit {
   selectedConfig = this.defaultConfig[0];
   instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
-  selectedCategory: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,24 +52,21 @@ export class SimSettingsComponent implements OnInit {
     private eventsService: EventsService
   ) {}
 
-  updateSeries(index: number) {
-    console.log(index, this.instructionValue);
-    this.instructionValue.color = this.selectedColor;
-    if (this.instructionValue.type === 'Measurement') {
-    this.measurementsService.pushToMeasurements(
-      this.instructionValue as SeriesMeasurementInstruction
-    );
-    } else if (this.instructionValue.type === 'Alarm') {
+  updateSeries(type) {
+    if (this.instructionValue.type === InstructionCategory.Measurement) {
+      this.measurementsService.pushToMeasurements(
+        this.instructionValue as SeriesMeasurementInstruction
+      );
+    } else if (this.instructionValue.type === InstructionCategory.Alarm) {
       this.alarmService.pushToAlarms(this.instructionValue as AlarmInstruction);
-    } else if (this.instructionValue.type === 'BasicEvent') {
+    } else if (this.instructionValue.type === InstructionCategory.BasicEvent) {
       this.eventsService.pushToEvents(this.instructionValue as BasicEventInstruction);
+    } else if (this.instructionValue.type === InstructionCategory.LocationUpdateEvent) {
+      this.eventsService.pushToEvents(this.instructionValue as EventInstruction);
     }
+    console.log(this.instructionValue);
     this.simSettings.allSeries.push(this.instructionValue);
     this.generateRequest();
-  }
-
-  onChange() {
-    console.log(this.selectedCategory);
   }
 
   @Input() commandQueue: CommandQueueEntry[];

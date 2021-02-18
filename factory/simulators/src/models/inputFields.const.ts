@@ -1,3 +1,5 @@
+import { InstructionCategory } from "./instruction.model";
+
 export interface InputField {
   name: string;
   placeholder: string;
@@ -7,13 +9,14 @@ export interface InputField {
   category?: { name: string; code: string }[];
 }
 
-export const DefaultConfig: string[] = [
-  "Measurement",
-  "Alarm",
-  "Basic Event",
-  "Location Update Event",
-  "Sleep",
+export const DefaultConfig: InstructionCategory[] = [
+  InstructionCategory.Measurement,
+  InstructionCategory.Alarm,
+  InstructionCategory.BasicEvent,
+  InstructionCategory.LocationUpdateEvent,
+  InstructionCategory.Sleep
 ];
+
 
 export const MeasurementsForm: InputField[] = [
   {

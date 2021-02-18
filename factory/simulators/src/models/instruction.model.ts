@@ -1,11 +1,11 @@
 import { GeoCoordinate } from "./geoCoordinate.model";
 
 export enum InstructionCategory {
-  "Measurement",
-  "Alarm",
-  "Event",
-  "Sleep",
-  "BasicEvent",
+  "Measurement"="Measurement",
+  "Alarm"="Alarm",
+  "BasicEvent"="BasicEvent",
+  "LocationUpdateEvent"="LocationUpdateEvent",
+  "Sleep"="Sleep"
 }
 
 export type Instruction =
@@ -24,7 +24,7 @@ export type SeriesInstruction =
 export interface Empty {}
 
 export interface Instruction2 {
-  type?: string;
+  type?: InstructionCategory;
   color?: string;
 }
 
@@ -40,28 +40,31 @@ export interface MeasurementInstruction extends Instruction2 {
   series: string;
   value?: string;
   unit: string;
-  type: "Measurement";
+  type: InstructionCategory.Measurement;
 }
 
 export interface AlarmInstruction extends Instruction2 {
+  alarmCategory: string;
   alarmType: string;
   alarmText: string;
-  type: "Alarm";
+  type: InstructionCategory.Alarm;
 }
 
 export interface BasicEventInstruction extends Instruction2 {
+  eventCategory: string;
   eventType: string;
   eventText: string;
-  type: "BasicEvent";
+  type: InstructionCategory.BasicEvent;
 }
 
 export interface EventInstruction extends GeoCoordinate, Instruction2 {
+  eventCategory: string;
   eventType: string;
   eventText: string;
-  type: "Event";
+  type: InstructionCategory.LocationUpdateEvent;
 }
 
 export interface SleepInstruction extends Instruction2 {
   sleep: number;
-  type: "Sleep";
+  type:InstructionCategory.Sleep;
 }
