@@ -29,6 +29,7 @@ import { SimAlarmsComponent } from "./src/modules/create-sim/sim-settings/sim-al
 import { SimSleepComponent } from "./src/modules/create-sim/sim-settings/sim-sleep/sim-sleep.component";
 import { SimEventsComponent } from "./src/modules/create-sim/sim-settings/sim-events/sim-events.component";
 import { SupportedOperationsComponent } from "@modules/supported-operations/supported-operations.component";
+import { CommandQueueStatisticsComponent } from "@modules/command-queue-statistics/command-queue-statistics.component";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -82,6 +83,7 @@ const appRoutes: Routes = [
     EditInstructionComponent,
     SimMeasurementsComponent,
     SimEventsComponent,
+    CommandQueueStatisticsComponent,
     SimSleepComponent,
     ShowInstructionComponent,
     SimAlarmsComponent,
@@ -95,6 +97,7 @@ const appRoutes: Routes = [
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
+    CommandQueueStatisticsComponent,
     SimMeasurementsComponent,
     SimEventsComponent,
     SimSleepComponent,
