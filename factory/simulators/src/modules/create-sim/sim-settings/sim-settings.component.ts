@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SimulatorsServiceService } from "../../../services/simulatorsService.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
@@ -83,15 +83,22 @@ export class SimSettingsComponent implements OnInit {
 
   @Input() commandQueue: CommandQueueEntry[];
   @Input() mo;
+  @Output() allSeriesEmitter = new EventEmitter();
   measurementSeries = [];
 
   generateRequest() {
+    this.measurementSeries = [];
     const template = this.simSettings.generateRequest();
     this.commandQueue.push(...template);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.mo.c8y_Series.push(...this.simSettings.allSeries);
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
       this.measurementSeries = res.c8y_Series;
+
+      // To update measurementSeries instantly once the instruction has been added,
+      //  measurementSeries is emitted to the parent
+
+      this.allSeriesEmitter.emit(this.measurementSeries);
       this.simSettings.resetUsedArrays();
     });
   }

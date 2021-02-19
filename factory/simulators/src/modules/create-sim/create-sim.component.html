@@ -19,6 +19,7 @@
         [header]="addseries"
         [commandQueue]="commandQueue"
         [isExpanded]="true"
+        (allSeriesEmitter)="updateAllSeries($event)"
       ></app-sim-settings>
 
       <ng-container>

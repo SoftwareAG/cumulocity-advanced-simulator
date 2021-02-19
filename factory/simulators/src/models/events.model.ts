@@ -18,7 +18,7 @@ import { GeoCoordinate } from "./geoCoordinate.model";
 
 
 export interface Event {
-    code: string;
+    eventCategory: string;
     eventType?: string;
     eventText?: string;
     steps?: string;

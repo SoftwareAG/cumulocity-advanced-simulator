@@ -58,7 +58,7 @@ export class EventsService {
   "values": ["LAT", "LON", "ALT", "ACCURACY"], "type": "builtin"
 }`;
 
-    if (event.code === "400") {
+    if (event.eventCategory === "400") {
       toBePushed = toBePushed.replace("CODE", event.eventCategory);
       toBePushed = toBePushed.replace("TYPE", event.eventType);
       toBePushed = toBePushed.replace("TEXT", event.eventText);
@@ -76,6 +76,6 @@ export class EventsService {
   
 pushToEvents(events: EventInstruction | BasicEventInstruction) {
   console.error(events);
-  // this.events.push(events);
+  this.events.push(events);
 }
 }
