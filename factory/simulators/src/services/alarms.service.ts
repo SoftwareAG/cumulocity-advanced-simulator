@@ -60,7 +60,7 @@ toAlarmTemplateFormat(alarm) {
   "values": ["TYPE", "TEXT", ""], "type": "builtin"
 }`;
 
-  toBePushedAlarms = toBePushedAlarms.replace("CODE", alarm.level);
+  toBePushedAlarms = toBePushedAlarms.replace("CODE", alarm.alarmCategory);
   toBePushedAlarms = toBePushedAlarms.replace("TYPE", alarm.alarmType);
   toBePushedAlarms = toBePushedAlarms.replace("TEXT", alarm.alarmText);
   return toBePushedAlarms;
@@ -68,7 +68,6 @@ toAlarmTemplateFormat(alarm) {
 }
 
 pushToAlarms(alarms: AlarmInstruction) {
-  console.log(alarms);
   this.alarms.push(alarms);
 }
 

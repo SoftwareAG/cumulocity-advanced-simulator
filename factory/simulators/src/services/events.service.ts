@@ -59,12 +59,12 @@ export class EventsService {
 }`;
 
     if (event.code === "400") {
-      toBePushed = toBePushed.replace("CODE", event.code);
+      toBePushed = toBePushed.replace("CODE", event.eventCategory);
       toBePushed = toBePushed.replace("TYPE", event.eventType);
       toBePushed = toBePushed.replace("TEXT", event.eventText);
       return toBePushed;
     } else {
-      toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
+      toBePushedLoc = toBePushedLoc.replace("CODE", event.eventCategory);
       toBePushedLoc = toBePushedLoc.replace("LAT", event.geoCoordinate.latitude);
       toBePushedLoc = toBePushedLoc.replace("LON", event.geoCoordinate.longitude);
       toBePushedLoc = toBePushedLoc.replace("ALT", event.geoCoordinate.altitude);

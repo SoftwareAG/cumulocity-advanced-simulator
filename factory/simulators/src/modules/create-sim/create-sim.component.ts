@@ -50,7 +50,7 @@ export class CreateSimComponent implements OnInit {
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
-
+    console.log(this.commandQueue);
 
     this.instructionsService.catDeleteMeasurement.subscribe((data) => {
       this.deletedMeasurement = data;

@@ -53,16 +53,28 @@ export class SimSettingsComponent implements OnInit {
   ) {}
 
   updateSeries(type) {
-    if (this.instructionValue.type === InstructionCategory.Measurement) {
-      this.measurementsService.pushToMeasurements(
-        this.instructionValue as SeriesMeasurementInstruction
-      );
-    } else if (this.instructionValue.type === InstructionCategory.Alarm) {
-      this.alarmService.pushToAlarms(this.instructionValue as AlarmInstruction);
-    } else if (this.instructionValue.type === InstructionCategory.BasicEvent) {
-      this.eventsService.pushToEvents(this.instructionValue as BasicEventInstruction);
-    } else if (this.instructionValue.type === InstructionCategory.LocationUpdateEvent) {
-      this.eventsService.pushToEvents(this.instructionValue as EventInstruction);
+    this.instructionValue.type = type;
+    switch (type) {
+      case InstructionCategory.Measurement:
+        this.measurementsService.pushToMeasurements(
+          this.instructionValue as SeriesMeasurementInstruction
+        );
+        break;
+      case InstructionCategory.Alarm:
+        this.alarmService.pushToAlarms(
+          this.instructionValue as AlarmInstruction
+        );
+        break;
+      case InstructionCategory.BasicEvent:
+        this.eventsService.pushToEvents(
+          this.instructionValue as BasicEventInstruction
+        );
+        break;
+      case InstructionCategory.LocationUpdateEvent:
+        this.eventsService.pushToEvents(
+          this.instructionValue as EventInstruction
+        );
+        break;
     }
     console.log(this.instructionValue);
     this.simSettings.allSeries.push(this.instructionValue);
