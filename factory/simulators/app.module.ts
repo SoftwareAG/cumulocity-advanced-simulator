@@ -24,12 +24,9 @@ import { AlarmsComponent } from "./src/modules/alarms/alarms.component";
 import { SimSettingsComponent } from "./src/modules/create-sim/sim-settings/sim-settings.component";
 import { EditInstructionComponent } from "./src/modules/create-sim/edit-instruction/edit-instruction.component";
 import { ShowInstructionComponent } from "./src/modules/create-sim/show-instruction/show-instruction.component";
-import { SimMeasurementsComponent } from "./src/modules/create-sim/sim-settings/sim-measurements/sim-measurements.component";
-import { SimAlarmsComponent } from "./src/modules/create-sim/sim-settings/sim-alarms/sim-alarms.component";
-import { SimSleepComponent } from "./src/modules/create-sim/sim-settings/sim-sleep/sim-sleep.component";
-import { SimEventsComponent } from "./src/modules/create-sim/sim-settings/sim-events/sim-events.component";
 import { SupportedOperationsComponent } from "@modules/supported-operations/supported-operations.component";
 import { CommandQueueStatisticsComponent } from "@modules/command-queue-statistics/command-queue-statistics.component";
+import { CustomOperationComponent } from "@modules/supported-operations/custom-operation/custom-operation.component";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -81,13 +78,10 @@ const appRoutes: Routes = [
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
-    SimMeasurementsComponent,
-    SimEventsComponent,
     CommandQueueStatisticsComponent,
-    SimSleepComponent,
     ShowInstructionComponent,
-    SimAlarmsComponent,
-    SupportedOperationsComponent
+    SupportedOperationsComponent,
+    CustomOperationComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -98,12 +92,9 @@ const appRoutes: Routes = [
     SimSettingsComponent,
     EditInstructionComponent,
     CommandQueueStatisticsComponent,
-    SimMeasurementsComponent,
-    SimEventsComponent,
-    SimSleepComponent,
     ShowInstructionComponent,
-    SimAlarmsComponent,
-    SupportedOperationsComponent
+    SupportedOperationsComponent, 
+    CustomOperationComponent
   ],
   providers: [ThemeService],
   // providers: [

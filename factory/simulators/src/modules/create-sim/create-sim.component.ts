@@ -14,7 +14,7 @@ import { isEqual } from "lodash";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
-  measurementSeries = [];
+  allInstructionsSeries = [];
   alarmSeries = [];
   commandQueue: CommandQueueEntry[] = [];
   data;
@@ -29,6 +29,7 @@ export class CreateSimComponent implements OnInit {
   editedVal;
   editedValue;
   deletedMeasurement;
+  simulatorTitle: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,9 +47,9 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
+    this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
-
 
     this.instructionsService.catDeleteMeasurement.subscribe((data) => {
       this.deletedMeasurement = data;
@@ -59,7 +60,7 @@ export class CreateSimComponent implements OnInit {
       .fetchAllSeries(this.mo)
       .then(
         (res) =>
-          (this.measurementSeries = res.map((entry) => ({
+          (this.allInstructionsSeries = res.map((entry) => ({
             ...entry,
             active: false,
           })))
@@ -85,6 +86,10 @@ export class CreateSimComponent implements OnInit {
 
       // TODO: add call to save to backend
     }
+  }
+
+  updateAllSeries(updatedAllInstructionsSeries) {
+    this.allInstructionsSeries = updatedAllInstructionsSeries;
   }
 
 

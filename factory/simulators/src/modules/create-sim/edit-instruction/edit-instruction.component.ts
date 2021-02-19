@@ -11,7 +11,7 @@ import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm, D
 import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
-import { Instruction, Instruction2 } from "@models/instruction.model";
+import { Instruction, Instruction2, InstructionCategory } from "@models/instruction.model";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 
 @Component({
@@ -25,7 +25,7 @@ export class EditInstructionComponent implements OnInit {
   @Input() displayEditView = false;
   @Input() displayAddView = false;
   selectedEditView: string;
-  defaultConfig: string[] = DefaultConfig;
+  defaultConfig: InstructionCategory[] = DefaultConfig;
   allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ];
 
   commandQueueEntry: CommandQueueEntry | {};

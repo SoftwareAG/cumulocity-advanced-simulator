@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Event } from '@models/events.model';
+import { BasicEventInstruction, EventInstruction } from "@models/instruction.model";
 
 @Injectable({
   providedIn: "root",
@@ -57,13 +58,13 @@ export class EventsService {
   "values": ["LAT", "LON", "ALT", "ACCURACY"], "type": "builtin"
 }`;
 
-    if (event.code === "400") {
-      toBePushed = toBePushed.replace("CODE", event.code);
+    if (event.eventCategory === "400") {
+      toBePushed = toBePushed.replace("CODE", event.eventCategory);
       toBePushed = toBePushed.replace("TYPE", event.eventType);
       toBePushed = toBePushed.replace("TEXT", event.eventText);
       return toBePushed;
     } else {
-      toBePushedLoc = toBePushedLoc.replace("CODE", event.code);
+      toBePushedLoc = toBePushedLoc.replace("CODE", event.eventCategory);
       toBePushedLoc = toBePushedLoc.replace("LAT", event.geoCoordinate.latitude);
       toBePushedLoc = toBePushedLoc.replace("LON", event.geoCoordinate.longitude);
       toBePushedLoc = toBePushedLoc.replace("ALT", event.geoCoordinate.altitude);
@@ -71,4 +72,10 @@ export class EventsService {
       return toBePushedLoc;
     }
   }
+
+  
+pushToEvents(events: EventInstruction | BasicEventInstruction) {
+  console.error(events);
+  this.events.push(events);
+}
 }
