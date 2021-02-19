@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommandQueueEntry } from '@models/commandQueue.model';
-import { Instruction } from '@models/instruction.model';
+import { Instruction, InstructionCategory } from '@models/instruction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class InstructionService {
       case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
       case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('400', [instruction.eventType, instruction.eventText]); break;
       case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.alarmType, instruction.alarmText]); break;
-      case 'Event': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
+      case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
       case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep]); break;
     }
     if(instruction.color){ commandQueueEntry.color = instruction.color; }
@@ -35,14 +35,14 @@ export class InstructionService {
   commandQueueEntryToInstruction(commandQueueEntry: CommandQueueEntry): Instruction {
     if (commandQueueEntry.type === 'sleep') {
       return {
-        type: 'Sleep',
+        type: InstructionCategory.Sleep,
         sleep: commandQueueEntry.seconds
       };
     }
     console.error(commandQueueEntry);
     if (commandQueueEntry.messageId === '200') {
       return {
-        type: 'Measurement',
+        type: InstructionCategory.Measurement,
         fragment: commandQueueEntry.values[0],
         series: commandQueueEntry.values[1],
         unit: commandQueueEntry.values[2],
@@ -52,29 +52,32 @@ export class InstructionService {
 
     if (commandQueueEntry.messageId.startsWith("30")) {
       return {
-        type: 'Alarm',
-        alarmType: commandQueueEntry.values[0],
-        alarmText: commandQueueEntry.values[1]
+        type: InstructionCategory.Alarm,
+        alarmCategory: commandQueueEntry.values[0],
+        alarmType: commandQueueEntry.values[1],
+        alarmText: commandQueueEntry.values[2]
       };
     }
 
     if (commandQueueEntry.messageId === '400') {
       return {
-        type: 'BasicEvent',
-        eventType: commandQueueEntry.values[0],
-        eventText: commandQueueEntry.values[1]
+        type: InstructionCategory.BasicEvent,
+        eventCategory: commandQueueEntry[0],
+        eventType: commandQueueEntry.values[1],
+        eventText: commandQueueEntry.values[2]
       };
     }
 
     if (commandQueueEntry.messageId === '401' || commandQueueEntry.messageId === '402') {
       return {
-        type: 'Event',
-        eventType: commandQueueEntry.values[0],
-        eventText: commandQueueEntry.values[1],
-        latitude: commandQueueEntry.values[2],
-        longitude: commandQueueEntry.values[3],
-        altitude: commandQueueEntry.values[4],
-        accuracy: commandQueueEntry.values[5],
+        type: InstructionCategory.LocationUpdateEvent,
+        eventCategory: commandQueueEntry.values[0],
+        eventType: commandQueueEntry.values[1],
+        eventText: commandQueueEntry.values[2],
+        latitude: commandQueueEntry.values[3],
+        longitude: commandQueueEntry.values[4],
+        altitude: commandQueueEntry.values[5],
+        accuracy: commandQueueEntry.values[6],
       };
     }
   }

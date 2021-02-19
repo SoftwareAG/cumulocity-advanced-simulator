@@ -2,7 +2,7 @@ import { TitleCasePipe } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-import { SeriesMeasurementInstruction } from "@models/instruction.model";
+import { InstructionCategory, SeriesMeasurementInstruction } from "@models/instruction.model";
 import { Colors } from "@models/colors.const";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 
@@ -76,7 +76,7 @@ export class SimMeasurementsComponent implements OnInit {
   addMeasurementToArray() {
     // this.newFragmentAdded = true;
     this.measurement = {
-        type: 'Measurement',
+        type: InstructionCategory.Measurement,
         fragment: this.fragment ? this.fragment : "",
         series: this.series ? this.series : "",
         minValue: this.minVal ? +this.minVal : "",
