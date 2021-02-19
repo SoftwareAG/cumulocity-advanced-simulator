@@ -5,7 +5,7 @@ import { AlarmsService } from "./alarms.service";
 import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
-import { Instruction } from "@models/instruction.model";
+import { Instruction, InstructionCategory } from "@models/instruction.model";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -70,7 +70,7 @@ export class SimulatorSettingsService {
             series: value.series,
             unit: value.unit,
             color: value.color,
-            type: 'Measurement',
+            type: InstructionCategory.Measurement,
             value: temp
           };
           
