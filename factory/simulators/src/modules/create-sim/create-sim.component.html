@@ -23,22 +23,11 @@
       ></app-sim-settings>
 
       <ng-container>
-        <div *ngFor="let first of measurementSeries; let i = index">
+        <div *ngFor="let first of allInstructionsSeries; let i = index">
           <app-sim-settings
             [mo]="mo"
             [header]="addedSeries"
             [series]="first"
-            [isExpanded]="first.active"
-          ></app-sim-settings>
-        </div>
-      </ng-container>
-
-      <ng-container>
-        <div *ngFor="let first of alarmSeries; let i = index">
-          <app-sim-settings
-            [mo]="mo"
-            [header]="addedSeries"
-            [alarm]="first"
             [isExpanded]="first.active"
           ></app-sim-settings>
         </div>

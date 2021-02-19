@@ -14,7 +14,7 @@ import { isEqual } from "lodash";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
-  measurementSeries = [];
+  allInstructionsSeries = [];
   alarmSeries = [];
   commandQueue: CommandQueueEntry[] = [];
   data;
@@ -60,7 +60,7 @@ export class CreateSimComponent implements OnInit {
       .fetchAllSeries(this.mo)
       .then(
         (res) =>
-          (this.measurementSeries = res.map((entry) => ({
+          (this.allInstructionsSeries = res.map((entry) => ({
             ...entry,
             active: false,
           })))
@@ -88,8 +88,8 @@ export class CreateSimComponent implements OnInit {
     }
   }
 
-  updateAllSeries(updatedAllSeries) {
-    this.measurementSeries = updatedAllSeries;
+  updateAllSeries(updatedAllInstructionsSeries) {
+    this.allInstructionsSeries = updatedAllInstructionsSeries;
   }
 
 
