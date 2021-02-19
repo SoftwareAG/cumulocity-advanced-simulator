@@ -66,7 +66,7 @@ export class SimEventsComponent implements OnInit {
     if (this.selectedEventCategory === this.eventCategories[0].category) {
       for (let i = 0; i < parseInt(this.eventSteps); i++) {
         this.service.events.push({
-          code: this.eventCategories[0].code,
+          eventCategory: this.eventCategories[0].code,
           eventType: this.eventType,
           eventText: this.eventText,
           steps: this.eventSteps,
@@ -84,7 +84,7 @@ export class SimEventsComponent implements OnInit {
     } else {
       for (let i = 0; i < parseInt(this.eventSteps); i++) {
         this.service.events.push({
-          code: this.eventCategories.find(
+          eventCategory: this.eventCategories.find(
             (temp) => temp.category === this.selectedEventCategory
           ).code,
           geoCoordinate: this.geoCoordinate,

@@ -100,6 +100,7 @@ export class SimSettingsComponent implements OnInit {
 
       this.allSeriesEmitter.emit(this.measurementSeries);
       this.simSettings.resetUsedArrays();
+      Object.keys(this.instructionValue).forEach((index) => this.instructionValue[index] = "");
     });
   }
 
