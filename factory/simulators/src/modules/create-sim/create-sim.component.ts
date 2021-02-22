@@ -74,7 +74,7 @@ export class CreateSimComponent implements OnInit {
       const temp = [];
       result.map((value) => {
         temp.push({
-          smartRestFields:
+          values:
             value.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate
               .requestTemplates,
           templateId: value.name,
