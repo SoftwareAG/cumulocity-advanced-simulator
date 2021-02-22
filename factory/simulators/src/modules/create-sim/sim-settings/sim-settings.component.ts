@@ -49,8 +49,11 @@ export class SimSettingsComponent implements OnInit {
   instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
   templateCtx: { item: SeriesInstruction };
+  isSmartRestSelected = false;
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
+  @Input() smartRestConfig;
+  smartRestSelectedConfig;
 
   @Input() set series(value: SeriesInstruction) {
     console.error(value);

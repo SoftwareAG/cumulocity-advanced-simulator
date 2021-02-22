@@ -5,7 +5,8 @@ export enum InstructionCategory {
   "Alarm"="Alarm",
   "BasicEvent"="BasicEvent",
   "LocationUpdateEvent"="LocationUpdateEvent",
-  "Sleep"="Sleep"
+  "Sleep"="Sleep",
+  "SmartRest"="SmartRest"
 }
 
 export type Instruction =

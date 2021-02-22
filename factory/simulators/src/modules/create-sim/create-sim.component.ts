@@ -16,6 +16,7 @@ import { isEqual } from "lodash";
 export class CreateSimComponent implements OnInit {
   allInstructionsSeries = [];
   alarmSeries = [];
+  smartRestConfig = [];
   commandQueue: CommandQueueEntry[] = [];
   data;
   mo;
@@ -65,6 +66,23 @@ export class CreateSimComponent implements OnInit {
             active: false,
           })))
       );
+
+      const filter = {
+        withTotalPages: true,
+        type: "c8y_SmartRest2Template",
+        pageSize: 1000,
+      };
+      this.simService.getFilteredManagedObjects(filter).then((res) => {
+        const val = res;
+        const test = [];
+        val.map((v) => {
+          test.push(
+            v.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate
+              .requestTemplates
+          );
+        });
+        this.smartRestConfig = test.reduce((a, b) => a.concat(b), []);
+      });
   }
 
   updateViewState(val) {

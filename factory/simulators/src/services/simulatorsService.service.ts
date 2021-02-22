@@ -44,4 +44,8 @@ export class SimulatorsServiceService extends ManagedObjectService {
   updateSimulatorManagedObject(mo: Partial<CustomSimulator>) {
     return this.updateManagedObject(mo);
   }
+
+  getFilteredManagedObjects(filter: any) {
+    return this.getFilterInventoryResult(filter);
+  }
 }
