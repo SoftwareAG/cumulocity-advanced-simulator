@@ -2,11 +2,16 @@ import { InstructionCategory } from "./instruction.model";
 
 export interface InputField {
   name: string;
-  placeholder: string;
+  placeholder?: string;
   required: boolean;
   label?: string;
   type: 'select' | 'textField';
-  category?: { name: string; code: string }[];
+  category?: MessageCodes[];
+}
+
+export interface MessageCodes {
+  name: string;
+  code: string;
 }
 
 export const DefaultConfig: InstructionCategory[] = [
@@ -46,11 +51,11 @@ export const MeasurementsForm: InputField[] = [
     placeholder: "Value",
     required: true,
     type: "textField"
-  },
+  }
 ];
 
 export const SeriesMeasurementsForm: InputField[] = [
-  ...MeasurementsForm.filter((a) => a.name !== "value"),
+  ...MeasurementsForm.filter((a) => a.name !== "value"), 
   {
     name: "minValue",
     label: "Minimum:",
@@ -182,7 +187,7 @@ export const SleepForm: InputField[] = [
     placeholder: "Sleep (in Seconds)",
     required: true,
     type: "textField",
-  },
+  }
 ];
 
 export const SeriesSleepForm: InputField[] = [...SleepForm];

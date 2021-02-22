@@ -72,6 +72,14 @@ export class CreateSimComponent implements OnInit {
     this.editedVal = val.editedValue;
   }
 
+  createSinusWave() {
+    console.log('create sinuswave');
+    for (let i = this.commandQueue.length - 1; i >= 0; i--) {
+      this.commandQueue.push(this.commandQueue[i]);
+    }
+    this.simSettings.setCommandQueue(this.commandQueue);
+  }
+
   deleteSeries(val) {
 
     if (val) {

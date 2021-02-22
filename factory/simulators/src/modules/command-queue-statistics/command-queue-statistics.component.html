@@ -1,22 +1,33 @@
-<h3>Calculations:</h3>
+<h3 style="margin-top:50px;">Calculations:</h3>
 <div class="row">
   
-  <div class="col-xs-3">
+  <div class="col-xs-12">
     <b>Time needed for one loop:</b>&nbsp;<span>{{timeForOneLoop}}s</span><br>
-    <b>Possible runthroughs per minute:</b>&nbsp;<span>{{runThrougsPerMinute}}</span><br>
-    <b>Possible runthroughs per hour:</b>&nbsp;<span>{{runThrougsPerHour}}</span><br>
-    <b>Possible runthroughs per day:</b>&nbsp;<span>{{runThrougsPerDay}}</span><br>
+    <b>Possible runthroughs per minute:</b>&nbsp;<span>{{runthroughsPerMinute}}</span><br>
+    <b>Possible runthroughs per hour:</b>&nbsp;<span>{{runthroughsPerHour}}</span><br>
+    <b>Possible runthroughs per day:</b>&nbsp;<span>{{runthroughsPerDay}}</span><br>
   </div>
 
-  <div class="col-xs-3">
-    <b>Time needed for one loop:</b>&nbsp;<span>{{timeForOneLoop}}s</span><br>
-    <b>Possible runthroughs per minute:</b>&nbsp;<span>{{runThrougsPerMinute}}</span><br>
-    <b>Possible runthroughs per hour:</b>&nbsp;<span>{{runThrougsPerHour}}</span><br>
-    <b>Possible runthroughs per day:</b>&nbsp;<span>{{runThrougsPerDay}}</span><br>
-  </div>
-
-  <div class="col-xs-6">
-    
+  <div class="col-xs-6" *ngFor="let entry of measurementCategory">
+    <div class="row" style="margin-top:50px;">
+      <div class="col-xs-6">
+        <h3>Sum of Measurements for <b>{{entry.identifier}}</b>:</h3>
+        <div>
+          <b>SUM of one loop: </b><span>{{entry.value}} {{entry.unit}}</span><br>
+          <b>SUM of per minute: </b><span>{{entry.value * runthroughsPerMinute}} {{entry.unit}}</span><br>
+          <b>SUM of per hour: </b><span>{{entry.value * runthroughsPerHour}} {{entry.unit}}</span><br>
+          <b>SUM of per day: </b><span>{{entry.value * runthroughsPerDay}} {{entry.unit}}</span><br>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <h3>More Information <b>{{entry.identifier}}</b>:</h3>
+        <div>
+          <b>AVG: </b><span>{{entry.avg / commandQueue.length}} {{entry.unit}}</span><br>
+          <b>Lowest Value:</b><span>{{entry.lowest}}</span><br>
+          <b>Highest Value:</b><span>{{entry.highest}}</span><br>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

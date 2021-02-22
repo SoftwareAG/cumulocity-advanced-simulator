@@ -1,8 +1,5 @@
 <div>
 
-  <button type="button" (click)="toggleAlerts();" class="btn btn-danger">Show Alerts</button>
-  <button type="button" (click)="toggleEvents();" class="btn btn-warning">Show Events</button>
-  <button type="button" (click)="toggleSleeps();" class="btn btn-default">Show Sleep</button>
   <canvas
   baseChart
   height="120"
@@ -11,5 +8,8 @@
   [colors]="lineChartColors"
   [chartType]="lineChartType"
   ></canvas>
+  <button type="button" (click)="toggleAlarms();" class="btn btn-danger">Show Alarms</button>
+  <button type="button" (click)="toggleEvents();" class="btn btn-warning">Show Events</button>
+  <button type="button" (click)="toggleSleeps();" class="btn btn-default">Show Sleep</button>
 
 </div>

@@ -27,33 +27,15 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
   private commandQueueSubscription: Subscription;
   public lineChartType: ChartType = 'line';
 
-  verticalLines: VerticalChartLine[] = [
-    {
-      type: 'alarm',
-      label: 'Motor doesnt work',
-      value: 1,
-      color: 'Red'
-    },
-    {
-      type: 'basic event',
-      label: 'Motor doesnt work',
-      value: 6,
-      color: 'orange'
-    }
-  ];
+  verticalLines: VerticalChartLine[] = [];
 
-  sleepBox: SleepChartBox[] = [
-    {
-      valueStart: 3,
-      valueEnd: 5,
-    }
-  ];
-  showAlerts = false;
+  sleepDataSet: SleepChartBox[] = [];
+  showAlarms = false;
   showSleeps = false;
   showEvents = false;
   eventLines = [];
   sleepLines = [];
-  alertLines = [];
+  alarmLines = [];
 
   @Input() public numberOfRuns: number = 1;
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
@@ -93,8 +75,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
   toggleAnnotations() {
     let chartAnnotations = this.chart.chart.options['annotation']['annotations'];
     chartAnnotations = [];
-    if (this.showAlerts) { 
-      chartAnnotations = [ ...chartAnnotations, ...this.alertLines ];
+    if (this.showAlarms) { 
+      chartAnnotations = [ ...chartAnnotations, ...this.alarmLines ];
     } 
     if (this.showSleeps) { 
       chartAnnotations = [...chartAnnotations, ...this.sleepLines];
@@ -119,8 +101,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     
   }
 
-  toggleAlerts(){
-    this.showAlerts = !this.showAlerts;
+  toggleAlarms(){
+    this.showAlarms = !this.showAlarms;
     this.toggleAnnotations();
   }
 
@@ -137,14 +119,34 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
 
   createDataSetFromCommandQueue(){
     const dataSet = [];
+    this.sleepDataSet = [];
+    this.verticalLines = [];
     console.error(this.commandQueue);
     for (let i = 0; i < this.numberOfRuns; i++) {
       for (const entry of this.commandQueue) {
-        if (entry.type === 'sleep') {
-          for (let i = 0; i < entry.seconds; i++) {
-            dataSet[dataSet.length - 1].data.push({ x: dataSet[dataSet.length - 1].data.length, y: 0 });
+
+        if(dataSet.length > 0){
+          let lastDataSet = dataSet[dataSet.length - 1].data;
+          if (entry.type === 'sleep') {
+            this.sleepDataSet.push({
+              valueStart: lastDataSet.length,
+              valueEnd: +lastDataSet.length + +entry.seconds-1
+            });
+            for (let i = 0; i < entry.seconds; i++) {
+              lastDataSet.push({ x: lastDataSet.length, y: lastDataSet[lastDataSet.length-1] });
+            }
+            continue;
           }
-          continue;
+
+          if (entry.messageId.startsWith('30')) {
+            this.verticalLines.push({
+              type: 'alarm',
+              label: entry.values[0],
+              value: lastDataSet.length-1,
+              color: 'Red'
+            });
+            continue;
+          }
         }
         
 
@@ -165,6 +167,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
         }
       }
     }
+    console.error('sleeps', this.sleepDataSet);
+    console.error('Alarms', this.verticalLines);
     this.createEventDataSet();
     this.createSleepSet();
     this.lineChartData = dataSet;
@@ -172,7 +176,7 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
 
 
   createEventDataSet(){
-    let eventLines = [
+    let allLines = [
       ...this.verticalLines.map((verticalLine: VerticalChartLine, index) => {
         return {
           type: 'line',
@@ -180,6 +184,7 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
           mode: 'vertical',
           scaleID: 'x-axis-0',
           value: verticalLine.value,
+          lineType: verticalLine.type,
           borderColor: verticalLine.color,
           borderWidth: 2,
           label: {
@@ -190,12 +195,13 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
         }
       })
     ];
-    this.eventLines = eventLines;
+    this.eventLines = allLines.filter(a => a.lineType === 'event' );
+    this.alarmLines = allLines.filter(a => a.lineType === 'alarm' );
   }
 
   createSleepSet(){
     this.sleepLines = [
-      ...this.sleepBox.map((sleepBox: SleepChartBox, index) => {
+      ...this.sleepDataSet.map((sleepBox: SleepChartBox, index) => {
         return {
           id: 'low-box' + index,
           type: 'box',

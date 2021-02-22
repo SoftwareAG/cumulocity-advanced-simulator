@@ -22,10 +22,10 @@ export class InstructionService {
     let commandQueueEntry;
     switch(instruction.type){
       case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
-      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('400', [instruction.eventType, instruction.eventText]); break;
-      case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.alarmType, instruction.alarmText]); break;
-      case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
-      case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep]); break;
+      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.eventCategory, [instruction.eventType, instruction.eventText]); break;
+      case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate(instruction.alarmCategory, [instruction.alarmType, instruction.alarmText]); break;
+      case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.eventCategory, [instruction.eventType, instruction.eventText]); break;
+      case 'Sleep': commandQueueEntry = {type: 'sleep', seconds: instruction.sleep} as CommandQueueEntry; break;
     }
     if(instruction.color){ commandQueueEntry.color = instruction.color; }
     return commandQueueEntry;
