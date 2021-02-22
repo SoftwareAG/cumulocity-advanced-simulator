@@ -16,6 +16,7 @@ import { isEqual } from "lodash";
 export class CreateSimComponent implements OnInit {
   allInstructionsSeries = [];
   alarmSeries = [];
+  smartRestConfig = [];
   commandQueue: CommandQueueEntry[] = [];
   data;
   mo;
@@ -56,15 +57,41 @@ export class CreateSimComponent implements OnInit {
       this.deleteSeries(data);
     });
 
-    this.simSettings
-      .fetchAllSeries(this.mo)
-      .then(
-        (res) =>
-          (this.allInstructionsSeries = res.map((entry) => ({
-            ...entry,
-            active: false,
-          })))
-      );
+    this.simSettings.fetchAllSeries(this.mo).then(
+      (res) =>
+        (this.allInstructionsSeries = res.map((entry) => ({
+          ...entry,
+          active: false,
+        })))
+    );
+
+    const filter = {
+      withTotalPages: true,
+      type: "c8y_SmartRest2Template",
+      pageSize: 1000,
+    };
+    this.simService.getFilteredManagedObjects(filter).then((result) => {
+      const temp = [];
+      result.map((value) => {
+        temp.push({
+          values:
+            value.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate
+              .requestTemplates,
+          templateId: value.name,
+        });
+      });
+
+      temp.forEach((entry) => {
+        const template = entry.templateId;
+        const smartRestValuesArray = entry.values;
+        smartRestValuesArray.forEach((smartRestEntry) =>
+          this.smartRestConfig.push({
+            smartRestFields: smartRestEntry,
+            templateId: template,
+          })
+        );
+      });
+    });
   }
 
   updateViewState(val) {
@@ -81,16 +108,25 @@ export class CreateSimComponent implements OnInit {
   }
 
   deleteSeries(val) {
-
     if (val) {
-      
-      const minimumOfSeries = this.measurementsService.toMeasurementTemplate(val, val.minValue);
-      const maximumOfSeries = this.measurementsService.toMeasurementTemplate(val, val.maxValue);
+      const minimumOfSeries = this.measurementsService.toMeasurementTemplate(
+        val,
+        val.minValue
+      );
+      const maximumOfSeries = this.measurementsService.toMeasurementTemplate(
+        val,
+        val.maxValue
+      );
       const positionOfMinimum = this.commandQueue.findIndex((value) =>
         isEqual(value, minimumOfSeries)
       );
-      const positionOfMaximum = this.commandQueue.findIndex((value) => isEqual(value, maximumOfSeries));
-      this.commandQueue.splice(positionOfMinimum, positionOfMaximum-positionOfMinimum+1);
+      const positionOfMaximum = this.commandQueue.findIndex((value) =>
+        isEqual(value, maximumOfSeries)
+      );
+      this.commandQueue.splice(
+        positionOfMinimum,
+        positionOfMaximum - positionOfMinimum + 1
+      );
 
       // TODO: add call to save to backend
     }
@@ -99,7 +135,6 @@ export class CreateSimComponent implements OnInit {
   updateAllSeries(updatedAllInstructionsSeries) {
     this.allInstructionsSeries = updatedAllInstructionsSeries;
   }
-
 
   selectButton(item: string) {
     this.currentSelection = item;

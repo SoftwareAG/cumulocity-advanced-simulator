@@ -191,3 +191,4 @@ export const SleepForm: InputField[] = [
 ];
 
 export const SeriesSleepForm: InputField[] = [...SleepForm];
+

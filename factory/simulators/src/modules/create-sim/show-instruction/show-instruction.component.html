@@ -2,7 +2,7 @@
 <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
   <div style="display: flex" (mouseenter)="showBtns=true" (mouseleave)="showBtns=false">
     <button type="button" class="list-group-item" style="display: inline-block" (click)="updateCurrentValue(item)">
-      <i *ngIf="item.type === 'builtin'" class="fa fw fa-arrow-right"></i><span
+      <i *ngIf="item.type === 'builtin' || item.type === 'message'" class="fa fw fa-arrow-right"></i><span
         *ngIf="item.type === 'builtin' && item.messageId === '200'">&nbsp;Custom measurement
         &nbsp;<em>{{item.messageId}}</em>&nbsp;
         <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
@@ -15,6 +15,11 @@
       <span
         *ngIf="item.type === 'builtin' && (item.messageId === '400' || item.messageId === '401' || item.messageId === '402')">&nbsp;Custom
         event &nbsp;<em>{{item.messageId}}</em>&nbsp;
+        <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+      </span>
+      <span
+        *ngIf="item.type === 'message'">&nbsp;SmartREST Template
+        &nbsp;<em>{{item.messageId}}</em>&nbsp;
         <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
       </span>
       <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i><span *ngIf="item.type === 'sleep'">&nbsp;Sleep

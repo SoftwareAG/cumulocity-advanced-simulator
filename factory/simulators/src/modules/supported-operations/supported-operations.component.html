@@ -3,7 +3,7 @@
   <ul class="list-group">
     <ng-container *ngFor="let operation of defaultSupportedOperations"> 
     <li class="list-group-item"><label class="c8y-switch">
-      <input type="checkbox" [(ngModel)]="operation.isActive"/>
+      <input type="checkbox" [ngModel]="operation.isActive" (ngModelChange)="changeOperationstate(operation)"/>
       <span></span>{{operation.name}}&nbsp;&nbsp;<small class="text-muted">{{operation.fragment}}</small>
     </label></li> 
   </ng-container> 
@@ -11,5 +11,6 @@
   <button title="Add custom operation" class="btn-add-block" (click)="addCustomOperationModal()">
     <i c8y-icon="plus-square" class="fa fw fa-plus-square"></i> Add custom operation
   </button>
+  
 </div>
 </div>

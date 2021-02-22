@@ -2,12 +2,18 @@
   <div class="card-block">
     <ng-container *ngTemplateOutlet="header; context: templateCtx">
     </ng-container>
+    <br>
+    
     <div *ngIf="isExpanded">
-      <br />
+      <label class="c8y-switch">
+        <input type="checkbox"  [ngModel]="isSmartRestSelected" (ngModelChange)="isSmartRestSelected=!isSmartRestSelected"/>
+        <span></span><em> Select from SmartREST Templates </em>
+      </label>
       <div class="row">
         <div class="col-md-12">
           <div class="form-group form-group-md">
-            <div class="c8y-select-wrapper">
+            <div class="c8y-select-wrapper" *ngIf="!isSmartRestSelected">
+              <br />
               <select
                 class="form-control"
                 [(ngModel)]="selectedConfig"
@@ -20,11 +26,12 @@
         </div>
       </div>
 
-      <div [ngSwitch]="selectedConfig">
+      
+      <div [ngSwitch]="selectedConfig" *ngIf="!isSmartRestSelected">
         <ng-template
           *ngFor="let form of allForms; let i = index"
           [ngSwitchCase]="defaultConfig[i]"
-        >
+        > 
           <div class="row">
             <div class="col-xs-4" *ngFor="let entry of form">
               <div class="form-group">
@@ -83,6 +90,33 @@
           </div>
         </ng-template>
       </div>
+
+      <div *ngIf="isSmartRestSelected">
+      <select class="selectpicker" [ngModel]="smartRestSelectedConfig" (ngModelChange)="onChangeConfig($event)">
+        <option *ngFor="let first of smartRestConfig" [ngValue]="first">{{first.smartRestFields.msgId}}&nbsp;{{ first.smartRestFields.name }}</option>
+      </select>
+      <br>
+      <ng-container *ngIf="smartRestSelectedConfig">
+        <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
+          <label>{{ entry.path }}</label>
+          <input
+            id="{{ entry.path }}"
+            [required]="true"
+            [(ngModel)]="smartRestInstruction[entry.path]"
+            class="form-control"
+            placeholder="(required)"
+          />
+        </div>
+        <br>
+        <button
+                class="btn btn-success"
+                (click)="saveSmartRestTemplateToCommandQueue()"
+                style="float: right"
+              >
+                Save
+              </button>
+      </ng-container>
+    </div>
     </div>
   </div>
 </div>

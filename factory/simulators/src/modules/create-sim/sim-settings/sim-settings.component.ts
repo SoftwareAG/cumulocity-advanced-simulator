@@ -29,6 +29,7 @@ import { ColorsReduced } from "@models/colors.const";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
 import { EventsService } from "@services/events.service";
+import { SmartRESTService } from "@services/smartREST.service";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -45,12 +46,16 @@ export class SimSettingsComponent implements OnInit {
     SeriesEventsForm,
     SeriesSleepForm,
   ];
+  smartRestInstruction = {};
   selectedConfig = this.defaultConfig[0];
   instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
   templateCtx: { item: SeriesInstruction };
+  isSmartRestSelected = false;
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
+  @Input() smartRestConfig;
+  smartRestSelectedConfig;
 
   @Input() set series(value: SeriesInstruction) {
     console.error(value);
@@ -73,11 +78,11 @@ export class SimSettingsComponent implements OnInit {
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
     private alarmService: AlarmsService,
-    private eventsService: EventsService
+    private eventsService: EventsService,
+    private smartRESTService: SmartRESTService
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   updateSeries(type) {
     this.instructionValue.type = type;
@@ -128,8 +133,16 @@ export class SimSettingsComponent implements OnInit {
   }
 
   onChangeConfig(value) {
-    this.selectedConfig = value;
+    this.smartRestSelectedConfig = value;
   }
 
-
+  saveSmartRestTemplateToCommandQueue() {
+    const commandQueueEntry = this.smartRESTService.smartRESTTemplateToCommandQueueEntry(
+      this.smartRestInstruction,
+      this.smartRestSelectedConfig
+    );
+    this.commandQueue.push(commandQueueEntry);
+    console.log(this.commandQueue);
+    // TODO: Save commandQueue to backend using service
+  }
 }

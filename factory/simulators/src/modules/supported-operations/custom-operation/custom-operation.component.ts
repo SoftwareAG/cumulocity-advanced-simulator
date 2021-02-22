@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { InventoryService } from "@c8y/ngx-components/api";
 import { Subject } from "rxjs";
 import { IManagedObject } from "@c8y/client";
@@ -8,6 +8,7 @@ import {
   SimulatorModel,
 } from "src/models/simulator.model";
 import { Router } from "@angular/router";
+import { SimulatorsServiceService } from '@services/simulatorsService.service';
 export interface ILabels {
   ok?: string;
   cancel?: string;
@@ -44,12 +45,19 @@ export class CustomOperationComponent implements OnInit {
     ok: "Save",
     cancel: "Cancel",
   };
-  constructor() { }
+  @Input() mo: CustomSimulator;
+  constructor(private simulatorService: SimulatorsServiceService) { }
 
   ngOnInit() {
   }
 
   saveCustomOperation() {
+    if (!this.mo.c8y_DeviceSimulator.hasOwnProperty("c8y_CustomOperations")) {
+      this.mo.c8y_DeviceSimulator["c8y_CustomOperations"] = [];
+    }
+    this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.push(this.customOperationTitle);
+    this.mo.c8y_DeviceSimulator.c8y_CustomOperations.push(this.customOperationTitle);
+    this.simulatorService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res));
 
   }
 
