@@ -92,21 +92,29 @@
       </div>
 
       <div *ngIf="isSmartRestSelected">
-      <select class="selectpicker" [(ngModel)]="smartRestSelectedConfig">
-        <option *ngFor="let first of smartRestConfig" [ngValue]="first">{{first.msgId}}&nbsp;{{ first.name }}</option>
+      <select class="selectpicker" [ngModel]="smartRestSelectedConfig" (ngModelChange)="onChangeConfig($event)">
+        <option *ngFor="let first of smartRestConfig" [ngValue]="first">{{first.smartRestFields.msgId}}&nbsp;{{ first.smartRestFields.name }}</option>
       </select>
       <br>
       <ng-container *ngIf="smartRestSelectedConfig">
-        <div *ngFor="let entry of smartRestSelectedConfig.customValues">
+        <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
           <label>{{ entry.path }}</label>
           <input
             id="{{ entry.path }}"
             [required]="true"
-            
+            [(ngModel)]="smartRestInstruction[entry.path]"
             class="form-control"
             placeholder="(required)"
           />
         </div>
+        <br>
+        <button
+                class="btn btn-success"
+                (click)="saveSmartRestTemplateToCommandQueue()"
+                style="float: right"
+              >
+                Save
+              </button>
       </ng-container>
     </div>
     </div>
