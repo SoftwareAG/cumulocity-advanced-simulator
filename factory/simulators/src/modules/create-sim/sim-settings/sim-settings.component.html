@@ -106,7 +106,34 @@
             class="form-control"
             placeholder="(required)"
           />
+          <ng-container *ngIf="entry.path | isValue">
+            <label>{{ entry.path +'.maximum'}}</label>
+            <input
+            id="{{ entry.path + '_max'}}"
+            [required]="true"
+            [(ngModel)]="smartRestInstruction[entry.path+'_max']"
+            class="form-control"
+            placeholder="(required)"
+          />
+          <label>{{ entry.path +'.minimum'}}</label>
+            <input
+            id="{{ entry.path + '_min'}}"
+            [required]="true"
+            [(ngModel)]="smartRestInstruction[entry.path+'_min']"
+            class="form-control"
+            placeholder="(required)"
+          />
+          </ng-container>
+         
         </div>
+        <label>{{ 'steps'}}</label>
+        <input
+        id="{{ 'steps' }}"
+        [required]="true"
+        [(ngModel)]="smartRestInstruction['steps']"
+        class="form-control"
+        placeholder="(required)"
+      />
         <br>
         <button
                 class="btn btn-success"

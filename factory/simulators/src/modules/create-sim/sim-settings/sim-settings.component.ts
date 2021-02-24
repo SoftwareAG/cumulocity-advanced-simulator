@@ -142,7 +142,9 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestSelectedConfig
     );
     this.commandQueue.push(commandQueueEntry);
-    console.log(this.commandQueue);
     // TODO: Save commandQueue to backend using service
+    
+    // Object.keys(this.smartRestInstruction).map((index) => this.smartRestInstruction[index] = "");
+    
   }
 }

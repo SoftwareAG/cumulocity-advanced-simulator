@@ -91,6 +91,7 @@ export class CreateSimComponent implements OnInit {
           })
         );
       });
+      console.log(this.smartRestConfig);
     });
   }
 
