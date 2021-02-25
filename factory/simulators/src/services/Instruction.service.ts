@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommandQueueEntry } from '@models/commandQueue.model';
+import { CommandQueueEntry, CommandQueueType } from '@models/commandQueue.model';
 import { Instruction, InstructionCategory } from '@models/instruction.model';
 
 @Injectable({
@@ -9,10 +9,10 @@ export class InstructionService {
 
   constructor() { } 
 
-  private commandQueueEntryTemplate(messageId: string, values): CommandQueueEntry {
+  private commandQueueEntryTemplate(messageId: string, values, type: CommandQueueType=CommandQueueType.builtin, ): CommandQueueEntry {
     return {
       messageId: messageId,
-      type: 'builtin',
+      type: type,
       values: values
     };
   }
@@ -21,11 +21,12 @@ export class InstructionService {
   instructionToCommand(instruction: Instruction): CommandQueueEntry {
     let commandQueueEntry;
     switch(instruction.type){
-      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
+      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200',[instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
       case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate('400', [instruction.eventType, instruction.eventText]); break;
       case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.alarmType, instruction.alarmText]); break;
       case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.eventType, instruction.eventText]); break;
-      case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep]); break;
+      case 'Sleep': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.sleep], CommandQueueType.sleep); break;
+      case 'SmartRest': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.value], CommandQueueType.message); break;
     }
     if(instruction.color){ commandQueueEntry.color = instruction.color; }
     return commandQueueEntry;
@@ -33,7 +34,7 @@ export class InstructionService {
 
   
   commandQueueEntryToInstruction(commandQueueEntry: CommandQueueEntry): Instruction {
-    if (commandQueueEntry.type === 'sleep') {
+    if (commandQueueEntry.type === CommandQueueType.sleep) {
       return {
         type: InstructionCategory.Sleep,
         sleep: commandQueueEntry.seconds

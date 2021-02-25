@@ -14,7 +14,8 @@ export type Instruction =
   | AlarmInstruction
   | BasicEventInstruction
   | SleepInstruction
-  | EventInstruction;
+  | EventInstruction
+  | SmartRestInstruction;
 export type SeriesInstruction =
   | SeriesMeasurementInstruction
   | AlarmInstruction
@@ -36,6 +37,21 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   sleep?: number | string;
 }
 
+export interface SmartRestInstruction extends Instruction2 {
+  minValue:string;
+  maxValue: string;
+  steps: string;
+  value?: string;
+  type: InstructionCategory.SmartRest;
+}
+
+export class SmartRestIns implements SmartRestInstruction {
+  minValue: string;
+  maxValue: string;
+  steps: string;
+  value?: string;
+  type: InstructionCategory.SmartRest;
+}
 export interface MeasurementInstruction extends Instruction2 {
   fragment: string;
   series: string;

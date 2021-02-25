@@ -64,7 +64,7 @@ export class SimulatorSettingsService {
       for (const { temp, index } of this.helperService
         .scale(value.minValue, value.maxValue, value.steps, this.randomSelected)
         .map((temp, index) => ({ temp, index }))) {
-          
+          // if else
           const instruction: Instruction = {
             fragment: value.fragment,
             series: value.series,
