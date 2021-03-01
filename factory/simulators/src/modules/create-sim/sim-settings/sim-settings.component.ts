@@ -147,10 +147,13 @@ export class SimSettingsComponent implements OnInit {
     );
     
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
-      if (key.endsWith(".value")) {
+      if (key.endsWith(".value") || !(key.endsWith('value_max') || key.endsWith('value_min') || key === 'steps')) {
         this.smartRestArr.push({ [key]: { value: value } });
-      }
+      } 
+      
+      
     });
+    console.log(this.smartRestArr);
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
       console.log(key);
       const found = this.smartRestArr.find((entry) =>
@@ -174,6 +177,7 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestInstructionsArray.push(Object.values(item)[0] as SmartRestInstruction)
     );
 
+    console.log(this.smartRestArr);
     const cmdQ = this.smartRESTService.generateSmartRestRequest(
       this.smartRestInstructionsArray,
       this.smartRestSelectedConfig

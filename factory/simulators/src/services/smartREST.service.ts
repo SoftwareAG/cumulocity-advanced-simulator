@@ -37,8 +37,11 @@ export class SmartRESTService {
     smartRestInstructionArray: SmartRestInstruction[],
     smartRESTTemplate: SmartRest
   ) {
+    
     smartRestInstructionArray.forEach((instruction) => {
       let vals = [];
+      const steps = instruction.steps;
+      if (instruction.minValue && instruction.maxValue) {
       for (let { temp, index } of this.helperService
         .scale(
           parseInt(instruction.minValue),
@@ -48,10 +51,12 @@ export class SmartRESTService {
         )
         .map((temp, index) => ({ temp, index }))) {
         vals.push(temp);
+      }} else {
+        vals.push(...this.fillArray(instruction.value, instruction.steps));
       }
       this.values.push(vals);
     });
-
+    
     for (let i = 0; i < this.transposeArray(this.values).length; i++) {
       let commandQueueEntry: CommandQueueEntry = {
         type: CommandQueueType.message,
@@ -72,5 +77,13 @@ export class SmartRESTService {
         return arr[r][c];
       });
     });
+  }
+
+  fillArray(value, len) {
+    var arr = [];
+    for (var i = 0; i <= len; i++) {
+      arr.push(value);
+    }
+    return arr;
   }
 }
