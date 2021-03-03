@@ -98,7 +98,6 @@
       <br>
       <ng-container *ngIf="smartRestSelectedConfig">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
-          <ng-container *ngIf="!(entry.path | isValue)">
           <label>{{ entry.path }}</label>
           <input
             id="{{ entry.path }}"
@@ -106,16 +105,7 @@
             [(ngModel)]="smartRestInstruction[entry.path]"
             class="form-control"
           />
-        </ng-container>
           <ng-container *ngIf="entry.path | isValue">
-            <label>{{ entry.path }}</label>
-          <input
-            id="{{ entry.path }}"
-            [attr.disabled]="true"
-            [(ngModel)]="smartRestInstruction[entry.path]"
-            class="form-control"
-            placeholder="(required)"
-          />
             <label>{{ entry.path +'.maximum'}}</label>
             <input
             id="{{ entry.path + '_max'}}"

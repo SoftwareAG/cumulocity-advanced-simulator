@@ -183,6 +183,10 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestSelectedConfig
     );
     this.commandQueue.push(...cmdQ);
+    Object.entries(this.smartRestInstruction).forEach(([key, value]) => {this.smartRestInstruction[key] = ""});
+    this.smartRESTService.resetCommandQueueArray();
+    this.smartRestArr = [];
+    this.smartRestInstructionsArray = [];
   }
 
 }

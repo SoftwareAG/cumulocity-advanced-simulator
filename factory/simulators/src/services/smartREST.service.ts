@@ -86,4 +86,9 @@ export class SmartRESTService {
     }
     return arr;
   }
+
+  resetCommandQueueArray() {
+    this.commandQueueArray = [];
+    this.values = [];
+  }
 }
