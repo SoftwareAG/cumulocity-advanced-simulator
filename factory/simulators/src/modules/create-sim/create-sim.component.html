@@ -1,14 +1,16 @@
-<c8y-title>{{simulatorTitle}}</c8y-title>
+<c8y-title>{{ simulatorTitle }}</c8y-title>
 <div class="row">
   <c8y-action-bar-item [placement]="'right'" [itemClass]="'btn-group'">
     <button class="btn-primary" (click)="createSinusWave()" >Sinus Wave</button>&nbsp;
     <div class="btn-group" role="group" *ngFor="let item of actionButtons">
       <button
         type="button"
-        [ngClass]="currentSelection === item ? 'btn btn-primary' : 'btn btn-default'"
+        [ngClass]="
+          currentSelection === item ? 'btn btn-primary' : 'btn btn-default'
+        "
         (click)="selectButton(item)"
       >
-      {{item}}
+        {{ item }}
       </button>
     </div>
   </c8y-action-bar-item>
@@ -35,6 +37,16 @@
         </div>
       </ng-container>
     </div>
+
+    <div *ngIf="false" class="col-sm-8">
+      <br />
+      <button
+        class="btn btn-success"
+        style="float: right; top: 0; z-index: 2; position: sticky"
+      >
+        Generate Instructions
+      </button>
+    </div>
   </div>
 
   <div class="col-lg-6">
@@ -43,7 +55,7 @@
       [commandQueue]="commandQueue"
       (currentValue)="getCurrentValue($event)"
       (currentViewState)="updateViewState($event)"
-      ></app-show-instruction>
+    ></app-show-instruction>
   </div>
 </div>
 
@@ -67,37 +79,52 @@
 
 
 <ng-template #addedSeries let-item="item">
-  <div style="cursor:pointer;display: flex" (click)="item.active = !item.active">
-    <ng-container *ngIf="item.fragment && item.series"><h4>Measurement Series</h4>
-    &nbsp; <em>{{ item.fragment }}</em
-    >&nbsp; &nbsp; <em>{{ item.series }}</em
-    >&nbsp; &nbsp; <em>{{ item.unit }}</em
-    >&nbsp;</ng-container>
+  <div
+    style="cursor: pointer; display: flex"
+    (click)="item.active = !item.active"
+  >
+    <ng-container *ngIf="item.fragment && item.series"
+      ><h4>Measurement Series</h4>
+      &nbsp; <em>{{ item.fragment }}</em
+      >&nbsp; &nbsp; <em>{{ item.series }}</em
+      >&nbsp; &nbsp; <em>{{ item.unit }}</em
+      >&nbsp;</ng-container
+    >
 
     <ng-container *ngIf="item.alarmText && item.alarmType">
       <h4>Alarm Series</h4>
-      &nbsp; <em>{{ item.alarmType }}</em>&nbsp; &nbsp; <em>{{ item.alarmText }}</em>&nbsp;</ng-container>
+      &nbsp; <em>{{ item.alarmType }}</em
+      >&nbsp; &nbsp; <em>{{ item.alarmText }}</em
+      >&nbsp;</ng-container
+    >
 
-      <ng-container *ngIf="item.eventType && item.eventText"><h4>Basic Event Series</h4>
-        &nbsp; <em>{{ item.eventType }}</em>
-        &nbsp; &nbsp; <em>{{ item.eventText }}</em>
-        &nbsp;</ng-container>
+    <ng-container *ngIf="item.eventType && item.eventText"
+      ><h4>Basic Event Series</h4>
+      &nbsp; <em>{{ item.eventType }}</em> &nbsp; &nbsp;
+      <em>{{ item.eventText }}</em> &nbsp;</ng-container
+    >
 
-        <ng-container *ngIf="item.geoCoordinate"><h4>Location Event Series</h4>
-          &nbsp; <em>{{ item.geoCoordinate.latitude }}</em
-          >&nbsp; &nbsp; <em>{{ item.geoCoordinate.longitude }}</em
-          >&nbsp; &nbsp; <em>{{ item.geoCoordinate.altitude }}</em
-            >&nbsp; &nbsp; <em>{{ item.geoCoordinate.accuracy }}</em>
-        </ng-container>
+    <ng-container *ngIf="item.geoCoordinate"
+      ><h4>Location Event Series</h4>
+      &nbsp; <em>{{ item.geoCoordinate.latitude }}</em
+      >&nbsp; &nbsp; <em>{{ item.geoCoordinate.longitude }}</em
+      >&nbsp; &nbsp; <em>{{ item.geoCoordinate.altitude }}</em
+      >&nbsp; &nbsp; <em>{{ item.geoCoordinate.accuracy }}</em>
+    </ng-container>
     <button
       class="transparent"
       aria-controls="collapseBasic"
-      [attr.aria-expanded]="item.active">
+      [attr.aria-expanded]="item.active"
+    >
       <i c8yIcon="caret-down"></i>
     </button>
 
-    <div id="collapseBasic" class="collapse" [collapse]="!item.active" [isAnimated]="true"></div>
-
+    <div
+      id="collapseBasic"
+      class="collapse"
+      [collapse]="!item.active"
+      [isAnimated]="true"
+    ></div>
   </div>
 </ng-template>
 <ng-template #addseries><h4>Add Series</h4></ng-template>

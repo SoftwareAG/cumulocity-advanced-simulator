@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommandQueueEntry, MessageIds } from '@models/commandQueue.model';
+import { CommandQueueEntry, CommandQueueType, MessageIds } from '@models/commandQueue.model';
 import { Instruction, InstructionCategory } from '@models/instruction.model';
 
 @Injectable({
@@ -9,10 +9,10 @@ export class InstructionService {
 
   constructor() { } 
 
-  private commandQueueEntryTemplate(messageId: MessageIds, values): CommandQueueEntry {
+  private commandQueueEntryTemplate(messageId: string, values, type: CommandQueueType=CommandQueueType.builtin, ): CommandQueueEntry {
     return {
       messageId: messageId,
-      type: 'builtin',
+      type: type,
       values: values
     };
   }
@@ -25,7 +25,8 @@ export class InstructionService {
       case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.eventType, instruction.eventText]); break;
       case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.alarmType, instruction.alarmText]); break;
       case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.eventType, instruction.eventText]); break;
-      case 'Sleep': commandQueueEntry = {type: 'sleep', seconds: instruction.sleep} as CommandQueueEntry; break;
+      case 'Sleep': commandQueueEntry = { type: 'sleep', seconds: instruction.sleep } as CommandQueueEntry; break;
+      case 'SmartRest': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.value], CommandQueueType.message); break;
     }
     if(instruction.color){ commandQueueEntry.color = instruction.color; }
     return commandQueueEntry;
@@ -33,7 +34,7 @@ export class InstructionService {
 
   
   commandQueueEntryToInstruction(commandQueueEntry: CommandQueueEntry): Instruction {
-    if (commandQueueEntry.type === 'sleep') {
+    if (commandQueueEntry.type === CommandQueueType.sleep) {
       return {
         type: InstructionCategory.Sleep,
         sleep: commandQueueEntry.seconds

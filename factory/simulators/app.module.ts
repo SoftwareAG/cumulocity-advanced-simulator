@@ -27,6 +27,7 @@ import { ShowInstructionComponent } from "./src/modules/create-sim/show-instruct
 import { SupportedOperationsComponent } from "@modules/supported-operations/supported-operations.component";
 import { CommandQueueStatisticsComponent } from "@modules/command-queue-statistics/command-queue-statistics.component";
 import { CustomOperationComponent } from "@modules/supported-operations/custom-operation/custom-operation.component";
+import { IsValuePipe } from "./src/shared/isValue.pipe";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -81,7 +82,8 @@ const appRoutes: Routes = [
     CommandQueueStatisticsComponent,
     ShowInstructionComponent,
     SupportedOperationsComponent,
-    CustomOperationComponent
+    CustomOperationComponent,
+    IsValuePipe
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -94,7 +96,8 @@ const appRoutes: Routes = [
     CommandQueueStatisticsComponent,
     ShowInstructionComponent,
     SupportedOperationsComponent, 
-    CustomOperationComponent
+    CustomOperationComponent,
+    // IsValuePipe
   ],
   providers: [ThemeService],
   // providers: [

@@ -23,6 +23,8 @@ import {
   InstructionCategory,
   SeriesInstruction,
   SeriesMeasurementInstruction,
+  SmartRestIns,
+  SmartRestInstruction,
 } from "@models/instruction.model";
 import { MeasurementsService } from "@services/measurements.service";
 import { ColorsReduced } from "@models/colors.const";
@@ -47,6 +49,7 @@ export class SimSettingsComponent implements OnInit {
     SeriesSleepForm,
   ];
   smartRestInstruction = {};
+  smartRestArr = [];
   selectedConfig = this.defaultConfig[0];
   instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
@@ -56,6 +59,7 @@ export class SimSettingsComponent implements OnInit {
   @Input() isExpanded: boolean;
   @Input() smartRestConfig;
   smartRestSelectedConfig;
+  smartRestInstructionsArray: SmartRestInstruction[] = [];
 
   @Input() set series(value: SeriesInstruction) {
     console.error(value);
@@ -137,12 +141,52 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-    const commandQueueEntry = this.smartRESTService.smartRESTTemplateToCommandQueueEntry(
-      this.smartRestInstruction,
+
+    const copyOfSmartRestInstruction = JSON.parse(
+      JSON.stringify(this.smartRestInstruction)
+    );
+    
+    Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
+      if (key.endsWith(".value") || !(key.endsWith('value_max') || key.endsWith('value_min') || key === 'steps')) {
+        this.smartRestArr.push({ [key]: { value: value } });
+      } 
+      
+      
+    });
+    console.log(this.smartRestArr);
+    Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
+      console.log(key);
+      const found = this.smartRestArr.find((entry) =>
+        key.includes(Object.keys(entry)[0])
+      );
+      if (found && key.endsWith("_max")) {
+        found[Object.keys(found)[0]].maxValue = value;
+      }
+      if (found && key.endsWith("_min")) {
+        found[Object.keys(found)[0]].minValue = value;
+      }
+
+    });
+    const steps = this.smartRestInstruction["steps"];
+    this.smartRestArr.forEach((entry) => {
+      entry[Object.keys(entry)[0]].steps = steps;
+      entry[Object.keys(entry)[0]].type = InstructionCategory.SmartRest;
+    });
+
+    this.smartRestArr.forEach((item) =>
+      this.smartRestInstructionsArray.push(Object.values(item)[0] as SmartRestInstruction)
+    );
+
+    console.log(this.smartRestArr);
+    const cmdQ = this.smartRESTService.generateSmartRestRequest(
+      this.smartRestInstructionsArray,
       this.smartRestSelectedConfig
     );
-    this.commandQueue.push(commandQueueEntry);
-    console.log(this.commandQueue);
-    // TODO: Save commandQueue to backend using service
+    this.commandQueue.push(...cmdQ);
+    Object.entries(this.smartRestInstruction).forEach(([key, value]) => {this.smartRestInstruction[key] = ""});
+    this.smartRESTService.resetCommandQueueArray();
+    this.smartRestArr = [];
+    this.smartRestInstructionsArray = [];
   }
+
 }

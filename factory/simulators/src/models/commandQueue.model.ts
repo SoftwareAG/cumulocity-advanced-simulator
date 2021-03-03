@@ -1,7 +1,7 @@
 
 export interface CommandQueueEntry {
-    messageId: MessageIds | string,
-    type: 'sleep' | 'measurement' | 'builtin' | 'message',
+    messageId?: MessageIds | string,
+    type: CommandQueueType,
     values?: string[],
     seconds?: number,
     templateId?: string,
@@ -15,4 +15,11 @@ export enum MessageIds {
     "Major" = "302",
     "Minor" = "303",
     "Basic" = "400"
+}
+
+export enum CommandQueueType {
+    "sleep"="sleep",
+    "measurement"="measurement",
+    "builtin"="builtin",
+    "message"="message"
 }
