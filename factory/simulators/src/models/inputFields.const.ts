@@ -6,12 +6,12 @@ export interface InputField {
   required: boolean;
   label?: string;
   type: 'select' | 'textField';
-  category?: MessageCodes[];
+  options?: MessageId[];
 }
 
-export interface MessageCodes {
+export interface MessageId {
   name: string;
-  code: string;
+  id: string;
 }
 
 export const DefaultConfig: InstructionCategory[] = [
@@ -81,15 +81,15 @@ export const SeriesMeasurementsForm: InputField[] = [
 
 export const AlarmsForm: InputField[] = [
   {
-    name: "alarmCategory",
+    name: "messageId",
     placeholder: "",
     required: true,
     label: "Alarm Category",
     type: "select",
-    category: [
-      { name: "CRITICAL", code: "301" },
-      { name: "MAJOR", code: "302" },
-      { name: "MINOR", code: "303" },
+    options: [
+      { name: "CRITICAL", id: "301" },
+      { name: "MAJOR", id: "302" },
+      { name: "MINOR", id: "303" },
     ],
   },
   {
@@ -112,11 +112,11 @@ export const SeriesAlarmsForm: InputField[] = [...AlarmsForm];
 
 export const BasicEventsForm: InputField[] = [
   {
-    name: "eventCategory",
+    name: "messageId",
     label: "Event Category",
     placeholder: "",
     type: "select",
-    category: [{ name: "Basic", code: "400" }],
+    options: [{ name: "Basic", id: "400" }],
     required: true,
   },
   {
@@ -141,10 +141,10 @@ export const EventsForm: InputField[] = [
 //   ...BasicEventsForm,
 
   {
-    name: "Event Category",
+    name: "messageId",
     label: "Event Category",
     placeholder: "",
-    category: [{ name: "Location Update", code: "401" }, { name: "Location Update with Device", code: "402" }],
+    options: [{ name: "Location Update", id: "401" }, { name: "Location Update with Device", id: "402" }],
     type: "select",
     required: true,
   },

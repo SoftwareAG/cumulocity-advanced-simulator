@@ -1,3 +1,4 @@
+import { MessageIds } from "./commandQueue.model";
 import { GeoCoordinate } from "./geoCoordinate.model";
 
 export enum InstructionCategory {
@@ -25,6 +26,7 @@ export type SeriesInstruction =
 export interface Empty {}
 
 export interface Instruction2 {
+  messageId?: MessageIds;
   type?: InstructionCategory;
   color?: string;
 }
@@ -37,6 +39,7 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
 }
 
 export interface MeasurementInstruction extends Instruction2 {
+  messageId?: MessageIds.Measurement;
   fragment: string;
   series: string;
   value?: string;
@@ -45,13 +48,14 @@ export interface MeasurementInstruction extends Instruction2 {
 }
 
 export interface AlarmInstruction extends Instruction2 {
-  alarmCategory: string;
+  messageId?: MessageIds.Critical | MessageIds.Major | MessageIds.Minor;
   alarmType: string;
   alarmText: string;
   type: InstructionCategory.Alarm;
 }
 
 export interface BasicEventInstruction extends Instruction2 {
+  messageId?: MessageIds.Basic;
   eventCategory: string;
   eventType: string;
   eventText: string;
