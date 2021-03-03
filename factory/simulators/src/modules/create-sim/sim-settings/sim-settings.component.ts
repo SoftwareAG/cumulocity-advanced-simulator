@@ -14,7 +14,7 @@ import {
   SeriesAlarmsForm,
   SeriesBasicEventsForm,
   SeriesEventsForm,
-  SeriesSleepForm,
+  SeriesSleepForm
 } from "@models/inputFields.const";
 import {
   AlarmInstruction,

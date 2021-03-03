@@ -42,8 +42,9 @@
                 <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
                   <div class="c8y-select-wrapper">
                     <select class="form-control" [(ngModel)]="instructionValue[entry.name]">
-                      <option *ngFor="let category of entry.category" [value]="category.code">
-                        {{ category.name }}
+                      {{instructionValue[entry.name]}}
+                      <option *ngFor="let option of entry.options" [selected]="instructionValue[entry.name] === option.id" [value]="option.id">
+                        {{ option.name }}
                       </option>
                     </select>
                   </div>
@@ -55,7 +56,7 @@
           </div>
           <div class="row" style="text-align:right;">
             <div class="col-xs-12">
-              <button title="Add sleep" *ngIf="commandQueueEntryIndex" class="btn btn-default" (click)="onDuplicateInstruction()" style="display:inline-block;margin-right:5px;">
+              <button title="Add sleep" *ngIf="commandQueueEntryIndex && displayEditView" class="btn btn-default" (click)="onDuplicateInstruction()" style="display:inline-block;margin-right:5px;">
                 <i class="fa fa-copy"></i> Duplicate {{defaultConfig[i]}}
               </button>
 

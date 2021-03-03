@@ -122,28 +122,54 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     this.sleepDataSet = [];
     this.verticalLines = [];
     console.error(this.commandQueue);
+    let lastDataSet, lastFound, lastXValue = 0;
     for (let i = 0; i < this.numberOfRuns; i++) {
       for (const entry of this.commandQueue) {
+        if(this.numberOfRuns === 1)
+          console.log(dataSet);
 
-        if(dataSet.length > 0){
-          let lastDataSet = dataSet[dataSet.length - 1].data;
-          if (entry.type === 'sleep') {
-            this.sleepDataSet.push({
-              valueStart: lastDataSet.length,
-              valueEnd: +lastDataSet.length + +entry.seconds-1
-            });
-            for (let i = 0; i < entry.seconds; i++) {
-              lastDataSet.push({ x: lastDataSet.length, y: lastDataSet[lastDataSet.length-1] });
+        if (dataSet.length > 0) {
+          if (entry.type === 'sleep'){
+
+            for (let oldDataSets of dataSet) {
+              for (let i = 0; i < entry.seconds; i++) {
+                oldDataSets.data.push({ 
+                  x: oldDataSets.data.length - 1, 
+                  y: oldDataSets.data[oldDataSets.data.length-1].y 
+                });
+              }
+              lastXValue+= +entry.seconds;
             }
+
+            
             continue;
           }
-
+       /*   if (entry.type === 'sleep') {
+            this.sleepDataSet.push({
+              valueStart: lastDataSet.x,
+              valueEnd: +lastDataSet.x + +entry.seconds-1
+            });
+            for (let i = 0; i < entry.seconds; i++) {
+              lastFound.push({ x: lastFound.length, y: lastDataSet.y });
+            }
+            lastXValue += +lastDataSet.x + +entry.seconds - 1;
+            continue;
+          }*/
           if (entry.messageId.startsWith('30')) {
             this.verticalLines.push({
               type: 'alarm',
               label: entry.values[0],
-              value: lastDataSet.length-1,
+              value: dataSet.length-1,
               color: 'Red'
+            });
+            continue;
+          }
+          if (entry.messageId.startsWith('40')) {
+            this.verticalLines.push({
+              type: 'event',
+              label: entry.values[0],
+              value: dataSet.length - 1,
+              color: 'Orange'
             });
             continue;
           }
@@ -157,12 +183,17 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
         });
 
         if (found) {
-          found.data.push({ x: found.data.length, y: +entry.values[3] });
+          found.lastXValue++;
+          found.data.push({ x: found.lastXValue, y: +entry.values[3] });
+         /* lastDataSet = { x: lastXValue, y: +entry.values[3] };
+          lastFound = found.data;
+          found.lastXValue++;*/
         } else {
           dataSet.push({
-            data: [{ x: 0, y: +entry.values[3] }],
+            data: [{ x: lastXValue, y: +entry.values[3] }],
             label: entry.values[1],
-            lineTension: 0
+            lineTension: 0,
+            lastXValue: lastXValue
           });
         }
       }

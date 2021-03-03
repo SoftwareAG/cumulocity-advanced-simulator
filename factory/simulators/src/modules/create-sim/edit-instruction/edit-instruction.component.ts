@@ -26,7 +26,7 @@ export class EditInstructionComponent implements OnInit {
   @Input() displayAddView = false;
   selectedEditView: string;
   defaultConfig: InstructionCategory[] = DefaultConfig;
-  allForms = [ MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm ];
+  allForms = [MeasurementsForm, AlarmsForm, BasicEventsForm, EventsForm, SleepForm ];
 
   commandQueueEntry: CommandQueueEntry | {};
   instructionValue: Instruction | Instruction2 = {};
@@ -97,10 +97,10 @@ export class EditInstructionComponent implements OnInit {
   }
 
   @Input() set editedValue(value: CommandQueueEntry) {
-    console.error('test!!');
     if (value) {
       this.commandQueueEntryIndex = this.commandQueue.findIndex((entry) => entry === value);
       const instruction = this.instructionService.commandQueueEntryToInstruction(value);
+      console.error('test!!', value, instruction);
       this.selectedEditView = instruction.type;
       this.instructionValue = instruction;
       this.displayAddView = false;

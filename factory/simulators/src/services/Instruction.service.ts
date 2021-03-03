@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommandQueueEntry } from '@models/commandQueue.model';
+import { CommandQueueEntry, MessageIds } from '@models/commandQueue.model';
 import { Instruction, InstructionCategory } from '@models/instruction.model';
 
 @Injectable({
@@ -9,7 +9,7 @@ export class InstructionService {
 
   constructor() { } 
 
-  private commandQueueEntryTemplate(messageId: string, values): CommandQueueEntry {
+  private commandQueueEntryTemplate(messageId: MessageIds, values): CommandQueueEntry {
     return {
       messageId: messageId,
       type: 'builtin',
@@ -21,10 +21,10 @@ export class InstructionService {
   instructionToCommand(instruction: Instruction): CommandQueueEntry {
     let commandQueueEntry;
     switch(instruction.type){
-      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
-      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.eventCategory, [instruction.eventType, instruction.eventText]); break;
-      case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate(instruction.alarmCategory, [instruction.alarmType, instruction.alarmText]); break;
-      case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.eventCategory, [instruction.eventType, instruction.eventText]); break;
+      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate(MessageIds.Measurement, [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
+      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.eventType, instruction.eventText]); break;
+      case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.alarmType, instruction.alarmText]); break;
+      case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.eventType, instruction.eventText]); break;
       case 'Sleep': commandQueueEntry = {type: 'sleep', seconds: instruction.sleep} as CommandQueueEntry; break;
     }
     if(instruction.color){ commandQueueEntry.color = instruction.color; }
@@ -40,34 +40,38 @@ export class InstructionService {
       };
     }
     console.error(commandQueueEntry);
-    if (commandQueueEntry.messageId === '200') {
+    if (commandQueueEntry.messageId === MessageIds.Measurement) {
       return {
         type: InstructionCategory.Measurement,
         fragment: commandQueueEntry.values[0],
         series: commandQueueEntry.values[1],
         unit: commandQueueEntry.values[2],
-        value: commandQueueEntry.values[3]
+        value: commandQueueEntry.values[3],
+        messageId: commandQueueEntry.messageId,
       };
     }
-
-    if (commandQueueEntry.messageId.startsWith("30")) {
+    
+    if (commandQueueEntry.messageId === MessageIds.Minor || 
+        commandQueueEntry.messageId === MessageIds.Major || 
+        commandQueueEntry.messageId === MessageIds.Critical) {
       return {
         type: InstructionCategory.Alarm,
-        alarmCategory: commandQueueEntry.values[0],
-        alarmType: commandQueueEntry.values[1],
-        alarmText: commandQueueEntry.values[2]
+        alarmType: commandQueueEntry.values[0],
+        alarmText: commandQueueEntry.values[1],
+        messageId: commandQueueEntry.messageId
       };
     }
 
-    if (commandQueueEntry.messageId === '400') {
+    if (commandQueueEntry.messageId === MessageIds.Basic) {
       return {
         type: InstructionCategory.BasicEvent,
         eventCategory: commandQueueEntry[0],
         eventType: commandQueueEntry.values[1],
-        eventText: commandQueueEntry.values[2]
+        eventText: commandQueueEntry.values[2],
+        messageId: commandQueueEntry.messageId
       };
     }
-
+/*
     if (commandQueueEntry.messageId === '401' || commandQueueEntry.messageId === '402') {
       return {
         type: InstructionCategory.LocationUpdateEvent,
@@ -78,8 +82,9 @@ export class InstructionService {
         longitude: commandQueueEntry.values[4],
         altitude: commandQueueEntry.values[5],
         accuracy: commandQueueEntry.values[6],
+        messageId: commandQueueEntry.messageId,
       };
-    }
+    }*/
   }
 
 

@@ -10,7 +10,7 @@ export class SmartRESTService {
 constructor() { }
 
 smartRESTTemplateToCommandQueueEntry(smartRestEntry: any, smartRESTTemplate: SmartRest): CommandQueueEntry {
-  let commandQueueEntry : CommandQueueEntry = {
+  let commandQueueEntry: CommandQueueEntry = {
     messageId: '',
     templateId: '',
     values: [],

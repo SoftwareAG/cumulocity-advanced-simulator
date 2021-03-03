@@ -46,8 +46,8 @@
                       [(ngModel)]="instructionValue[entry.name]"
                     >
                       <option
-                        *ngFor="let category of entry.category"
-                        [value]="category.code"
+                        *ngFor="let category of entry.options"
+                        [value]="category.id"
                       >
                         {{ category.name }}
                       </option>

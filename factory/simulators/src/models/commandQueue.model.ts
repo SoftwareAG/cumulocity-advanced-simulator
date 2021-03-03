@@ -1,6 +1,6 @@
 
 export interface CommandQueueEntry {
-    messageId: MessageIds,
+    messageId: MessageIds | string,
     type: 'sleep' | 'measurement' | 'builtin' | 'message',
     values?: string[],
     seconds?: number,
