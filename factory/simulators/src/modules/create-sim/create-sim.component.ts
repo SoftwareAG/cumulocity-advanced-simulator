@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AlarmService } from "@c8y/ngx-components/api";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
@@ -14,6 +14,8 @@ import { isEqual } from "lodash";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
+  readyToStartSimulator = false;
+  warning: {message: string, title: string};
   allInstructionsSeries = [];
   alarmSeries = [];
   smartRestConfig = [];
@@ -34,6 +36,7 @@ export class CreateSimComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
     private alarmService: AlarmsService,
@@ -44,7 +47,22 @@ export class CreateSimComponent implements OnInit {
   getCurrentValue(event) {
     this.editedValue = event;
   }
-
+  invalidSimulator = false;
+  checkIfAtLeastOneSleepIsSet(){
+    for(let entry of this.commandQueue){
+      if(entry.seconds && +entry.seconds >= 5){
+        return;
+      }
+    }
+    this.warning = { 
+      title: 'Invalid Simulator!', 
+      message: 'You need at least a 5 seconds sleep somewhere in the Instruction Queue.'
+    };
+    this.invalidSimulator = true;
+  }
+  changeRouteLastSite() {
+    this.router.navigate(['/']);
+  }
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
@@ -93,6 +111,7 @@ export class CreateSimComponent implements OnInit {
       });
       console.log(this.smartRestConfig);
     });
+    this.checkIfAtLeastOneSleepIsSet();
   }
 
   updateViewState(val) {

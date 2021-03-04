@@ -50,9 +50,15 @@ export class EditInstructionComponent implements OnInit {
   addOrUpdateInstruction(index: number) {
     let instructionValue: Instruction | Instruction2 = {};
     for(const entry of this.allForms[index]){
-      if (entry.required === true && !this.instructionValue[entry.name]){
+      if (!entry.hidden && entry.required === true && !this.instructionValue[entry.name]){
         this.alertService.add({
-          text: `Not all required fields are filled.`,
+          text: `Not all the required fields are filled.`,
+          type: "danger",
+        });
+        return;
+      } else if (+entry.minimum > this.instructionValue[entry.name]) {
+        this.alertService.add({
+          text: `For ${entry.name} you need a value greater than or equal to ${entry.minimum}.`,
           type: "danger",
         });
         return;

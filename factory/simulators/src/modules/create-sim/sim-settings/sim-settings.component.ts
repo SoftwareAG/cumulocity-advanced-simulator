@@ -35,7 +35,7 @@ import { SmartRESTService } from "@services/smartREST.service";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
-  styleUrls: ["./sim-settings.component.scss"],
+  styleUrls: ["./sim-settings.component.less"],
 })
 export class SimSettingsComponent implements OnInit {
   reducedColors = ColorsReduced;
@@ -141,10 +141,12 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-
+    
     const copyOfSmartRestInstruction = JSON.parse(
       JSON.stringify(this.smartRestInstruction)
-    );
+      );
+    console.error(copyOfSmartRestInstruction);
+    console.error(this.smartRestSelectedConfig.smartRestFields.customValues);
     
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
       if (key.endsWith(".value") || !(key.endsWith('value_max') || key.endsWith('value_min') || key === 'steps')) {

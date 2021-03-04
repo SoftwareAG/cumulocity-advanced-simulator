@@ -98,30 +98,33 @@
       <br>
       <ng-container *ngIf="smartRestSelectedConfig">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
-          <label>{{ entry.path }}</label>
-          <input
-            id="{{ entry.path }}"
-            [required]="true"
-            [(ngModel)]="smartRestInstruction[entry.path]"
-            class="form-control"
-          />
+          <div [hidden]="entry.path | isValue" [attr.defaultValue]="smartRestInstruction[entry.path] || smartRestInstruction[entry.path] = ''"> 
+            <label>{{ entry.path }}</label>
+            <input
+              id="{{ entry.path }}"
+              [required]="true"
+              [(ngModel)]="smartRestInstruction[entry.path]"
+              class="form-control"
+            />
+          </div>
           <ng-container *ngIf="entry.path | isValue">
-            <label>{{ entry.path +'.maximum'}}</label>
-            <input
-            id="{{ entry.path + '_max'}}"
-            [required]="true"
-            [(ngModel)]="smartRestInstruction[entry.path+'_max']"
-            class="form-control"
-            placeholder="(required)"
-          />
-          <label>{{ entry.path +'.minimum'}}</label>
-            <input
-            id="{{ entry.path + '_min'}}"
-            [required]="true"
-            [(ngModel)]="smartRestInstruction[entry.path+'_min']"
-            class="form-control"
-            placeholder="(required)"
-          />
+            <label>{{ entry.path +'.minimum'}}</label>
+              <input
+              id="{{ entry.path + '_min'}}"
+              [required]="true"
+              [(ngModel)]="smartRestInstruction[entry.path+'_min']"
+              class="form-control"
+              placeholder="minimum (required)"
+            />
+              <label>{{ entry.path +'.maximum'}}</label>
+              <input
+              id="{{ entry.path + '_max'}}"
+              [required]="true"
+              [(ngModel)]="smartRestInstruction[entry.path+'_max']"
+              class="form-control"
+              placeholder="maximum (required)"
+            />
+            <br>
           </ng-container>
          
         </div>

@@ -8,8 +8,8 @@
   [colors]="lineChartColors"
   [chartType]="lineChartType"
   ></canvas>
-  <button type="button" (click)="toggleAlarms();" class="btn btn-danger">Show Alarms</button>
-  <button type="button" (click)="toggleEvents();" class="btn btn-warning">Show Events</button>
-  <button type="button" (click)="toggleSleeps();" class="btn btn-default">Show Sleep</button>
+  <button type="button" (click)="toggleAlarms();" *ngIf="alarmLines.length" class="btn btn-danger">Show Alarms</button>
+  <button type="button" (click)="toggleEvents();" *ngIf="eventLines.length" class="btn btn-warning">Show Events</button>
+  <button type="button" (click)="toggleSleeps();" *ngIf="sleepLines.length" class="btn btn-default">Show Sleep</button>
 
 </div>

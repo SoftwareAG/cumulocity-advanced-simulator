@@ -11,6 +11,9 @@
       ],
       "@modules/*": [
         "./src/modules/*"
+      ],
+      "@directives/*": [
+        "./src/directives/*"
       ]
     },
     "outDir": "./dist/out-tsc",

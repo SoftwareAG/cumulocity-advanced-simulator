@@ -2,7 +2,7 @@
 export interface CommandQueueEntry {
     messageId?: MessageIds | string,
     type: CommandQueueType,
-    values?: string[],
+    values?: string[] | string,
     seconds?: number,
     templateId?: string,
     color?: string

@@ -1,12 +1,16 @@
+import { MessageIds } from "./commandQueue.model";
 import { InstructionCategory } from "./instruction.model";
 
 export interface InputField {
   name: string;
+  minimum?: number;
   placeholder?: string;
   required: boolean;
   label?: string;
   type: 'select' | 'textField';
   options?: MessageId[];
+  defaultValue?: string | number;
+  hidden?: boolean;
 }
 
 export interface MessageId {
@@ -24,6 +28,13 @@ export const DefaultConfig: InstructionCategory[] = [
 
 
 export const MeasurementsForm: InputField[] = [
+  {
+    name: "messageId",
+    required: true,
+    type: 'textField',
+    hidden: true,
+    defaultValue: MessageIds.Measurement
+  },
   {
     name: "fragment",
     label: "Fragment:",
@@ -187,6 +198,7 @@ export const SleepForm: InputField[] = [
     placeholder: "Sleep (in Seconds)",
     required: true,
     type: "textField",
+    minimum: 5
   }
 ];
 

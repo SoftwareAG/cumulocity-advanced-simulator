@@ -22,7 +22,8 @@ export class ShowInstructionComponent implements OnInit {
   showBtns = false;
   measurement: EditedMeasurement;
   constructor(
-    private service: UpdateInstructionsService
+    private service: UpdateInstructionsService,
+    private simulatorervice: SimulatorsServiceService
   ) { }
 
   ngOnInit() {
@@ -33,7 +34,10 @@ export class ShowInstructionComponent implements OnInit {
     const pos = this.commandQueue.findIndex((entry) => entry === item);
     this.commandQueue.splice(pos, 1);
     this.currentCommandQueue.emit(this.commandQueue);
-    // TODO: Delete entry from managed object
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.simulatorervice.updateSimulatorManagedObject(this.mo).then((res) => {
+      console.info('deleted entry');
+    });
   }
 
   updateCurrentValue(value) {
