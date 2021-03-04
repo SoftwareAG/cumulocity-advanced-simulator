@@ -14,7 +14,7 @@ import {
   SeriesAlarmsForm,
   SeriesBasicEventsForm,
   SeriesEventsForm,
-  SeriesSleepForm
+  SeriesSleepForm,
 } from "@models/inputFields.const";
 import {
   AlarmInstruction,
@@ -141,19 +141,23 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-    
     const copyOfSmartRestInstruction = JSON.parse(
       JSON.stringify(this.smartRestInstruction)
-      );
+    );
     console.error(copyOfSmartRestInstruction);
     console.error(this.smartRestSelectedConfig.smartRestFields.customValues);
-    
+
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
-      if (key.endsWith(".value") || !(key.endsWith('value_max') || key.endsWith('value_min') || key === 'steps')) {
+      if (
+        key.endsWith(".value") ||
+        !(
+          key.endsWith("value_max") ||
+          key.endsWith("value_min") ||
+          key === "steps"
+        )
+      ) {
         this.smartRestArr.push({ [key]: { value: value } });
-      } 
-      
-      
+      }
     });
     console.log(this.smartRestArr);
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
@@ -167,7 +171,6 @@ export class SimSettingsComponent implements OnInit {
       if (found && key.endsWith("_min")) {
         found[Object.keys(found)[0]].minValue = value;
       }
-
     });
     const steps = this.smartRestInstruction["steps"];
     this.smartRestArr.forEach((entry) => {
@@ -176,7 +179,9 @@ export class SimSettingsComponent implements OnInit {
     });
 
     this.smartRestArr.forEach((item) =>
-      this.smartRestInstructionsArray.push(Object.values(item)[0] as SmartRestInstruction)
+      this.smartRestInstructionsArray.push(
+        Object.values(item)[0] as SmartRestInstruction
+      )
     );
 
     console.log(this.smartRestArr);
@@ -185,10 +190,15 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestSelectedConfig
     );
     this.commandQueue.push(...cmdQ);
-    Object.entries(this.smartRestInstruction).forEach(([key, value]) => {this.smartRestInstruction[key] = ""});
-    this.smartRESTService.resetCommandQueueArray();
-    this.smartRestArr = [];
-    this.smartRestInstructionsArray = [];
+    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+      Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
+        this.smartRestInstruction[key] = "";
+      });
+      console.log(this.mo.c8y_DeviceSimulator.commandQueue);
+      this.smartRESTService.resetCommandQueueArray();
+      this.smartRestArr = [];
+      this.smartRestInstructionsArray = [];
+    });
   }
-
 }
