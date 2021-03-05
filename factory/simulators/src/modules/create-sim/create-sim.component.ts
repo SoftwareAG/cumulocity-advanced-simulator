@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AlarmService } from "@c8y/ngx-components/api";
+import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
 import { MeasurementsService } from "@services/measurements.service";
@@ -76,11 +76,12 @@ export class CreateSimComponent implements OnInit {
     });
 
     this.simSettings.fetchAllSeries(this.mo).then(
-      (res) =>
+      (res) => {
         (this.allInstructionsSeries = res.map((entry) => ({
           ...entry,
           active: false,
         })))
+      }
     );
 
     const filter = {
@@ -90,26 +91,34 @@ export class CreateSimComponent implements OnInit {
     };
     this.simService.getFilteredManagedObjects(filter).then((result) => {
       const temp = [];
+      const ids = [];
       result.map((value) => {
         temp.push({
           values:
             value.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate
               .requestTemplates,
-          templateId: value.name,
+          templateId: value.id,
         });
       });
 
+      const arrayOfPromises = [];
       temp.forEach((entry) => {
-        const template = entry.templateId;
-        const smartRestValuesArray = entry.values;
-        smartRestValuesArray.forEach((smartRestEntry) =>
-          this.smartRestConfig.push({
-            smartRestFields: smartRestEntry,
-            templateId: template,
-          })
-        );
+        const externalId = entry.templateId;
+        arrayOfPromises.push(this.simService.fetchExternalIds(externalId));
       });
-      console.log(this.smartRestConfig);
+      Promise.all(arrayOfPromises).then((result) => {
+        temp.forEach((entry, index) => entry.templateId = result[index].data[0].externalId);
+        temp.forEach((entry) => {
+          const template = entry.templateId;
+          const smartRestValuesArray = entry.values;
+          smartRestValuesArray.forEach((smartRestEntry) =>
+            this.smartRestConfig.push({
+              smartRestFields: smartRestEntry,
+              templateId: template,
+            })
+          );
+        });
+      });     
     });
     this.checkIfAtLeastOneSleepIsSet();
   }

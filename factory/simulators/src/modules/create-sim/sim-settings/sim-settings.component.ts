@@ -32,6 +32,7 @@ import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
 import { EventsService } from "@services/events.service";
 import { SmartRESTService } from "@services/smartREST.service";
+import { SimpleChanges } from "@angular/core";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -55,9 +56,12 @@ export class SimSettingsComponent implements OnInit {
   selectedSeries: SeriesInstruction;
   templateCtx: { item: SeriesInstruction };
   isSmartRestSelected = false;
+ 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
+
   @Input() smartRestConfig;
+
   smartRestSelectedConfig;
   smartRestInstructionsArray: SmartRestInstruction[] = [];
 
@@ -159,9 +163,7 @@ export class SimSettingsComponent implements OnInit {
         this.smartRestArr.push({ [key]: { value: value } });
       }
     });
-    console.log(this.smartRestArr);
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
-      console.log(key);
       const found = this.smartRestArr.find((entry) =>
         key.includes(Object.keys(entry)[0])
       );
@@ -184,7 +186,6 @@ export class SimSettingsComponent implements OnInit {
       )
     );
 
-    console.log(this.smartRestArr);
     const cmdQ = this.smartRESTService.generateSmartRestRequest(
       this.smartRestInstructionsArray,
       this.smartRestSelectedConfig

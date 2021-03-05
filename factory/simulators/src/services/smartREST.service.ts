@@ -13,6 +13,7 @@ import { HelperService } from "./helper.service";
 export class SmartRESTService {
   constructor(private helperService: HelperService) {}
   values = [];
+  stringValues: string[] = [];
   commandQueueArray = [];
 
   smartRESTTemplateToCommandQueueEntry(
@@ -50,7 +51,7 @@ export class SmartRESTService {
           false
         )
         .map((temp, index) => ({ temp, index }))) {
-        vals.push(temp);
+        vals.push(temp.toString());
       }} else {
         vals.push(...this.fillArray(instruction.value, instruction.steps));
       }

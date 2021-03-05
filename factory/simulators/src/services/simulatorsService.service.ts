@@ -1,14 +1,15 @@
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { IManagedObject, InventoryService } from "@c8y/client";
+import { IdentityService, IManagedObject, InventoryService } from "@c8y/client";
 import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
-// import { InventoryService } from '@c8y/ngx-components/api';
 import { ManagedObjectService } from "./ManagedObject.service";
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: "root",
 })
 export class SimulatorsServiceService extends ManagedObjectService {
-  constructor(private inventoryService: InventoryService) {
+  constructor(private inventoryService: InventoryService, private http: HttpClient, private identityService: IdentityService) {
     super(inventoryService);
   }
 
@@ -18,6 +19,10 @@ export class SimulatorsServiceService extends ManagedObjectService {
       pageSize: 1000,
     };
     return this.getFilterInventoryResult(deviceFilter);
+  }
+
+  fetchExternalIds(externalId: string) {
+    return this.identityService.list(externalId);
   }
 
   createCustomSimulator(obj: Partial<CustomSimulator>) {
