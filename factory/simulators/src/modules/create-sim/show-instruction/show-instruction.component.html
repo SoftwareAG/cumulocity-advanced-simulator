@@ -20,6 +20,7 @@
 </span>
 <span
 *ngIf="item.type === 'message'">&nbsp;SmartREST Template
+&nbsp;<em>{{item.templateId}}</em>&nbsp; /
 &nbsp;<em>{{item.messageId}}</em>&nbsp;
 <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
 </span>

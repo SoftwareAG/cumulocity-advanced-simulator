@@ -23,7 +23,8 @@ export const DefaultConfig: InstructionCategory[] = [
   InstructionCategory.Alarm,
   InstructionCategory.BasicEvent,
   InstructionCategory.LocationUpdateEvent,
-  InstructionCategory.Sleep
+  InstructionCategory.Sleep,
+  InstructionCategory.SmartRest
 ];
 
 
@@ -203,4 +204,5 @@ export const SleepForm: InputField[] = [
 ];
 
 export const SeriesSleepForm: InputField[] = [...SleepForm];
+
 

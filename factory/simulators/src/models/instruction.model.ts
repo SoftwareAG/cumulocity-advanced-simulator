@@ -16,7 +16,7 @@ export type Instruction =
   | BasicEventInstruction
   | SleepInstruction
   | EventInstruction
-  | SmartRestInstruction;
+  | SmartInstruction;
 export type SeriesInstruction =
   | SeriesMeasurementInstruction
   | AlarmInstruction
@@ -37,6 +37,11 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   maxValue: number | string;
   steps: number | string;
   sleep?: number | string;
+}
+
+export interface SmartInstruction extends Instruction2 {
+  type: InstructionCategory.SmartRest;
+  [key: string]: string;
 }
 
 export interface SmartRestInstruction extends Instruction2 {

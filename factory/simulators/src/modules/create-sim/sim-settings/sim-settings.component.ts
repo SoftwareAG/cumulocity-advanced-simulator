@@ -33,6 +33,8 @@ import { AlarmsService } from "@services/alarms.service";
 import { EventsService } from "@services/events.service";
 import { SmartRESTService } from "@services/smartREST.service";
 import { SimpleChanges } from "@angular/core";
+import { UpdateInstructionsService } from "@services/updateInstructions.service";
+import { Alert, AlertService } from "@c8y/ngx-components";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -87,7 +89,8 @@ export class SimSettingsComponent implements OnInit {
     private measurementsService: MeasurementsService,
     private alarmService: AlarmsService,
     private eventsService: EventsService,
-    private smartRESTService: SmartRESTService
+    private smartRESTService: SmartRESTService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {}
@@ -145,11 +148,9 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-    const copyOfSmartRestInstruction = JSON.parse(
+    let copyOfSmartRestInstruction = JSON.parse(
       JSON.stringify(this.smartRestInstruction)
     );
-    console.error(copyOfSmartRestInstruction);
-    console.error(this.smartRestSelectedConfig.smartRestFields.customValues);
 
     Object.entries(copyOfSmartRestInstruction).forEach(([key, value]) => {
       if (
@@ -174,11 +175,13 @@ export class SimSettingsComponent implements OnInit {
         found[Object.keys(found)[0]].minValue = value;
       }
     });
+    if (this.smartRestArr.length) {
     const steps = this.smartRestInstruction["steps"];
     this.smartRestArr.forEach((entry) => {
       entry[Object.keys(entry)[0]].steps = steps;
       entry[Object.keys(entry)[0]].type = InstructionCategory.SmartRest;
     });
+  }
 
     this.smartRestArr.forEach((item) =>
       this.smartRestInstructionsArray.push(
@@ -193,12 +196,21 @@ export class SimSettingsComponent implements OnInit {
     this.commandQueue.push(...cmdQ);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+        const alert = {
+          text: `Smart REST instructions created successfully.`,
+          type: "success",
+        } as Alert;
+        this.alertService.add(alert);
+      
       Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
         this.smartRestInstruction[key] = "";
       });
-      console.log(this.mo.c8y_DeviceSimulator.commandQueue);
+      console.log(this.smartRestInstruction);
       this.smartRESTService.resetCommandQueueArray();
       this.smartRestArr = [];
+      this.smartRestSelectedConfig = "";
+      Object.keys(this.smartRestInstruction).forEach((key) => delete this.smartRestInstruction[key]);
+      this.smartRestInstruction = {};
       this.smartRestInstructionsArray = [];
     });
   }

@@ -1,43 +1,122 @@
-import { Injectable } from '@angular/core';
-import { CommandQueueEntry, CommandQueueType, MessageIds } from '@models/commandQueue.model';
-import { Instruction, InstructionCategory } from '@models/instruction.model';
+import { Injectable } from "@angular/core";
+import {
+  CommandQueueEntry,
+  CommandQueueType,
+  MessageIds,
+} from "@models/commandQueue.model";
+import { InputField } from "@models/inputFields.const";
+import {
+  Instruction,
+  Instruction2,
+  InstructionCategory,
+  SmartInstruction,
+} from "@models/instruction.model";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class InstructionService {
+  constructor() {}
+  SmartRestArray = [];
 
-  constructor() { } 
-
-  private commandQueueEntryTemplate(messageId: string, values, type: CommandQueueType=CommandQueueType.builtin, ): CommandQueueEntry {
+  private commandQueueEntryTemplate(
+    messageId: string,
+    values,
+    type: CommandQueueType = CommandQueueType.builtin
+  ): CommandQueueEntry {
     return {
       messageId: messageId,
       type: type,
-      values: values
+      values: values,
     };
   }
 
-
   instructionToCommand(instruction: Instruction): CommandQueueEntry {
     let commandQueueEntry;
-    switch(instruction.type){
-      case 'Measurement': commandQueueEntry = this.commandQueueEntryTemplate(MessageIds.Measurement, [instruction.fragment, instruction.series, instruction.unit, instruction.value]); break;
-      case 'BasicEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.eventType, instruction.eventText]); break;
-      case 'Alarm': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.alarmType, instruction.alarmText]); break;
-      case 'LocationUpdateEvent': commandQueueEntry = this.commandQueueEntryTemplate(instruction.messageId, [instruction.eventType, instruction.eventText]); break;
-      case 'Sleep': commandQueueEntry = { type: 'sleep', seconds: instruction.sleep } as CommandQueueEntry; break;
-      case 'SmartRest': commandQueueEntry = this.commandQueueEntryTemplate('200', [instruction.value], CommandQueueType.message); break;
+    switch (instruction.type) {
+      case "Measurement":
+        commandQueueEntry = this.commandQueueEntryTemplate(
+          MessageIds.Measurement,
+          [
+            instruction.fragment,
+            instruction.series,
+            instruction.unit,
+            instruction.value,
+          ]
+        );
+        break;
+      case "BasicEvent":
+        commandQueueEntry = this.commandQueueEntryTemplate(
+          instruction.messageId,
+          [instruction.eventType, instruction.eventText]
+        );
+        break;
+      case "Alarm":
+        commandQueueEntry = this.commandQueueEntryTemplate(
+          instruction.messageId,
+          [instruction.alarmType, instruction.alarmText]
+        );
+        break;
+      case "LocationUpdateEvent":
+        commandQueueEntry = this.commandQueueEntryTemplate(
+          instruction.messageId,
+          [instruction.eventType, instruction.eventText]
+        );
+        break;
+      case "Sleep":
+        commandQueueEntry = {
+          type: "sleep",
+          seconds: instruction.sleep,
+        } as CommandQueueEntry;
+        break;
+      case 'SmartRest': 
+      commandQueueEntry = this.smartRestInstructionToCommand(instruction)
+      break;
     }
-    if(instruction.color){ commandQueueEntry.color = instruction.color; }
+    if (instruction.color) {
+      commandQueueEntry.color = instruction.color;
+    }
     return commandQueueEntry;
   }
 
-  
-  commandQueueEntryToInstruction(commandQueueEntry: CommandQueueEntry): Instruction {
+  smartRestInstructionToCommand(
+    instruction: SmartInstruction
+  ): CommandQueueEntry {
+    let customValuesFromInstruction = Object.keys(instruction).filter(
+      (key) => key !== "type"
+    );
+    // Parse 'path' from each of the customValues of this.smartRestArray entries
+    let customPaths = []; 
+    this.SmartRestArray.forEach((entry) => {
+      let arr = [];
+      entry.smartRestFields.customValues.forEach((customValue) => {
+        arr.push(customValue.path);
+      });
+      customPaths.push(arr);
+    });
+    // Find index by comparing custompath entries with keys of the SmartInstruction
+    const filteredIndex = customPaths.findIndex((customPathsForEntry) => this.compareArrays2(customValuesFromInstruction, customPathsForEntry) === true);
+    const messageId = this.SmartRestArray[filteredIndex].smartRestFields.msgId;
+    const templateId = this.SmartRestArray[filteredIndex].templateId;
+    return {
+      type: CommandQueueType.message,
+      templateId: templateId,
+      messageId: messageId,
+      values: Object.values(instruction).filter((value) => value !== "SmartRest"),
+    };
+  }
+
+  compareArrays2(a1, a2) {
+    return JSON.stringify(a1) === JSON.stringify(a2);
+  }
+
+  commandQueueEntryToInstruction(
+    commandQueueEntry: CommandQueueEntry
+  ): Instruction {
     if (commandQueueEntry.type === CommandQueueType.sleep) {
       return {
         type: InstructionCategory.Sleep,
-        sleep: commandQueueEntry.seconds
+        sleep: commandQueueEntry.seconds,
       };
     }
     console.error(commandQueueEntry);
@@ -51,15 +130,17 @@ export class InstructionService {
         messageId: commandQueueEntry.messageId,
       };
     }
-    
-    if (commandQueueEntry.messageId === MessageIds.Minor || 
-        commandQueueEntry.messageId === MessageIds.Major || 
-        commandQueueEntry.messageId === MessageIds.Critical) {
+
+    if (
+      commandQueueEntry.messageId === MessageIds.Minor ||
+      commandQueueEntry.messageId === MessageIds.Major ||
+      commandQueueEntry.messageId === MessageIds.Critical
+    ) {
       return {
         type: InstructionCategory.Alarm,
         alarmType: commandQueueEntry.values[0],
         alarmText: commandQueueEntry.values[1],
-        messageId: commandQueueEntry.messageId
+        messageId: commandQueueEntry.messageId,
       };
     }
 
@@ -69,10 +150,24 @@ export class InstructionService {
         eventCategory: commandQueueEntry[0],
         eventType: commandQueueEntry.values[1],
         eventText: commandQueueEntry.values[2],
-        messageId: commandQueueEntry.messageId
+        messageId: commandQueueEntry.messageId,
       };
     }
-/*
+
+    if (commandQueueEntry.type === CommandQueueType.message) {
+      console.log(commandQueueEntry);
+      let smartInstruction = { type: InstructionCategory.SmartRest };
+      const instructionEntryFields = this.commandQueueEntryToSmartRest(
+        commandQueueEntry
+      );
+      console.log(instructionEntryFields);
+      instructionEntryFields.forEach((entryField, index) => {
+        smartInstruction[entryField] = commandQueueEntry.values[index];
+      });
+      console.log(smartInstruction);
+      return smartInstruction as SmartInstruction;
+    }
+    /*
     if (commandQueueEntry.messageId === '401' || commandQueueEntry.messageId === '402') {
       return {
         type: InstructionCategory.LocationUpdateEvent,
@@ -88,6 +183,42 @@ export class InstructionService {
     }*/
   }
 
+  // Returns array containing entry fields (keys) of smart instruction
+  commandQueueEntryToSmartRest(commandQueueEntry: CommandQueueEntry): string[] {
+    let entryFields: string[] = [];
+    const filtered = this.SmartRestArray.filter(
+      (entry) =>
+        entry.smartRestFields.msgId === commandQueueEntry.messageId &&
+        entry.templateId === commandQueueEntry.templateId
+    )[0];
+    if (filtered) {
+      filtered.smartRestFields.customValues.forEach((customValue) => {
+        entryFields.push(customValue.path);
+      });
+    }
+    console.log(entryFields);
+    return entryFields;
+  }
 
+  createSmartRestDynamicForm(instructionValue) {
+    let smartRestForm: InputField[] = [];
 
+    Object.entries(instructionValue).forEach(([key, value]) => {
+      let inputField: InputField = {
+        name: "",
+        placeholder: "(required)",
+        label: "",
+        type: "textField",
+        required: true,
+      };
+      inputField.name = key;
+      inputField.placeholder = "(required)";
+      inputField.label = key;
+      inputField.type = "textField";
+      inputField.defaultValue = value as string;
+      smartRestForm.push(inputField);
+    });
+    console.log(smartRestForm);
+    return smartRestForm;
+  }
 }

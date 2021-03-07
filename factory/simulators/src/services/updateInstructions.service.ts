@@ -11,10 +11,12 @@ export class UpdateInstructionsService {
   private addInstructionOrSleepObserver = new BehaviorSubject<boolean>(false);
   private editView = new BehaviorSubject<boolean>(false);
   private deleteMeasurement = new BehaviorSubject(null);
+  private smartRestMeasurement = new BehaviorSubject(null);
   castMeasurement = this.editedMsmtObserver.asObservable();  
   castInstructionsOrSleep = this.addInstructionOrSleepObserver.asObservable();  
   castEditView = this.editView.asObservable();
   catDeleteMeasurement = this.deleteMeasurement.asObservable();
+  castSmartRestMeasurement = this.smartRestMeasurement.asObservable();
 
   constructor() {}
 
@@ -28,6 +30,10 @@ export class UpdateInstructionsService {
 
   setInstructionsView(val: boolean) {
     this.addInstructionOrSleepObserver.next(val);
+  }
+
+  setSmartRestMeasurement(val) {
+    this.smartRestMeasurement.next(val);
   }
 
   setEditView(val: boolean) {

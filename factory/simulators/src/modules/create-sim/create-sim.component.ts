@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
+import { InstructionService } from "@services/Instruction.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
@@ -41,7 +42,10 @@ export class CreateSimComponent implements OnInit {
     private measurementsService: MeasurementsService,
     private alarmService: AlarmsService,
     private simService: SimulatorsServiceService,
-    private instructionsService: UpdateInstructionsService
+    private updateInstructionsService: UpdateInstructionsService,
+    private instructionsService: InstructionService,
+    
+
   ) {}
 
   getCurrentValue(event) {
@@ -70,7 +74,7 @@ export class CreateSimComponent implements OnInit {
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
 
-    this.instructionsService.catDeleteMeasurement.subscribe((data) => {
+    this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
       this.deletedMeasurement = data;
       this.deleteSeries(data);
     });
@@ -118,6 +122,7 @@ export class CreateSimComponent implements OnInit {
             })
           );
         });
+        this.instructionsService.SmartRestArray = this.smartRestConfig;
       });     
     });
     this.checkIfAtLeastOneSleepIsSet();

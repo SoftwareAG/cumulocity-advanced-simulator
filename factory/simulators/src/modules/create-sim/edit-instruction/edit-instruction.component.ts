@@ -7,12 +7,13 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { EditedMeasurement } from "src/models/editedMeasurement.model";
 import { ActivatedRoute } from "@angular/router";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm, DefaultConfig } from "../../../models/inputFields.const";
+import { MeasurementsForm, AlarmsForm, EventsForm, BasicEventsForm, SleepForm, DefaultConfig, InputField } from "../../../models/inputFields.const";
 import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
 import { Instruction, Instruction2, InstructionCategory } from "@models/instruction.model";
 import { CommandQueueEntry } from "@models/commandQueue.model";
+import { UpdateInstructionsService } from "@services/updateInstructions.service";
 
 @Component({
   selector: "app-edit-instruction",
@@ -24,10 +25,10 @@ export class EditInstructionComponent implements OnInit {
   @Input() commandQueue: CommandQueueEntry[];
   @Input() displayEditView = false;
   @Input() displayAddView = false;
+  smartRestForm: InputField[] = [];
   selectedEditView: string;
   defaultConfig: InstructionCategory[] = DefaultConfig;
-  allForms = [MeasurementsForm, AlarmsForm, BasicEventsForm, EventsForm, SleepForm ];
-
+  allForms = [MeasurementsForm, AlarmsForm, BasicEventsForm, EventsForm, SleepForm];
   commandQueueEntry: CommandQueueEntry | {};
   instructionValue: Instruction | Instruction2 = {};
   commandQueueEntryIndex: number;
@@ -39,11 +40,12 @@ export class EditInstructionComponent implements OnInit {
     private simulatorervice: SimulatorsServiceService,
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
-    private instructionService: InstructionService
+    private instructionService: InstructionService,
+    private updateInstructionService: UpdateInstructionsService
   ) { }
 
   ngOnInit() {
-    
+  
   }
 
 
@@ -68,6 +70,7 @@ export class EditInstructionComponent implements OnInit {
     instructionValue.type = this.defaultConfig[index];
     console.info(this.allForms[index], index, instructionValue);
 
+    console.log(instructionValue);
     const commandQueueEntry = this.instructionService.instructionToCommand(instructionValue as Instruction);
     console.info(this.displayAddView, this.commandQueue, instructionValue, this.commandQueueEntryIndex);
     
@@ -105,10 +108,18 @@ export class EditInstructionComponent implements OnInit {
   @Input() set editedValue(value: CommandQueueEntry) {
     if (value) {
       this.commandQueueEntryIndex = this.commandQueue.findIndex((entry) => entry === value);
-      const instruction = this.instructionService.commandQueueEntryToInstruction(value);
+      const instruction: Instruction = this.instructionService.commandQueueEntryToInstruction(value);
       console.error('test!!', value, instruction);
       this.selectedEditView = instruction.type;
       this.instructionValue = instruction;
+      console.log(this.instructionValue);
+      if (this.instructionValue.type === InstructionCategory.SmartRest) {
+        if (this.allForms.length > this.defaultConfig.length) {
+          this.allForms.pop();
+        }
+        this.smartRestForm = this.instructionService.createSmartRestDynamicForm(this.instructionValue);
+        this.allForms.push(this.smartRestForm);
+      }
       this.displayAddView = false;
       this.displayEditView = true;
     }
@@ -123,8 +134,6 @@ export class EditInstructionComponent implements OnInit {
 
   onClearAllInstructions() {}
 
-
-  
   toEmit = false;
   edited: EditedMeasurement;
   data: any;

@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IManagedObject } from "@c8y/client";
-import { CommandQueueEntry } from '@models/commandQueue.model';
+import { CommandQueueEntry, CommandQueueType } from '@models/commandQueue.model';
 import { EditedMeasurement } from '@models/editedMeasurement.model';
+import { InputField } from '@models/inputFields.const';
+import { InstructionCategory, SmartInstruction } from '@models/instruction.model';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { UpdateInstructionsService } from '@services/updateInstructions.service';
@@ -44,7 +46,6 @@ export class ShowInstructionComponent implements OnInit {
     this.editedValue = value;
     this.currentValue.emit(value);
   }
-
 
   fetchAddInstructionsOrSleepView() {
     this.service.setInstructionsView(true);
