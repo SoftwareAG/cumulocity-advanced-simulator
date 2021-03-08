@@ -98,7 +98,7 @@
       <br>
       <ng-container *ngIf="smartRestSelectedConfig">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
-          <div [hidden]="entry.path | isValue" [attr.defaultValue]="smartRestInstruction[entry.path] || smartRestInstruction[entry.path] = ''"> 
+          <div [hidden]="entry | isValue" [attr.defaultValue]="smartRestInstruction[entry.path] || smartRestInstruction[entry.path] = ''"> 
             <label>{{ entry.path }}</label>
             <input
               id="{{ entry.path }}"
@@ -107,7 +107,7 @@
               class="form-control"
             />
           </div>
-          <ng-container *ngIf="entry.path | isValue">
+          <ng-container *ngIf="entry | isValue">
             <label>{{ entry.path +'.minimum'}}</label>
               <input
               id="{{ entry.path + '_min'}}"

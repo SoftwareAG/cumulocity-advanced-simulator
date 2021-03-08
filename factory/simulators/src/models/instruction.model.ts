@@ -45,8 +45,8 @@ export interface SmartInstruction extends Instruction2 {
 }
 
 export interface SmartRestInstruction extends Instruction2 {
-  minValue:string;
-  maxValue: string;
+  minValue?:string;
+  maxValue?: string;
   steps: string;
   value?: string;
   type: InstructionCategory.SmartRest;

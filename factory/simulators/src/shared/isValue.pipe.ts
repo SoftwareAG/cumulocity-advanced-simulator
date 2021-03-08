@@ -5,8 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class IsValuePipe implements PipeTransform {
 
-  transform(value: string): boolean {
-    return value.endsWith('.value');
+  transform(entry: {path: string, type: string, value: string}): boolean {
+    return entry.type === 'NUMBER';
   }
 
 }
