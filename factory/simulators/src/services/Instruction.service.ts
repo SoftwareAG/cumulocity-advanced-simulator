@@ -121,7 +121,6 @@ export class InstructionService {
         sleep: commandQueueEntry.seconds,
       };
     }
-    console.error(commandQueueEntry);
     if (commandQueueEntry.messageId === MessageIds.Measurement) {
       return {
         type: InstructionCategory.Measurement,
@@ -157,16 +156,13 @@ export class InstructionService {
     }
 
     if (commandQueueEntry.type === CommandQueueType.message) {
-      console.log(commandQueueEntry);
       let smartInstruction = { type: InstructionCategory.SmartRest };
       const instructionEntryFields = this.commandQueueEntryToSmartRest(
         commandQueueEntry
       );
-      console.log(instructionEntryFields);
       instructionEntryFields.forEach((entryField, index) => {
         smartInstruction[entryField] = commandQueueEntry.values[index+1];
       });
-      console.log(smartInstruction);
       return smartInstruction as SmartInstruction;
     }
     /*
@@ -198,7 +194,6 @@ export class InstructionService {
         entryFields.push(customValue.path);
       });
     }
-    console.log(entryFields);
     return entryFields;
   }
 
@@ -224,7 +219,6 @@ export class InstructionService {
       inputField.defaultValue = value as string;
       smartRestForm.push(inputField);
     });
-    console.log(smartRestForm);
     return smartRestForm;
   }
 }
