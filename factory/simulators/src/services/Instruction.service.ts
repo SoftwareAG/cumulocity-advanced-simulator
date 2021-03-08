@@ -98,11 +98,13 @@ export class InstructionService {
     const filteredIndex = customPaths.findIndex((customPathsForEntry) => this.compareArrays2(customValuesFromInstruction, customPathsForEntry) === true);
     const messageId = this.SmartRestArray[filteredIndex].smartRestFields.msgId;
     const templateId = this.SmartRestArray[filteredIndex].templateId;
+    const values: string[] =  [""];
+    values.push(...Object.values(instruction).filter((value) => value !== "SmartRest"));
     return {
       type: CommandQueueType.message,
       templateId: templateId,
       messageId: messageId,
-      values: Object.values(instruction).filter((value) => value !== "SmartRest"),
+      values: values,
     };
   }
 
@@ -162,7 +164,7 @@ export class InstructionService {
       );
       console.log(instructionEntryFields);
       instructionEntryFields.forEach((entryField, index) => {
-        smartInstruction[entryField] = commandQueueEntry.values[index];
+        smartInstruction[entryField] = commandQueueEntry.values[index+1];
       });
       console.log(smartInstruction);
       return smartInstruction as SmartInstruction;
@@ -210,7 +212,11 @@ export class InstructionService {
         label: "",
         type: "textField",
         required: true,
+        hidden: false
       };
+      if (key === 'type') {
+        inputField.hidden = true;
+      }
       inputField.name = key;
       inputField.placeholder = "(required)";
       inputField.label = key;

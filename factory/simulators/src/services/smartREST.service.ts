@@ -12,7 +12,7 @@ import { HelperService } from "./helper.service";
 })
 export class SmartRESTService {
   constructor(private helperService: HelperService) {}
-  values = [];
+  values: string[][] = [];
   stringValues: string[] = [];
   commandQueueArray = [];
 
@@ -61,8 +61,9 @@ export class SmartRESTService {
     for (let i = 0; i < this.transposeArray(this.values).length; i++) {
       let commandQueueEntry: CommandQueueEntry = {
         type: CommandQueueType.message,
+        values: [""]
       };
-      commandQueueEntry.values = this.transposeArray(this.values)[i];
+      commandQueueEntry.values.push(...this.transposeArray(this.values)[i]);
       commandQueueEntry.messageId = smartRESTTemplate.smartRestFields.msgId;
       commandQueueEntry.templateId = smartRESTTemplate.templateId;
       this.commandQueueArray.push(commandQueueEntry);
@@ -70,7 +71,7 @@ export class SmartRESTService {
     return this.commandQueueArray;
   }
 
-  transposeArray(arr) {
+  transposeArray(arr: string[][]): string[][] {
     // Get just the first row to iterate columns first
     return arr[0].map(function (col, c) {
       // For each column, iterate all rows
