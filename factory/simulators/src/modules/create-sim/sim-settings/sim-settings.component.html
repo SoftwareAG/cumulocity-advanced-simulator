@@ -93,7 +93,7 @@
 
       <div *ngIf="isSmartRestSelected">
       <select class="selectpicker" [ngModel]="smartRestSelectedConfig" (ngModelChange)="onChangeConfig($event)">
-        <option *ngFor="let first of smartRestConfig" [ngValue]="first">{{first.smartRestFields.msgId}}&nbsp;{{ first.smartRestFields.name }}</option>
+        <option *ngFor="let first of smartRestConfig" [ngValue]="first" selected>{{first.smartRestFields.msgId}}&nbsp;{{ first.smartRestFields.name }}</option>
       </select>
       <br>
       <ng-container *ngIf="smartRestSelectedConfig">

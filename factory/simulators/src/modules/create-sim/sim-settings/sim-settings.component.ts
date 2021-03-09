@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -73,6 +74,12 @@ export class SimSettingsComponent implements OnInit {
     this.selectedSeries = value;
     this.instructionValue = value;
     this.templateCtx = { item: this.selectedSeries };
+    if (this.selectedSeries.type === InstructionCategory.SmartRest) {
+      console.log(this.selectedSeries);
+      this.isSmartRestSelected = true;
+      this.smartRestSelectedConfig = this.selectedSeries.config;
+      this.smartRestInstruction = this.selectedSeries.instruction;
+    }
   }
 
   get series() {
@@ -119,6 +126,9 @@ export class SimSettingsComponent implements OnInit {
           this.instructionValue as EventInstruction
         );
         break;
+      case InstructionCategory.SmartRest:
+        console.log(this.smartRestSelectedConfig);
+        break;
     }
     this.simSettings.allSeries.push(this.instructionValue);
     this.generateRequest();
@@ -149,32 +159,43 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-    
-    this.smartRestInstructionsArray = this.convertToSmartRestModel(this.smartRestInstruction);
+    this.allInstructionsSeries = [];
+    this.smartRestInstructionsArray = this.convertToSmartRestModel(
+      this.smartRestInstruction
+    );
+    const combinedSmartInstruction = {
+      instruction: this.smartRestInstruction,
+      type: InstructionCategory.SmartRest,
+      config: this.smartRestSelectedConfig,
+    };
+    this.simSettings.allSeries.push(combinedSmartInstruction);
     const cmdQ = this.smartRESTService.generateSmartRestRequest(
       this.smartRestInstructionsArray,
       this.smartRestSelectedConfig
     );
+
+    this.mo.c8y_Series.push(...this.simSettings.allSeries);
     this.commandQueue.push(...cmdQ);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
-    const alert = {
-      text: `Smart REST instructions created successfully.`,
-      type: "success",
-    } as Alert;
-    this.alertService.add(alert);
-
-    Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
-      this.smartRestInstruction[key] = "";
-    });
-    this.smartRESTService.resetCommandQueueArray();
-    this.smartRestArr = [];
-    this.smartRestSelectedConfig = "";
-    Object.keys(this.smartRestInstruction).forEach(
-      (key) => delete this.smartRestInstruction[key]
-    );
-    this.smartRestInstruction = {};
-    this.smartRestInstructionsArray = [];
+      const alert = {
+        text: `Smart REST instructions created successfully.`,
+        type: "success",
+      } as Alert;
+      this.alertService.add(alert);
+      this.allInstructionsSeries = res.c8y_Series;
+      this.allSeriesEmitter.emit(this.allInstructionsSeries);
+      Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
+        this.smartRestInstruction[key] = "";
+      });
+      this.smartRESTService.resetCommandQueueArray();
+      this.smartRestArr = [];
+      this.smartRestSelectedConfig = "";
+      Object.keys(this.smartRestInstruction).forEach(
+        (key) => delete this.smartRestInstruction[key]
+      );
+      this.smartRestInstruction = {};
+      this.smartRestInstructionsArray = [];
     });
   }
 
@@ -184,23 +205,23 @@ export class SimSettingsComponent implements OnInit {
     const smartRestInstructionArray: SmartRestInstruction[] = [];
     this.smartRestSelectedConfig.smartRestFields.customValues.forEach(
       (customValue) => {
-        let obj : SmartRestInstruction = {
-          value: '',
-          steps: '',
-          type: InstructionCategory.SmartRest
+        let obj: SmartRestInstruction = {
+          value: "",
+          steps: "",
+          type: InstructionCategory.SmartRest,
         };
         Object.entries(smartRestData).forEach(([key, value]) => {
           if (key === customValue.path) {
             obj.value = value as string;
-          } else if (key === customValue.path+'_max') {
+          } else if (key === customValue.path + "_max") {
             obj.maxValue = value as string;
-          } else if (key === customValue.path+'_min') {
+          } else if (key === customValue.path + "_min") {
             obj.minValue = value as string;
-          } else if (key === 'steps') {
+          } else if (key === "steps") {
             obj.steps = value as string;
           }
         });
-        
+
         smartRestInstructionArray.push(obj as SmartRestInstruction);
       }
     );

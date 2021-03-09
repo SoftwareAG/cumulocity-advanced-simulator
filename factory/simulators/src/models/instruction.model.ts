@@ -22,7 +22,8 @@ export type SeriesInstruction =
   | AlarmInstruction
   | BasicEventInstruction
   | EventInstruction
-  | SleepInstruction;
+  | SleepInstruction
+  | SeriesSmartRestInstruction;
 
 export interface Empty {}
 
@@ -44,6 +45,17 @@ export interface SmartInstruction extends Instruction2 {
   [key: string]: string;
 }
 
+export interface SmartRestConfiguration {
+  method: string;
+  response: boolean;
+  msgId: string;
+  api: string;
+  byId: boolean;
+  externalIdType?: string;
+  mandatoryValues?: {path: string; type: string; value: string}[];
+  customValues: {path: string; type: string; value: string}[];
+  name?: string;
+}
 export interface SmartRestInstruction extends Instruction2 {
   minValue?:string;
   maxValue?: string;
@@ -51,6 +63,8 @@ export interface SmartRestInstruction extends Instruction2 {
   value?: string;
   type: InstructionCategory.SmartRest;
 }
+
+export interface SeriesSmartRestInstruction extends SmartInstruction {}
 
 export class SmartRestIns implements SmartRestInstruction {
   minValue: string;

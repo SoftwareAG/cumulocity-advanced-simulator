@@ -84,7 +84,8 @@ export class CreateSimComponent implements OnInit {
         (this.allInstructionsSeries = res.map((entry) => ({
           ...entry,
           active: false,
-        })))
+        })));
+        console.log(this.allInstructionsSeries);
       }
     );
 

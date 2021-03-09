@@ -39,6 +39,8 @@
             [mo]="mo"
             [header]="addedSeries"
             [series]="first"
+            [commandQueue]="commandQueue"
+            [smartRestConfig]="smartRestConfig"
             [isExpanded]="first.active"
           ></app-sim-settings>
         </div>
@@ -120,6 +122,10 @@
       >&nbsp; &nbsp; <em>{{ item.geoCoordinate.longitude }}</em
       >&nbsp; &nbsp; <em>{{ item.geoCoordinate.altitude }}</em
       >&nbsp; &nbsp; <em>{{ item.geoCoordinate.accuracy }}</em>
+    </ng-container>
+
+    <ng-container *ngIf="item.type === 'SmartRest'"
+      ><h4>SmartREST Series</h4>
     </ng-container>
     <button
       class="transparent"
