@@ -196,6 +196,7 @@ export class SimSettingsComponent implements OnInit {
       );
       this.smartRestInstruction = {};
       this.smartRestInstructionsArray = [];
+      this.allInstructionsSeries = [];
     });
   }
 

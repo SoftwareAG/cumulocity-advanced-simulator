@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Alert, AlertService } from "@c8y/ngx-components";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
@@ -16,7 +17,7 @@ import { isEqual } from "lodash";
 })
 export class CreateSimComponent implements OnInit {
   readyToStartSimulator = false;
-  warning: {message: string, title: string};
+  warning: { message: string; title: string };
   allInstructionsSeries = [];
   alarmSeries = [];
   smartRestConfig = [];
@@ -44,28 +45,28 @@ export class CreateSimComponent implements OnInit {
     private simService: SimulatorsServiceService,
     private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
-    
-
+    private alertService: AlertService
   ) {}
 
   getCurrentValue(event) {
     this.editedValue = event;
   }
   invalidSimulator = false;
-  checkIfAtLeastOneSleepIsSet(){
-    for(let entry of this.commandQueue){
-      if(entry.seconds && +entry.seconds >= 5){
+  checkIfAtLeastOneSleepIsSet() {
+    for (let entry of this.commandQueue) {
+      if (entry.seconds && +entry.seconds >= 5) {
         return;
       }
     }
-    this.warning = { 
-      title: 'Invalid Simulator!', 
-      message: 'You need at least a 5 seconds sleep somewhere in the Instruction Queue.'
+    this.warning = {
+      title: "Invalid Simulator!",
+      message:
+        "You need at least a 5 seconds sleep somewhere in the Instruction Queue.",
     };
     this.invalidSimulator = true;
   }
   changeRouteLastSite() {
-    this.router.navigate(['/']);
+    this.router.navigate(["/"]);
   }
   ngOnInit() {
     this.data = this.route.snapshot.data;
@@ -79,15 +80,13 @@ export class CreateSimComponent implements OnInit {
       this.deleteSeries(data);
     });
 
-    this.simSettings.fetchAllSeries(this.mo).then(
-      (res) => {
-        (this.allInstructionsSeries = res.map((entry) => ({
-          ...entry,
-          active: false,
-        })));
-        console.log(this.allInstructionsSeries);
-      }
-    );
+    this.simSettings.fetchAllSeries(this.mo).then((res) => {
+      this.allInstructionsSeries = res.map((entry) => ({
+        ...entry,
+        active: false,
+      }));
+      console.log(this.allInstructionsSeries);
+    });
 
     const filter = {
       withTotalPages: true,
@@ -112,7 +111,10 @@ export class CreateSimComponent implements OnInit {
         arrayOfPromises.push(this.simService.fetchExternalIds(externalId));
       });
       Promise.all(arrayOfPromises).then((result) => {
-        temp.forEach((entry, index) => entry.templateId = result[index].data[0].externalId);
+        temp.forEach(
+          (entry, index) =>
+            (entry.templateId = result[index].data[0].externalId)
+        );
         temp.forEach((entry) => {
           const template = entry.templateId;
           const smartRestValuesArray = entry.values;
@@ -124,7 +126,7 @@ export class CreateSimComponent implements OnInit {
           );
         });
         this.instructionsService.SmartRestArray = this.smartRestConfig;
-      });     
+      });
     });
     this.checkIfAtLeastOneSleepIsSet();
   }
@@ -135,11 +137,34 @@ export class CreateSimComponent implements OnInit {
   }
 
   createSinusWave() {
-    console.log('create sinuswave');
+    console.log("create sinuswave");
     for (let i = this.commandQueue.length - 1; i >= 0; i--) {
       this.commandQueue.push(this.commandQueue[i]);
     }
     this.simSettings.setCommandQueue(this.commandQueue);
+  }
+
+  delete(value) {
+    var index = this.allInstructionsSeries.indexOf(value);
+    if (index !== -1) {
+      this.allInstructionsSeries.splice(index, 1);
+    }
+    console.log(this.allInstructionsSeries);
+    this.mo.c8y_Series = this.allInstructionsSeries;
+    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+      const alert = {
+        text: `Instruction Series deleted successfully.`,
+        type: "success",
+      } as Alert;
+      this.alertService.add(alert);
+    }, (err) => {
+      const alert = {
+        text: `Instruction Series could not be deleted`,
+        type: "danger",
+      } as Alert;
+      this.alertService.add(alert);
+      
+    });
   }
 
   deleteSeries(val) {

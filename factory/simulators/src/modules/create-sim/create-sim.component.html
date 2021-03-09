@@ -36,6 +36,7 @@
       <ng-container>
         <div *ngFor="let first of allInstructionsSeries; let i = index">
           <app-sim-settings
+            [id]="'app-sim-settings_'+ i | toString"
             [mo]="mo"
             [header]="addedSeries"
             [series]="first"
@@ -127,6 +128,7 @@
     <ng-container *ngIf="item.type === 'SmartRest'"
       ><h4>SmartREST Series</h4>
     </ng-container>
+    <div style="flex-grow: 1; text-align: end;">
     <button
       class="transparent"
       aria-controls="collapseBasic"
@@ -134,6 +136,13 @@
     >
       <i c8yIcon="caret-down"></i>
     </button>
+    <button
+    class="transparent"
+    (click)="delete(item)"
+  >
+    <i c8yIcon="trash"></i>
+  </button>
+</div>
 
     <div
       id="collapseBasic"

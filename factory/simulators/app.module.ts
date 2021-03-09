@@ -28,6 +28,7 @@ import { SupportedOperationsComponent } from "@modules/supported-operations/supp
 import { CommandQueueStatisticsComponent } from "@modules/command-queue-statistics/command-queue-statistics.component";
 import { CustomOperationComponent } from "@modules/supported-operations/custom-operation/custom-operation.component";
 import { IsValuePipe } from "./src/shared/isValue.pipe";
+import { ToStringPipe } from "./src/shared/toString.pipe";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -83,7 +84,8 @@ const appRoutes: Routes = [
     ShowInstructionComponent,
     SupportedOperationsComponent,
     CustomOperationComponent,
-    IsValuePipe
+    IsValuePipe,
+    ToStringPipe
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -97,12 +99,8 @@ const appRoutes: Routes = [
     ShowInstructionComponent,
     SupportedOperationsComponent, 
     CustomOperationComponent,
-    // IsValuePipe
   ],
   providers: [ThemeService],
-  // providers: [
-  //   { provide: HOOK_NAVIGATOR_NODES, useClass: NavFactory, multi: true}
-  // ],
 
   bootstrap: [BootstrapComponent],
 })
