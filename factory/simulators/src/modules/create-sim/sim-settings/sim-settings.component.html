@@ -101,7 +101,7 @@
           <div [hidden]="entry | isValue" [attr.defaultValue]="smartRestInstruction[entry.path] || smartRestInstruction[entry.path] = ''"> 
             <label>{{ entry.path }}</label>
             <input
-              id="{{ entry.path }}"
+              id="{{id + entry.path }}"
               [required]="true"
               [(ngModel)]="smartRestInstruction[entry.path]"
               class="form-control"
@@ -110,7 +110,7 @@
           <ng-container *ngIf="entry | isValue">
             <label>{{ entry.path +'.minimum'}}</label>
               <input
-              id="{{ entry.path + '_min'}}"
+              id="{{ id + entry.path + '_min'}}"
               [required]="true"
               [(ngModel)]="smartRestInstruction[entry.path+'_min']"
               class="form-control"
@@ -118,7 +118,7 @@
             />
               <label>{{ entry.path +'.maximum'}}</label>
               <input
-              id="{{ entry.path + '_max'}}"
+              id="{{ id + entry.path + '_max'}}"
               [required]="true"
               [(ngModel)]="smartRestInstruction[entry.path+'_max']"
               class="form-control"
@@ -130,7 +130,7 @@
         </div>
         <label>{{ 'steps'}}</label>
         <input
-        id="{{ 'steps' }}"
+        id="{{ id + 'steps' }}"
         [required]="true"
         [(ngModel)]="smartRestInstruction['steps']"
         class="form-control"

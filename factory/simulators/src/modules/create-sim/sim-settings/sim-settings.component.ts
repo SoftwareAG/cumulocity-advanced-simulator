@@ -65,6 +65,7 @@ export class SimSettingsComponent implements OnInit {
   @Input() isExpanded: boolean;
 
   @Input() smartRestConfig;
+  @Input() id;
 
   smartRestSelectedConfig;
   smartRestInstructionsArray: SmartRestInstruction[] = [];
