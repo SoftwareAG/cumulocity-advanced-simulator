@@ -29,12 +29,6 @@ export class CustomTabFactory implements TabFactory {
                     icon: 'gamepad',
                     path: `createSim/${id}/operations`,
                     priority: 99
-                },
-                {
-                    label: 'Alarms',
-                    icon: 'c8y-icon c8y-icon-alert-idle',
-                    path: `createSim/${id}/alarms`,
-                    priority: 98
                 }
             );
         }

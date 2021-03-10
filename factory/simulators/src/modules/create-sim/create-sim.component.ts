@@ -26,7 +26,8 @@ export class CreateSimComponent implements OnInit {
   mo;
   isExpanded = false;
 
-  viewNewSeries = true;
+  viewNewSeries = false;
+  viewHistoricalSeries = false;
   actionButtons = ["New Series", "Existing series"];
   displayEditView = false;
   currentSelection: string = this.actionButtons[0];

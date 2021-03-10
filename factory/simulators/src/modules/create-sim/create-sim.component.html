@@ -22,6 +22,21 @@
     </div>
   </c8y-action-bar-item>-->
   <div class="col-lg-6">
+
+    <div class="tight-grid">
+      <div class="col-xs-6">
+        <button class="btn-add-block" (click)="viewNewSeries = !viewNewSeries">
+          <i c8yIcon="sort-amount-asc"></i> Add New Series
+        </button>
+      </div>
+      <div class="col-xs-6">
+        <button class="btn-add-block" (click)="viewHistoricalSeries = !viewHistoricalSeries">
+          <i c8yIcon="history"></i> Choose from existing 
+        </button>
+      </div>
+    </div>
+    
+
     <div class="settings">
       <app-sim-settings
         [mo]="mo"
@@ -33,8 +48,9 @@
         (allSeriesEmitter)="updateAllSeries($event)"
       ></app-sim-settings>
 
-      <ng-container>
-        <div *ngFor="let first of allInstructionsSeries; let i = index">
+      <ng-container *ngIf="viewHistoricalSeries">
+        <div style="height: 500px;">
+        <div *ngFor="let first of allInstructionsSeries; let i = index" >
           <app-sim-settings
             [id]="'app-sim-settings_'+ i | toString"
             [mo]="mo"
@@ -45,6 +61,7 @@
             [isExpanded]="first.active"
           ></app-sim-settings>
         </div>
+      </div>
       </ng-container>
     </div>
 
@@ -98,31 +115,20 @@
   >
     <ng-container *ngIf="item.fragment && item.series"
       ><h4>Measurement Series</h4>
-      &nbsp; <em>{{ item.fragment }}</em
-      >&nbsp; &nbsp; <em>{{ item.series }}</em
-      >&nbsp; &nbsp; <em>{{ item.unit }}</em
-      >&nbsp;</ng-container
+    </ng-container
     >
 
     <ng-container *ngIf="item.alarmText && item.alarmType">
       <h4>Alarm Series</h4>
-      &nbsp; <em>{{ item.alarmType }}</em
-      >&nbsp; &nbsp; <em>{{ item.alarmText }}</em
-      >&nbsp;</ng-container
+      </ng-container
     >
 
     <ng-container *ngIf="item.eventType && item.eventText"
-      ><h4>Basic Event Series</h4>
-      &nbsp; <em>{{ item.eventType }}</em> &nbsp; &nbsp;
-      <em>{{ item.eventText }}</em> &nbsp;</ng-container
+      ><h4>Basic Event Series</h4></ng-container
     >
 
     <ng-container *ngIf="item.geoCoordinate"
       ><h4>Location Event Series</h4>
-      &nbsp; <em>{{ item.geoCoordinate.latitude }}</em
-      >&nbsp; &nbsp; <em>{{ item.geoCoordinate.longitude }}</em
-      >&nbsp; &nbsp; <em>{{ item.geoCoordinate.altitude }}</em
-      >&nbsp; &nbsp; <em>{{ item.geoCoordinate.accuracy }}</em>
     </ng-container>
 
     <ng-container *ngIf="item.type === 'SmartRest'"
