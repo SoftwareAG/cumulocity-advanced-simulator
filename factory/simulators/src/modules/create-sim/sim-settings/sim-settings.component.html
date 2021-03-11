@@ -98,7 +98,7 @@
       <br>
       <ng-container *ngIf="smartRestSelectedConfig">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
-          <div [hidden]="entry | isValue" [attr.defaultValue]="smartRestInstruction[entry.path] || smartRestInstruction[entry.path] = ''"> 
+          <div [hidden]="entry | isValue"> 
             <label>{{ entry.path }}</label>
             <input
               id="{{id + entry.path }}"

@@ -37,7 +37,7 @@
       <div [ngSwitch]="selectedEditView">
         <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
           <div class="row">
-            <div class="col-xs-6" *ngFor="let entry of form" [hidden]="entry.hidden" [attr.defaultValue]="instructionValue[entry.name] || instructionValue[entry.name] = entry.defaultValue">
+            <div class="col-xs-6" *ngFor="let entry of form" [hidden]="entry.hidden">
               <div class="form-group">
                 <label>{{ entry.label }}</label>
                 <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
