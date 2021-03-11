@@ -104,9 +104,29 @@ export class SimSettingsComponent implements OnInit {
 
   ngOnInit() {}
 
-  updateSeries(type) {
-    this.instructionValue.type = type;
-    switch (type) {
+  updateSeries(index:number) {
+    for (const entry of this.allForms[index]) {
+      if (entry.defaultValue && !this.instructionValue[entry.name]) {
+        this.instructionValue[entry.name] = entry.defaultValue;
+      }
+      if (!entry.hidden && entry.required === true && !this.instructionValue[entry.name]) {
+        this.alertService.add({
+          text: `Not all the required fields are filled.`,
+          type: "danger",
+        });
+        return;
+      }
+      if (+entry.minimum > this.instructionValue[entry.name]) {
+        this.alertService.add({
+          text: `For ${entry.name} you need a value greater than or equal to ${entry.minimum}.`,
+          type: "danger",
+        });
+        return;
+      }
+    }
+    
+    this.instructionValue.type = this.defaultConfig[index];
+    switch (this.defaultConfig[index]) {
       case InstructionCategory.Measurement:
         this.measurementsService.pushToMeasurements(
           this.instructionValue as SeriesMeasurementInstruction
