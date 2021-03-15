@@ -157,6 +157,9 @@ export class SimSettingsComponent implements OnInit {
 
   onChangeConfig(value) {
     this.smartRestSelectedConfig = value;
+    if (this.smartRestSelectedConfig === 'SmartRest') {
+      this.isSmartRestSelected = true;
+    }
   }
 
   saveSmartRestTemplateToCommandQueue() {

@@ -5,10 +5,6 @@
     <br>
     
     <div *ngIf="isExpanded">
-      <label class="c8y-switch">
-        <input type="checkbox"  [ngModel]="isSmartRestSelected" (ngModelChange)="isSmartRestSelected=!isSmartRestSelected"/>
-        <span></span><em> Select from SmartREST Templates </em>
-      </label>
       <div class="row">
         <div class="col-md-12">
           <div class="form-group form-group-md">
@@ -128,6 +124,7 @@
           </ng-container>
          
         </div>
+        <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig != ''">
         <label>{{ 'steps'}}</label>
         <input
         id="{{ id + 'steps' }}"
@@ -136,6 +133,7 @@
         class="form-control"
         placeholder="(required)"
       />
+    </ng-container>
         <br>
         <button
                 class="btn btn-success"
