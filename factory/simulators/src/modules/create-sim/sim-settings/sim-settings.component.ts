@@ -155,11 +155,13 @@ export class SimSettingsComponent implements OnInit {
     });
   }
 
-  onChangeConfig(value) {
+  onChangeSmartRestConfig(value) {
     this.smartRestSelectedConfig = value;
-    if (this.smartRestSelectedConfig === 'SmartRest') {
-      this.isSmartRestSelected = true;
-    }
+  }
+
+  onChangeConfig(value) {
+    this.selectedConfig = value;
+    this.selectedConfig === 'SmartRest' ? this.isSmartRestSelected = true : this.isSmartRestSelected = false;
   }
 
   saveSmartRestTemplateToCommandQueue() {
