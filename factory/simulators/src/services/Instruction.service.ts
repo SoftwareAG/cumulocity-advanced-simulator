@@ -69,9 +69,9 @@ export class InstructionService {
           seconds: instruction.sleep,
         } as CommandQueueEntry;
         break;
-      case 'SmartRest': 
-      commandQueueEntry = this.smartRestInstructionToCommand(instruction)
-      break;
+      case "SmartRest":
+        commandQueueEntry = this.smartRestInstructionToCommand(instruction);
+        break;
     }
     if (instruction.color) {
       commandQueueEntry.color = instruction.color;
@@ -83,10 +83,10 @@ export class InstructionService {
     instruction: SmartInstruction
   ): CommandQueueEntry {
     let customValuesFromInstruction = Object.keys(instruction).filter(
-      (key) => key !== "type"
+      (key) => key !== "type" && key !== ""
     );
     // Parse 'path' from each of the customValues of this.smartRestArray entries
-    let customPaths = []; 
+    let customPaths = [];
     this.SmartRestArray.forEach((entry) => {
       let arr = [];
       entry.smartRestFields.customValues.forEach((customValue) => {
@@ -95,11 +95,26 @@ export class InstructionService {
       customPaths.push(arr);
     });
     // Find index by comparing custompath entries with keys of the SmartInstruction
-    const filteredIndex = customPaths.findIndex((customPathsForEntry) => this.compareArrays2(customValuesFromInstruction, customPathsForEntry) === true);
+    const filteredIndex = customPaths.findIndex(
+      (customPathsForEntry) =>
+        this.compareArrays2(
+          customValuesFromInstruction,
+          customPathsForEntry
+        ) === true
+    );
     const messageId = this.SmartRestArray[filteredIndex].smartRestFields.msgId;
     const templateId = this.SmartRestArray[filteredIndex].templateId;
-    const values: string[] =  [""];
-    values.push(...Object.values(instruction).filter((value) => value !== "SmartRest"));
+    let values: string[];
+    if (
+      this.SmartRestArray[filteredIndex].smartRestFields.mandatoryValues.length
+    ) {
+      values = [""];
+    } else {
+      values = [];
+    }
+    values.push(
+      ...Object.values(instruction).filter((value) => value !== "SmartRest")
+    );
     return {
       type: CommandQueueType.message,
       templateId: templateId,
@@ -161,7 +176,7 @@ export class InstructionService {
         commandQueueEntry
       );
       instructionEntryFields.forEach((entryField, index) => {
-        smartInstruction[entryField] = commandQueueEntry.values[index+1];
+        smartInstruction[entryField] = commandQueueEntry.values[index];
       });
       return smartInstruction as SmartInstruction;
     }
@@ -183,13 +198,18 @@ export class InstructionService {
 
   // Returns array containing entry fields (keys) of smart instruction
   commandQueueEntryToSmartRest(commandQueueEntry: CommandQueueEntry): string[] {
-    let entryFields: string[] = [];
+    let entryFields: string[];
     const filtered = this.SmartRestArray.filter(
       (entry) =>
         entry.smartRestFields.msgId === commandQueueEntry.messageId &&
         entry.templateId === commandQueueEntry.templateId
     )[0];
     if (filtered) {
+      if (filtered.smartRestFields.mandatoryValues.length) {
+        entryFields = [""];
+      } else {
+        entryFields = [];
+      }
       filtered.smartRestFields.customValues.forEach((customValue) => {
         entryFields.push(customValue.path);
       });
@@ -207,9 +227,9 @@ export class InstructionService {
         label: "",
         type: "textField",
         required: true,
-        hidden: false
+        hidden: false,
       };
-      if (key === 'type') {
+      if (key === "type" || key === "") {
         inputField.hidden = true;
       }
       inputField.name = key;
