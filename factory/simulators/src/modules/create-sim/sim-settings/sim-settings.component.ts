@@ -124,7 +124,7 @@ export class SimSettingsComponent implements OnInit {
         return;
       }
     }
-    
+
     this.instructionValue.type = this.defaultConfig[index];
     switch (this.defaultConfig[index]) {
       case InstructionCategory.Measurement:
@@ -176,7 +176,7 @@ export class SimSettingsComponent implements OnInit {
   }
 
   onChangeConfig(value) {
-    this.smartRestSelectedConfig = value;
+    this.isSmartRestSelected = (value === InstructionCategory.SmartRest);
   }
 
   saveSmartRestTemplateToCommandQueue() {

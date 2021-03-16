@@ -80,7 +80,7 @@ export class EditInstructionComponent implements OnInit {
     
     if(this.displayAddView){
       if(this.commandQueueEntryIndex){ 
-        this.commandQueue.splice(this.commandQueueEntryIndex, 0, commandQueueEntry);
+        this.commandQueue.splice(this.commandQueueEntryIndex+1, 0, commandQueueEntry);
       }else{
         this.commandQueue.push(commandQueueEntry);
       }

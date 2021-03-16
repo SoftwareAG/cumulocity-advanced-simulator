@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommandQueueEntry } from '@models/commandQueue.model';
+import { CommandQueueEntry, MessageIds } from '@models/commandQueue.model';
 import { Instruction } from '@models/instruction.model';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
@@ -48,37 +48,55 @@ export class CommandQueueStatisticsComponent implements OnInit {
       let entry = this.commandQueue[i];
       if (entry.type === 'sleep') {
         this.timeForOneLoop += +entry.seconds;
-        if(this.measurementCategory.length > 0){
-          this.measurementCategory[this.measurementCategory.length - 1].avg += +this.commandQueue[i-1].values[3] * +entry.seconds;
-        }
       }
+       /* if(this.measurementCategory.length > 0){
+          this.measurementCategory[this.measurementCategory.length - 1].avg += +this.commandQueue[i-1].values[2] * +entry.seconds;
+        }
+      }*/
 
-      if(entry.messageId === '200'){
+      if (entry.messageId === MessageIds.Measurement) {
         const identifier = entry.values[0] + ' ' + entry.values[1];
         let find = this.measurementCategory.find(a => a.identifier === identifier );
         if(find){
-          find.value += +entry.values[3];
-          find.avg += +entry.values[3];
-          if(+entry.values[3] > find.highest){
-            find.highest = +entry.values[3];
+          find.value += +entry.values[2];
+          find.avg += +entry.values[2];
+          if(+entry.values[2] > find.highest){
+            find.highest = +entry.values[2];
           }
-          if(+entry.values[3] < find.lowest){
-            find.highest = +entry.values[3];
+          if(+entry.values[2] < find.lowest){
+            find.highest = +entry.values[2];
           }
         } else {
-          this.measurementCategory.push({ highest: 0, lowest: 0, identifier: identifier, value: +entry.values[3], unit: entry.values[2], avg: +entry.values[3]})
+          this.measurementCategory.push({ highest: 0, lowest: 0, identifier: identifier, value: +entry.values[2], unit: entry.values[3], avg: +entry.values[2]})
         }
       }
-
     }
-    console.error(this.measurementCategory);
+    
+    
 
-      this.runthroughsPerMinute = this.time.minute / this.timeForOneLoop;
-      this.runthroughsPerHour = this.time.hour / this.timeForOneLoop;
-      this.runthroughsPerDay = this.time.day / this.timeForOneLoop;
+      this.runthroughsPerMinute = this.roundTwoDecimals(this.time.minute / this.timeForOneLoop);
+      this.runthroughsPerHour = this.roundTwoDecimals(this.time.hour / this.timeForOneLoop);
+      this.runthroughsPerDay = this.roundTwoDecimals(this.time.day / this.timeForOneLoop);
+
+
+
+    for (let entry of this.measurementCategory) {
+      entry.runthroughsPerMinute = +entry.value * this.runthroughsPerMinute;
+      entry.runthroughsPerHour = +entry.value * this.runthroughsPerHour;
+      entry.runthroughsPerDay = +entry.value * this.runthroughsPerDay;
+
+      for (let key in entry) {
+        if (isNaN(entry[key]) == false) {
+          entry[key] = this.roundTwoDecimals(entry[key]);
+        }
+      }
+    }
   }
 
 
 
+  roundTwoDecimals(toRound: number){
+    return Math.round(toRound * 100) / 100;
+  }
 
 }

@@ -16,6 +16,7 @@ export interface InputField {
 export interface MessageId {
   name: string;
   id: string;
+  selected?: boolean;
 }
 
 export const DefaultConfig: InstructionCategory[] = [
@@ -99,7 +100,7 @@ export const AlarmsForm: InputField[] = [
     label: "Alarm Category",
     type: "select",
     options: [
-      { name: "CRITICAL", id: "301" },
+      { name: "CRITICAL", id: "301", selected: true },
       { name: "MAJOR", id: "302" },
       { name: "MINOR", id: "303" },
     ],

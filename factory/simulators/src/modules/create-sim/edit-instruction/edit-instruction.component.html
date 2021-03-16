@@ -37,23 +37,25 @@
       <div [ngSwitch]="selectedEditView">
         <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
           <div class="row">
-            <div class="col-xs-6" *ngFor="let entry of form" [hidden]="entry.hidden">
-              <div class="form-group">
-                <label>{{ entry.label }}</label>
-                <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
-                  <div class="c8y-select-wrapper">
-                    <select class="form-control" [(ngModel)]="instructionValue[entry.name]">
-                      {{instructionValue[entry.name]}}
-                      <option *ngFor="let option of entry.options" [selected]="instructionValue[entry.name] === option.id" [value]="option.id">
-                        {{ option.name }}
-                      </option>
-                    </select>
+            <ng-container *ngFor="let entry of form">
+                <div class="col-xs-6" *ngIf="!entry.hidden">
+                <div class="form-group">
+                  <label>{{ entry.label }}</label>
+                  <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
+                    <div class="c8y-select-wrapper">
+                      <select class="form-control" [(ngModel)]="instructionValue[entry.name]">
+                        {{instructionValue[entry.name]}}
+                        <option *ngFor="let option of entry.options" [selected]="instructionValue[entry.name] === option.id" [value]="option.id">
+                          {{ option.name }}
+                        </option>
+                      </select>
+                    </div>
                   </div>
+                  <input *ngIf="entry.type === 'textField'" id="{{entry.name}}" [required]="entry.required" class="form-control" [(ngModel)]="instructionValue[entry.name]"
+                  placeholder="{{entry.placeholder}} {{(entry.required) ? '(required)' : '(optional)'}}">
                 </div>
-                <input *ngIf="entry.type === 'textField'" id="{{entry.name}}" [required]="entry.required" class="form-control" [(ngModel)]="instructionValue[entry.name]"
-                 placeholder="{{entry.placeholder}} {{(entry.required) ? '(required)' : '(optional)'}}">
               </div>
-            </div>
+            </ng-container>
           </div>
           <div class="row" style="text-align:right;">
             <div class="col-xs-12">

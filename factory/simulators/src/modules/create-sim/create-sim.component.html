@@ -1,13 +1,12 @@
 <c8y-title>{{ simulatorTitle }}</c8y-title>
-<div class="row">
-  <c8y-action-bar-item [placement]="'right'" [itemClass]="'btn'">
-    <button class="btn btn-primary" (click)="createSinusWave()">Sinus Wave</button>
+<c8y-action-bar-item [placement]="'right'" [itemClass]="'btn'">
+  <button class="btn btn-primary" (click)="createSinusWave()">Sinus Wave</button>
+</c8y-action-bar-item>
+  <c8y-action-bar-item [placement]="'left'" [itemClass]="'btn'">
+    <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i></button>
   </c8y-action-bar-item>
-    <c8y-action-bar-item [placement]="'left'" [itemClass]="'btn'">
-      <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i></button>
-    </c8y-action-bar-item>
-  <br>
-    <!--
+<div class="row main-div" style="resize: vertical;overflow: auto;height: 70vh;">
+  <!--
   <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
     <div class="btn-group" role="group" *ngFor="let item of actionButtons">
       <button
@@ -21,8 +20,8 @@
       </button>
     </div>
   </c8y-action-bar-item>-->
-  <div class="col-lg-6">
-
+  <div class="col-lg-8" style="height:100%;">
+<!--
     <div class="tight-grid">
       <div class="col-xs-6">
         <button class="btn-add-block" (click)="viewNewSeries = !viewNewSeries">
@@ -35,12 +34,11 @@
         </button>
       </div>
     </div>
-    
+    -->
 
     <div class="settings">
       <app-sim-settings
         [mo]="mo"
-        *ngIf="viewNewSeries"
         [header]="addseries"
         [commandQueue]="commandQueue"
         [isExpanded]="true"
@@ -48,7 +46,7 @@
         (allSeriesEmitter)="updateAllSeries($event)"
       ></app-sim-settings>
 
-      <ng-container *ngIf="viewHistoricalSeries">
+      <ng-container>
         <div style="height: 500px;">
         <div *ngFor="let first of allInstructionsSeries; let i = index" >
           <app-sim-settings
@@ -76,13 +74,10 @@
     </div>
   </div>
 
-  <div class="col-lg-6">
-    <div class="alert alert-warning" *ngIf="warning" style="max-width:100%;display:inline-block;" role="alert">
-      <strong>{{warning.title}}</strong> {{warning.message}}
-    </div>
+  <div class="col-lg-4" style="height:100%;">
     <app-show-instruction
       [mo]="mo"
-      [commandQueue]="commandQueue"
+      (getInvalidSimulator)="getCurrentSimulatorState($event)"
       (currentValue)="getCurrentValue($event)"
       (currentViewState)="updateViewState($event)"
     ></app-show-instruction>
@@ -109,10 +104,9 @@
 
 
 <ng-template #addedSeries let-item="item">
-  <div
-    style="cursor: pointer; display: flex"
-    (click)="item.active = !item.active"
-  >
+    <button class="transparent" aria-controls="collapseBasic" (click)="item.active = !item.active"
+    [attr.aria-expanded]="item.active"><i c8yIcon="caret-down"></i>
+    </button>
     <ng-container *ngIf="item.fragment && item.series"
       ><h4>Measurement Series</h4>
     </ng-container
@@ -134,28 +128,20 @@
     <ng-container *ngIf="item.type === 'SmartRest'"
       ><h4>SmartREST Series</h4>
     </ng-container>
-    <div style="flex-grow: 1; text-align: end;">
-    <button
-      class="transparent"
-      aria-controls="collapseBasic"
-      [attr.aria-expanded]="item.active"
-    >
-      <i c8yIcon="caret-down"></i>
-    </button>
-    <button
-    class="transparent"
-    (click)="delete(item)"
-  >
-    <i c8yIcon="trash"></i>
-  </button>
-</div>
 
+        <button
+        class="transparent"
+         style="float: right;"
+        (click)="delete(item)"
+      >
+        <i c8yIcon="trash"></i>
+      </button>
+<!--
     <div
       id="collapseBasic"
       class="collapse"
       [collapse]="!item.active"
       [isAnimated]="true"
-    ></div>
-  </div>
+    ></div>-->
 </ng-template>
 <ng-template #addseries><h4>Add Series</h4></ng-template>

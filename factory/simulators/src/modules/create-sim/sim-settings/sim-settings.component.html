@@ -1,71 +1,79 @@
 <div class="card" [style.background]="selectedColor">
   <div class="card-block">
-    <ng-container *ngTemplateOutlet="header; context: templateCtx">
-    </ng-container>
+    <ng-container *ngTemplateOutlet="header; context: templateCtx"></ng-container>
+    <select  style="margin-top:-5px;margin-left:20px;max-width:200px;display:inline-block;" class="form-control" [(ngModel)]="selectedConfig" (ngModelChange)="onChangeConfig($event)">
+      <option value="" disabled selected>Select Instruction Type</option>
+      <option *ngFor="let first of defaultConfig">{{ first }}</option>
+    </select>
+    <select style="margin-top:-5px;margin-left:20px;max-width:200px;display:inline-block;" class="selectpicker" [(ngModel)]="smartRestSelectedConfig" *ngIf="isSmartRestSelected">
+      <option value="" disabled [selected]="!smartRestSelectedConfig">Select your Smart-Rest-Template</option>
+      <option *ngFor="let first of smartRestConfig" [ngValue]="first">
+        {{first.smartRestFields.msgId}}&nbsp;{{first.smartRestFields.name }}
+      </option>
+    </select>
+    <br>
     <br>
     
     <div *ngIf="isExpanded">
-      <label class="c8y-switch">
-        <input type="checkbox"  [ngModel]="isSmartRestSelected" (ngModelChange)="isSmartRestSelected=!isSmartRestSelected"/>
-        <span></span><em> Select from SmartREST Templates </em>
-      </label>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="form-group form-group-md">
-            <div class="c8y-select-wrapper" *ngIf="!isSmartRestSelected">
-              <br />
-              <select
-                class="form-control"
-                [(ngModel)]="selectedConfig"
-                (ngModelChange)="onChangeConfig($event)"
-              >
-                <option *ngFor="let first of defaultConfig">{{ first }}</option>
-              </select>
+      <!--
+      <ng-container  *ngIf="false">
+        <label class="c8y-switch">
+          <input type="checkbox"  [ngModel]="isSmartRestSelected" (ngModelChange)="isSmartRestSelected=!isSmartRestSelected"/>
+          <span></span><em> Select from SmartREST Templates </em>
+        </label>
+        <div class="row">
+            <div class="col-md-12">
+              <div class="form-group form-group-md">
+                <div class="c8y-select-wrapper" *ngIf="!isSmartRestSelected">
+                  <br />
+                </div>
+              </div>
             </div>
-          </div>
         </div>
-      </div>
-
+      </ng-container>
+    -->
       
       <div [ngSwitch]="selectedConfig" *ngIf="!isSmartRestSelected">
         <ng-template
           *ngFor="let form of allForms; let i = index"
-          [ngSwitchCase]="defaultConfig[i]"
-        > 
+          [ngSwitchCase]="defaultConfig[i]"> 
+
           <div class="row">
-            <div class="col-xs-4" *ngFor="let entry of form">
-              <div class="form-group" [hidden]="entry.hidden">
-                <label>{{ entry.label }}</label>
-                <div
-                  class="form-group form-group-md"
-                  *ngIf="entry.type === 'select'"
-                >
-                  <div class="c8y-select-wrapper">
-                    <select
-                      class="form-control"
-                      [(ngModel)]="instructionValue[entry.name]"
-                    >
-                      <option
-                        *ngFor="let category of entry.options"
-                        [value]="category.id"
+            <ng-container *ngFor="let entry of form">
+              <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden">
+                <div class="form-group">
+                  <label>{{ entry.label }}</label>
+                  <div
+                    class="form-group form-group-md"
+                    *ngIf="entry.type === 'select'"
+                  >
+                    <div class="c8y-select-wrapper">
+                      <select
+                        class="form-control"
+                        [(ngModel)]="instructionValue[entry.name]"
                       >
-                        {{ category.name }}
-                      </option>
-                    </select>
+                        <option
+                          *ngFor="let category of entry.options"
+                          [value]="category.id"
+                        >
+                          {{ category.name }}
+                        </option>
+                      </select>
+                    </div>
                   </div>
+                  <input
+                    *ngIf="entry.type === 'textField'"
+                    id="{{ entry.name }}"
+                    [required]="entry.required"
+                    class="form-control"
+                    [(ngModel)]="instructionValue[entry.name]"
+                    placeholder="{{ entry.placeholder }} {{
+                      entry.required ? '(required)' : '(optional)'
+                    }}"
+                  />
                 </div>
-                <input
-                  *ngIf="entry.type === 'textField'"
-                  id="{{ entry.name }}"
-                  [required]="entry.required"
-                  class="form-control"
-                  [(ngModel)]="instructionValue[entry.name]"
-                  placeholder="{{ entry.placeholder }} {{
-                    entry.required ? '(required)' : '(optional)'
-                  }}"
-                />
               </div>
-            </div>
+            </ng-container>
             <div class="col-xs-12">
               <button
                 class="btn {{ selectedSeries ? 'btn-default' : 'btn-success' }}"
@@ -91,12 +99,9 @@
         </ng-template>
       </div>
 
-      <div *ngIf="isSmartRestSelected">
-      <select class="selectpicker" [ngModel]="smartRestSelectedConfig" (ngModelChange)="onChangeConfig($event)">
-        <option *ngFor="let first of smartRestConfig" [ngValue]="first" selected>{{first.smartRestFields.msgId}}&nbsp;{{ first.smartRestFields.name }}</option>
-      </select>
+      <ng-container *ngIf="isSmartRestSelected">
       <br>
-      <ng-container *ngIf="smartRestSelectedConfig">
+      <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
           <div [hidden]="entry | isValue"> 
             <label>{{ entry.path }}</label>
@@ -108,23 +113,28 @@
             />
           </div>
           <ng-container *ngIf="entry | isValue">
-            <label>{{ entry.path +'.minimum'}}</label>
-              <input
-              id="{{ id + entry.path + '_min'}}"
-              [required]="true"
-              [(ngModel)]="smartRestInstruction[entry.path+'_min']"
-              class="form-control"
-              placeholder="minimum (required)"
-            />
-              <label>{{ entry.path +'.maximum'}}</label>
-              <input
-              id="{{ id + entry.path + '_max'}}"
-              [required]="true"
-              [(ngModel)]="smartRestInstruction[entry.path+'_max']"
-              class="form-control"
-              placeholder="maximum (required)"
-            />
-            <br>
+            <div class="row">
+              <div class="col-xs-6">
+                <label>{{ entry.path +'.minimum'}}</label>
+                <input
+                id="{{ id + entry.path + '_min'}}"
+                [required]="true"
+                [(ngModel)]="smartRestInstruction[entry.path+'_min']"
+                class="form-control"
+                placeholder="minimum (required)"
+                />
+              </div>
+              <div class="col-xs-6">
+                <label>{{ entry.path +'.maximum'}}</label>
+                <input
+                id="{{ id + entry.path + '_max'}}"
+                [required]="true"
+                [(ngModel)]="smartRestInstruction[entry.path+'_max']"
+                  class="form-control"
+                  placeholder="maximum (required)"
+                  />
+              </div>
+            </div>
           </ng-container>
          
         </div>
@@ -145,7 +155,7 @@
                 Save
               </button>
       </ng-container>
-    </div>
+    </ng-container>
     </div>
   </div>
 </div>

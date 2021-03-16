@@ -17,7 +17,6 @@ import { isEqual } from "lodash";
 })
 export class CreateSimComponent implements OnInit {
   readyToStartSimulator = false;
-  warning: { message: string; title: string };
   allInstructionsSeries = [];
   alarmSeries = [];
   smartRestConfig = [];
@@ -36,6 +35,7 @@ export class CreateSimComponent implements OnInit {
   editedValue;
   deletedMeasurement;
   simulatorTitle: string;
+  invalidSimulator = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,22 +49,11 @@ export class CreateSimComponent implements OnInit {
     private alertService: AlertService
   ) {}
 
+  getCurrentSimulatorState(event: boolean) {
+    this.invalidSimulator = event;
+  }
   getCurrentValue(event) {
     this.editedValue = event;
-  }
-  invalidSimulator = false;
-  checkIfAtLeastOneSleepIsSet() {
-    for (let entry of this.commandQueue) {
-      if (entry.seconds && +entry.seconds >= 5) {
-        return;
-      }
-    }
-    this.warning = {
-      title: "Invalid Simulator!",
-      message:
-        "You need at least a 5 seconds sleep somewhere in the Instruction Queue.",
-    };
-    this.invalidSimulator = true;
   }
   changeRouteLastSite() {
     this.router.navigate(["/"]);
@@ -129,7 +118,6 @@ export class CreateSimComponent implements OnInit {
         this.instructionsService.SmartRestArray = this.smartRestConfig;
       });
     });
-    this.checkIfAtLeastOneSleepIsSet();
   }
 
   updateViewState(val) {

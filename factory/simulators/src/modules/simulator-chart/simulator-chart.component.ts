@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommandQueueEntry } from '@models/commandQueue.model';
+import { CommandQueueEntry, MessageIds } from '@models/commandQueue.model';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { Chart, ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
@@ -72,7 +72,7 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
   } as ChartOptions;
 
 
-  toggleAnnotations() {
+  updateAnnotations() {
     let chartAnnotations = this.chart.chart.options['annotation']['annotations'];
     chartAnnotations = [];
     if (this.showAlarms) { 
@@ -92,18 +92,18 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
 
   toggleEvents() {
     this.showEvents = !this.showEvents;
-    this.toggleAnnotations();
+    this.updateAnnotations();
   }
   
   toggleSleeps() {
     this.showSleeps = !this.showSleeps;
-    this.toggleAnnotations();
+    this.updateAnnotations();
     
   }
 
   toggleAlarms(){
     this.showAlarms = !this.showAlarms;
-    this.toggleAnnotations();
+    this.updateAnnotations();
   }
 
   
@@ -122,24 +122,50 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     this.sleepDataSet = [];
     this.verticalLines = [];
     console.error(this.commandQueue);
-    let lastDataSet, lastFound, lastXValue = 0;
     for (let i = 0; i < this.numberOfRuns; i++) {
-      for (const entry of this.commandQueue) {
+      let lastXValue = 0;
+      for (let j = 0; j < this.commandQueue.length; j++) {
+        const entry  = this.commandQueue[j];
+        const xPosition = (j + (i * this.commandQueue.length)) + lastXValue;
+
         if(this.numberOfRuns === 1)
           console.log(dataSet);
 
         if (dataSet.length > 0) {
           if (entry.type === 'sleep'){
-
+            const seconds:number = +entry.seconds;
+            
             for (let oldDataSets of dataSet) {
-              for (let i = 0; i < entry.seconds; i++) {
-                oldDataSets.data.push({ 
-                  x: oldDataSets.data.length - 1, 
-                  y: oldDataSets.data[oldDataSets.data.length-1].y 
+
+              //oldDataSets.lastXValue += +seconds;
+              oldDataSets.data.push({
+                x: xPosition - 1,
+                y: oldDataSets.data[oldDataSets.data.length - 1].y
+              });
+              oldDataSets.data.push({
+                x: xPosition - 1 + seconds,
+                y: oldDataSets.data[oldDataSets.data.length - 1].y
+              });
+
+              //repeats value 5x
+              /*for (let k = 0; k < seconds; k++) {
+                const latestValueIndex = oldDataSets.data.length - 1;
+                oldDataSets.lastXValue++;
+                console.log(oldDataSets, oldDataSets.data[latestValueIndex]);
+                oldDataSets.data.push({
+                  x: oldDataSets.lastXValue, 
+                  y: oldDataSets.data[latestValueIndex].y 
                 });
               }
-              lastXValue+= +entry.seconds;
+              lastXValue+= +seconds;*/
             }
+            if (this.numberOfRuns === 1)
+            console.info('xpos', +xPosition - 1 + seconds);
+            lastXValue += seconds - 2;
+            this.sleepDataSet.push({
+              valueStart: +xPosition - 1,
+              valueEnd: +xPosition - 1 + seconds
+            });
 
             
             continue;
@@ -159,7 +185,7 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
             this.verticalLines.push({
               type: 'alarm',
               label: entry.values[0],
-              value: dataSet.length-1,
+              value: xPosition - 1,
               color: 'Red'
             });
             continue;
@@ -168,35 +194,40 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
             this.verticalLines.push({
               type: 'event',
               label: entry.values[0],
-              value: dataSet.length - 1,
+              value: xPosition - 1,
               color: 'Orange'
             });
             continue;
           }
         }
         
-
-        const found = dataSet.find((a) => {
-          if (a.label === entry.values[1]) {
-            return a;
-          }
-        });
-
-        if (found) {
-          found.lastXValue++;
-          found.data.push({ x: found.lastXValue, y: +entry.values[3] });
-         /* lastDataSet = { x: lastXValue, y: +entry.values[3] };
-          lastFound = found.data;
-          found.lastXValue++;*/
-        } else {
-          dataSet.push({
-            data: [{ x: lastXValue, y: +entry.values[3] }],
-            label: entry.values[1],
-            lineTension: 0,
-            lastXValue: lastXValue
+        if (entry.messageId === MessageIds.Measurement){
+          const found = dataSet.find((a) => {
+            if (a.label === entry.values[1]) {
+              return a;
+            }
           });
+
+          if (found) {
+            found.lastXValue = xPosition;
+            found.data.push({ x: found.lastXValue, y: +entry.values[2] });
+          /* lastDataSet = { x: lastXValue, y: +entry.values[2] };
+            lastFound = found.data;
+            found.lastXValue++;*/
+          } else {
+            if(this.numberOfRuns === 1)
+            console.info(this.commandQueue);
+            dataSet.push({
+              data: [{ x: xPosition, y: +entry.values[2] }],
+              label: entry.values[1],
+              lineTension: 0,
+              lastXValue: xPosition
+            });
+          }
         }
+
       }
+      
     }
     console.error('sleeps', this.sleepDataSet);
     console.error('Alarms', this.verticalLines);
@@ -237,7 +268,6 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
           id: 'low-box' + index,
           type: 'box',
           xScaleID: 'x-axis-0',
-          yScaleID: 'y-axis-0',
           xMin: sleepBox.valueStart,
           xMax: sleepBox.valueEnd,
           backgroundColor: 'rgba(0, 0, 120, 0.3)',
