@@ -138,6 +138,7 @@
           </ng-container>
          
         </div>
+        <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig != ''">
         <label>{{ 'steps'}}</label>
         <input
         id="{{ id + 'steps' }}"
@@ -146,6 +147,7 @@
         class="form-control"
         placeholder="(required)"
       />
+    </ng-container>
         <br>
         <button
                 class="btn btn-success"

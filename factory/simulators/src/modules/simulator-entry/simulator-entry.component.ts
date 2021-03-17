@@ -53,7 +53,8 @@ export class SimulatorEntryComponent implements OnInit {
 
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
       console.log("State changed");
-      this.backend.connectToSimulatorsBackend(simulator.c8y_DeviceSimulator);
+      const moId = res.id;
+      this.backend.connectToSimulatorsBackend(simulator.c8y_DeviceSimulator, moId);
     });
   }
 
