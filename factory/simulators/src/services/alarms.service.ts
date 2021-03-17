@@ -8,7 +8,7 @@ import { CustomSimulator } from '@models/simulator.model';
 export class AlarmsService {
 
 constructor() { }
-alarms = [];
+alarms: AlarmInstruction[] = [];
 alarmConfig = [
   "Generate repeated alarms",
   "Alternate measurements with alarms",
@@ -60,7 +60,7 @@ toAlarmTemplateFormat(alarm) {
   "values": ["TYPE", "TEXT", ""], "type": "builtin"
 }`;
 
-  toBePushedAlarms = toBePushedAlarms.replace("CODE", alarm.alarmCategory);
+  toBePushedAlarms = toBePushedAlarms.replace("CODE", alarm.messageId);
   toBePushedAlarms = toBePushedAlarms.replace("TYPE", alarm.alarmType);
   toBePushedAlarms = toBePushedAlarms.replace("TEXT", alarm.alarmText);
   return toBePushedAlarms;
@@ -69,6 +69,7 @@ toAlarmTemplateFormat(alarm) {
 
 pushToAlarms(alarms: AlarmInstruction) {
   this.alarms.push(alarms);
+  console.log(this.alarms)
 }
 
 

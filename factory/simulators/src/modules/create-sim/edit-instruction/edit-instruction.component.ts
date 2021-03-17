@@ -109,7 +109,8 @@ export class EditInstructionComponent implements OnInit {
     if (value) {
       this.commandQueueEntryIndex = this.commandQueue.findIndex((entry) => entry === value);
       const instruction: Instruction = this.instructionService.commandQueueEntryToInstruction(value);
-      console.error('test!!', value, instruction);
+      console.log(instruction);
+      console.log('test!!', value, instruction);
       this.selectedEditView = instruction.type;
       this.instructionValue = instruction;
       console.log(this.instructionValue);

@@ -50,6 +50,7 @@ export class CreateSimComponent implements OnInit {
   ) {}
 
   getCurrentValue(event) {
+    console.log(event)
     this.editedValue = event;
   }
   invalidSimulator = false;

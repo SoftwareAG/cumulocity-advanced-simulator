@@ -99,8 +99,8 @@ export interface BasicEventInstruction extends Instruction2 {
 
 export interface EventInstruction extends GeoCoordinate, Instruction2 {
   eventCategory: string;
-  eventType: string;
-  eventText: string;
+  // eventType: string;
+  // eventText: string;
   type: InstructionCategory.LocationUpdateEvent;
 }
 

@@ -58,17 +58,17 @@ export class EventsService {
   "values": ["LAT", "LON", "ALT", "ACCURACY"], "type": "builtin"
 }`;
 
-    if (event.eventCategory === "400") {
-      toBePushed = toBePushed.replace("CODE", event.eventCategory);
+    if (event.messageId === "400") {
+      toBePushed = toBePushed.replace("CODE", event.messageId);
       toBePushed = toBePushed.replace("TYPE", event.eventType);
       toBePushed = toBePushed.replace("TEXT", event.eventText);
       return toBePushed;
     } else {
-      toBePushedLoc = toBePushedLoc.replace("CODE", event.eventCategory);
-      toBePushedLoc = toBePushedLoc.replace("LAT", event.geoCoordinate.latitude);
-      toBePushedLoc = toBePushedLoc.replace("LON", event.geoCoordinate.longitude);
-      toBePushedLoc = toBePushedLoc.replace("ALT", event.geoCoordinate.altitude);
-      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.geoCoordinate.accuracy);
+      toBePushedLoc = toBePushedLoc.replace("CODE", event.messageId);
+      toBePushedLoc = toBePushedLoc.replace("LAT", event.latitude);
+      toBePushedLoc = toBePushedLoc.replace("LON", event.longitude);
+      toBePushedLoc = toBePushedLoc.replace("ALT", event.altitude);
+      toBePushedLoc = toBePushedLoc.replace("ACCURACY", event.accuracy);
       return toBePushedLoc;
     }
   }

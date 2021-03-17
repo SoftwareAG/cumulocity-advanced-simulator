@@ -60,7 +60,7 @@ export class InstructionService {
       case "LocationUpdateEvent":
         commandQueueEntry = this.commandQueueEntryTemplate(
           instruction.messageId,
-          [instruction.eventType, instruction.eventText]
+          [instruction.latitude, instruction.longitude, instruction.altitude, instruction.accuracy]
         );
         break;
       case "Sleep":
@@ -163,10 +163,23 @@ export class InstructionService {
     if (commandQueueEntry.messageId === MessageIds.Basic) {
       return {
         type: InstructionCategory.BasicEvent,
-        eventCategory: commandQueueEntry[0],
-        eventType: commandQueueEntry.values[1],
-        eventText: commandQueueEntry.values[2],
+        eventCategory: '',
+        eventType: commandQueueEntry.values[0],
+        eventText: commandQueueEntry.values[1],
         messageId: commandQueueEntry.messageId,
+      };
+    }
+
+    if (commandQueueEntry.messageId === MessageIds.LocationUpdate || commandQueueEntry.messageId === MessageIds.LocationUpdateDevice) {
+      return {
+        type: InstructionCategory.LocationUpdateEvent,
+        eventCategory: '',
+        latitude: commandQueueEntry.values[0],
+        longitude: commandQueueEntry.values[1],
+        altitude: commandQueueEntry.values[2],
+        accuracy: commandQueueEntry.values[3],
+        messageId: commandQueueEntry.messageId,
+        
       };
     }
 

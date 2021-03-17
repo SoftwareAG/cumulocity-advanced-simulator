@@ -123,12 +123,12 @@ export class SimulatorSettingsService {
         this.resultTemplate.commandQueue.push(...this.eventsService.generateEvents());
       }
     }
-    this.displayAlarmsWithoutMeasurements();
-    this.displayEventsWithoutMeasurements();
+    this.generateAlarms();
+    this.generateEvents();
     return this.resultTemplate.commandQueue;
   }
 
-  displayAlarmsWithoutMeasurements() {
+  generateAlarms() {
     if (
       this.alarmsService.alarms.length &&
       !this.resultTemplate.commandQueue.length
@@ -138,7 +138,7 @@ export class SimulatorSettingsService {
     }
   }
 
-  displayEventsWithoutMeasurements() {
+  generateEvents() {
     if (
       this.eventsService.events.length &&
       !this.resultTemplate.commandQueue.length
@@ -155,7 +155,4 @@ export class SimulatorSettingsService {
     this.allSeries = [];
   }
 
-  deleteMeasurementsFromCommandQueue(minMeasurement, maxMeasurement, commandQueue) {
-
-  }
 }

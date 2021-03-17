@@ -14,7 +14,9 @@ export enum MessageIds {
     "Critical" = "301",
     "Major" = "302",
     "Minor" = "303",
-    "Basic" = "400"
+    "Basic" = "400",
+    "LocationUpdate" = "401",
+    "LocationUpdateDevice" = "402",
 }
 
 export enum CommandQueueType {
