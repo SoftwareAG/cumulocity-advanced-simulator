@@ -40,8 +40,8 @@ export class InstructionService {
           [
             instruction.fragment,
             instruction.series,
-            instruction.unit,
             instruction.value,
+            instruction.unit,
           ]
         );
         break;
@@ -141,8 +141,8 @@ export class InstructionService {
         type: InstructionCategory.Measurement,
         fragment: commandQueueEntry.values[0],
         series: commandQueueEntry.values[1],
-        unit: commandQueueEntry.values[2],
-        value: commandQueueEntry.values[3],
+        value: commandQueueEntry.values[2],
+        unit: commandQueueEntry.values[3],
         messageId: commandQueueEntry.messageId,
       };
     }

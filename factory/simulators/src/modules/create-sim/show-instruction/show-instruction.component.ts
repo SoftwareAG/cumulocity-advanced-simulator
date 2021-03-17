@@ -8,6 +8,7 @@ import { InstructionCategory, SmartInstruction } from '@models/instruction.model
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { UpdateInstructionsService } from '@services/updateInstructions.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-show-instruction',
@@ -16,20 +17,56 @@ import { UpdateInstructionsService } from '@services/updateInstructions.service'
 })
 export class ShowInstructionComponent implements OnInit {
   @Input() mo;
-  @Input() commandQueue: CommandQueueEntry[];
+  public commandQueue: CommandQueueEntry[] = [];
+  private commandQueueSubscription: Subscription;
+
   editedValue: CommandQueueEntry;
   @Output() currentValue = new EventEmitter<CommandQueueEntry>();
   @Output() currentCommandQueue = new EventEmitter();
   isInserted = false;
   showBtns = false;
   measurement: EditedMeasurement;
+  @Output() getInvalidSimulator = new EventEmitter<boolean>();
+  invalidSimulator = false;
+  warning: { message: string; title: string };
+
   constructor(
     private service: UpdateInstructionsService,
-    private simulatorervice: SimulatorsServiceService
+    private simulatorervice: SimulatorsServiceService,
+    private simSettings: SimulatorSettingsService
   ) { }
 
+
+  ngOnDestroy(): void {
+    if (this.commandQueueSubscription) {
+      this.commandQueueSubscription.unsubscribe();
+    }
+  }
+
   ngOnInit() {
-    console.info(this.commandQueue);
+    this.commandQueueSubscription = this.simSettings.commandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
+      this.commandQueue = commandQueue;
+      this.checkIfAtLeastOneSleepIsSet();
+      console.error('commandQueue Change', JSON.stringify(this.commandQueue));
+    });
+  }
+
+  checkIfAtLeastOneSleepIsSet() {
+    for (let entry of this.commandQueue) {
+      if (entry.seconds && +entry.seconds >= 5) {
+        this.getInvalidSimulator.emit(false);
+        this.invalidSimulator = false;
+        this.warning = null;
+        return;
+      }
+    }
+    this.warning = {
+      title: "Invalid Simulator!",
+      message:
+        "You need at least a 5 seconds sleep somewhere in the Instruction Queue.",
+    };
+    this.getInvalidSimulator.emit(true);
+    this.invalidSimulator = true;
   }
 
   deleteMeasurementOrSleep(item) {
@@ -39,6 +76,8 @@ export class ShowInstructionComponent implements OnInit {
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.simulatorervice.updateSimulatorManagedObject(this.mo).then((res) => {
       console.info('deleted entry');
+      this.checkIfAtLeastOneSleepIsSet();
+      this.simSettings.setCommandQueue(this.commandQueue);
     });
   }
 
@@ -51,6 +90,4 @@ export class ShowInstructionComponent implements OnInit {
     this.service.setInstructionsView(true);
   }
 
-  ngOnDestroy() {
-  }
 }
