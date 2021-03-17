@@ -121,12 +121,12 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     const dataSet = [];
     this.sleepDataSet = [];
     this.verticalLines = [];
-    console.error(this.commandQueue);
+    let numberOfSleeps = 0, secondsOfSleep = 0;
     for (let i = 0; i < this.numberOfRuns; i++) {
       let lastXValue = 0;
       for (let j = 0; j < this.commandQueue.length; j++) {
         const entry  = this.commandQueue[j];
-        const xPosition = (j + (i * this.commandQueue.length)) + lastXValue;
+        const xPosition = (j + (i * this.commandQueue.length)) + lastXValue + (secondsOfSleep - numberOfSleeps);
 
         if(this.numberOfRuns === 1)
           console.log(dataSet);
@@ -134,6 +134,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
         if (dataSet.length > 0) {
           if (entry.type === 'sleep'){
             const seconds:number = +entry.seconds;
+            secondsOfSleep += seconds;
+            numberOfSleeps++;
             
             for (let oldDataSets of dataSet) {
 
