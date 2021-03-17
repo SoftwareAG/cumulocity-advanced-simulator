@@ -7,7 +7,7 @@ export interface InputField {
   placeholder?: string;
   required: boolean;
   label?: string;
-  type: 'select' | 'textField';
+  type: 'select' | 'textField' | 'switch';
   options?: MessageId[];
   defaultValue?: string | number;
   hidden?: boolean;
@@ -30,6 +30,12 @@ export const DefaultConfig: InstructionCategory[] = [
 
 
 export const MeasurementsForm: InputField[] = [
+  {
+    name: "Randomize",
+    required: false,
+    label: "Randomize",
+    type: 'switch'
+  },
   {
     name: "messageId",
     required: true,

@@ -105,6 +105,6 @@ export interface EventInstruction extends GeoCoordinate, Instruction2 {
 }
 
 export interface SleepInstruction extends Instruction2 {
-  sleep: number;
+  seconds: number;
   type:InstructionCategory.Sleep;
 }

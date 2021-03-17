@@ -7,6 +7,9 @@
     <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
       <div style="display: flex" (mouseenter)="showBtns=true" (mouseleave)="showBtns=false">
         <button type="button" class="list-group-item" style="display: inline-block" (click)="updateCurrentValue(item)">
+          <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i><span *ngIf="item.type === 'sleep'">&nbsp;Sleep
+            &nbsp;{{ item.seconds }} seconds
+          </span>
           <i *ngIf="item.type === 'builtin' || item.type === 'message'" class="fa fw fa-arrow-right"></i><span
           *ngIf="item.type === 'builtin' && item.messageId === '200'">&nbsp;Custom measurement
           &nbsp;<em>{{item.messageId}}</em>&nbsp;
@@ -28,9 +31,7 @@
     &nbsp;<em>{{item.messageId}}</em>&nbsp;
     <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
   </span>
-  <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i><span *ngIf="item.type === 'sleep'">&nbsp;Sleep
-    &nbsp;{{ item.seconds }} seconds
-  </span></button><button class="delete" *ngIf="showBtns"><i c8y-icon="minus-circle"
+  </button><button class="delete" *ngIf="showBtns"><i c8y-icon="minus-circle"
     class="text-danger fa fw fa-minus-circle" (click)="deleteMeasurementOrSleep(item)"></i></button>
   </div>
   <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [mo]="mo" [commandQueue]="commandQueue" [editedValue]="editedValue"></app-edit-instruction>
