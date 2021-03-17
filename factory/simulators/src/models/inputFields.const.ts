@@ -33,7 +33,7 @@ export const MeasurementsForm: InputField[] = [
   {
     name: "Randomize",
     required: false,
-    label: "Randomize",
+    label: "Randomize Measurements",
     type: 'switch'
   },
   {
