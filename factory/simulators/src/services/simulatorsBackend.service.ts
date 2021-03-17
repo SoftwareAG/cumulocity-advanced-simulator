@@ -9,15 +9,15 @@ import { FetchClient } from "@c8y/ngx-components/api";
 export class SimulatorsBackendService {
   constructor(private alert: AlertService, private http: HttpClient) {}
 
-  connectToSimulatorsBackend(resultTemplate) {
-    const url = "/service/device-simulator/simulators";
+  connectToSimulatorsBackend(resultTemplate, managedObjectId) {
+    const url = `/service/device-simulator/simulators/${managedObjectId}`;
     const httpOptions = {
       headers: new HttpHeaders({
         "Content-Type": "application/json",
       }),
     };
     this.http
-      .post(url, resultTemplate, httpOptions)
+      .put(url, resultTemplate, httpOptions)
       .subscribe((data) => console.log(data));
   }
 }
