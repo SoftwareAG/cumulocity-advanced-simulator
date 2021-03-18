@@ -70,7 +70,11 @@ export class SimulatorEntryComponent implements OnInit {
 
   refreshList() {
     this.simService.getAllDevices().then((simulators) => {
-      this.allSimulators = simulators;
+      this.allSimulators = simulators.sort((entry1, entry2) => {
+        const val1 = entry1.name.toLowerCase();
+        const val2 = entry2.name.toLowerCase();
+        return (val1 < val2) ? -1 : (val1 > val2) ? 1 : 0; 
+      });
     });
   }
 }

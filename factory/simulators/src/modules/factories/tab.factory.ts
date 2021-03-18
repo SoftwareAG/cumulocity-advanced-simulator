@@ -16,21 +16,21 @@ export class CustomTabFactory implements TabFactory {
         
         if (url && (url.match(/\d+/g))) {
             const id = ((url.match(/\d+/g))[0]).toString();
-            tabArray.push(
+            // tabArray.push(
 
-                {
-                    label: 'Instructions',
-                    icon: 'sort-amount-asc',
-                    path: `createSim/${id}/instructions`,
-                    priority: 100
-                },
-                {
-                    label: 'Supported Operations',
-                    icon: 'gamepad',
-                    path: `createSim/${id}/operations`,
-                    priority: 99
-                }
-            );
+            //     {
+            //         label: 'Instructions',
+            //         icon: 'sort-amount-asc',
+            //         path: `createSim/${id}/instructions`,
+            //         priority: 100
+            //     },
+            //     {
+            //         label: 'Supported Operations',
+            //         icon: 'gamepad',
+            //         path: `createSim/${id}/operations`,
+            //         priority: 99
+            //     }
+            // );
         }
         return tabArray;
     }

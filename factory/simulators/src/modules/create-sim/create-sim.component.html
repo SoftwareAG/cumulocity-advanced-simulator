@@ -107,7 +107,7 @@
     <button class="transparent" aria-controls="collapseBasic" (click)="item.active = !item.active"
     [attr.aria-expanded]="item.active"><i c8yIcon="caret-down"></i>
     </button>
-    <ng-container *ngIf="item.fragment && item.series"
+    <ng-container *ngIf="item.type === 'Measurement'"
       ><h4>Measurement Series</h4>
     </ng-container
     >
