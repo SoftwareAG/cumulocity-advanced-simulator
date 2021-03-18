@@ -6,7 +6,7 @@
       <option *ngFor="let first of defaultConfig">{{ first }}</option>
     </select>
     <select style="margin-top:-5px;margin-left:20px;max-width:200px;display:inline-block;" class="selectpicker" [(ngModel)]="smartRestSelectedConfig" *ngIf="isSmartRestSelected">
-      <option value="" disabled [selected]="!smartRestSelectedConfig">Select your Smart-Rest-Template</option>
+      <option value="default" disabled>Select your Smart-Rest-Template</option>
       <option *ngFor="let first of smartRestConfig" [ngValue]="first">
         {{first.smartRestFields.msgId}}&nbsp;{{first.smartRestFields.name }}
       </option>
@@ -85,12 +85,14 @@
               <select
                 class="form-control"
                 style="max-width: 200px; margin-right: 20px; float: right"
-                [(ngModel)]="selectedColor"
-              >
+                [(ngModel)]="selectedColor">
+                <option disabled value="#fff">
+                  Select Color
+                </option>
+
                 <option
                   *ngFor="let entry of reducedColors"
-                  [style.background]="entry"
-                >
+                  [style.background]="entry">
                   {{ entry }}
                 </option>
               </select>

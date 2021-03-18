@@ -67,7 +67,7 @@ export class SimSettingsComponent implements OnInit {
   @Input() smartRestConfig;
   @Input() id;
 
-  smartRestSelectedConfig;
+  smartRestSelectedConfig = 'default';
   smartRestInstructionsArray: SmartRestInstruction[] = [];
 
   @Input() set series(value: SeriesInstruction) {
@@ -124,7 +124,7 @@ export class SimSettingsComponent implements OnInit {
         return;
       }
     }
-
+    this.instructionValue.color = this.selectedColor;
     this.instructionValue.type = this.defaultConfig[index];
     switch (this.defaultConfig[index]) {
       case InstructionCategory.Measurement:
