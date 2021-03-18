@@ -8,6 +8,7 @@ import { InstructionService } from "./Instruction.service";
 import { Instruction, InstructionCategory } from "@models/instruction.model";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
+import { SleepService } from "./sleep.service";
 
 @Injectable({
   providedIn: "root",
@@ -41,7 +42,8 @@ export class SimulatorSettingsService {
     private measurementService: MeasurementsService,
     private instructionService: InstructionService,
     private alarmsService: AlarmsService,
-    private eventsService: EventsService
+    private eventsService: EventsService,
+    private sleepService: SleepService,
   ) {}
 
   fetchAllSeries(mo: CustomSimulator): Promise<any[]> {
@@ -125,6 +127,7 @@ export class SimulatorSettingsService {
     }
     this.generateAlarms();
     this.generateEvents();
+    this.generateSleeps();
     return this.resultTemplate.commandQueue;
   }
 
@@ -147,11 +150,21 @@ export class SimulatorSettingsService {
     }
   }
 
+  generateSleeps() {
+    if (
+      this.sleepService.sleeps.length &&
+      !this.resultTemplate.commandQueue.length
+    ) {
+      this.resultTemplate.commandQueue.push(...this.sleepService.generateSleep());
+    }
+  }
+
   resetUsedArrays() {
     this.measurementService.measurements = [];
     this.measurementService.uniqueMeasurementsArray = [];
     this.alarmsService.alarms = [];
     this.eventsService.events = [];
+    this.sleepService.sleeps = [];
     this.allSeries = [];
   }
 

@@ -66,7 +66,7 @@ export class InstructionService {
       case "Sleep":
         commandQueueEntry = {
           type: "sleep",
-          seconds: instruction.sleep,
+          seconds: instruction.seconds,
         } as CommandQueueEntry;
         break;
       case "SmartRest":
@@ -133,7 +133,7 @@ export class InstructionService {
     if (commandQueueEntry.type === CommandQueueType.sleep) {
       return {
         type: InstructionCategory.Sleep,
-        sleep: commandQueueEntry.seconds,
+        seconds: commandQueueEntry.seconds,
       };
     }
     if (commandQueueEntry.messageId === MessageIds.Measurement) {

@@ -40,7 +40,15 @@
 
           <div class="row">
             <ng-container *ngFor="let entry of form">
-              <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden">
+              <div class="col-xs-12" *ngIf="entry.type === 'switch'">
+                <label class="c8y-switch">
+                  <input type="checkbox"  [ngModel]="randomize" (ngModelChange)="randomize=!randomize"/>
+                  <span></span><em>{{entry.label}}</em>
+                </label>
+                <br>
+              </div>
+              
+              <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
                 <div class="form-group">
                   <label>{{ entry.label }}</label>
                   <div
@@ -61,6 +69,7 @@
                       </select>
                     </div>
                   </div>
+
                   <input
                     *ngIf="entry.type === 'textField'"
                     id="{{ entry.name }}"

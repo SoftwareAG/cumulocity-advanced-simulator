@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -24,7 +23,7 @@ import {
   InstructionCategory,
   SeriesInstruction,
   SeriesMeasurementInstruction,
-  SmartRestIns,
+  SleepInstruction,
   SmartRestInstruction,
 } from "@models/instruction.model";
 import { MeasurementsService } from "@services/measurements.service";
@@ -33,9 +32,8 @@ import { CommandQueueEntry } from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
 import { EventsService } from "@services/events.service";
 import { SmartRESTService } from "@services/smartREST.service";
-import { SimpleChanges } from "@angular/core";
-import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { Alert, AlertService } from "@c8y/ngx-components";
+import { SleepService } from "@services/sleep.service";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -60,6 +58,7 @@ export class SimSettingsComponent implements OnInit {
   templateCtx: { item: SeriesInstruction };
   isSmartRestSelected = false;
   smartRestViewModel = {};
+  randomize = false;
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
@@ -71,12 +70,11 @@ export class SimSettingsComponent implements OnInit {
   smartRestInstructionsArray: SmartRestInstruction[] = [];
 
   @Input() set series(value: SeriesInstruction) {
-    console.error(value);
     this.selectedSeries = value;
+    this.selectedConfig = this.selectedSeries.type;
     this.instructionValue = value;
     this.templateCtx = { item: this.selectedSeries };
     if (this.selectedSeries.type === InstructionCategory.SmartRest) {
-      console.log(this.selectedSeries);
       this.isSmartRestSelected = true;
       this.smartRestSelectedConfig = this.selectedSeries.config;
       this.smartRestInstruction = this.selectedSeries.instruction;
@@ -99,17 +97,22 @@ export class SimSettingsComponent implements OnInit {
     private alarmService: AlarmsService,
     private eventsService: EventsService,
     private smartRESTService: SmartRESTService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private sleepService: SleepService,
   ) {}
 
   ngOnInit() {}
 
-  updateSeries(index:number) {
+  updateSeries(index: number) {
     for (const entry of this.allForms[index]) {
       if (entry.defaultValue && !this.instructionValue[entry.name]) {
         this.instructionValue[entry.name] = entry.defaultValue;
       }
-      if (!entry.hidden && entry.required === true && !this.instructionValue[entry.name]) {
+      if (
+        !entry.hidden &&
+        entry.required === true &&
+        !this.instructionValue[entry.name]
+      ) {
         this.alertService.add({
           text: `Not all the required fields are filled.`,
           type: "danger",
@@ -147,8 +150,12 @@ export class SimSettingsComponent implements OnInit {
           this.instructionValue as EventInstruction
         );
         break;
+      case InstructionCategory.Sleep:
+        this.sleepService.pushToSleeps(
+          this.instructionValue as SleepInstruction
+        );
+        break;
       case InstructionCategory.SmartRest:
-        console.log(this.smartRestSelectedConfig);
         break;
     }
     this.simSettings.allSeries.push(this.instructionValue);
@@ -157,6 +164,7 @@ export class SimSettingsComponent implements OnInit {
 
   generateRequest() {
     this.allInstructionsSeries = [];
+    this.simSettings.randomSelected = this.randomize;
     const template = this.simSettings.generateRequest();
     this.commandQueue.push(...template);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
@@ -176,7 +184,7 @@ export class SimSettingsComponent implements OnInit {
   }
 
   onChangeConfig(value) {
-    this.isSmartRestSelected = (value === InstructionCategory.SmartRest);
+    this.isSmartRestSelected = value === InstructionCategory.SmartRest;
   }
 
   saveSmartRestTemplateToCommandQueue() {
