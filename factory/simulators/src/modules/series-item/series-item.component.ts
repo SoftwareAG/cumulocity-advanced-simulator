@@ -17,6 +17,7 @@ import {
   SeriesEventsForm,
   SeriesSleepForm,
 } from "@models/inputFields.const";
+import { InstructionService } from "@services/Instruction.service";
 
 @Component({
   selector: "app-series-item",
@@ -40,16 +41,10 @@ export class SeriesItemComponent implements OnInit {
   @Input() id;
 
   @Input() set series(value: SeriesInstruction) {
-    console.log(value);
     this.selectedSeries = value;
-    this.selectedConfig = this.selectedSeries.type;
+    this.selectedConfig = this.selectedSeries.type;    
     this.instructionValue = value;
-    this.setLabelsForSelected();
-    if (this.selectedSeries.type === InstructionCategory.SmartRest) {
-      this.isSmartRestSelected = true;
-      this.smartRestSelectedConfig = this.selectedSeries.config;
-      this.smartRestInstruction = this.selectedSeries.instruction;
-    }
+    this.setLabelsForSelected(); 
   }
 
   get series() {
@@ -58,7 +53,7 @@ export class SeriesItemComponent implements OnInit {
 
   @Input() commandQueue: CommandQueueEntry[];
   @Input() mo;
-  constructor() {}
+  constructor(private instructionService: InstructionService) {}
 
   ngOnInit() {}
 
@@ -73,16 +68,22 @@ export class SeriesItemComponent implements OnInit {
         this.form = SeriesAlarmsForm;
         break;
       case "Sleep":
-        this.icon = 'moon-o';
+        this.icon = 'clock-o';
         this.form = SeriesSleepForm;
         break;
       case "BasicEvent":
-        this.icon = 'tachometer';
+        this.icon = 'tasks';
         this.form = SeriesBasicEventsForm;
         break;
       case "LocationUpdateEvent":
         this.icon = 'globe';
         this.form = SeriesEventsForm;
+        break;
+      case "SmartRest":
+        this.icon = "sitemap";
+        this.smartRestSelectedConfig = this.selectedSeries.config;
+        this.smartRestInstruction = this.selectedSeries.instruction;
+        this.form = this.instructionService.createSmartRestDynamicForm(this.smartRestInstruction);
         break;
     }
   }

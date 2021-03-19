@@ -1,7 +1,7 @@
 <div class="list-group-item list-item">
     <div class="row">
-      <div style="display:flex;">
-      <h4 class="col-xs-2 text-truncate"><i [attr.c8yIcon]="'icon'"></i>&nbsp;{{selectedSeries.type}}</h4>
+      <div style="display:flex; justify-content: space-between;">
+      <h4 class="col-xs-2 text-truncate"[title]="selectedSeries.type"><i [c8yIcon]="icon"></i>&nbsp;{{selectedSeries.type}}</h4>
       <ng-container *ngFor="let entry of form">
         <!-- <div class="col-xs-12" *ngIf="entry.type === 'switch'">
           <label class="c8y-switch">
@@ -10,10 +10,10 @@
           </label>
           <br>
         </div> -->
-        
+        <ng-container *ngIf="selectedSeries.type !== 'SmartRest'">
         <div [class]="'col-xs-'+ (12 / (form.length) | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
           <div class="form-group">
-            <label>{{ entry.label }}</label>
+            <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
             <div
               class="form-group form-group-md"
               *ngIf="entry.type === 'select'"
@@ -47,6 +47,19 @@
           </div>
           
         </div>
+      </ng-container>
+      <ng-container *ngIf="selectedSeries.type === 'SmartRest'">
+        <div [class]="'col-md-2'">
+          <label class="text-truncate" [title]="entry.label">{{entry.label}}</label>
+          <input
+              *ngIf="entry.type === 'textField'"
+              id="{{ entry.name }}"
+              [required]="entry.required"
+              class="form-control"
+              [(ngModel)]="smartRestInstruction[entry.name]"
+            />
+        </div>
+      </ng-container>
       </ng-container>
       <div class="dropdown settings" style="float: right;" dropdown >
         <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
