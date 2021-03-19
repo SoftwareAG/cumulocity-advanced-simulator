@@ -30,6 +30,7 @@ import { CustomOperationComponent } from "@modules/supported-operations/custom-o
 import { IsValuePipe } from "./src/shared/isValue.pipe";
 import { ToStringPipe } from "./src/shared/toString.pipe";
 import { WarningModalComponent } from "@modules/shared/warning-modal/warning-modal.component";
+import { SeriesItemComponent } from "@modules/series-item/series-item.component";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -87,7 +88,8 @@ const appRoutes: Routes = [
     SupportedOperationsComponent,
     CustomOperationComponent,
     IsValuePipe,
-    ToStringPipe
+    ToStringPipe,
+    SeriesItemComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -102,6 +104,7 @@ const appRoutes: Routes = [
     ShowInstructionComponent,
     SupportedOperationsComponent, 
     CustomOperationComponent,
+    SeriesItemComponent
   ],
   providers: [ThemeService],
 
