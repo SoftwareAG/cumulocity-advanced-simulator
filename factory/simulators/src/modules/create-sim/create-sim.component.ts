@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
 import { CommandQueueEntry } from "@models/commandQueue.model";
+import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
 import { MeasurementsService } from "@services/measurements.service";
@@ -16,6 +17,7 @@ import { isEqual } from "lodash";
   styleUrls: ["./create-sim.component.less"],
 })
 export class CreateSimComponent implements OnInit {
+  warningModal: Modal;
   readyToStartSimulator = false;
   allInstructionsSeries = [];
   alarmSeries = [];
@@ -135,6 +137,15 @@ export class CreateSimComponent implements OnInit {
   }
 
   delete(value) {
+    if(!this.warningModal){
+      this.warningModal = { 
+        title: 'Delete Series',
+        type: 'warning',
+        message: '',
+        options: ['','']
+     };
+     return;
+    }
     var index = this.allInstructionsSeries.indexOf(value);
     if (index !== -1) {
       this.allInstructionsSeries.splice(index, 1);

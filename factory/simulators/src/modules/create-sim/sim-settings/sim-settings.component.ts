@@ -66,7 +66,7 @@ export class SimSettingsComponent implements OnInit {
   @Input() smartRestConfig;
   @Input() id;
 
-  smartRestSelectedConfig = 'default';
+  smartRestSelectedConfig;
   smartRestInstructionsArray: SmartRestInstruction[] = [];
 
   @Input() set series(value: SeriesInstruction) {

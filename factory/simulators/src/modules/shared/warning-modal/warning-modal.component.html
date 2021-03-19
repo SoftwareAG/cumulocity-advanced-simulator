@@ -1,0 +1,21 @@
+<div class="modal-dialog modal-sm">
+  <div class="modal-content">
+    <div class="c8y-prompt alert alert-warning" ng-class="[colorStatusClass()]">
+      <h3 class="bottom-m-md">
+        <i c8y-icon="exclamation-triangle" class="fa fw fa-exclamation-triangle"></i>
+        <span ng-show="title">{{modal.title}}</span>
+      </h3>
+      <p class="text-wrap" ng-bind-html="body | translate" style="word-wrap: break-word">
+        {{modal.message}}
+      </p>
+      <div class="alert-footer">
+        <button title="Cancel" class="btn btn-default" ng-hide="labels.cancel === null" ng-click="dismiss()">
+          Cancel
+        </button>
+        <button title="Delete" class="btn btn-primary" ng-click="checkboxes.length > 0 ? close(vals) : close(1)">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
