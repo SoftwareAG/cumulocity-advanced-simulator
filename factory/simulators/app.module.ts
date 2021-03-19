@@ -29,6 +29,7 @@ import { CommandQueueStatisticsComponent } from "@modules/command-queue-statisti
 import { CustomOperationComponent } from "@modules/supported-operations/custom-operation/custom-operation.component";
 import { IsValuePipe } from "./src/shared/isValue.pipe";
 import { ToStringPipe } from "./src/shared/toString.pipe";
+import { SeriesItemComponent } from "@modules/series-item/series-item.component";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -85,7 +86,8 @@ const appRoutes: Routes = [
     SupportedOperationsComponent,
     CustomOperationComponent,
     IsValuePipe,
-    ToStringPipe
+    ToStringPipe,
+    SeriesItemComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -99,6 +101,7 @@ const appRoutes: Routes = [
     ShowInstructionComponent,
     SupportedOperationsComponent, 
     CustomOperationComponent,
+    SeriesItemComponent
   ],
   providers: [ThemeService],
 
