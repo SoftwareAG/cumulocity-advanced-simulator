@@ -35,6 +35,7 @@ export class CreateSimComponent implements OnInit {
   editedValue;
   deletedMeasurement;
   simulatorTitle: string;
+  searchString: string;
   invalidSimulator = false;
 
   constructor(
