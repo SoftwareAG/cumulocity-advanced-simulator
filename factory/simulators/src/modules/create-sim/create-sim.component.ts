@@ -37,6 +37,7 @@ export class CreateSimComponent implements OnInit {
   simulatorTitle: string;
   searchString: string;
   invalidSimulator = false;
+  editMode = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -181,6 +182,13 @@ export class CreateSimComponent implements OnInit {
 
       // TODO: add call to save to backend
     }
+  }
+
+  editSimulatorTitle() {
+    this.editMode = false;
+    this.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
+    this.mo.name = this.simulatorTitle;
+    this.simService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res.name));
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {
