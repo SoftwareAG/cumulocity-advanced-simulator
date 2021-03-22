@@ -39,6 +39,8 @@ export class SeriesItemComponent implements OnInit {
 
   @Input() smartRestConfig;
   @Input() id;
+  @Input() index;
+  @Input() allInstructionsSeries;
 
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
@@ -64,7 +66,7 @@ export class SeriesItemComponent implements OnInit {
         this.form = SeriesMeasurementsForm;
         break;
       case "Alarm":
-        this.icon = 'bell-o';
+        this.icon = 'bell';
         this.form = SeriesAlarmsForm;
         break;
       case "Sleep":
@@ -86,5 +88,16 @@ export class SeriesItemComponent implements OnInit {
         this.form = this.instructionService.createSmartRestDynamicForm(this.smartRestInstruction);
         break;
     }
+  }
+
+  duplicateSeries() {
+    console.log(this.index);
+    console.log(this.selectedSeries);   
+    console.log(this.allInstructionsSeries[this.index]);   
+
+  }
+
+  deleteSeries() {
+
   }
 }

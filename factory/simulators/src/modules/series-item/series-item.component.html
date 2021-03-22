@@ -1,8 +1,9 @@
-<div class="list-group-item list-item">
+<div class="list-group-item list-item" >
     <div class="row">
       <div style="display:flex; justify-content: space-between;">
-      <h4 class="col-xs-2 text-truncate"[title]="selectedSeries.type"><i [c8yIcon]="icon"></i>&nbsp;{{selectedSeries.type}}</h4>
+      <h4 class="col-xs-2 text-truncate"[title]="selectedSeries.type" ><i [c8yIcon]="icon"></i>&nbsp;{{selectedSeries.type}}</h4>
       <ng-container *ngFor="let entry of form">
+        
         <!-- <div class="col-xs-12" *ngIf="entry.type === 'switch'">
           <label class="c8y-switch">
             <input type="checkbox"  [ngModel]="randomize" (ngModelChange)="randomize=!randomize"/>
@@ -61,18 +62,19 @@
         </div>
       </ng-container>
       </ng-container>
+      
       <div class="dropdown settings" style="float: right;" dropdown >
         <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
           <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
           <li>
-            <button type="button">
+            <button type="button"(click)="duplicateSeries()">
               <i c8yIcon="copy"></i> Duplicate Series
             </button>
           </li>
           <li>
-            <button type="button">
+            <button type="button" (click)="deleteSeries()">
               <i c8yIcon="trash"></i> Delete Series
             </button>
           </li>

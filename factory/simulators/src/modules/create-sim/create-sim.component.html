@@ -1,4 +1,8 @@
-<c8y-title>{{ simulatorTitle }}</c8y-title>
+<c8y-title>
+  <span *ngIf="!editMode">{{simulatorTitle}}</span>
+  <input *ngIf="editMode" [(ngModel)]="simulatorTitle"  (focusout)="editSimulatorTitle()">&nbsp;&nbsp;
+  <i c8yIcon="edit" style="font-size: small;" (click)="editMode=true"></i>
+</c8y-title>
 <c8y-action-bar-item [placement]="'right'" [itemClass]="'btn'">
   <button class="btn btn-primary" title="This duplicates all values but in reverse order" (click)="createSinusWave()">Mirror Y Axis</button>
 </c8y-action-bar-item>
@@ -36,7 +40,7 @@
     </div>
     -->
 
-    <div class="settings">
+    <div >
       <app-sim-settings
         [mo]="mo"
         [header]="addseries"
@@ -46,6 +50,33 @@
         (allSeriesEmitter)="updateAllSeries($event)"
       ></app-sim-settings>
 
+      
+      <div class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;">
+        <div style="display: flex; float: left;  padding: 5px; margin: 5px">
+        <i c8yIcon="server" style="font-size: larger;"></i>
+        &nbsp;&nbsp;<h4>Series</h4>
+      </div>
+      <div class="filter">
+      <div id="filter" class="input-group input-group-search" style="padding: 5px" >
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Filter…"
+          [(ngModel)]="searchString"
+        />
+        <span class="input-group-addon">
+          <i c8yIcon="filter" *ngIf="!searchString || searchString.length === 0"></i>
+          <i
+            c8yIcon="times"
+            class="text-muted"
+            *ngIf="searchString && searchString.length > 0"
+            (click)="data.searchString = ''"
+          ></i>
+        </span>
+      </div>
+      </div>
+    </div>
+    <div class="settings">
       <ng-container>
         <div style="height: 500px;">
         <div *ngFor="let first of allInstructionsSeries; let i = index" >
@@ -58,11 +89,13 @@
             [smartRestConfig]="smartRestConfig"
             [isExpanded]="first.active"
           ></app-sim-settings> -->
-          <app-series-item [series]="first"></app-series-item>
+          <app-series-item [series]="first" [index]="i" [allInstructionsSeries]="allInstructionsSeries"
+          [commandQueue]="commandQueue"></app-series-item>
         </div>
       </div>
       </ng-container>
     </div>
+  </div>
 
     <div *ngIf="false" class="col-sm-8">
       <br />

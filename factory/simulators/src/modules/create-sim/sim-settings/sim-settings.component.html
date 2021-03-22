@@ -1,5 +1,5 @@
 <div class="card" [style.background]="selectedColor">
-  <div class="card-block">
+  <div class="card-header separator">
     <ng-container *ngTemplateOutlet="header; context: templateCtx"></ng-container>
     <select  style="margin-top:-5px;margin-left:20px;max-width:200px;display:inline-block;" class="form-control" [(ngModel)]="selectedConfig" (ngModelChange)="onChangeConfig($event)">
       <option value="" disabled selected>Select Instruction Type</option>
@@ -11,10 +11,12 @@
         {{first.smartRestFields.msgId}}&nbsp;{{first.smartRestFields.name }}
       </option>
     </select>
-    <br>
-    <br>
+  </div>
+    <!-- <br>
+    <br> -->
     
     <div *ngIf="isExpanded">
+      <div class="card-block">
       <!--
       <ng-container  *ngIf="false">
         <label class="c8y-switch">
