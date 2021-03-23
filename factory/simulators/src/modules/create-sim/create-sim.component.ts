@@ -216,4 +216,32 @@ export class CreateSimComponent implements OnInit {
       ? (this.viewNewSeries = true)
       : (this.viewNewSeries = false);
   }
+
+
+  height = window.innerHeight*0.7;
+  y = 100;
+  oldY = 0;
+  grabber = false;
+
+  onMouseMove(event: MouseEvent) {
+    if (!this.grabber) {
+      return;
+    }
+    this.resizer(event.clientY - this.oldY);
+    this.oldY = event.clientY;
+  }
+
+  onMouseUp(event: MouseEvent) {
+    this.grabber = false;
+  }
+
+  resizer(offsetY: number) {
+    this.height += offsetY;
+  }
+
+  onMouseDown(event: MouseEvent) {
+    this.grabber = true;
+    this.oldY = event.clientY;
+  }
+
 }

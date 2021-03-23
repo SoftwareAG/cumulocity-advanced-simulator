@@ -52,7 +52,7 @@
                     </div>
                   </div>
                   <input *ngIf="entry.type === 'textField'" id="{{entry.name}}" [required]="entry.required" class="form-control" [(ngModel)]="instructionValue[entry.name]"
-                  placeholder="{{entry.placeholder}} {{(entry.required) ? '(required)' : '(optional)'}}">
+                  placeholder="{{entry.placeholder}}">
                 </div>
               </div>
             </ng-container>

@@ -44,30 +44,30 @@ export const MeasurementsForm: InputField[] = [
     defaultValue: MessageIds.Measurement
   },
   {
-    name: "fragment",
-    label: "Fragment:",
-    placeholder: "Value",
+    name: "series",
+    label: "Series:",
+    placeholder: "Vehicles, Airplanes",
     required: true,
     type: "textField"
   },
   {
-    name: "series",
-    label: "Series:",
-    placeholder: "Value",
+    name: "fragment",
+    label: "Fragment:",
+    placeholder: "Speed, Distance, Velocity",
     required: true,
     type: "textField"
   },
   {
     name: "value",
     label: "Value:",
-    placeholder: "Value",
+    placeholder: "Measurement",
     required: true,
     type: "textField"
   },
   {
     name: "unit",
     label: "Unit:",
-    placeholder: "Value",
+    placeholder: "KM, °C, %, mph",
     required: true,
     type: "textField"
   }
@@ -78,21 +78,21 @@ export const SeriesMeasurementsForm: InputField[] = [
   {
     name: "minValue",
     label: "Minimum:",
-    placeholder: "Value",
+    placeholder: "Lowest Measurement",
     required: true,
     type: "textField"
   },
   {
     name: "maxValue",
     label: "Maximum:",
-    placeholder: "Value",
+    placeholder: "Highest Measurement",
     required: true,
     type: "textField"
   },
   {
     name: "steps",
     label: "Steps:",
-    placeholder: "Value",
+    placeholder: "Number of values between min and max",
     required: true,
     type: "textField"
   },
@@ -101,7 +101,7 @@ export const SeriesMeasurementsForm: InputField[] = [
 export const AlarmsForm: InputField[] = [
   {
     name: "messageId",
-    placeholder: "",
+    placeholder: "Severity",
     required: true,
     label: "Alarm Category",
     type: "select",
@@ -114,14 +114,14 @@ export const AlarmsForm: InputField[] = [
   {
     name: "alarmType",
     label: "Alarm Type",
-    placeholder: "Alarm Type",
+    placeholder: "Motor Failure",
     type: "textField",
     required: true,
   },
   {
     name: "alarmText",
     label: "Alarm Text",
-    placeholder: "Alarm Text",
+    placeholder: "The motor overheated please let it cooldown",
     type: "textField",
     required: true,
   },
@@ -141,14 +141,14 @@ export const BasicEventsForm: InputField[] = [
   {
     name: "eventType",
     label: "Event Type",
-    placeholder: "Event Type",
+    placeholder: "The device restarted",
     required: true,
     type: "textField",
   },
   {
     name: "eventText",
     label: "Event Text",
-    placeholder: "Event Text",
+    placeholder: "A planned restart was executed at 12pm",
     required: true,
     type: "textField",
   },
@@ -170,21 +170,21 @@ export const EventsForm: InputField[] = [
   {
     name: "altitude",
     label: "Altitude",
-    placeholder: "Altitude",
+    placeholder: "658.4",
     required: true,
     type: "textField",
   },
   {
     name: "longitude",
     label: "Longitude",
-    placeholder: "Longitude",
+    placeholder: "8.6349013",
     required: true,
     type: "textField",
   },
   {
     name: "latitude",
     label: "Latitude",
-    placeholder: "Latitude",
+    placeholder: "49.8143",
     required: true,
     type: "textField",
   },

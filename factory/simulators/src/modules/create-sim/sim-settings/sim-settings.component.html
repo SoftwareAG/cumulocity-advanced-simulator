@@ -80,9 +80,7 @@
                     [required]="entry.required"
                     class="form-control"
                     [(ngModel)]="instructionValue[entry.name]"
-                    placeholder="{{ entry.placeholder }} {{
-                      entry.required ? '(required)' : '(optional)'
-                    }}"
+                    placeholder="{{ entry.placeholder }}"
                   />
                 </div>
               </div>
@@ -136,7 +134,7 @@
                 [required]="true"
                 [(ngModel)]="smartRestInstruction[entry.path+'_min']"
                 class="form-control"
-                placeholder="minimum (required)"
+                placeholder="minimum"
                 />
               </div>
               <div class="col-xs-6">
@@ -146,7 +144,7 @@
                 [required]="true"
                 [(ngModel)]="smartRestInstruction[entry.path+'_max']"
                   class="form-control"
-                  placeholder="maximum (required)"
+                  placeholder="maximum"
                   />
               </div>
             </div>
@@ -160,7 +158,6 @@
         [required]="true"
         [(ngModel)]="smartRestInstruction['steps']"
         class="form-control"
-        placeholder="(required)"
       />
     </ng-container>
         <br>

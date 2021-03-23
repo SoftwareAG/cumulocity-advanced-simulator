@@ -1,3 +1,4 @@
+<section [ngClass]="(grabber) ? 'noselect' : ''" (mousemove)="onMouseMove($event)">
 <c8y-title>
   <span *ngIf="!editMode">{{simulatorTitle}}</span>
   <input *ngIf="editMode" [(ngModel)]="simulatorTitle"  (focusout)="editSimulatorTitle()">&nbsp;&nbsp;
@@ -7,7 +8,7 @@
     <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i></button>
     All Simulators
   </c8y-action-bar-item>
-<div class="row main-div" style="resize: vertical;overflow: auto;height: 70vh;">
+<div class="row main-div" [style.height.px]='height'>
   <!--
   <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
     <div class="btn-group" role="group" *ngFor="let item of actionButtons">
@@ -22,8 +23,8 @@
       </button>
     </div>
   </c8y-action-bar-item>-->
-  <div class="col-lg-8" style="height:100%;">
-<!--
+  <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
+  <!--
     <div class="tight-grid">
       <div class="col-xs-6">
         <button class="btn-add-block" (click)="viewNewSeries = !viewNewSeries">
@@ -106,7 +107,7 @@
     </div>
   </div>
 
-  <div class="col-lg-4" style="height:100%;">
+  <div class="col-lg-4" style="overflow-y:scroll; height:100%;">
     <app-show-instruction
       [mo]="mo"
       (getInvalidSimulator)="getCurrentSimulatorState($event)"
@@ -114,6 +115,7 @@
       (currentViewState)="updateViewState($event)"
     ></app-show-instruction>
   </div>
+  <div id="grabber" [style.top.px]='height - 9' (mouseup)="onMouseUp($event)" (mousedown)="onMouseDown($event)"></div>
 </div>
 
 
@@ -220,3 +222,4 @@
 
 <app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
 <ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>
+</section>
