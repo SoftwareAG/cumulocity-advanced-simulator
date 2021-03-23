@@ -29,6 +29,7 @@ import { CommandQueueStatisticsComponent } from "@modules/command-queue-statisti
 import { CustomOperationComponent } from "@modules/supported-operations/custom-operation/custom-operation.component";
 import { IsValuePipe } from "./src/shared/isValue.pipe";
 import { ToStringPipe } from "./src/shared/toString.pipe";
+import { WarningModalComponent } from "@modules/shared/warning-modal/warning-modal.component";
 import { SeriesItemComponent } from "@modules/series-item/series-item.component";
 import { SeriesListComponent } from "@modules/series-item/series-list/series-list.component";
 
@@ -79,6 +80,7 @@ const appRoutes: Routes = [
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
+    WarningModalComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
@@ -96,6 +98,7 @@ const appRoutes: Routes = [
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
+    WarningModalComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,

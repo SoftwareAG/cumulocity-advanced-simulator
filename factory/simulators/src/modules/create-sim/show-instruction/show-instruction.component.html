@@ -1,39 +1,44 @@
+<h3>Work with a single Instruction</h3>
+<br>
 <div class="alert alert-warning" *ngIf="warning" style="max-width:100%;display:inline-block;" role="alert">
   <strong>{{warning.title}}</strong> {{warning.message}}
 </div>
 <app-edit-instruction *ngIf="!editedValue" [mo]="mo" [commandQueue]="commandQueue"></app-edit-instruction>
 <!-- {{resultTemplate.commandQueue | json }} -->
-  <section style="height: calc(100% - 110px);overflow-y: scroll;">
-    <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
-      <div style="display: flex" (mouseenter)="showBtns=true" (mouseleave)="showBtns=false">
-        <button type="button" class="list-group-item" style="display: inline-block" (click)="updateCurrentValue(item)">
-          <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i><span *ngIf="item.type === 'sleep'">&nbsp;Sleep
-            &nbsp;{{ item.seconds }} seconds
-          </span>
+<section style="height: calc(100% - 110px);overflow-y: scroll;">
+  <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
+    <div style="display: flex">
+      <button class="list-group-item" (click)="updateCurrentValue(item)" >
+        <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i>
+        <span *ngIf="item.type === 'sleep'">&nbsp;Sleep
+          &nbsp;{{ item.seconds }} seconds
+        </span>
           <i *ngIf="item.type === 'builtin' || item.type === 'message'" class="fa fw fa-arrow-right"></i><span
           *ngIf="item.type === 'builtin' && item.messageId === '200'">&nbsp;Custom measurement
           &nbsp;<em>{{item.messageId}}</em>&nbsp;
           <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
         </span>
         <span
-        *ngIf="item.type === 'builtin' && (item.messageId === '301' || item.messageId === '302' || item.messageId === '303')">&nbsp;Custom
-        alarm &nbsp;<em>{{item.messageId}}</em>&nbsp;
-        <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
-      </span>
-      <span
-      *ngIf="item.type === 'builtin' && (item.messageId === '400' || item.messageId === '401' || item.messageId === '402')">&nbsp;Custom
-      event &nbsp;<em>{{item.messageId}}</em>&nbsp;
-      <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
-    </span>
-    <span
-    *ngIf="item.type === 'message'">&nbsp;SmartREST Template
-    &nbsp;<em>{{item.templateId}}</em>&nbsp; /
-    &nbsp;<em>{{item.messageId}}</em>&nbsp;
-    <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
-  </span>
-  </button><button class="delete" *ngIf="showBtns"><i c8y-icon="minus-circle"
-    class="text-danger fa fw fa-minus-circle" (click)="deleteMeasurementOrSleep(item)"></i></button>
-  </div>
-  <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [mo]="mo" [commandQueue]="commandQueue" [editedValue]="editedValue"></app-edit-instruction>
-</ng-container>
+          *ngIf="item.type === 'builtin' && (item.messageId === '301' || item.messageId === '302' || item.messageId === '303')">&nbsp;Custom
+          alarm &nbsp;<em>{{item.messageId}}</em>&nbsp;
+          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+        </span>
+        <span
+          *ngIf="item.type === 'builtin' && (item.messageId === '400' || item.messageId === '401' || item.messageId === '402')">&nbsp;Custom
+          event &nbsp;<em>{{item.messageId}}</em>&nbsp;
+          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+        </span>
+        <span
+          *ngIf="item.type === 'message'">&nbsp;SmartREST Template
+          &nbsp;<em>{{item.templateId}}</em>&nbsp; /
+          &nbsp;<em>{{item.messageId}}</em>&nbsp;
+          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+        </span>
+        <button  class="delete">
+          <i class="fa fw fa-trash" (click)="deleteMeasurementOrSleep(item)"></i>
+        </button>
+      </button>
+    </div>
+    <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [mo]="mo" [commandQueue]="commandQueue" [editedValue]="editedValue"></app-edit-instruction>
+  </ng-container>
 </section>

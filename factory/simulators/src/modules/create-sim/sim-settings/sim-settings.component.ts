@@ -129,7 +129,7 @@ export class SimSettingsComponent implements OnInit {
         return;
       }
     }
-
+    this.instructionValue.color = this.selectedColor;
     this.instructionValue.type = this.defaultConfig[index];
     let val = this.instructionValue;
     switch (this.defaultConfig[index]) {

@@ -3,11 +3,9 @@
   <input *ngIf="editMode" [(ngModel)]="simulatorTitle"  (focusout)="editSimulatorTitle()">&nbsp;&nbsp;
   <i c8yIcon="edit" style="font-size: small;" (click)="editMode=true"></i>
 </c8y-title>
-<c8y-action-bar-item [placement]="'right'" [itemClass]="'btn'">
-  <button class="btn btn-primary" (click)="createSinusWave()">Sinus Wave</button>
-</c8y-action-bar-item>
   <c8y-action-bar-item [placement]="'left'" [itemClass]="'btn'">
     <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i></button>
+    All Simulators
   </c8y-action-bar-item>
 <div class="row main-div" style="resize: vertical;overflow: auto;height: 70vh;">
   <!--
@@ -101,25 +99,61 @@
   </div>
 </div>
 
-<div class="row" *ngIf="this.commandQueue.length && !this.invalidSimulator">
-  <h1>Overview and Estimations</h1>
-  <div class="col-xs-6">
-    <h3>Just one Cycle</h3>
-    <app-simulator-chart></app-simulator-chart>
+
+<div class="row" style="margin-top:40px;">
+  <h3>Configure Simulator</h3>
+  <div class="col-xs-4">
+    <button title="Add sleep" class="btn-add-block" title="This duplicates all values but in reverse order" (click)="createSinusWave()">
+      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Mirror Y Axis
+    </button>
   </div>
-  <div class="col-xs-6">
-    <h3>Multiple Runthroughs</h3>
-    <app-simulator-chart [numberOfRuns]="3"></app-simulator-chart>
+  <div class="col-xs-4">
+    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
+      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Open Device Management
+    </button>
+  </div>
+  <div class="col-xs-4">
+    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
+      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Start Simulator
+    </button>
   </div>
 </div>
 
-<div class="row" style="margin-bottom:150px;" *ngIf="this.commandQueue.length && !this.invalidSimulator">
+
+<div class="row" style="margin-top:40px;" *ngIf="this.commandQueue.length && !this.invalidSimulator">
+  <div class="col-xs-12">
+  <h3>Dashboard / Simulation</h3>
+  <br>
+  <div class="card-group interact-grid">
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" *ngFor="let entry of [1,3]">
+
+      <div class="card">
+        <!-- Card header containing the title, make sure you always add text-truncate -->
+        <div class="card-header separator text-truncate">
+          <div class="card-title" title="BeagleBone Black">
+            {{ (entry === 1) ? 'Just one Cycle' : 'Multiple Runthroughs'}}
+          </div>
+        </div>
+
+      <div class="card-block">
+        <app-simulator-chart [numberOfRuns]="entry"></app-simulator-chart>
+      </div>
+      
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+
+<div class="row" style="margin:40px 0px 150px 0px;" *ngIf="this.commandQueue.length && !this.invalidSimulator">
   <div class="col-xs-12">
     <app-command-queue-statistics></app-command-queue-statistics>
   </div>
 </div>
 
-
+<!--
 <ng-template #addedSeries let-item="item">
     <button class="transparent" aria-controls="collapseBasic" (click)="item.active = !item.active"
     [attr.aria-expanded]="item.active"><i c8yIcon="caret-down"></i>
@@ -163,6 +197,9 @@
       class="collapse"
       [collapse]="!item.active"
       [isAnimated]="true"
-    ></div>-->
+    ></div>
 </ng-template>
+<ng-template #addseries><h4>Add Series</h4></ng-template>-->
+
+<app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
 <ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>

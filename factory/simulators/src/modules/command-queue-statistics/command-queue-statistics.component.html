@@ -1,33 +1,86 @@
-<h3 style="margin-top:50px;">Calculations:</h3>
-<div class="row">
-  
-  <div class="col-xs-12">
-    <b>Time needed for one loop:</b>&nbsp;<span>{{timeForOneLoop}}s</span><br>
-    <b>Possible runthroughs per minute:</b>&nbsp;<span>{{runthroughsPerMinute}}</span><br>
-    <b>Possible runthroughs per hour:</b>&nbsp;<span>{{runthroughsPerHour}}</span><br>
-    <b>Possible runthroughs per day:</b>&nbsp;<span>{{runthroughsPerDay}}</span><br>
-  </div>
 
-  <div class="col-xs-4" *ngFor="let entry of measurementCategory">
-    <div class="row" style="margin-top:50px;">
-      <div class="col-xs-12">
-        <h3>Sum for <b>{{entry.identifier}}</b>:</h3>
-        <div>
-          <b>SUM of one loop: </b><span>{{entry.value}} {{entry.unit}}</span><br>
-          <b>SUM of per minute: </b><span>{{entry.runthroughsPerMinute}} {{entry.unit}}</span><br>
-          <b>SUM of per hour: </b><span>{{entry.runthroughsPerHour}} {{entry.unit}}</span><br>
-          <b>SUM of per day: </b><span>{{entry.runthroughsPerDay}} {{entry.unit}}</span><br>
+<h3>Statistcs about the Simulator</h3>
+<br>
+<div class="card-group interact-grid">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card">
+      <!-- Card header containing the title, make sure you always add text-truncate -->
+      <div class="card-header separator text-truncate">
+        <div class="card-icon">
+          <i c8y-icon="c8y-group-open" class="c8y-icon c8y-icon-group-open"></i>
         </div>
-        <br>
-        <h4><b>Additionals:</b></h4>
-        <div>
-          <b>AVG: </b><span>{{entry.avg / commandQueue.length | number: '1.0-2'}} {{entry.unit}}</span><br>
-          <b>Lowest Value: </b><span>{{entry.lowest}}</span><br>
-          <b>Highest Value: </b><span>{{entry.highest}}</span><br>
+        <!-- Always add the title attribute -->
+        <div class="card-title" title="BeagleBone Black">
+          General Information
         </div>
       </div>
+  
+      <!-- Card content -->
+      <!-- you may use the grid classes to structure the content horizontally -->
+      <div class="card-block">
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Time for one loop: </label> <b>{{timeForOneLoop}}s</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Runthroughs per minute: </label> <b>{{runthroughsPerMinute}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Runthroughs per hour: </label> <b>{{runthroughsPerHour}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Runthroughs per day: </label> <b>{{runthroughsPerDay}}</b>
+        </div>
+      </div>
+  
     </div>
   </div>
-
 </div>
 
+
+<h3>Calculations about Measurements</h3>
+<br>
+<div class="card-group interact-grid">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let entry of measurementCategory">
+    <div class="card">
+      <!-- Card header containing the title, make sure you always add text-truncate -->
+      <div class="card-header separator text-truncate">
+        <div class="card-icon">
+          <i c8y-icon="c8y-group-open" class="c8y-icon c8y-icon-group-open"></i>
+        </div>
+        <!-- Always add the title attribute -->
+        <div class="card-title" title="BeagleBone Black">
+          {{entry.identifier}}
+        </div>
+      </div>
+
+      <!-- Card content -->
+      <!-- you may use the grid classes to structure the content horizontally -->
+      <div class="card-block">
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Sum of one loop: </label> <b>{{entry.value}} {{entry.unit}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Sum per minute: </label> <b>{{entry.runthroughsPerMinute}} {{entry.unit}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Sum per hour: </label> <b>{{entry.runthroughsPerHour}} {{entry.unit}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Sum per day: </label> <b>{{entry.runthroughsPerDay}} {{entry.unit}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Average: </label> <b>{{entry.avg / commandQueue.length | number: '1.0-2'}} {{entry.unit}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Lowest: </label> <b>{{entry.lowest}}</b>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-truncate">
+          <label class="small ng-binding">Highest: </label> <b>{{entry.highest}}</b>
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>
