@@ -45,6 +45,7 @@
         [mo]="mo"
         [header]="addseries"
         [commandQueue]="commandQueue"
+        [allInstructionsSeries]="allInstructionsSeries"
         [isExpanded]="true"
         [smartRestConfig]="smartRestConfig"
         (allSeriesEmitter)="updateAllSeries($event)"
@@ -76,25 +77,7 @@
       </div>
       </div>
     </div>
-    <div class="settings">
-      <ng-container>
-        <div style="height: 500px;">
-        <div *ngFor="let first of allInstructionsSeries; let i = index" >
-          <!-- <app-sim-settings
-            [id]="'app-sim-settings_'+ i | toString"
-            [mo]="mo"
-            [header]="addedSeries"
-            [series]="first"
-            [commandQueue]="commandQueue"
-            [smartRestConfig]="smartRestConfig"
-            [isExpanded]="first.active"
-          ></app-sim-settings> -->
-          <app-series-item [series]="first" [index]="i" [allInstructionsSeries]="allInstructionsSeries"
-          [commandQueue]="commandQueue"></app-series-item>
-        </div>
-      </div>
-      </ng-container>
-    </div>
+    <app-series-list [instructionsSeries]="allInstructionsSeries" [commandQueue]="commandQueue"></app-series-list>
   </div>
 
     <div *ngIf="false" class="col-sm-8">

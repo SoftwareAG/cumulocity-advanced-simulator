@@ -1,0 +1,12 @@
+<div class="settings">
+  <ng-container>
+    <div style="height: 500px;">
+    <div *ngFor="let first of instructionsSeries; let i = index" >
+      <app-series-item
+      [id]="'app-sim-settings_'+ i | toString"
+      [series]="first" [index]="i" 
+    ></app-series-item>
+    </div>
+  </div>
+  </ng-container>
+</div>

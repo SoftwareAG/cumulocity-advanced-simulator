@@ -67,19 +67,13 @@ export class CreateSimComponent implements OnInit {
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
+    this.allInstructionsSeries = this.mo.c8y_Series;
 
     this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
       this.deletedMeasurement = data;
       this.deleteSeries(data);
     });
 
-    this.simSettings.fetchAllSeries(this.mo).then((res) => {
-      this.allInstructionsSeries = res.map((entry) => ({
-        ...entry,
-        active: false,
-      }));
-      console.log(this.allInstructionsSeries);
-    });
 
     const filter = {
       withTotalPages: true,

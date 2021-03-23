@@ -34,8 +34,9 @@ export class SimulatorSettingsService {
 
   commandQueue: CommandQueueEntry[] = [];
 
-  allSeries = [];
+  // allSeries = [];
   allTypesSeries = [];
+  allInstructionsArray = [];
 
   constructor(
     private helperService: HelperService,
@@ -131,6 +132,12 @@ export class SimulatorSettingsService {
     return this.resultTemplate.commandQueue;
   }
 
+  generateInstructions() {
+    const template = this.generateRequest();
+    this.commandQueue.push(...template);
+    return this.commandQueue;
+  }
+
   generateAlarms() {
     if (
       this.alarmsService.alarms.length &&
@@ -165,7 +172,12 @@ export class SimulatorSettingsService {
     this.alarmsService.alarms = [];
     this.eventsService.events = [];
     this.sleepService.sleeps = [];
-    this.allSeries = [];
+    this.allInstructionsArray = [];
+  }
+
+  pushToInstructionsArray(instructionValue) {
+    this.allInstructionsArray.push(instructionValue);
+    console.log('instructions array', this.allInstructionsArray);
   }
 
 }
