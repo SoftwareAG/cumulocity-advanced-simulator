@@ -15,6 +15,7 @@
                 <ng-container *ngIf="selectedSeries.type !== 'SmartRest'">
                   <div
                     [class]="'col-xs-' + (12 / form.length | number: '1.0-0')"
+                    id = "{{entry.path + '_'+ id}}"
                     *ngIf="!entry.hidden && !(entry.type === 'switch')"
                   >
                     <div class="form-group">
@@ -43,7 +44,7 @@
 
                       <input
                         *ngIf="entry.type === 'textField'"
-                        id="{{ entry.name }}"
+                        id="{{ entry.name + '_'+ id}}"
                         [required]="entry.required"
                         class="form-control"
                         [(ngModel)]="instructionValue[entry.name]"
@@ -61,7 +62,7 @@
                     }}</label>
                     <input
                       *ngIf="entry.type === 'textField'"
-                      id="{{ entry.name }}"
+                      id="{{ entry.name + '_' + id}}"
                       [required]="entry.required"
                       class="form-control"
                       [(ngModel)]="smartRestInstruction[entry.name]"
