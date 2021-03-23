@@ -1,4 +1,5 @@
 import { IManagedObject } from "@c8y/client";
+import { CommandQueueEntry } from "./commandQueue.model";
 export interface SimulatorModel {
   id: string;
   name: string;
@@ -26,7 +27,7 @@ export interface CustomSimulator extends IManagedObject {
   name: string;
   c8y_CustomSim: {};
   c8y_DeviceSimulator?: {
-    commandQueue?: { type: string; messageId: string; values: string[]}[] | {type: string; sleep: number} [];
+    commandQueue?: CommandQueueEntry[];
     instances?: number;
     name?: string;
     id?: string;

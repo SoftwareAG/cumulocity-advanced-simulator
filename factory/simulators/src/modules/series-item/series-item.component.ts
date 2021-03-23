@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from "@angular/core";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import {
   AlarmInstruction,
@@ -18,6 +18,7 @@ import {
   SeriesSleepForm,
 } from "@models/inputFields.const";
 import { InstructionService } from "@services/Instruction.service";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 
 @Component({
   selector: "app-series-item",
@@ -55,7 +56,8 @@ export class SeriesItemComponent implements OnInit {
 
   @Input() commandQueue: CommandQueueEntry[];
   @Input() mo;
-  constructor(private instructionService: InstructionService) {}
+  @Output() deleteIndex = new EventEmitter<string>();
+  constructor(private instructionService: InstructionService, private simSettingsService: SimulatorSettingsService) {}
 
   ngOnInit() {}
 
@@ -98,6 +100,6 @@ export class SeriesItemComponent implements OnInit {
   }
 
   deleteSeries() {
-
+    this.simSettingsService.deleteSeries(this.index.toString());
   }
 }

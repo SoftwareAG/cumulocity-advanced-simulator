@@ -6,6 +6,7 @@ import { CommandQueueEntry } from "@models/commandQueue.model";
 import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
@@ -50,7 +51,8 @@ export class CreateSimComponent implements OnInit {
     private simService: SimulatorsServiceService,
     private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private updateService: ManagedObjectUpdateService
   ) {}
 
   getCurrentSimulatorState(event: boolean) {
@@ -66,10 +68,11 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.updateService.setManagedObject(this.mo);
+    this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
+    this.commandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
-    this.allInstructionsSeries = this.mo.c8y_Series;
+    this.allInstructionsSeries = this.updateService.mo.c8y_Series;
 
     this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
       this.deletedMeasurement = data;
@@ -124,6 +127,10 @@ export class CreateSimComponent implements OnInit {
     this.editedVal = val.editedValue;
   }
 
+  onClearAllInstructions() {
+
+  }
+
   createSinusWave() {
     console.log("create sinuswave");
     for (let i = this.commandQueue.length - 1; i >= 0; i--) {
@@ -147,8 +154,8 @@ export class CreateSimComponent implements OnInit {
       this.allInstructionsSeries.splice(index, 1);
     }
     console.log(this.allInstructionsSeries);
-    this.mo.c8y_Series = this.allInstructionsSeries;
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+    this.updateService.mo.c8y_Series = this.allInstructionsSeries;
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const alert = {
         text: `Instruction Series deleted successfully.`,
         type: "success",
@@ -191,9 +198,9 @@ export class CreateSimComponent implements OnInit {
 
   editSimulatorTitle() {
     this.editMode = false;
-    this.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
-    this.mo.name = this.simulatorTitle;
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res.name));
+    this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
+    this.updateService.mo.name = this.simulatorTitle;
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => console.log(res));
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {

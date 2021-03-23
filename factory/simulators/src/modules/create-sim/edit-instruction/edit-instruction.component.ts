@@ -14,6 +14,7 @@ import { InstructionService } from "@services/Instruction.service";
 import { Instruction, Instruction2, InstructionCategory } from "@models/instruction.model";
 import { CommandQueueEntry } from "@models/commandQueue.model";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 
 @Component({
   selector: "app-edit-instruction",
@@ -41,7 +42,8 @@ export class EditInstructionComponent implements OnInit {
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
     private instructionService: InstructionService,
-    private updateInstructionService: UpdateInstructionsService
+    private updateInstructionService: UpdateInstructionsService,
+    private updateService: ManagedObjectUpdateService
   ) { }
 
   ngOnInit() {
@@ -80,6 +82,7 @@ export class EditInstructionComponent implements OnInit {
     
     if(this.displayAddView){
       if(this.commandQueueEntryIndex){ 
+        commandQueueEntry.index = 'single';
         this.commandQueue.splice(this.commandQueueEntryIndex+1, 0, commandQueueEntry);
       }else{
         this.commandQueue.push(commandQueueEntry);
@@ -88,8 +91,8 @@ export class EditInstructionComponent implements OnInit {
       this.commandQueue[this.commandQueueEntryIndex] = commandQueueEntry;
     }
 
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, this.defaultConfig[index]);
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.updateService.mo, this.defaultConfig[index]);
     this.simSettings.setCommandQueue(this.commandQueue);
   }
 
@@ -132,8 +135,8 @@ export class EditInstructionComponent implements OnInit {
 
   onDuplicateInstruction() {
     this.commandQueue.splice(this.commandQueueEntryIndex, 0, JSON.parse(JSON.stringify(this.commandQueue[this.commandQueueEntryIndex])));
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, 'Duplication');
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateCommandQueueInManagedObject(this.updateService.mo, 'Duplication');
     this.simSettings.setCommandQueue(this.commandQueue);
   }
 
@@ -158,9 +161,9 @@ export class EditInstructionComponent implements OnInit {
 
   updateCommandQueue(newCommandQueue) {
     this.commandQueue = newCommandQueue;
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.simulatorervice
-      .updateSimulatorManagedObject(this.mo)
+      .updateSimulatorManagedObject(this.updateService.mo)
       .then((result) => console.log(result));
   }
 

@@ -35,6 +35,7 @@ import { SmartRESTService } from "@services/smartREST.service";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { SleepService } from "@services/sleep.service";
 import { CustomSimulator } from "@models/simulator.model";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -101,6 +102,7 @@ export class SimSettingsComponent implements OnInit {
     private smartRESTService: SmartRESTService,
     private alertService: AlertService,
     private sleepService: SleepService,
+    private updateService: ManagedObjectUpdateService
   ) {}
 
   ngOnInit() {}
@@ -169,9 +171,9 @@ export class SimSettingsComponent implements OnInit {
 
   generateRequest() {
     this.simSettingsService.randomSelected = this.randomize;
-    this.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
-    this.mo.c8y_Series.push(...this.simSettingsService.allInstructionsArray);
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
+    this.updateService.mo.c8y_Series.push(...this.simSettingsService.allInstructionsArray);
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       console.log(res);
       Object.keys(this.instructionValue).forEach((key) => this.instructionValue[key] = '');
       this.selectedConfig = '';
@@ -203,8 +205,8 @@ export class SimSettingsComponent implements OnInit {
 
     // this.mo.c8y_Series.push(...this.simSettings.allSeries);
     this.commandQueue.push(...cmdQ);
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const alert = {
         text: `Smart REST instructions created successfully.`,
         type: "success",
