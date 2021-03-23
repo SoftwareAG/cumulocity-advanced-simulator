@@ -201,7 +201,7 @@ export const SeriesEventsForm: InputField[] = [...EventsForm];
 
 export const SleepForm: InputField[] = [
   {
-    name: "sleep",
+    name: "seconds",
     label: "Sleep (in Seconds)",
     placeholder: "Sleep (in Seconds)",
     required: true,
