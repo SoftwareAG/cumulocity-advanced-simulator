@@ -73,19 +73,25 @@ export class ShowInstructionComponent implements OnInit {
   }
 
   deleteMeasurementOrSleep(item) {
-    const pos = this.commandQueue.findIndex((entry) => entry === item);
-    this.commandQueue.splice(pos, 1);
-    this.currentCommandQueue.emit(this.commandQueue);
-    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
+    const pos = this.indexedCommandQueue.findIndex((entry) => entry === item);
+    this.indexedCommandQueue.splice(pos, 1);
+    this.currentCommandQueue.emit(this.indexedCommandQueue);
+    let commandQueue = this.simSettings.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
+    let indices = this.mo.c8y_Indices.splice(pos, 1);
+    this.updateService.updateMOCommandQueueAndIndices(commandQueue, indices);
+    this.simSettings.updateAll(this.indexedCommandQueue, commandQueue, indices);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
+      const alertText = `Instruction deleted successfully!`;
+      this.updateService.simulatorUpdateFeedback('success', alertText);
       console.info('deleted entry');
       this.checkIfAtLeastOneSleepIsSet();
-      this.simSettings.setCommandQueue(this.commandQueue);
+      this.simSettings.setIndexedCommandQueueUpdate();
     });
   }
 
   updateCurrentValue(value) {
     this.editedValue = value;
+    console.log('display index ',value);
     this.currentValue.emit(value);
   }
 

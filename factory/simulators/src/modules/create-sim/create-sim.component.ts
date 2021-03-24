@@ -12,6 +12,8 @@ import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { isEqual } from "lodash";
+import { ThemeService } from "ng2-charts";
+import { Subscription } from "rxjs";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
@@ -42,6 +44,8 @@ export class CreateSimComponent implements OnInit {
   invalidSimulator = false;
   editMode = false;
   commandQueueIndices = [];
+  indexedCommandQueue = [];
+  instructionsSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -67,6 +71,9 @@ export class CreateSimComponent implements OnInit {
     this.router.navigate(["/"]);
   }
   ngOnInit() {
+    this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
+      this.allInstructionsSeries = instructions;
+    });
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
     this.updateService.setManagedObject(this.mo);
@@ -75,12 +82,14 @@ export class CreateSimComponent implements OnInit {
     this.commandQueueIndices = this.updateService.mo.c8y_Indices;
     this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
     this.simSettings.setCommandQueue(this.commandQueue);
+    this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.allInstructionsSeries = this.updateService.mo.c8y_Series;
+    this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
 
-    this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
-      this.deletedMeasurement = data;
-      this.deleteSeries(data);
-    });
+    // this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
+    //   this.deletedMeasurement = data;
+    //   this.deleteSeries(data);
+    // });
 
 
     const filter = {
@@ -220,4 +229,11 @@ export class CreateSimComponent implements OnInit {
       ? (this.viewNewSeries = true)
       : (this.viewNewSeries = false);
   }
+
+  ngOnDestroy() {
+    if (this.instructionsSubscription) {
+      this.instructionsSubscription.unsubscribe();
+    }
+  }
+
 }

@@ -9,17 +9,24 @@ import { Instruction, InstructionCategory } from "@models/instruction.model";
 import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
+import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SimulatorSettingsService {
+  allTypesSeries = [];
+  allInstructionsArray = [];
   commandQueueUpdate = new BehaviorSubject<CommandQueueEntry[]>([]);
   commandQueueUpdate$ = this.commandQueueUpdate.asObservable();
 
   
   indexedCommandQueueUpdate = new BehaviorSubject<IndexedCommandQueueEntry[]>([]);
   indexedCommandQueueUpdate$ = this.indexedCommandQueueUpdate.asObservable();
+
+  instructionsSeriesUpdate = new BehaviorSubject([]);
+  instructionsSeriesUpdate$ = this.instructionsSeriesUpdate.asObservable();
+
   resultTemplate = { commandQueue: [], name: "" };
   
   alarmConfig = [
@@ -40,8 +47,7 @@ export class SimulatorSettingsService {
   indexedCommandQueue: IndexedCommandQueueEntry[] = [];
 
   // allSeries = [];
-  allTypesSeries = [];
-  allInstructionsArray = [];
+  
 
   constructor(
     private helperService: HelperService,
@@ -50,6 +56,7 @@ export class SimulatorSettingsService {
     private alarmsService: AlarmsService,
     private eventsService: EventsService,
     private sleepService: SleepService,
+    private updateService: ManagedObjectUpdateService
   ) {}
 
   fetchAllSeries(mo: CustomSimulator): Promise<any[]> {
@@ -67,6 +74,16 @@ export class SimulatorSettingsService {
     this.indexedCommandQueue = this.commandQueue.map((entry, index) => ({...entry, index:this.indices[index]}));
     console.log('indexedCommandQueue', this.indexedCommandQueue);
     this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
+  }
+
+  setAllInstructionsSeries(allInstructions) {
+    this.allInstructionsArray = allInstructions;
+    this.updateService.updateMOInstructionsArray(this.allInstructionsArray);
+    this.setInstructionsUpdate();
+  }
+
+  setInstructionsUpdate() {
+    this.instructionsSeriesUpdate.next(this.allInstructionsArray);
   }
 
   generateRequest() {
@@ -122,9 +139,7 @@ export class SimulatorSettingsService {
     const template = this.generateRequest();
     this.indexedCommandQueue.push(...template);
     this.indices = this.indexedCommandQueue.map((entry) => entry.index);
-    let arrayOfCommandQueueEntries = [];
-    this.indexedCommandQueue.forEach((entry) => arrayOfCommandQueueEntries.push(this.removeIndices(entry)));
-    this.commandQueue = arrayOfCommandQueueEntries;
+    this.commandQueue = this.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
     this.setIndexedCommandQueueUpdate();
     return this.commandQueue;
   }
@@ -133,8 +148,18 @@ export class SimulatorSettingsService {
     return this.indices;
   }
 
+  getIndexedCommandQueue() {
+    return this.indexedCommandQueue;
+  }
+
   removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
     return (({index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
+  }
+
+  removeIndicesFromIndexedCommandQueueArray(indexedCommandQueueArray: IndexedCommandQueueEntry[]): CommandQueueEntry[] {
+    let commandQueueWithoutIndices = [];
+    indexedCommandQueueArray.forEach((entry) => commandQueueWithoutIndices.push(this.removeIndices(entry)));
+    return commandQueueWithoutIndices;
   }
 
   setIndexedCommandQueueUpdate() {
@@ -203,10 +228,10 @@ export class SimulatorSettingsService {
     return index;
   }
 
-  deleteSeries(index: string) {
-    const cq = this.indexedCommandQueue.filter((entry) => entry.index !== index);
-    // this.all
-    // this.setCommandQueue(cq); --->>> TODO: Change the implementation
+  updateAll(indexedCommandQueue: IndexedCommandQueueEntry[], commandQueue: CommandQueueEntry[], indices: string[]) {
+    this.indexedCommandQueue = indexedCommandQueue;
+    this.commandQueue = commandQueue;
+    this.indices = indices;
   }
 
 }
