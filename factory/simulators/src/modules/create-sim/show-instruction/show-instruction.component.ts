@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IManagedObject } from "@c8y/client";
-import { CommandQueueEntry, CommandQueueType } from '@models/commandQueue.model';
+import { CommandQueueEntry, CommandQueueType, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { EditedMeasurement } from '@models/editedMeasurement.model';
 import { InputField } from '@models/inputFields.const';
 import { InstructionCategory, SmartInstruction } from '@models/instruction.model';
@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
 export class ShowInstructionComponent implements OnInit {
   @Input() mo;
   public commandQueue: CommandQueueEntry[] = [];
+  public indexedCommandQueue: IndexedCommandQueueEntry[] = [];
   private commandQueueSubscription: Subscription;
 
   editedValue: CommandQueueEntry;
@@ -46,10 +47,10 @@ export class ShowInstructionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.commandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
-      this.commandQueue = commandQueue;
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed: IndexedCommandQueueEntry[]) => {
+      this.indexedCommandQueue = indexed;
       this.checkIfAtLeastOneSleepIsSet();
-      console.error('commandQueue Change', JSON.stringify(this.commandQueue));
+      console.error('commandQueue Change', JSON.stringify(this.indexedCommandQueue));
     });
   }
 

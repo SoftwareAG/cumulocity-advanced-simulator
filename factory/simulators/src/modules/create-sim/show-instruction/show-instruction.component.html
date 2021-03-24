@@ -6,7 +6,7 @@
 <app-edit-instruction *ngIf="!editedValue" [mo]="mo" [commandQueue]="commandQueue"></app-edit-instruction>
 <!-- {{resultTemplate.commandQueue | json }} -->
 <section style="height: calc(100% - 110px);overflow-y: scroll;">
-  <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
+  <ng-container *ngFor="let item of indexedCommandQueue; let i; of: commandQueue.length" [style.background]="item.color">
     <div style="display: flex">
       <button class="list-group-item" (click)="updateCurrentValue(item)" >
         <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i>

@@ -82,7 +82,7 @@ export class EditInstructionComponent implements OnInit {
     
     if(this.displayAddView){
       if(this.commandQueueEntryIndex){ 
-        commandQueueEntry.index = 'single';
+        // commandQueueEntry.index = 'single';--->>> TODO: Fix this!!!!
         this.commandQueue.splice(this.commandQueueEntryIndex+1, 0, commandQueueEntry);
       }else{
         this.commandQueue.push(commandQueueEntry);

@@ -172,6 +172,7 @@ export class SimSettingsComponent implements OnInit {
   generateRequest() {
     this.simSettingsService.randomSelected = this.randomize;
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
+    this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray();
     this.updateService.mo.c8y_Series.push(...this.simSettingsService.allInstructionsArray);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       console.log(res);

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CommandQueueEntry } from '@models/commandQueue.model';
 import { AlarmInstruction } from '@models/instruction.model';
 import { CustomSimulator } from '@models/simulator.model';
 
@@ -35,10 +36,10 @@ public fetchAlarms(mo: CustomSimulator): Promise<any[]> {
 } 
 
 generateAlarms() {
-  let toBePushed = [];
+  let toBePushed: CommandQueueEntry;
   for (let alarm of this.alarms.filter((a) => a.alarmText)) {
     let typeToNumber = { Major: 302, Critical: 301, Minor: 303 };
-    toBePushed.push(JSON.parse(this.toAlarmTemplateFormat(alarm)));
+    toBePushed = (JSON.parse(this.toAlarmTemplateFormat(alarm)));
     // FIXME: Add sleep 
     
     // if (

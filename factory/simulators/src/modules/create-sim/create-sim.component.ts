@@ -41,6 +41,7 @@ export class CreateSimComponent implements OnInit {
   searchString: string;
   invalidSimulator = false;
   editMode = false;
+  commandQueueIndices = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -71,6 +72,8 @@ export class CreateSimComponent implements OnInit {
     this.updateService.setManagedObject(this.mo);
     this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
+    this.commandQueueIndices = this.updateService.mo.c8y_Indices;
+    this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
     this.simSettings.setCommandQueue(this.commandQueue);
     this.allInstructionsSeries = this.updateService.mo.c8y_Series;
 
