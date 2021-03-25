@@ -48,12 +48,11 @@ export class SeriesItemComponent implements OnInit {
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
-
   @Input() smartRestConfig;
   @Input() id;
   @Input() index;
-  @Input() allInstructionsSeries;
-  @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
+  allInstructionsSeries;
+  indexedCommandQueue: IndexedCommandQueueEntry[];
 
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
@@ -72,7 +71,7 @@ export class SeriesItemComponent implements OnInit {
   constructor(
     private instructionService: InstructionService,
     private simSettingsService: SimulatorSettingsService,
-    private updateService: ManagedObjectUpdateService
+    private updateService: ManagedObjectUpdateService,
   ) {}
 
   ngOnInit() {}
@@ -117,22 +116,35 @@ export class SeriesItemComponent implements OnInit {
   }
 
   deleteSeries() {
-    const indexOfItem = this.indexedCommandQueue[this.index].index;
-    const filteredIndexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfItem);
-    let indices = this.simSettingsService.getUpdatedIndicesArray();
-    const filteredIndices = indices.filter((entry) => entry !== indexOfItem);
-    let commandQueue = this.simSettingsService.removeIndicesFromIndexedCommandQueueArray(
-      filteredIndexedCommandQueue
-    );
-    this.simSettingsService.updateAll(filteredIndexedCommandQueue, commandQueue, filteredIndices);
+    this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
-    this.allInstructionsSeries.splice(this.index, 1);
+    console.log(this.allInstructionsSeries);
+    const indexOfItem = this.selectedSeries.index;
+    const filtered = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfItem);
+    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(filtered);
+    this.allInstructionsSeries = this.allInstructionsSeries.filter((entry) => entry !== this.instructionValue);
     this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
-    this.simSettingsService.setIndexedCommandQueueUpdate();
-    this.updateService.updateMOCommandQueueAndIndices(commandQueue, filteredIndices);
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
-      const alertText = `Instruction series has been deleted successfully.`;
-      this.updateService.simulatorUpdateFeedback('success', alertText);
-    });
+    this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
+    this.updateService.updateMOInstructionsArray(this.simSettingsService.allInstructionsArray);
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {console.log(res);
+    this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries)});
+    
+  }
+
+  updateSeries() {
+   this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
+
+   if (this.instructionValue.type !== 'SmartRest') {
+     const indexOfSeries = this.selectedSeries.index;
+     let itemPos = this.indexedCommandQueue.findIndex((entry) => entry.index === indexOfSeries);
+     this.indexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfSeries);
+     this.instructionService.pushToSeriesArrays(this.instructionValue.type, this.instructionValue);
+     let template = this.simSettingsService.generateRequest();
+     template.map((entry) => entry.index = indexOfSeries);
+     this.indexedCommandQueue.splice(itemPos, 0, ...template);
+     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+     this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
+     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => console.log(res));
+   }
   }
 }

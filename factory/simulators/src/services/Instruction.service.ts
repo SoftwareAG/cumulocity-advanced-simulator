@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { AlarmService, MeasurementService } from "@c8y/client";
 import {
   CommandQueueEntry,
   CommandQueueType,
@@ -6,17 +7,27 @@ import {
 } from "@models/commandQueue.model";
 import { InputField } from "@models/inputFields.const";
 import {
+  AlarmInstruction,
+  BasicEventInstruction,
+  EventInstruction,
   Instruction,
   Instruction2,
   InstructionCategory,
+  SeriesMeasurementInstruction,
+  SleepInstruction,
   SmartInstruction,
 } from "@models/instruction.model";
+import { AlarmsService } from "./alarms.service";
+import { EventsService } from "./events.service";
+import { MeasurementsService } from "./measurements.service";
+import { SleepService } from "./sleep.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class InstructionService {
-  constructor() {}
+  constructor(private measurementsService: MeasurementsService,
+    private alarmService: AlarmsService, private eventsService: EventsService, private sleepService: SleepService) {}
   SmartRestArray = [];
 
   private commandQueueEntryTemplate(
@@ -77,6 +88,39 @@ export class InstructionService {
       commandQueueEntry.color = instruction.color;
     }
     return commandQueueEntry;
+  }
+
+  pushToSeriesArrays(type: string, instructionValue: Instruction2) {
+    switch (type) {
+      
+      case InstructionCategory.Measurement:
+        this.measurementsService.pushToMeasurements(
+          instructionValue as SeriesMeasurementInstruction
+        );
+        break;
+      case InstructionCategory.Alarm:
+        this.alarmService.pushToAlarms(
+          instructionValue as AlarmInstruction
+        );
+        break;
+      case InstructionCategory.BasicEvent:
+        this.eventsService.pushToEvents(
+          instructionValue as BasicEventInstruction
+        );
+        break;
+      case InstructionCategory.LocationUpdateEvent:
+        this.eventsService.pushToEvents(
+          instructionValue as EventInstruction
+        );
+        break;
+      case InstructionCategory.Sleep:
+        this.sleepService.pushToSleeps(
+          instructionValue as SleepInstruction
+        );
+        break;
+      case InstructionCategory.SmartRest:
+        break;
+    }
   }
 
   smartRestInstructionToCommand(

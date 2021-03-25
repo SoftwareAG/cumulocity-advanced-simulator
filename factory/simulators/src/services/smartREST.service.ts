@@ -3,7 +3,7 @@ import {
   CommandQueueEntry,
   CommandQueueType,
 } from "@models/commandQueue.model";
-import { SmartRestInstruction } from "@models/instruction.model";
+import { InstructionCategory, SmartRestInstruction } from "@models/instruction.model";
 import { SmartRest } from "@models/smartREST.model";
 import { HelperService } from "./helper.service";
 
@@ -37,7 +37,7 @@ export class SmartRESTService {
   generateSmartRestRequest(
     smartRestInstructionArray: SmartRestInstruction[],
     smartRESTTemplate: SmartRest
-  ) {
+  ): CommandQueueEntry[]{
     
     smartRestInstructionArray.forEach((instruction) => {
       let vals = [];
@@ -92,5 +92,34 @@ export class SmartRESTService {
   resetCommandQueueArray() {
     this.commandQueueArray = [];
     this.values = [];
+  }
+
+  convertToSmartRestModel(smartRestData: {
+    [key: string]: number | string;
+  }, smartRestSelectedConfig): SmartRestInstruction[] {
+    const smartRestInstructionArray: SmartRestInstruction[] = [];
+    smartRestSelectedConfig.smartRestFields.customValues.forEach(
+      (customValue) => {
+        let obj: SmartRestInstruction = {
+          value: "",
+          steps: "",
+          type: InstructionCategory.SmartRest,
+        };
+        Object.entries(smartRestData).forEach(([key, value]) => {
+          if (key === customValue.path) {
+            obj.value = value as string;
+          } else if (key === customValue.path + "_max") {
+            obj.maxValue = value as string;
+          } else if (key === customValue.path + "_min") {
+            obj.minValue = value as string;
+          } else if (key === "steps") {
+            obj.steps = value as string;
+          }
+        });
+
+        smartRestInstructionArray.push(obj as SmartRestInstruction);
+      }
+    );
+    return smartRestInstructionArray;
   }
 }

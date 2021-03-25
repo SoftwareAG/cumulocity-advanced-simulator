@@ -107,7 +107,7 @@ export class SimulatorSettingsService {
           
           let toBePushed = this.instructionService.instructionToCommand(instruction);
           let index = this.setIndexForCommandQueueEntry();
-          let toBePushedWithIndex = {...toBePushed, index};
+          let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
           
           console.log('toBePushed', toBePushed);
           // const index = this.commandQueue[this.]
@@ -150,6 +150,10 @@ export class SimulatorSettingsService {
 
   getIndexedCommandQueue() {
     return this.indexedCommandQueue;
+  }
+
+  setIndexedCommandQueue(newIndexedCommandQueue: IndexedCommandQueueEntry[]) {
+    this.indexedCommandQueue = newIndexedCommandQueue;
   }
 
   removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
@@ -207,7 +211,7 @@ export class SimulatorSettingsService {
     this.alarmsService.alarms = [];
     this.eventsService.events = [];
     this.sleepService.sleeps = [];
-    this.allInstructionsArray = [];
+    // this.allInstructionsArray = [];
   }
 
   pushToInstructionsArray(instructionValue) {
@@ -217,7 +221,7 @@ export class SimulatorSettingsService {
 
   setIndexForCommandQueueEntry(): string {
     let index;
-    if (!this.commandQueue.length) {
+    if (!this.indexedCommandQueue.length) {
       index = '0';
     } else {
       const lastEntryIndex = this.indexedCommandQueue[this.indexedCommandQueue.length-1].index;
@@ -234,4 +238,12 @@ export class SimulatorSettingsService {
     this.indices = indices;
   }
 
+  updateCommandQueueAndIndicesFromIndexedCommandQueue(indexedCommandQueue: IndexedCommandQueueEntry[]) {
+    this.setIndexedCommandQueue(indexedCommandQueue);
+    let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
+    let indices = this.indexedCommandQueue.map((entry) => entry.index);
+    this.updateAll(indexedCommandQueue, commandQueue, indices);
+    this.setIndexedCommandQueueUpdate();
+  }
+ 
 }

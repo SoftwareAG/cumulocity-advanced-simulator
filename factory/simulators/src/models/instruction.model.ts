@@ -25,6 +25,7 @@ export type SeriesInstruction =
   | SleepInstruction
   | SeriesSmartRestInstruction;
 
+
 export interface Empty {}
 
 export interface Instruction2 {
@@ -38,6 +39,7 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   maxValue: number | string;
   steps: number | string;
   sleep?: number | string;
+  index?: string;
 }
 
 export interface SmartInstruction extends Instruction2 {
@@ -87,6 +89,7 @@ export interface AlarmInstruction extends Instruction2 {
   alarmType: string;
   alarmText: string;
   type: InstructionCategory.Alarm;
+  index?: string;
 }
 
 export interface BasicEventInstruction extends Instruction2 {
@@ -95,6 +98,7 @@ export interface BasicEventInstruction extends Instruction2 {
   eventType: string;
   eventText: string;
   type: InstructionCategory.BasicEvent;
+  index?: string;
 }
 
 export interface EventInstruction extends GeoCoordinate, Instruction2 {
@@ -102,9 +106,11 @@ export interface EventInstruction extends GeoCoordinate, Instruction2 {
   // eventType: string;
   // eventText: string;
   type: InstructionCategory.LocationUpdateEvent;
+  index?: string;
 }
 
 export interface SleepInstruction extends Instruction2 {
   seconds: number;
   type:InstructionCategory.Sleep;
+  index?: string;
 }

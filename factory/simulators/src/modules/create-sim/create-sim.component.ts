@@ -76,6 +76,7 @@ export class CreateSimComponent implements OnInit {
     });
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
+    console.log(this.mo);
     this.updateService.setManagedObject(this.mo);
     this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
@@ -85,7 +86,7 @@ export class CreateSimComponent implements OnInit {
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.allInstructionsSeries = this.updateService.mo.c8y_Series;
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
-
+    // console.log('All Instructions Array ', this.simSettings.allInstructionsArray);
     // this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
     //   this.deletedMeasurement = data;
     //   this.deleteSeries(data);

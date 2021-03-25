@@ -17,6 +17,7 @@ export class SeriesListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // this.instructionsSeries = this.simSettingsService.allInstructionsArray;
      }
 
   ngOnDestroy() {
