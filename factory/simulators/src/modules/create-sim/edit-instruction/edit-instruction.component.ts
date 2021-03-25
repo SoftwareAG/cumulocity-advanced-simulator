@@ -15,6 +15,7 @@ import { Instruction, Instruction2, InstructionCategory } from "@models/instruct
 import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+// import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 
 @Component({
   selector: "app-edit-instruction",
@@ -48,9 +49,6 @@ export class EditInstructionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-  if (this.edit) {
-    console.log('This is edit value', this.edit);
-  }
   }
 
 
@@ -86,28 +84,23 @@ export class EditInstructionComponent implements OnInit {
     if(this.displayAddView){
       let indexedCommandQueueEntry = {...commandQueueEntry, index: 'single'};
       if(this.commandQueueEntryIndex){ 
-        // commandQueueEntry.index = 'single';--->>> TODO: Fix this!!!!
         
         this.indexedCommandQueue.splice(this.commandQueueEntryIndex+1, 0, indexedCommandQueueEntry);
       }else{
         this.indexedCommandQueue.push(indexedCommandQueueEntry);
       }
     }else{
-      // this.indexedCommandQueue[this.commandQueueEntryIndex] = commandQueueEntry;
       if (this.edit) {
-        let ind = this.edit.index;
-        let indexed = {...commandQueueEntry, index : ind} as IndexedCommandQueueEntry;
+        let idx = this.edit.index;
+        let indexed = {...commandQueueEntry, index : idx} as IndexedCommandQueueEntry;
         this.indexedCommandQueue[this.commandQueueEntryIndex] = indexed;
         console.log('Index ', this.indexedCommandQueue[this.commandQueueEntryIndex]);
       }
       
     }
-    let commandQueue = this.simSettings.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
-    let indices = this.indexedCommandQueue.map((entry) => entry.index);
-    this.simSettings.updateAll(this.indexedCommandQueue, commandQueue, indices);
-    this.updateService.updateMOCommandQueueAndIndices(commandQueue, indices);
+
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.updateCommandQueueInManagedObject(this.updateService.mo, this.defaultConfig[index]);
-    this.simSettings.setIndexedCommandQueueUpdate();
   }
 
   

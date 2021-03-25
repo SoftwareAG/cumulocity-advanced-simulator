@@ -71,7 +71,6 @@ export class SimSettingsComponent implements OnInit {
   @Input() id;
 
   smartRestSelectedConfig;
-  smartRestInstructionsArray: SmartRestInstruction[] = [];
 
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
@@ -143,15 +142,14 @@ export class SimSettingsComponent implements OnInit {
     console.log('Assigned index: ', assignedIndex);
     const insVal = JSON.parse(JSON.stringify(this.instructionValue));
     this.simSettingsService.pushToInstructionsArray({...insVal, index: assignedIndex});
-    this.generateRequest(assignedIndex);
+    this.generateRequest();
   }
 
-  generateRequest(assignedIndex: string) {
+  generateRequest() {
     this.simSettingsService.randomSelected = this.randomize;
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
     this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray();
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
-    console.log(this.updateService.mo.c8y_Series);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       console.log(res);
       Object.keys(this.instructionValue).forEach((key) => this.instructionValue[key] = '');
@@ -168,18 +166,14 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-    this.smartRestInstructionsArray = this.smartRESTService.convertToSmartRestModel(
+    let smartRestInstructionsArray = this.smartRESTService.convertToSmartRestModel(
       this.smartRestInstruction, this.smartRestSelectedConfig
     );
     const copy = JSON.parse(JSON.stringify(this.smartRestInstruction));
     const copy1 = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
-    
-    // console.log(combinedSmartInstruction);
-    console.log(this.simSettingsService.allInstructionsArray);
-   
-    // this.simSettingsService.allInstructionsArray.push(combinedSmartInstruction);
+
     const cmdQ = this.smartRESTService.generateSmartRestRequest(
-      this.smartRestInstructionsArray,
+      smartRestInstructionsArray,
       this.smartRestSelectedConfig
     );
     let indexed = this.simSettingsService.indexedCommandQueue;
@@ -194,10 +188,7 @@ export class SimSettingsComponent implements OnInit {
     const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: index})) as IndexedCommandQueueEntry[];
     indexed.push(...indexedCmdQ);
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(indexed);
-    let commandQueue = this.simSettingsService.removeIndicesFromIndexedCommandQueueArray(indexed);
-    this.updateService.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
-    this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray();
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       console.log(res);
       const alert = {
@@ -219,7 +210,7 @@ export class SimSettingsComponent implements OnInit {
       );
       this.simSettingsService.resetUsedArrays();
       this.smartRestInstruction = {};
-      this.smartRestInstructionsArray = [];
+      // this.smartRestInstructionsArray = [];
       this.selectedConfig = '';
       this.isSmartRestSelected = false;
       // this.allInstructionsSeries = [];

@@ -6,6 +6,7 @@ import { EditedMeasurement } from '@models/editedMeasurement.model';
 import { InputField } from '@models/inputFields.const';
 import { InstructionCategory, SmartInstruction } from '@models/instruction.model';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
+// import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { UpdateInstructionsService } from '@services/updateInstructions.service';
@@ -76,10 +77,7 @@ export class ShowInstructionComponent implements OnInit {
     const pos = this.indexedCommandQueue.findIndex((entry) => entry === item);
     this.indexedCommandQueue.splice(pos, 1);
     this.currentCommandQueue.emit(this.indexedCommandQueue);
-    let commandQueue = this.simSettings.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
-    let indices = this.mo.c8y_Indices.splice(pos, 1);
-    this.updateService.updateMOCommandQueueAndIndices(commandQueue, indices);
-    this.simSettings.updateAll(this.indexedCommandQueue, commandQueue, indices);
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const alertText = `Instruction deleted successfully!`;
       this.updateService.simulatorUpdateFeedback('success', alertText);

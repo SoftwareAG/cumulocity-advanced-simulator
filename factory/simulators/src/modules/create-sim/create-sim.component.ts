@@ -7,6 +7,7 @@ import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+// import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
@@ -86,12 +87,6 @@ export class CreateSimComponent implements OnInit {
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.allInstructionsSeries = this.updateService.mo.c8y_Series;
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
-    // console.log('All Instructions Array ', this.simSettings.allInstructionsArray);
-    // this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
-    //   this.deletedMeasurement = data;
-    //   this.deleteSeries(data);
-    // });
-
 
     const filter = {
       withTotalPages: true,

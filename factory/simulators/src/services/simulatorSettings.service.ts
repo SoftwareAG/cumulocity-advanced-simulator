@@ -10,6 +10,7 @@ import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueu
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
+// import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
 
 @Injectable({
   providedIn: "root",
@@ -244,6 +245,7 @@ export class SimulatorSettingsService {
     let indices = this.indexedCommandQueue.map((entry) => entry.index);
     this.updateAll(indexedCommandQueue, commandQueue, indices);
     this.setIndexedCommandQueueUpdate();
+    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices);
   }
  
 }
