@@ -34,6 +34,7 @@ import { EventsService } from "@services/events.service";
 import { SmartRESTService } from "@services/smartREST.service";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { SleepService } from "@services/sleep.service";
+import { CustomSimulator } from "@models/simulator.model";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -52,7 +53,7 @@ export class SimSettingsComponent implements OnInit {
   ];
   smartRestInstruction = {};
   smartRestArr = [];
-  selectedConfig = this.defaultConfig[0];
+  selectedConfig = '';
   instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
   templateCtx: { item: SeriesInstruction };
@@ -86,13 +87,14 @@ export class SimSettingsComponent implements OnInit {
   }
 
   @Input() commandQueue: CommandQueueEntry[];
+  @Input() allInstructionsSeries;
   @Input() mo;
   @Output() allSeriesEmitter = new EventEmitter();
-  allInstructionsSeries = [];
+  // allInstructionsSeries = [];
 
   constructor(
     private simService: SimulatorsServiceService,
-    private simSettings: SimulatorSettingsService,
+    private simSettingsService: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
     private alarmService: AlarmsService,
     private eventsService: EventsService,
@@ -129,7 +131,9 @@ export class SimSettingsComponent implements OnInit {
     }
     this.instructionValue.color = this.selectedColor;
     this.instructionValue.type = this.defaultConfig[index];
+    let val = this.instructionValue;
     switch (this.defaultConfig[index]) {
+      
       case InstructionCategory.Measurement:
         this.measurementsService.pushToMeasurements(
           this.instructionValue as SeriesMeasurementInstruction
@@ -158,28 +162,22 @@ export class SimSettingsComponent implements OnInit {
       case InstructionCategory.SmartRest:
         break;
     }
-    this.simSettings.allSeries.push(this.instructionValue);
+    const insVal = JSON.parse(JSON.stringify(this.instructionValue));
+    this.simSettingsService.pushToInstructionsArray(insVal);
     this.generateRequest();
   }
 
   generateRequest() {
-    this.allInstructionsSeries = [];
-    this.simSettings.randomSelected = this.randomize;
-    const template = this.simSettings.generateRequest();
-    this.commandQueue.push(...template);
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.mo.c8y_Series.push(...this.simSettings.allSeries);
+    this.simSettingsService.randomSelected = this.randomize;
+    this.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
+    this.mo.c8y_Series.push(...this.simSettingsService.allInstructionsArray);
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
-      this.allInstructionsSeries = res.c8y_Series;
-
-      // To update measurementSeries instantly once the instruction has been added,
-      //  measurementSeries is emitted to the parent
-
-      this.allSeriesEmitter.emit(this.allInstructionsSeries);
-      this.simSettings.resetUsedArrays();
-      Object.keys(this.instructionValue).forEach(
-        (index) => (this.instructionValue[index] = "")
-      );
+      console.log(res);
+      Object.keys(this.instructionValue).forEach((key) => this.instructionValue[key] = '');
+      this.selectedConfig = '';
+      Object.keys(this.instructionValue).forEach((key) => delete this.instructionValue[key]);
+      this.simSettingsService.resetUsedArrays();
+      this.allSeriesEmitter.emit(res.c8y_Series);
     });
   }
 
@@ -197,13 +195,13 @@ export class SimSettingsComponent implements OnInit {
       type: InstructionCategory.SmartRest,
       config: this.smartRestSelectedConfig,
     };
-    this.simSettings.allSeries.push(combinedSmartInstruction);
+    // this.simSettings.allSeries.push(combinedSmartInstruction);
     const cmdQ = this.smartRESTService.generateSmartRestRequest(
       this.smartRestInstructionsArray,
       this.smartRestSelectedConfig
     );
 
-    this.mo.c8y_Series.push(...this.simSettings.allSeries);
+    // this.mo.c8y_Series.push(...this.simSettings.allSeries);
     this.commandQueue.push(...cmdQ);
     this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
