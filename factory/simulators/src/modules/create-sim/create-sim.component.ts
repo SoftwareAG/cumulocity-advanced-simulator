@@ -7,6 +7,7 @@ import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
 import { MeasurementsService } from "@services/measurements.service";
+import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
@@ -26,6 +27,7 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
+  bulkView = false;
 
   viewNewSeries = false;
   viewHistoricalSeries = false;
@@ -40,6 +42,7 @@ export class CreateSimComponent implements OnInit {
   searchString: string;
   invalidSimulator = false;
   editMode = false;
+  simulatorRunning = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +50,7 @@ export class CreateSimComponent implements OnInit {
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
     private alarmService: AlarmsService,
+    private backend: SimulatorsBackendService,
     private simService: SimulatorsServiceService,
     private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
@@ -66,6 +70,8 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
+    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
+    console.error(this.mo, this.simulatorRunning);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     this.simSettings.setCommandQueue(this.commandQueue);
@@ -217,7 +223,6 @@ export class CreateSimComponent implements OnInit {
       : (this.viewNewSeries = false);
   }
 
-
   height = window.innerHeight*0.7;
   y = 100;
   oldY = 0;
@@ -242,6 +247,20 @@ export class CreateSimComponent implements OnInit {
   onMouseDown(event: MouseEvent) {
     this.grabber = true;
     this.oldY = event.clientY;
+  }
+
+  toggleSimulatorState() {
+    this.mo.c8y_DeviceSimulator.state = (this.mo.c8y_DeviceSimulator.state === "RUNNING") ? "PAUSED" : "RUNNING";
+
+    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+      console.log("State changed");
+      const moId = res.id;
+      this.backend.connectToSimulatorsBackend(this.mo.c8y_DeviceSimulator, moId);
+      this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
+    });
+  }
+  openSimulatorInDevmanagement(){
+
   }
 
 }

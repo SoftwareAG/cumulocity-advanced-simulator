@@ -6,6 +6,15 @@
 <app-edit-instruction *ngIf="!editedValue" [mo]="mo" [commandQueue]="commandQueue"></app-edit-instruction>
 <!-- {{resultTemplate.commandQueue | json }} -->
 <section style="height: calc(100% - 110px);">
+  <div class="col-sm-12 empty-command-queue" style="text-align: center;" *ngIf="!commandQueue.length">
+    <div class="c8y-empty-state text-left">
+      <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+      <p>
+        <strong>No Instruction found.</strong>
+        Create your first Instruction or Series...
+      </p>
+    </div>
+  </div>
   <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
     <div style="display: flex">
       <button class="list-group-item" (click)="updateCurrentValue(item)" >

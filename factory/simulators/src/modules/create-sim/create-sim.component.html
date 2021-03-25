@@ -1,3 +1,4 @@
+
 <section [ngClass]="(grabber) ? 'noselect' : ''" (mousemove)="onMouseMove($event)">
 <c8y-title>
   <span *ngIf="!editMode">{{simulatorTitle}}</span>
@@ -8,6 +9,47 @@
     <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i></button>
     All Simulators
   </c8y-action-bar-item>
+
+
+<h3 style="text-align: center;">Guidance to create Simulator</h3>
+<div class="row wizard">
+  <div style="position: absolute;width: 600px;left: 50%;top: 40px;height: 5px;background: #fff;margin-left: -300px;"></div>
+  <div  [ngClass]="(commandQueue.length) ? 'wizard-item-success' : 'wizard-item'"
+   data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">
+    <div class="circle">1.</div>
+    Create an Instruction or Series
+  </div>
+
+  <div [ngClass]="(commandQueue.length) ? (bulkView) ? 'wizard-item-success' : 'wizard-item' : 'wizard-item-disabled'">
+    <div class="circle">2.</div>
+    Refine with bulk changes
+  </div>
+
+  <div [ngClass]="(bulkView && commandQueue.length) ? (simulatorRunning) ? 'wizard-item-success clickable circle-animate' : 'wizard-item clickable' : 'wizard-item-disabled'">
+    <div [ngClass]="'circle ' + ((commandQueue.length && bulkView && !simulatorRunning)? 'heartbeat' : '')" (click)="toggleSimulatorState()"><span>3.</span></div>
+    <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
+    <span *ngIf="!simulatorRunning">Start this Simulator</span>
+  </div>
+
+  <div (click)="openSimulatorInDevmanagement()" [ngClass]="(bulkView && commandQueue.length  && simulatorRunning) ? 'wizard-item clickable' : 'wizard-item-disabled'">
+    <div class="circle">4.</div>
+    Open Device Management
+  </div>
+</div>
+
+<div class="row" *ngIf="commandQueue.length">
+  
+  <button title="Add sleep" title="This duplicates all values but in reverse order" (click)="createSinusWave()">
+    Mirror Y Axis
+  </button>
+
+  <button title="Skip this step" title="This duplicates all values but in reverse order" (click)="bulkView = true">
+    Skip
+  </button>
+
+</div>
+
+
 <div class="row main-div" [style.height.px]='height'>
   <!--
   <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
@@ -50,7 +92,7 @@
       ></app-sim-settings>
 
       
-      <div class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;">
+      <div *ngIf="allInstructionsSeries.length" class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;">
         <div style="display: flex; float: left;  padding: 5px; margin: 5px">
         <i c8yIcon="server" style="font-size: larger;"></i>
         &nbsp;&nbsp;<h4>Series</h4>
@@ -116,26 +158,6 @@
     ></app-show-instruction>
   </div>
   <div id="grabber" [style.top.px]='height - 9' (mouseup)="onMouseUp($event)" (mousedown)="onMouseDown($event)"></div>
-</div>
-
-
-<div class="row" style="margin-top:40px;">
-  <h3>Configure Simulator</h3>
-  <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" title="This duplicates all values but in reverse order" (click)="createSinusWave()">
-      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Mirror Y Axis
-    </button>
-  </div>
-  <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
-      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Open Device Management
-    </button>
-  </div>
-  <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
-      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Start Simulator
-    </button>
-  </div>
 </div>
 
 
