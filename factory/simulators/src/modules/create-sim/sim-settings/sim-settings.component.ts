@@ -172,15 +172,11 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestInstruction, this.smartRestSelectedConfig
     );
     const copy = JSON.parse(JSON.stringify(this.smartRestInstruction));
-    const copy1 = JSON.parse(JSON.stringify(this.smartRestInstruction));
-    const combinedSmartInstruction = {
-      instruction: copy,
-      type: InstructionCategory.SmartRest,
-      config: copy1,
-    };
-    console.log(combinedSmartInstruction);
+    const copy1 = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
+    
+    // console.log(combinedSmartInstruction);
     console.log(this.simSettingsService.allInstructionsArray);
-    this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
+   
     // this.simSettingsService.allInstructionsArray.push(combinedSmartInstruction);
     const cmdQ = this.smartRESTService.generateSmartRestRequest(
       this.smartRestInstructionsArray,
@@ -188,6 +184,13 @@ export class SimSettingsComponent implements OnInit {
     );
     let indexed = this.simSettingsService.indexedCommandQueue;
     const index = this.simSettingsService.setIndexForCommandQueueEntry();
+    const combinedSmartInstruction = {
+      instruction: copy,
+      type: InstructionCategory.SmartRest,
+      config: copy1,
+      index: index
+    };
+    this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
     const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: index})) as IndexedCommandQueueEntry[];
     indexed.push(...indexedCmdQ);
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(indexed);
