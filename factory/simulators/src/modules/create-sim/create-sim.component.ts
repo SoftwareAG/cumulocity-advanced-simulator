@@ -11,6 +11,7 @@ import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.servic
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
+import { SmartRESTService } from "@services/smartREST.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { isEqual } from "lodash";
 import { ThemeService } from "ng2-charts";
@@ -58,7 +59,8 @@ export class CreateSimComponent implements OnInit {
     private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
     private alertService: AlertService,
-    private updateService: ManagedObjectUpdateService
+    private updateService: ManagedObjectUpdateService,
+    private smartRestService: SmartRESTService
   ) {}
 
   getCurrentSimulatorState(event: boolean) {
@@ -126,6 +128,7 @@ export class CreateSimComponent implements OnInit {
           );
         });
         this.instructionsService.SmartRestArray = this.smartRestConfig;
+        this.smartRestService.setSmartRestUpdate(this.smartRestConfig);
       });
     });
   }

@@ -50,12 +50,24 @@
       ></app-sim-settings>
 
       
-      <div class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;">
+      <div class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;" triggers="hover"
+      popoverTitle="Statistics"
+      [popover] = "popoverStats"
+      placement="auto"
+      #pop="bs-popover">
         <div style="display: flex; float: left;  padding: 5px; margin: 5px">
+          <div class="header">
         <i c8yIcon="server" style="font-size: larger;"></i>
         &nbsp;&nbsp;<h4>Series</h4>
+      </div> &nbsp;&nbsp;&nbsp;&nbsp;
+      <div style="display: flex; flex-direction: column;">
+      <b>Statistics</b>
+      <em>{{allInstructionsSeries[0].type}} ...</em>
+    </div>
+      <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
       </div>
-      <div class="filter">
+      
+      <div class="filter common-header">
       <div id="filter" class="input-group input-group-search" style="padding: 5px" >
         <input
           type="search"
@@ -203,3 +215,20 @@
 
 <app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
 <ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>
+<ng-template #popoverStats>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="(allInstructionsSeries | count).alarms"><th><small>Alarms</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).alarms }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).sleep"><th><small>Sleep</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).sleep }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).events"><th><small>Events</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).events }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).measurements"><th><small>Measurements</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).measurements }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).smartRest"><th><small>Smart Rest</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).smartRest }}</small></td></tr>          
+  </tbody> 
+  </table>
+</ng-template>

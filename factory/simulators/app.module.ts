@@ -32,6 +32,8 @@ import { ToStringPipe } from "./src/shared/toString.pipe";
 import { WarningModalComponent } from "@modules/shared/warning-modal/warning-modal.component";
 import { SeriesItemComponent } from "@modules/series-item/series-item.component";
 import { SeriesListComponent } from "@modules/series-item/series-list/series-list.component";
+import { CountPipe } from "./src/shared/count.pipe";
+import { PopoverModule, TooltipModule } from 'ngx-bootstrap';
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -70,6 +72,8 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     RouterModule.forRoot(),
     BsDropdownModule.forRoot(),
+    PopoverModule.forRoot(),
+    TooltipModule.forRoot(),
     ngRouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true }),
     CoreModule.forRoot(),
     C8yFactoriesModule,
@@ -91,7 +95,8 @@ const appRoutes: Routes = [
     IsValuePipe,
     ToStringPipe,
     SeriesItemComponent,
-    SeriesListComponent
+    SeriesListComponent,
+    CountPipe
   ],
   entryComponents: [
     SimulatorEntryComponent,
