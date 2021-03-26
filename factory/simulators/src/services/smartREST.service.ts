@@ -5,6 +5,7 @@ import {
 } from "@models/commandQueue.model";
 import { InstructionCategory, SmartRestInstruction } from "@models/instruction.model";
 import { SmartRest } from "@models/smartREST.model";
+import { BehaviorSubject } from "rxjs";
 import { HelperService } from "./helper.service";
 
 @Injectable({
@@ -15,6 +16,17 @@ export class SmartRESTService {
   values: string[][] = [];
   stringValues: string[] = [];
   commandQueueArray = [];
+
+  smartRestConfig;
+
+  smartRestUpdate = new BehaviorSubject([]);
+  smartRestUpdate$ = this.smartRestUpdate.asObservable();
+
+
+  setSmartRestUpdate(config) {
+    this.smartRestConfig = config;
+    this.smartRestUpdate.next(this.smartRestConfig);
+  }
 
   smartRESTTemplateToCommandQueueEntry(
     smartRestEntry: any,

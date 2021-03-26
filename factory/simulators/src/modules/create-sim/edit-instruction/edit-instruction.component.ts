@@ -15,6 +15,8 @@ import { Instruction, Instruction2, InstructionCategory } from "@models/instruct
 import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+import { Subscription } from "rxjs";
+import { SmartRESTService } from "@services/smartREST.service";
 // import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 
 @Component({
@@ -32,9 +34,14 @@ export class EditInstructionComponent implements OnInit {
   selectedEditView: string;
   defaultConfig: InstructionCategory[] = DefaultConfig;
   allForms = [MeasurementsForm, AlarmsForm, BasicEventsForm, EventsForm, SleepForm];
+  form: InputField[];
   commandQueueEntry: CommandQueueEntry | {};
   instructionValue: Instruction | Instruction2 = {};
   commandQueueEntryIndex: number;
+  smartRestSelectedConfig;
+  smartRestConfig;
+
+  smartConfigSubscription: Subscription;
 
 
   constructor(
@@ -45,10 +52,32 @@ export class EditInstructionComponent implements OnInit {
     private measurementsService: MeasurementsService,
     private instructionService: InstructionService,
     private updateInstructionService: UpdateInstructionsService,
-    private updateService: ManagedObjectUpdateService
+    private updateService: ManagedObjectUpdateService,
+    private smartService: SmartRESTService
   ) { }
 
   ngOnInit() {
+    this.smartConfigSubscription = this.smartService.smartRestUpdate$.subscribe((config) => {this.smartRestConfig = config});
+  }
+
+  change(val) {
+    if (this.displayAddView && this.selectedEditView ==='SmartRest') {
+      if (this.allForms.length > this.defaultConfig.length) {
+        this.allForms.pop();
+      }
+      console.log('Smart Rest', this.instructionValue);
+    }
+  }
+
+  onChangeConfig(value) {
+    // this.smartRestSelectedConfig = value;
+    if (this.displayAddView && this.selectedEditView ==='SmartRest') {
+      console.log('Smart Rest', this.instructionValue);
+
+    }
+    console.log(this.smartRestSelectedConfig);
+    
+    this.form = this.instructionService.createSmartRestDynamicForm(this.smartRestSelectedConfig);
   }
 
 
@@ -81,7 +110,7 @@ export class EditInstructionComponent implements OnInit {
     const commandQueueEntry = this.instructionService.instructionToCommand(instructionValue as Instruction);
     console.info(this.displayAddView, this.indexedCommandQueue, instructionValue, this.commandQueueEntryIndex);
     
-    if(this.displayAddView){
+    if(this.displayAddView && this.selectedEditView !== 'SmartRest'){
       let indexedCommandQueueEntry = {...commandQueueEntry, index: 'single'};
       if(this.commandQueueEntryIndex){ 
         
@@ -117,10 +146,12 @@ export class EditInstructionComponent implements OnInit {
     this.displayAddView = true;
     this.displayEditView = false;
     this.instructionValue = {};
+    
   }
 
   @Input() set editedValue(value: CommandQueueEntry) {
     if (value) {
+
       this.commandQueueEntryIndex = this.indexedCommandQueue.findIndex((entry) => entry === value);
       const instruction: Instruction = this.instructionService.commandQueueEntryToInstruction(value);
       console.log(instruction);
@@ -199,5 +230,11 @@ export class EditInstructionComponent implements OnInit {
     );
 
     
+  }
+
+  ngOnDestroy() {
+    if(this.smartConfigSubscription) {
+      this.smartConfigSubscription.unsubscribe();
+    }
   }
 }

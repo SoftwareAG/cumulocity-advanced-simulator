@@ -23,9 +23,17 @@
       <div *ngIf="displayAddView">
         <h4>Add single Instruction</h4>
         <br>
-        <select class="form-control" [(ngModel)]="selectedEditView">
+        <select class="form-control" [(ngModel)]="selectedEditView" (ngModelChange)="change($event)">
           <option *ngFor="let first of defaultConfig">{{ first }}</option>
         </select>
+<br>
+        <select class="form-control" [(ngModel)]="smartRestSelectedConfig" (ngModelChange)="onChangeConfig($event)" *ngIf="selectedEditView === 'SmartRest'">
+          <option [ngValue]="!smartRestSelectedConfig" disabled>Select your Smart-Rest-Template</option>
+          <option *ngFor="let first of smartRestConfig" [ngValue]="first">
+            {{first.smartRestFields.msgId}}&nbsp;{{first.smartRestFields.name }}
+          </option>
+        </select>
+
         <br>
       </div>
       <div *ngIf="displayEditView">
@@ -34,7 +42,7 @@
       <br>
 
 
-      <div [ngSwitch]="selectedEditView">
+      <div [ngSwitch]="selectedEditView" *ngIf="!displayAddView || !(selectedEditView==='SmartRest')">
         <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
           <div class="row">
             <ng-container *ngFor="let entry of form">
@@ -71,6 +79,20 @@
         </ng-template>
 
       </div>
+
+      <div [ngSwitch]="selectedEditView" *ngIf="displayAddView && (selectedEditView==='SmartRest')">
+        <div class="row">
+          <ng-container *ngFor="let entry of form">
+              <div class="col-xs-6" *ngIf="!entry.hidden">
+              <div class="form-group">
+                <input *ngIf="entry.type === 'textField'" id="{{entry.name}}" [required]="entry.required" class="form-control" [(ngModel)]="instructionValue[entry.name]"
+                placeholder="{{entry.placeholder}} {{(entry.required) ? '(required)' : '(optional)'}}">
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
     </div>
   </div>
 
