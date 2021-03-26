@@ -82,12 +82,16 @@ export class CreateSimComponent implements OnInit {
     console.log(this.mo);
     this.updateService.setManagedObject(this.mo);
     this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
-    this.commandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
-    this.commandQueueIndices = this.updateService.mo.c8y_Indices;
-    this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
-    this.simSettings.setCommandQueue(this.commandQueue);
+    const MOCommandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
+    const MOIndices = this.updateService.mo.c8y_Indices;
+    if (MOCommandQueue.length && MOCommandQueue.length === MOIndices.length) {
+      this.commandQueue = MOCommandQueue;
+      this.simSettings.setCommandQueue(this.commandQueue);
+      this.commandQueueIndices = MOIndices;
+      this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
+      this.allInstructionsSeries = this.updateService.mo.c8y_Series;
+    }
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
-    this.allInstructionsSeries = this.updateService.mo.c8y_Series;
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
 
     const filter = {
