@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IManagedObject } from "@c8y/client";
-import { CommandQueueEntry, CommandQueueType } from '@models/commandQueue.model';
+import { CommandQueueEntry, CommandQueueType, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { EditedMeasurement } from '@models/editedMeasurement.model';
 import { InputField } from '@models/inputFields.const';
 import { InstructionCategory, SmartInstruction } from '@models/instruction.model';
+import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
+// import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { UpdateInstructionsService } from '@services/updateInstructions.service';
@@ -18,6 +20,7 @@ import { Subscription } from 'rxjs';
 export class ShowInstructionComponent implements OnInit {
   @Input() mo;
   public commandQueue: CommandQueueEntry[] = [];
+  public indexedCommandQueue: IndexedCommandQueueEntry[] = [];
   private commandQueueSubscription: Subscription;
 
   editedValue: CommandQueueEntry;
@@ -33,7 +36,8 @@ export class ShowInstructionComponent implements OnInit {
   constructor(
     private service: UpdateInstructionsService,
     private simulatorervice: SimulatorsServiceService,
-    private simSettings: SimulatorSettingsService
+    private simSettings: SimulatorSettingsService,
+    private updateService: ManagedObjectUpdateService
   ) { }
 
 
@@ -44,10 +48,10 @@ export class ShowInstructionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.commandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
-      this.commandQueue = commandQueue;
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed: IndexedCommandQueueEntry[]) => {
+      this.indexedCommandQueue = indexed;
       this.checkIfAtLeastOneSleepIsSet();
-      console.error('commandQueue Change', JSON.stringify(this.commandQueue));
+      console.error('commandQueue Change', JSON.stringify(this.indexedCommandQueue));
     });
   }
 
@@ -70,19 +74,22 @@ export class ShowInstructionComponent implements OnInit {
   }
 
   deleteMeasurementOrSleep(item) {
-    const pos = this.commandQueue.findIndex((entry) => entry === item);
-    this.commandQueue.splice(pos, 1);
-    this.currentCommandQueue.emit(this.commandQueue);
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.simulatorervice.updateSimulatorManagedObject(this.mo).then((res) => {
+    const pos = this.indexedCommandQueue.findIndex((entry) => entry === item);
+    this.indexedCommandQueue.splice(pos, 1);
+    this.currentCommandQueue.emit(this.indexedCommandQueue);
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
+      const alertText = `Instruction deleted successfully!`;
+      this.updateService.simulatorUpdateFeedback('success', alertText);
       console.info('deleted entry');
       this.checkIfAtLeastOneSleepIsSet();
-      this.simSettings.setCommandQueue(this.commandQueue);
+      this.simSettings.setIndexedCommandQueueUpdate();
     });
   }
 
   updateCurrentValue(value) {
     this.editedValue = value;
+    console.log('display index ',value);
     this.currentValue.emit(value);
   }
 

@@ -6,17 +6,28 @@ import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
 import { Instruction, InstructionCategory } from "@models/instruction.model";
-import { CommandQueueEntry } from "@models/commandQueue.model";
+import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
+import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
+// import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class SimulatorSettingsService {
+  allTypesSeries = [];
+  allInstructionsArray = [];
   commandQueueUpdate = new BehaviorSubject<CommandQueueEntry[]>([]);
   commandQueueUpdate$ = this.commandQueueUpdate.asObservable();
+
   
+  indexedCommandQueueUpdate = new BehaviorSubject<IndexedCommandQueueEntry[]>([]);
+  indexedCommandQueueUpdate$ = this.indexedCommandQueueUpdate.asObservable();
+
+  instructionsSeriesUpdate = new BehaviorSubject([]);
+  instructionsSeriesUpdate$ = this.instructionsSeriesUpdate.asObservable();
+
   resultTemplate = { commandQueue: [], name: "" };
   
   alarmConfig = [
@@ -33,10 +44,11 @@ export class SimulatorSettingsService {
   randomSelected = false;
 
   commandQueue: CommandQueueEntry[] = [];
+  indices = [];
+  indexedCommandQueue: IndexedCommandQueueEntry[] = [];
 
   // allSeries = [];
-  allTypesSeries = [];
-  allInstructionsArray = [];
+  
 
   constructor(
     private helperService: HelperService,
@@ -45,6 +57,7 @@ export class SimulatorSettingsService {
     private alarmsService: AlarmsService,
     private eventsService: EventsService,
     private sleepService: SleepService,
+    private updateService: ManagedObjectUpdateService
   ) {}
 
   fetchAllSeries(mo: CustomSimulator): Promise<any[]> {
@@ -52,10 +65,26 @@ export class SimulatorSettingsService {
     return new Promise((resolve, reject) => resolve(this.allTypesSeries));
   }
 
+  setCommandQueueIndices(commandQueueIndices) {
+    this.indices = commandQueueIndices;
+  }
+
   setCommandQueue(commandQueue: CommandQueueEntry[]) {
     console.log('setCommandqueue', commandQueue);
     this.commandQueue = commandQueue;
-    this.commandQueueUpdate.next(commandQueue);
+    this.indexedCommandQueue = this.commandQueue.map((entry, index) => ({...entry, index:this.indices[index]}));
+    console.log('indexedCommandQueue', this.indexedCommandQueue);
+    this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
+  }
+
+  setAllInstructionsSeries(allInstructions) {
+    this.allInstructionsArray = allInstructions;
+    this.updateService.updateMOInstructionsArray(this.allInstructionsArray);
+    this.setInstructionsUpdate();
+  }
+
+  setInstructionsUpdate() {
+    this.instructionsSeriesUpdate.next(this.allInstructionsArray);
   }
 
   generateRequest() {
@@ -78,8 +107,16 @@ export class SimulatorSettingsService {
           };
           
           let toBePushed = this.instructionService.instructionToCommand(instruction);
+          let index = this.setIndexForCommandQueueEntry();
+          let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
+          
+          console.log('toBePushed', toBePushed);
+          // const index = this.commandQueue[this.]
+          console.log('CQ ', this.commandQueue[this.commandQueue.length-1]);
+
+          // console.log('MUST DISPLAY INDEX', index);
           console.info(temp, value, instruction, toBePushed);
-        this.resultTemplate.commandQueue.push(toBePushed);
+        this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
         // Add sleep after inserting measurement
 
@@ -91,40 +128,7 @@ export class SimulatorSettingsService {
         }
         // FIXME: get alarm config value directly from the sim-alarm component, preferably in the object.
         // Similarly for events and sleep
-        if (
-          this.alarmsService.alarms &&
-          this.alarmsService.selectedAlarmConfig ===
-            this.alarmsService.alarmConfig[1] &&
-          index < this.alarmsService.alarms.length
-        ) {
-          let toBePushedAlarms = this.alarmsService.toAlarmTemplateFormat(
-            this.alarmsService.alarms[index]
-          );
-          this.resultTemplate.commandQueue.push(JSON.parse(toBePushedAlarms));
-        }
-
-        if (
-          this.eventsService.events &&
-          this.selectedEventConfig === this.eventConfig[1] &&
-          index < this.eventsService.events.length
-        ) {
-          let toBePushedEvents = this.eventsService.toEventTemplateFormat(
-            this.eventsService.events[index]
-          );
-          this.resultTemplate.commandQueue.push(JSON.parse(toBePushedEvents));
-        }
-      }
-
-      if (
-        this.alarmsService.selectedAlarmConfig ===
-        this.alarmsService.alarmConfig[0]
-      ) {
-        this.resultTemplate.commandQueue.push(...this.alarmsService.generateAlarms());
-      }
-
-      if (this.eventsService.selectedEventConfig === this.eventsService.eventConfig[0]) {
-        this.resultTemplate.commandQueue.push(...this.eventsService.generateEvents());
-      }
+      } 
     }
     this.generateAlarms();
     this.generateEvents();
@@ -134,8 +138,37 @@ export class SimulatorSettingsService {
 
   generateInstructions() {
     const template = this.generateRequest();
-    this.commandQueue.push(...template);
+    this.indexedCommandQueue.push(...template);
+    this.indices = this.indexedCommandQueue.map((entry) => entry.index);
+    this.commandQueue = this.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
+    this.setIndexedCommandQueueUpdate();
     return this.commandQueue;
+  }
+
+  getUpdatedIndicesArray() {
+    return this.indices;
+  }
+
+  getIndexedCommandQueue() {
+    return this.indexedCommandQueue;
+  }
+
+  setIndexedCommandQueue(newIndexedCommandQueue: IndexedCommandQueueEntry[]) {
+    this.indexedCommandQueue = newIndexedCommandQueue;
+  }
+
+  removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
+    return (({index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
+  }
+
+  removeIndicesFromIndexedCommandQueueArray(indexedCommandQueueArray: IndexedCommandQueueEntry[]): CommandQueueEntry[] {
+    let commandQueueWithoutIndices = [];
+    indexedCommandQueueArray.forEach((entry) => commandQueueWithoutIndices.push(this.removeIndices(entry)));
+    return commandQueueWithoutIndices;
+  }
+
+  setIndexedCommandQueueUpdate() {
+    this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
   }
 
   generateAlarms() {
@@ -143,7 +176,10 @@ export class SimulatorSettingsService {
       this.alarmsService.alarms.length &&
       !this.resultTemplate.commandQueue.length
     ) {
-      this.resultTemplate.commandQueue.push(...this.alarmsService.generateAlarms());
+      let toBePushed = this.alarmsService.generateAlarms();
+      let index = this.setIndexForCommandQueueEntry();
+      let toBePushedWithIndex = {...toBePushed, index};
+      this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
     }
   }
@@ -153,7 +189,10 @@ export class SimulatorSettingsService {
       this.eventsService.events.length &&
       !this.resultTemplate.commandQueue.length
     ) {
-      this.resultTemplate.commandQueue.push(...this.eventsService.generateEvents());
+      let toBePushed = this.eventsService.generateEvents();
+      let index = this.setIndexForCommandQueueEntry();
+      let toBePushedWithIndex = {...toBePushed, index};
+      this.resultTemplate.commandQueue.push(toBePushedWithIndex);
     }
   }
 
@@ -163,6 +202,7 @@ export class SimulatorSettingsService {
       !this.resultTemplate.commandQueue.length
     ) {
       this.resultTemplate.commandQueue.push(...this.sleepService.generateSleep());
+      // FIXME: Fix here!
     }
   }
 
@@ -172,7 +212,7 @@ export class SimulatorSettingsService {
     this.alarmsService.alarms = [];
     this.eventsService.events = [];
     this.sleepService.sleeps = [];
-    this.allInstructionsArray = [];
+    // this.allInstructionsArray = [];
   }
 
   pushToInstructionsArray(instructionValue) {
@@ -180,4 +220,32 @@ export class SimulatorSettingsService {
     console.log('instructions array', this.allInstructionsArray);
   }
 
+  setIndexForCommandQueueEntry(): string {
+    let index;
+    if (!this.indexedCommandQueue.length) {
+      index = '0';
+    } else {
+      const lastEntryIndex = this.indexedCommandQueue[this.indexedCommandQueue.length-1].index;
+      if (lastEntryIndex !== 'single') {
+        index = (parseInt(lastEntryIndex) + 1).toString();
+      }
+    }
+    return index;
+  }
+
+  updateAll(indexedCommandQueue: IndexedCommandQueueEntry[], commandQueue: CommandQueueEntry[], indices: string[]) {
+    this.indexedCommandQueue = indexedCommandQueue;
+    this.commandQueue = commandQueue;
+    this.indices = indices;
+  }
+
+  updateCommandQueueAndIndicesFromIndexedCommandQueue(indexedCommandQueue: IndexedCommandQueueEntry[]) {
+    this.setIndexedCommandQueue(indexedCommandQueue);
+    let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
+    let indices = this.indexedCommandQueue.map((entry) => entry.index);
+    this.updateAll(indexedCommandQueue, commandQueue, indices);
+    this.setIndexedCommandQueueUpdate();
+    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices);
+  }
+ 
 }

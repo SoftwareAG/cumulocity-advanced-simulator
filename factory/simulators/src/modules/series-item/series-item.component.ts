@@ -1,5 +1,15 @@
-import { Component, Input, OnInit, TemplateRef } from "@angular/core";
-import { CommandQueueEntry } from "@models/commandQueue.model";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+} from "@angular/core";
+import {
+  CommandQueueEntry,
+  IndexedCommandQueueEntry,
+} from "@models/commandQueue.model";
 import {
   AlarmInstruction,
   BasicEventInstruction,
@@ -18,6 +28,9 @@ import {
   SeriesSleepForm,
 } from "@models/inputFields.const";
 import { InstructionService } from "@services/Instruction.service";
+import { SimulatorSettingsService } from "@services/simulatorSettings.service";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+import { SmartRESTService } from "@services/smartREST.service";
 
 @Component({
   selector: "app-series-item",
@@ -25,7 +38,7 @@ import { InstructionService } from "@services/Instruction.service";
   styleUrls: ["./series-item.component.less"],
 })
 export class SeriesItemComponent implements OnInit {
-  selectedSeries: SeriesInstruction;
+  selectedSeries: any;
   selectedConfig: string;
   instructionValue: SeriesInstruction;
   isSmartRestSelected = false;
@@ -36,17 +49,17 @@ export class SeriesItemComponent implements OnInit {
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
-
   @Input() smartRestConfig;
   @Input() id;
   @Input() index;
-  @Input() allInstructionsSeries;
+  allInstructionsSeries;
+  indexedCommandQueue: IndexedCommandQueueEntry[];
 
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
-    this.selectedConfig = this.selectedSeries.type;    
+    this.selectedConfig = this.selectedSeries.type;
     this.instructionValue = value;
-    this.setLabelsForSelected(); 
+    this.setLabelsForSelected();
   }
 
   get series() {
@@ -55,49 +68,96 @@ export class SeriesItemComponent implements OnInit {
 
   @Input() commandQueue: CommandQueueEntry[];
   @Input() mo;
-  constructor(private instructionService: InstructionService) {}
+  // @Output() deleteInstructionSeries = new EventEmitter();
+  constructor(
+    private instructionService: InstructionService,
+    private simSettingsService: SimulatorSettingsService,
+    private updateService: ManagedObjectUpdateService,
+    private smartRestService: SmartRESTService
+  ) {}
 
   ngOnInit() {}
 
   setLabelsForSelected() {
     switch (this.selectedSeries.type) {
       case "Measurement":
-        this.icon = 'sliders';
+        this.icon = "sliders";
         this.form = SeriesMeasurementsForm;
         break;
       case "Alarm":
-        this.icon = 'bell';
+        this.icon = "bell";
         this.form = SeriesAlarmsForm;
         break;
       case "Sleep":
-        this.icon = 'clock-o';
+        this.icon = "clock-o";
         this.form = SeriesSleepForm;
         break;
       case "BasicEvent":
-        this.icon = 'tasks';
+        this.icon = "tasks";
         this.form = SeriesBasicEventsForm;
         break;
       case "LocationUpdateEvent":
-        this.icon = 'globe';
+        this.icon = "globe";
         this.form = SeriesEventsForm;
         break;
       case "SmartRest":
         this.icon = "sitemap";
         this.smartRestSelectedConfig = this.selectedSeries.config;
         this.smartRestInstruction = this.selectedSeries.instruction;
-        this.form = this.instructionService.createSmartRestDynamicForm(this.smartRestInstruction);
+        this.form = this.instructionService.createSmartRestDynamicForm(
+          this.smartRestInstruction
+        );
         break;
     }
   }
 
   duplicateSeries() {
     console.log(this.index);
-    console.log(this.selectedSeries);   
-    console.log(this.allInstructionsSeries[this.index]);   
-
+    console.log(this.selectedSeries);
+    console.log(this.allInstructionsSeries[this.index]);
   }
 
   deleteSeries() {
+    this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
+    this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
+    const indexOfItem = this.selectedSeries.index;
+    const filtered = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfItem);
+    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(filtered);
+    this.allInstructionsSeries = this.allInstructionsSeries.filter((entry) => entry !== this.instructionValue);
+    this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
+    this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
+    this.updateService.updateMOInstructionsArray(this.simSettingsService.allInstructionsArray);
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
+      console.log(res);
+      const alertText = `Series has been deleted succesfully.`;
+      this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
+      this.updateService.simulatorUpdateFeedback('success', alertText)
+    });  
+  }
 
+  updateSeries() {
+   this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
+   const indexOfSeries = this.selectedSeries.index;
+   let itemPos = this.indexedCommandQueue.findIndex((entry) => entry.index === indexOfSeries);
+   this.indexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfSeries);
+
+   if (this.instructionValue.type !== 'SmartRest') {
+     this.instructionService.pushToSeriesArrays(this.instructionValue.type, this.instructionValue);
+     let template = this.simSettingsService.generateRequest();
+     template.map((entry) => entry.index = indexOfSeries);
+     this.indexedCommandQueue.splice(itemPos, 0, ...template);
+     
+   } else {
+     let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(this.selectedSeries.instruction, this.selectedSeries.config);
+     let cmdQ = this.smartRestService.generateSmartRestRequest(smartRestInstructionsArray, this.selectedSeries.config);
+     const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: indexOfSeries})) as IndexedCommandQueueEntry[];
+     this.indexedCommandQueue.splice(itemPos, 0, ...indexedCmdQ);
+   }
+   this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+   this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
+   this.updateService.updateSimulatorObject(this.updateService.mo).then((res) =>{
+    const alertText = `Series has been updated successfully.`; 
+    this.updateService.simulatorUpdateFeedback('success', alertText);
+   });
   }
 }

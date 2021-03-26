@@ -6,12 +6,16 @@ import { CommandQueueEntry } from "@models/commandQueue.model";
 import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+// import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { isEqual } from "lodash";
+import { ThemeService } from "ng2-charts";
+import { Subscription } from "rxjs";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
@@ -43,6 +47,9 @@ export class CreateSimComponent implements OnInit {
   invalidSimulator = false;
   editMode = false;
   simulatorRunning = false;
+  commandQueueIndices = [];
+  indexedCommandQueue = [];
+  instructionsSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,7 +61,8 @@ export class CreateSimComponent implements OnInit {
     private simService: SimulatorsServiceService,
     private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private updateService: ManagedObjectUpdateService
   ) {}
 
   getCurrentSimulatorState(event: boolean) {
@@ -68,20 +76,21 @@ export class CreateSimComponent implements OnInit {
     this.router.navigate(["/"]);
   }
   ngOnInit() {
+    this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
+      this.allInstructionsSeries = instructions;
+    });
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
-    console.error(this.mo, this.simulatorRunning);
-    this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
-    this.commandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    this.updateService.setManagedObject(this.mo);
+    this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
+    this.commandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
+    this.commandQueueIndices = this.updateService.mo.c8y_Indices;
+    this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
     this.simSettings.setCommandQueue(this.commandQueue);
-    this.allInstructionsSeries = this.mo.c8y_Series;
-
-    this.updateInstructionsService.catDeleteMeasurement.subscribe((data) => {
-      this.deletedMeasurement = data;
-      this.deleteSeries(data);
-    });
-
+    this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
+    this.allInstructionsSeries = this.updateService.mo.c8y_Series;
+    this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
+    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
 
     const filter = {
       withTotalPages: true,
@@ -130,6 +139,10 @@ export class CreateSimComponent implements OnInit {
     this.editedVal = val.editedValue;
   }
 
+  onClearAllInstructions() {
+
+  }
+
   createSinusWave() {
     console.log("create sinuswave");
     for (let i = this.commandQueue.length - 1; i >= 0; i--) {
@@ -153,8 +166,8 @@ export class CreateSimComponent implements OnInit {
       this.allInstructionsSeries.splice(index, 1);
     }
     console.log(this.allInstructionsSeries);
-    this.mo.c8y_Series = this.allInstructionsSeries;
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+    this.updateService.mo.c8y_Series = this.allInstructionsSeries;
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const alert = {
         text: `Instruction Series deleted successfully.`,
         type: "success",
@@ -197,9 +210,9 @@ export class CreateSimComponent implements OnInit {
 
   editSimulatorTitle() {
     this.editMode = false;
-    this.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
-    this.mo.name = this.simulatorTitle;
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res.name));
+    this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
+    this.updateService.mo.name = this.simulatorTitle;
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => console.log(res));
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {
@@ -255,6 +268,10 @@ export class CreateSimComponent implements OnInit {
   }
   openSimulatorInDevmanagement(){
 
+  ngOnDestroy() {
+    if (this.instructionsSubscription) {
+      this.instructionsSubscription.unsubscribe();
+    }
   }
 
 }

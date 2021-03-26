@@ -9,14 +9,15 @@ import { Subscription } from 'rxjs';
 })
 export class SeriesListComponent implements OnInit {
 
-  @Input() commandQueue;
   @Input() instructionsSeries;
+  @Input() indexedCommandQueue;
   private instructionsSeriesSubscription: Subscription;
   constructor(
     private simSettingsService: SimulatorSettingsService
   ) { }
 
   ngOnInit() {
+    // this.instructionsSeries = this.simSettingsService.allInstructionsArray;
      }
 
   ngOnDestroy() {

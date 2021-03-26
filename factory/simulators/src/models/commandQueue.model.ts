@@ -1,11 +1,15 @@
 
 export interface CommandQueueEntry {
-    messageId?: MessageIds | string,
-    type: CommandQueueType,
-    values?: string[],
-    seconds?: number,
-    templateId?: string,
-    color?: string
+    messageId?: MessageIds | string;
+    type: CommandQueueType;
+    values?: string[];
+    seconds?: number;
+    templateId?: string;
+    color?: string;
+}
+
+export interface IndexedCommandQueueEntry extends CommandQueueEntry {
+    index: string;
 }
 
 

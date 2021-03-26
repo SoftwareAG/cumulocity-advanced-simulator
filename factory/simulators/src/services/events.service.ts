@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { CommandQueueEntry } from "@models/commandQueue.model";
 import { Event } from '@models/events.model';
 import { BasicEventInstruction, EventInstruction } from "@models/instruction.model";
 
@@ -31,9 +32,9 @@ export class EventsService {
     // this.currentMeasurement = this.measurementService.uniqueMeasurementsArray[
     //   this.measurementService.uniqueMeasurementsArray.length - 1
     // ];
-    let toBePushed = [];
+    let toBePushed: CommandQueueEntry;
     for (let event of this.events) {
-      toBePushed.push(JSON.parse(this.toEventTemplateFormat(event)));
+      toBePushed = (JSON.parse(this.toEventTemplateFormat(event)));
       
       // if (
       //   this.currentMeasurement.sleep &&

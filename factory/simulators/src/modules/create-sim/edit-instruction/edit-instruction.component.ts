@@ -12,8 +12,10 @@ import { MeasurementsService } from "@services/measurements.service";
 import { ShowInstructionComponent } from "../show-instruction/show-instruction.component";
 import { InstructionService } from "@services/Instruction.service";
 import { Instruction, Instruction2, InstructionCategory } from "@models/instruction.model";
-import { CommandQueueEntry } from "@models/commandQueue.model";
+import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+// import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 
 @Component({
   selector: "app-edit-instruction",
@@ -22,7 +24,8 @@ import { UpdateInstructionsService } from "@services/updateInstructions.service"
 })
 export class EditInstructionComponent implements OnInit {
   @Input() mo;
-  @Input() commandQueue: CommandQueueEntry[];
+  @Input() indexedCommandQueue : IndexedCommandQueueEntry[];
+  @Input() edit;
   @Input() displayEditView = false;
   @Input() displayAddView = false;
   smartRestForm: InputField[] = [];
@@ -41,11 +44,11 @@ export class EditInstructionComponent implements OnInit {
     private simSettings: SimulatorSettingsService,
     private measurementsService: MeasurementsService,
     private instructionService: InstructionService,
-    private updateInstructionService: UpdateInstructionsService
+    private updateInstructionService: UpdateInstructionsService,
+    private updateService: ManagedObjectUpdateService
   ) { }
 
   ngOnInit() {
-  
   }
 
 
@@ -76,21 +79,28 @@ export class EditInstructionComponent implements OnInit {
 
     console.log(instructionValue);
     const commandQueueEntry = this.instructionService.instructionToCommand(instructionValue as Instruction);
-    console.info(this.displayAddView, this.commandQueue, instructionValue, this.commandQueueEntryIndex);
+    console.info(this.displayAddView, this.indexedCommandQueue, instructionValue, this.commandQueueEntryIndex);
     
     if(this.displayAddView){
+      let indexedCommandQueueEntry = {...commandQueueEntry, index: 'single'};
       if(this.commandQueueEntryIndex){ 
-        this.commandQueue.splice(this.commandQueueEntryIndex+1, 0, commandQueueEntry);
+        
+        this.indexedCommandQueue.splice(this.commandQueueEntryIndex+1, 0, indexedCommandQueueEntry);
       }else{
-        this.commandQueue.push(commandQueueEntry);
+        this.indexedCommandQueue.push(indexedCommandQueueEntry);
       }
     }else{
-      this.commandQueue[this.commandQueueEntryIndex] = commandQueueEntry;
+      if (this.edit) {
+        let idx = this.edit.index;
+        let indexed = {...commandQueueEntry, index : idx} as IndexedCommandQueueEntry;
+        this.indexedCommandQueue[this.commandQueueEntryIndex] = indexed;
+        console.log('Index ', this.indexedCommandQueue[this.commandQueueEntryIndex]);
+      }
+      
     }
 
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, this.defaultConfig[index]);
-    this.simSettings.setCommandQueue(this.commandQueue);
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+    this.updateCommandQueueInManagedObject(this.updateService.mo, this.defaultConfig[index]);
   }
 
   
@@ -111,7 +121,7 @@ export class EditInstructionComponent implements OnInit {
 
   @Input() set editedValue(value: CommandQueueEntry) {
     if (value) {
-      this.commandQueueEntryIndex = this.commandQueue.findIndex((entry) => entry === value);
+      this.commandQueueEntryIndex = this.indexedCommandQueue.findIndex((entry) => entry === value);
       const instruction: Instruction = this.instructionService.commandQueueEntryToInstruction(value);
       console.log(instruction);
       console.log('test!!', value, instruction);
@@ -131,10 +141,14 @@ export class EditInstructionComponent implements OnInit {
   }
 
   onDuplicateInstruction() {
-    this.commandQueue.splice(this.commandQueueEntryIndex, 0, JSON.parse(JSON.stringify(this.commandQueue[this.commandQueueEntryIndex])));
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.updateCommandQueueInManagedObject(this.mo, 'Duplication');
-    this.simSettings.setCommandQueue(this.commandQueue);
+    this.indexedCommandQueue.splice(this.commandQueueEntryIndex, 0, JSON.parse(JSON.stringify(this.indexedCommandQueue[this.commandQueueEntryIndex])));
+    let updatedCommandQueue = this.simSettings.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
+    let indices = this.updateService.mo.c8y_Indices;
+    indices.splice(this.commandQueueEntryIndex, 0, this.indexedCommandQueue[this.commandQueueEntryIndex].index);
+    this.updateService.updateMOCommandQueueAndIndices(updatedCommandQueue, indices);
+    this.simSettings.updateAll(this.indexedCommandQueue, updatedCommandQueue, this.updateService.mo.c8y_Indices);
+    this.updateCommandQueueInManagedObject(this.updateService.mo, 'Duplication');
+    this.simSettings.setIndexedCommandQueueUpdate();
   }
 
   onClearAllInstructions() {}
@@ -156,17 +170,18 @@ export class EditInstructionComponent implements OnInit {
 
 
 
-  updateCommandQueue(newCommandQueue) {
-    this.commandQueue = newCommandQueue;
-    this.mo.c8y_DeviceSimulator.commandQueue = this.commandQueue;
-    this.simulatorervice
-      .updateSimulatorManagedObject(this.mo)
-      .then((result) => console.log(result));
-  }
+  // updateCommandQueue(newCommandQueue) {
+  //   this.indexedCommandQueue = newCommandQueue;
+  //   this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.indexedCommandQueue;
+  //   this.simulatorervice
+  //     .updateSimulatorManagedObject(this.updateService.mo)
+  //     .then((result) => console.log(result));
+  // }
 
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
     this.simulatorervice.updateSimulatorManagedObject(mo).then(
       (res) => {
+        console.log(res);
         const alert = {
           text: `${type} updated successfully.`,
           type: "success",
@@ -180,7 +195,9 @@ export class EditInstructionComponent implements OnInit {
         } as Alert;
         this.alertService.add(alert);
       }
+      
     );
+
     
   }
 }

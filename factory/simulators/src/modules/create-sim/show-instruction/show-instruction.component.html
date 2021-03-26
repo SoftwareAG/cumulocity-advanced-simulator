@@ -3,7 +3,7 @@
 <div class="alert alert-warning" *ngIf="warning && commandQueue.length" style="max-width:100%;display:inline-block;" role="alert">
   <strong>{{warning.title}}</strong> {{warning.message}}
 </div>
-<app-edit-instruction *ngIf="!editedValue" [mo]="mo" [commandQueue]="commandQueue"></app-edit-instruction>
+<app-edit-instruction *ngIf="!editedValue" [mo]="mo" [indexedCommandQueue]="commandQueue"></app-edit-instruction>
 <!-- {{resultTemplate.commandQueue | json }} -->
 <section style="height: calc(100% - 110px);">
   <div class="col-sm-12 empty-command-queue" style="text-align: center;" *ngIf="!commandQueue.length">
@@ -15,7 +15,7 @@
       </p>
     </div>
   </div>
-  <ng-container *ngFor="let item of commandQueue; let i; of: commandQueue.length" [style.background]="item.color">
+  <ng-container *ngFor="let item of indexedCommandQueue; let i; of: commandQueue.length" [style.background]="item.color">
     <div style="display: flex">
       <button class="list-group-item" (click)="updateCurrentValue(item)" >
         <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i>
@@ -48,6 +48,6 @@
         </button>
       </button>
     </div>
-    <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [mo]="mo" [commandQueue]="commandQueue" [editedValue]="editedValue"></app-edit-instruction>
+    <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [edit]="editedValue" [mo]="mo" [indexedCommandQueue]="indexedCommandQueue" [editedValue]="editedValue"></app-edit-instruction>
   </ng-container>
 </section>
