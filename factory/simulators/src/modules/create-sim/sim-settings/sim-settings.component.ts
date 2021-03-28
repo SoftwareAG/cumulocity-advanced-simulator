@@ -65,8 +65,7 @@ export class SimSettingsComponent implements OnInit {
   isSmartRestSelected = false;
   smartRestViewModel = {};
   randomize = false;
-  onBlur = true;
-  selected = {ins: '', blurEle: false};
+  selected = {entryName: '', selected: false};
   validationInstruction: Partial<SeriesInstruction> = {};
   disableBtn = true;
 
@@ -115,8 +114,6 @@ export class SimSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.formBuilder.group()
-    console.log(this.instructionValue);
   }
 
   updateSeries(index: number) {
@@ -185,13 +182,12 @@ export class SimSettingsComponent implements OnInit {
   }
 
   onSelectFocus(value) {
-    this.onBlur = true;
-    this.selected = {ins: value, blurEle: false};
+    this.selected = {entryName: value, selected: false};
     console.log(this.selected);
   }
 
   onSelectBlur() {
-    this.selected.blurEle = true;
+    this.selected.selected = true;
   }
 
   onChangeConfig(value) {
@@ -259,6 +255,12 @@ export class SimSettingsComponent implements OnInit {
       // this.allInstructionsSeries = [];
     });
   }
+  }
+
+  clearSeries() {
+    this.selected.selected = false;
+    this.instructionValue = {};
+    this.smartRestInstruction = {};
   }
   
 }

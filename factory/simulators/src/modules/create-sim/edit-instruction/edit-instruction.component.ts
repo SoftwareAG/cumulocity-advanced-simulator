@@ -40,6 +40,7 @@ export class EditInstructionComponent implements OnInit {
   commandQueueEntryIndex: number;
   smartRestSelectedConfig;
   smartRestConfig;
+  smartRestInstruction;
 
   smartConfigSubscription: Subscription;
 
@@ -70,14 +71,25 @@ export class EditInstructionComponent implements OnInit {
   }
 
   onChangeConfig(value) {
-    // this.smartRestSelectedConfig = value;
     if (this.displayAddView && this.selectedEditView ==='SmartRest') {
-      console.log('Smart Rest', this.instructionValue);
-
+      const temp =  this.smartRestSelectedConfig.smartRestFields.customValues;
+      this.smartRestInstruction = {type: 'SmartRest'};
+      temp.map((entry) => this.smartRestInstruction[entry.path] = '');
     }
-    console.log(this.smartRestSelectedConfig);
-    
-    this.form = this.instructionService.createSmartRestDynamicForm(this.smartRestSelectedConfig);
+  }
+
+  addSingleSmartRestInstruction() {
+    const smartRestCommandQueueEntry = this.instructionService.smartRestInstructionToCommand(this.smartRestInstruction);
+    let indexedCommandQueueEntry = {...smartRestCommandQueueEntry, index: 'single'};
+      if(this.commandQueueEntryIndex){ 
+        
+        this.indexedCommandQueue.splice(this.commandQueueEntryIndex+1, 0, indexedCommandQueueEntry);
+      }else{
+        this.indexedCommandQueue.push(indexedCommandQueueEntry);
+      }
+
+      this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+    this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
   }
 
 

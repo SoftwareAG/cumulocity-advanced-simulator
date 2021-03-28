@@ -50,19 +50,20 @@
       ></app-sim-settings>
 
       
-      <div class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;" triggers="hover"
-      popoverTitle="Statistics"
-      [popover] = "popoverStats"
-      placement="auto"
-      #pop="bs-popover">
+      <div class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;">
         <div style="display: flex; float: left;  padding: 5px; margin: 5px">
           <div class="header">
         <i c8yIcon="server" style="font-size: larger;"></i>
         &nbsp;&nbsp;<h4>Series</h4>
       </div> &nbsp;&nbsp;&nbsp;&nbsp;
-      <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; flex-direction: column;" triggers="hover"
+      popoverTitle="Statistics"
+      [popover] = "popoverStats"
+      placement="auto"
+      #pop="bs-popover">
       <b>Statistics</b>
-      <!-- <em>{{allInstructionsSeries[0].type ? allInstructionsSeries[0].type: ''}} ...</em> -->
+      <p>Total Instructions: {{allInstructionsSeries.length}}</p>
+      <em>{{allInstructionsSeries[0].type ? allInstructionsSeries[0].type: ''}} ...</em>
     </div>
       <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
       </div>
@@ -216,11 +217,12 @@
 <app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
 <ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>
 <ng-template #popoverStats>
+  <p>Total Instructions: {{allInstructionsSeries.length}}</p>
   <table class="table">
     <thead>
       <tr>
         <th>Category</th>
-        <th>Number</th>
+        <th>Count</th>
       </tr>
     </thead>
     <tbody>
