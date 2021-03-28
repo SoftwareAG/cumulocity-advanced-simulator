@@ -73,17 +73,34 @@
                       </select>
                     </div>
                   </div>
-
+                  <c8y-form-group>
                   <input
                     *ngIf="entry.type === 'textField'"
                     id="{{ entry.name }}"
-                    [required]="entry.required"
+                    (focus)="onSelectFocus(entry.name)"
+                    (blur)="onSelectBlur()"
                     class="form-control"
                     [(ngModel)]="instructionValue[entry.name]"
                     placeholder="{{ entry.placeholder }} {{
                       entry.required ? '(required)' : '(optional)'
                     }}"
                   />
+                  <!-- <span id="helpBlock" class="help-block" >
+                    A long block of help text that fits below the input field.
+                  </span> -->
+
+                  <em  class="custom-validation" *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
+                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                    <div> Please enter a number </div></em>
+
+                    <em  class="custom-validation" *ngIf="selected.blurEle && selected.ins === entry.name && !instructionValue[entry.name]">
+                      <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                      <div> Required </div></em>
+                  <c8y-messages>
+
+                         <c8y-message name="required" text="The E-filed is required"></c8y-message>
+                       </c8y-messages>
+                      </c8y-form-group>
                 </div>
               </div>
             </ng-container>
@@ -138,6 +155,9 @@
                 class="form-control"
                 placeholder="minimum (required)"
                 />
+                <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_min'] && !(smartRestInstruction[entry.path+'_min'] | isNumber)">
+                  <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                  <div> Please enter a number </div></em>
               </div>
               <div class="col-xs-6">
                 <label>{{ entry.path +'.maximum'}}</label>
@@ -148,6 +168,9 @@
                   class="form-control"
                   placeholder="maximum (required)"
                   />
+                  <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_max'] && !(smartRestInstruction[entry.path+'_max'] | isNumber)">
+                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                    <div> Please enter a number </div></em>
               </div>
             </div>
           </ng-container>
@@ -162,6 +185,9 @@
         class="form-control"
         placeholder="(required)"
       />
+      <em  class="custom-validation" *ngIf="smartRestInstruction['steps'] && !(smartRestInstruction['steps'] | isNumber)">
+        <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+        <div> Please enter a number </div></em>
     </ng-container>
         <br>
         <button

@@ -11,6 +11,7 @@ export interface InputField {
   options?: MessageId[];
   defaultValue?: string | number;
   hidden?: boolean;
+  isNumber?: boolean;
 }
 
 export interface MessageId {
@@ -62,7 +63,8 @@ export const MeasurementsForm: InputField[] = [
     label: "Value:",
     placeholder: "Value",
     required: true,
-    type: "textField"
+    type: "textField",
+    isNumber: true
   },
   {
     name: "unit",
@@ -80,21 +82,24 @@ export const SeriesMeasurementsForm: InputField[] = [
     label: "Minimum:",
     placeholder: "Value",
     required: true,
-    type: "textField"
+    type: "textField",
+    isNumber: true
   },
   {
     name: "maxValue",
     label: "Maximum:",
     placeholder: "Value",
     required: true,
-    type: "textField"
+    type: "textField",
+    isNumber: true
   },
   {
     name: "steps",
     label: "Steps:",
     placeholder: "Value",
     required: true,
-    type: "textField"
+    type: "textField",
+    isNumber: true
   },
 ];
 
@@ -173,6 +178,7 @@ export const EventsForm: InputField[] = [
     placeholder: "Altitude",
     required: true,
     type: "textField",
+    isNumber: true
   },
   {
     name: "longitude",
@@ -180,6 +186,7 @@ export const EventsForm: InputField[] = [
     placeholder: "Longitude",
     required: true,
     type: "textField",
+    isNumber: true
   },
   {
     name: "latitude",
@@ -187,6 +194,7 @@ export const EventsForm: InputField[] = [
     placeholder: "Latitude",
     required: true,
     type: "textField",
+    isNumber: true
   },
   {
     name: "accuracy",
@@ -194,6 +202,7 @@ export const EventsForm: InputField[] = [
     placeholder: "Accuracy",
     required: true,
     type: "textField",
+    isNumber: true
   },
 ];
 
@@ -206,7 +215,8 @@ export const SleepForm: InputField[] = [
     placeholder: "Sleep (in Seconds)",
     required: true,
     type: "textField",
-    minimum: 5
+    minimum: 5,
+    isNumber: true
   }
 ];
 

@@ -37,6 +37,8 @@ import { SleepService } from "@services/sleep.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { InstructionService } from "@services/Instruction.service";
+import { FormBuilder } from "@angular/forms";
+import * as _ from 'lodash';
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -63,6 +65,10 @@ export class SimSettingsComponent implements OnInit {
   isSmartRestSelected = false;
   smartRestViewModel = {};
   randomize = false;
+  onBlur = true;
+  selected = {ins: '', blurEle: false};
+  validationInstruction: Partial<SeriesInstruction> = {};
+  disableBtn = true;
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
@@ -104,12 +110,24 @@ export class SimSettingsComponent implements OnInit {
     private alertService: AlertService,
     private sleepService: SleepService,
     private updateService: ManagedObjectUpdateService,
-    private instructionService: InstructionService
+    private instructionService: InstructionService,
+    private formBuilder: FormBuilder
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // this.formBuilder.group()
+    console.log(this.instructionValue);
+  }
 
   updateSeries(index: number) {
+
+    const isNumArr = this.allForms[index].filter((entry) => entry.isNumber);
+    const pos = isNumArr.findIndex((val) => isNaN(Number(this.instructionValue[val.name])));
+    if (pos !== -1) {
+      this.updateService.simulatorUpdateFeedback('danger', 'Please fill in numbers for Minimum, Maximum and steps.');
+    }
+    else {
+    
     for (const entry of this.allForms[index]) {
       if (entry.defaultValue && !this.instructionValue[entry.name]) {
         this.instructionValue[entry.name] = entry.defaultValue;
@@ -144,6 +162,11 @@ export class SimSettingsComponent implements OnInit {
     this.simSettingsService.pushToInstructionsArray({...insVal, index: assignedIndex});
     this.generateRequest();
   }
+  }
+
+  checkErrorsForValidation() {
+
+  }
 
   generateRequest() {
     this.simSettingsService.randomSelected = this.randomize;
@@ -161,14 +184,34 @@ export class SimSettingsComponent implements OnInit {
     });
   }
 
+  onSelectFocus(value) {
+    this.onBlur = true;
+    this.selected = {ins: value, blurEle: false};
+    console.log(this.selected);
+  }
+
+  onSelectBlur() {
+    this.selected.blurEle = true;
+  }
+
   onChangeConfig(value) {
     this.isSmartRestSelected = value === InstructionCategory.SmartRest;
   }
 
   saveSmartRestTemplateToCommandQueue() {
+    
     let smartRestInstructionsArray = this.smartRESTService.convertToSmartRestModel(
       this.smartRestInstruction, this.smartRestSelectedConfig
     );
+    let inconsistent = [];
+    const found = Object.keys(this.smartRestInstruction).filter((entry) => entry.includes('_min' || '_max' || 'steps'));
+    if (found.length) {
+      inconsistent = found.filter((entry) => isNaN(Number(this.smartRestInstruction[entry])));
+    }
+
+    if (inconsistent.length) {
+      this.updateService.simulatorUpdateFeedback('danger', 'Please fill in numbers for minimum, maximum and steps');
+    } else {
     const copy = JSON.parse(JSON.stringify(this.smartRestInstruction));
     const copy1 = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
 
@@ -216,6 +259,6 @@ export class SimSettingsComponent implements OnInit {
       // this.allInstructionsSeries = [];
     });
   }
-
+  }
   
 }

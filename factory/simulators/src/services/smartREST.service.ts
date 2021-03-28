@@ -122,10 +122,13 @@ export class SmartRESTService {
             obj.value = value as string;
           } else if (key === customValue.path + "_max") {
             obj.maxValue = value as string;
+            obj.isNumber = true;
           } else if (key === customValue.path + "_min") {
             obj.minValue = value as string;
+            obj.isNumber = true;
           } else if (key === "steps") {
             obj.steps = value as string;
+            obj.isNumber = true;
           }
         });
 

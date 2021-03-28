@@ -80,17 +80,19 @@ export class CreateSimComponent implements OnInit {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
     console.log(this.mo);
-    this.updateService.setManagedObject(this.mo);
-    this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
-    const MOCommandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
-    const MOIndices = this.updateService.mo.c8y_Indices;
-    if (MOCommandQueue.length && MOCommandQueue.length === MOIndices.length) {
+    const mo = JSON.parse(JSON.stringify(this.mo));
+    this.updateService.setManagedObject(mo);
+    this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
+    const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    const MOIndices = this.mo.c8y_Indices;
+    // if (MOCommandQueue.length && MOCommandQueue.length === MOIndices.length) {
       this.commandQueue = MOCommandQueue;
-      this.simSettings.setCommandQueue(this.commandQueue);
+      
       this.commandQueueIndices = MOIndices;
       this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
-      this.allInstructionsSeries = this.updateService.mo.c8y_Series;
-    }
+      this.simSettings.setCommandQueue(this.commandQueue);
+      this.allInstructionsSeries = this.mo.c8y_Series;
+    // }
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
 

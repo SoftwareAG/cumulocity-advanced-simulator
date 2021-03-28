@@ -34,6 +34,8 @@ import { SeriesItemComponent } from "@modules/series-item/series-item.component"
 import { SeriesListComponent } from "@modules/series-item/series-list/series-list.component";
 import { CountPipe } from "./src/shared/count.pipe";
 import { PopoverModule, TooltipModule } from 'ngx-bootstrap';
+import { IsNumberPipe } from "./src/shared/isNumber.pipe";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -43,8 +45,6 @@ const appRoutes: Routes = [
     children: [{
       path: "instructions",
       component: CreateSimComponent,
-      
-      
     }, {
       path: "alarms",
       component: AlarmsComponent
@@ -77,6 +77,8 @@ const appRoutes: Routes = [
     ngRouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true }),
     CoreModule.forRoot(),
     C8yFactoriesModule,
+    FormsModule,
+    ReactiveFormsModule,
     ChartsModule,
   ],
   declarations: [
@@ -96,7 +98,8 @@ const appRoutes: Routes = [
     ToStringPipe,
     SeriesItemComponent,
     SeriesListComponent,
-    CountPipe
+    CountPipe,
+    IsNumberPipe
   ],
   entryComponents: [
     SimulatorEntryComponent,

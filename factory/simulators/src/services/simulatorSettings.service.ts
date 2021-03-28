@@ -25,7 +25,7 @@ export class SimulatorSettingsService {
   indexedCommandQueueUpdate = new BehaviorSubject<IndexedCommandQueueEntry[]>([]);
   indexedCommandQueueUpdate$ = this.indexedCommandQueueUpdate.asObservable();
 
-  instructionsSeriesUpdate = new BehaviorSubject([]);
+  instructionsSeriesUpdate = new BehaviorSubject<any[]>([]);
   instructionsSeriesUpdate$ = this.instructionsSeriesUpdate.asObservable();
 
   resultTemplate = { commandQueue: [], name: "" };
