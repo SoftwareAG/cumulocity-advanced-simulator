@@ -12,9 +12,10 @@ import { MeasurementsService } from "@services/measurements.service";
 import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
+import { SmartRESTService } from "@services/smartREST.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { isEqual } from "lodash";
-import { ThemeService } from "ng2-charts";
+import * as _ from 'lodash';
 import { Subscription } from "rxjs";
 @Component({
   selector: "app-create-sim",
@@ -25,6 +26,7 @@ export class CreateSimComponent implements OnInit {
   warningModal: Modal;
   readyToStartSimulator = false;
   allInstructionsSeries = [];
+  filteredInstructionsSeries = [];
   alarmSeries = [];
   smartRestConfig = [];
   commandQueue: CommandQueueEntry[] = [];
@@ -62,7 +64,8 @@ export class CreateSimComponent implements OnInit {
     private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
     private alertService: AlertService,
-    private updateService: ManagedObjectUpdateService
+    private updateService: ManagedObjectUpdateService,
+    private smartRestService: SmartRESTService
   ) {}
 
   getCurrentSimulatorState(event: boolean) {
@@ -75,20 +78,39 @@ export class CreateSimComponent implements OnInit {
   changeRouteLastSite() {
     this.router.navigate(["/"]);
   }
+
+  filterAllInstructionsList() {
+    this.filteredInstructionsSeries = this.allInstructionsSeries.filter((series) => this.objectContainsSearchString(series, this.searchString));
+  }
+
+  objectContainsSearchString(series, searchString) {
+    const value = _.pickBy(series, (value, key) => {
+      return (key.toLowerCase().includes(searchString.toLowerCase()) || value.toLowerCase().includes(searchString.toLowerCase()))
+    });
+    return _.isEmpty(value) ? false : true;
+  }
+
   ngOnInit() {
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
       this.allInstructionsSeries = instructions;
     });
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    this.updateService.setManagedObject(this.mo);
-    this.simulatorTitle = this.updateService.mo.c8y_DeviceSimulator.name;
-    this.commandQueue = this.updateService.mo.c8y_DeviceSimulator.commandQueue;
-    this.commandQueueIndices = this.updateService.mo.c8y_Indices;
-    this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
-    this.simSettings.setCommandQueue(this.commandQueue);
+    console.log(this.mo);
+    const mo = JSON.parse(JSON.stringify(this.mo));
+    this.updateService.setManagedObject(mo);
+    this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
+    const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
+    const MOIndices = this.mo.c8y_Indices;
+      this.commandQueue = MOCommandQueue;
+      
+      this.commandQueueIndices = MOIndices;
+      this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
+      this.simSettings.setCommandQueue(this.commandQueue);
+      this.allInstructionsSeries = this.mo.c8y_Series;
+      this.filteredInstructionsSeries = this.allInstructionsSeries;
+
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
-    this.allInstructionsSeries = this.updateService.mo.c8y_Series;
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
     this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
 
@@ -130,6 +152,7 @@ export class CreateSimComponent implements OnInit {
           );
         });
         this.instructionsService.SmartRestArray = this.smartRestConfig;
+        this.smartRestService.setSmartRestUpdate(this.smartRestConfig);
       });
     });
   }

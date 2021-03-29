@@ -54,7 +54,7 @@
               
               <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
                 <div class="form-group">
-                  <label>{{ entry.label }}</label>
+                  <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
                   <div
                     class="form-group form-group-md"
                     *ngIf="entry.type === 'select'"
@@ -73,15 +73,26 @@
                       </select>
                     </div>
                   </div>
-
                   <input
                     *ngIf="entry.type === 'textField'"
                     id="{{ entry.name }}"
-                    [required]="entry.required"
+                    (focus)="onSelectFocus(entry.name)"
+                    (blur)="onSelectBlur()"
                     class="form-control"
                     [(ngModel)]="instructionValue[entry.name]"
                     placeholder="{{ entry.placeholder }}"
                   />
+                  <!-- <span id="helpBlock" class="help-block" >
+                    A long block of help text that fits below the input field.
+                  </span> -->
+
+                  <em  class="custom-validation" *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
+                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                    <div> Please enter a number </div></em>
+
+                    <em  class="custom-validation" *ngIf="selected.selected && selected.entryName === entry.name && !instructionValue[entry.name]">
+                      <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                      <div> Required </div></em>
                 </div>
               </div>
             </ng-container>
@@ -92,6 +103,13 @@
                 style="float: right"
               >
                 {{ selectedSeries ? "Update" : "Add" }} {{ defaultConfig[i] }}
+              </button>
+              <button
+                class="btn btn-primary"
+                (click)="clearSeries()"
+                style="float: right; margin-right: 12px"
+              >
+                Reset/Clear
               </button>
               <select
                 class="form-control"
@@ -117,7 +135,7 @@
       <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
           <div [hidden]="entry | isValue"> 
-            <label>{{ entry.path }}</label>
+            <label class="text-truncate" [title]="entry.path">{{ entry.path }}</label>
             <input
               id="{{id + entry.path }}"
               [required]="true"
@@ -128,7 +146,7 @@
           <ng-container *ngIf="entry | isValue">
             <div class="row">
               <div class="col-xs-6">
-                <label>{{ entry.path +'.minimum'}}</label>
+                <label class="text-truncate" [title]="entry.path+'.minimum'">{{ entry.path +'.minimum'}}</label>
                 <input
                 id="{{ id + entry.path + '_min'}}"
                 [required]="true"
@@ -136,9 +154,12 @@
                 class="form-control"
                 placeholder="minimum"
                 />
+                <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_min'] && !(smartRestInstruction[entry.path+'_min'] | isNumber)">
+                  <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                  <div> Please enter a number </div></em>
               </div>
               <div class="col-xs-6">
-                <label>{{ entry.path +'.maximum'}}</label>
+                <label class="text-truncate" [title]="entry.path+'.maximum'">{{ entry.path +'.maximum'}}</label>
                 <input
                 id="{{ id + entry.path + '_max'}}"
                 [required]="true"
@@ -146,19 +167,25 @@
                   class="form-control"
                   placeholder="maximum"
                   />
+                  <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_max'] && !(smartRestInstruction[entry.path+'_max'] | isNumber)">
+                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                    <div> Please enter a number </div></em>
               </div>
             </div>
           </ng-container>
          
         </div>
         <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig != ''">
-        <label>{{ 'steps'}}</label>
+        <label class="text-truncate" [title]="'steps'">{{ 'steps'}}</label>
         <input
         id="{{ id + 'steps' }}"
         [required]="true"
         [(ngModel)]="smartRestInstruction['steps']"
         class="form-control"
       />
+      <em  class="custom-validation" *ngIf="smartRestInstruction['steps'] && !(smartRestInstruction['steps'] | isNumber)">
+        <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+        <div> Please enter a number </div></em>
     </ng-container>
         <br>
         <button
@@ -167,6 +194,13 @@
                 style="float: right"
               >
                 Save
+              </button>
+              <button
+                class="btn btn-default"
+                (click)="clearSeries()"
+                style="float: right"
+              >
+                Reset/Clear
               </button>
       </ng-container>
     </ng-container>

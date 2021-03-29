@@ -68,6 +68,21 @@ export class SimulatorEntryComponent implements OnInit {
     });
   }
 
+  onDuplicateSelected(simulator) {
+    let copyDeviceSim = JSON.parse(JSON.stringify(simulator.c8y_DeviceSimulator));
+    copyDeviceSim.name = simulator.name + ' #(copy)';
+    const copyIndices = simulator.c8y_Indices;
+    const copySeries = simulator.c8y_Series;
+    const copySimulator : Partial<CustomSimulator> = {
+      name: simulator.name + ' #(copy)',
+      c8y_CustomSim: {},
+      c8y_DeviceSimulator: copyDeviceSim,
+      c8y_Indices: copyIndices,
+      c8y_Series: copySeries
+    }
+    this.simService.createCustomSimulator(copySimulator).then((res) => console.log(res));
+  }
+
   refreshList() {
     this.simService.getAllDevices().then((simulators) => {
       this.allSimulators = simulators.sort((entry1, entry2) => {

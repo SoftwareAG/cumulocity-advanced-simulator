@@ -289,6 +289,9 @@ export class InstructionService {
       if (key === "type" || key === "") {
         inputField.hidden = true;
       }
+      if (key.endsWith('.minimum') || key.endsWith('.maximum') || key === 'steps') {
+        inputField.isNumber = true;
+      }
       inputField.name = key;
       inputField.placeholder = "(required)";
       inputField.label = key;

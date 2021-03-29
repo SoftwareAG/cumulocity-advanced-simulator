@@ -94,16 +94,31 @@
       
       <div *ngIf="allInstructionsSeries.length" class="card page-sticky-header series-header" style="display: flex; justify-content: space-between;">
         <div style="display: flex; float: left;  padding: 5px; margin: 5px">
+          <div class="header">
         <i c8yIcon="server" style="font-size: larger;"></i>
         &nbsp;&nbsp;<h4>Series</h4>
+      </div> &nbsp;&nbsp;&nbsp;&nbsp;
+      <div style="display: flex; flex-direction: column;" triggers="hover"
+      popoverTitle="Statistics"
+      [popover] = "popoverStats"
+      placement="auto"
+      #pop="bs-popover">
+      <b>Statistics</b>
+      <p>Total Instructions: {{allInstructionsSeries.length}}</p>
+      <em>{{allInstructionsSeries[0].type ? allInstructionsSeries[0].type: ''}} ...</em>
+    </div>
+      <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
       </div>
-      <div class="filter">
+      
+      <div class="filter common-header">
       <div id="filter" class="input-group input-group-search" style="padding: 5px" >
         <input
           type="search"
           class="form-control"
           placeholder="Filter…"
           [(ngModel)]="searchString"
+          (click)="filterAllInstructionsList()"
+          (keyup.enter)="filterAllInstructionsList()"
         />
         <span class="input-group-addon">
           <i c8yIcon="filter" *ngIf="!searchString || searchString.length === 0"></i>
@@ -111,13 +126,12 @@
             c8yIcon="times"
             class="text-muted"
             *ngIf="searchString && searchString.length > 0"
-            (click)="data.searchString = ''"
           ></i>
         </span>
       </div>
       </div>
     </div>
-    <app-series-list [instructionsSeries]="allInstructionsSeries"></app-series-list>
+    <app-series-list [instructionsSeries]="filteredInstructionsSeries"></app-series-list>
   </div>
 
     <div *ngIf="false" class="col-sm-8">
@@ -176,54 +190,25 @@
   </div>
 </div>
 
-<!--
-<ng-template #addedSeries let-item="item">
-    <button class="transparent" aria-controls="collapseBasic" (click)="item.active = !item.active"
-    [attr.aria-expanded]="item.active"><i c8yIcon="caret-down"></i>
-    </button>
-    <ng-container *ngIf="item.type === 'Measurement'"
-      ><h4>Measurement Series</h4>
-    </ng-container
-    >
-
-    <ng-container *ngIf="item.alarmText && item.alarmType">
-      <h4>Alarm Series</h4>
-      </ng-container
-    >
-
-    <ng-container *ngIf="item.eventType && item.eventText"
-      ><h4>Basic Event Series</h4></ng-container
-    >
-
-    <ng-container *ngIf="item.latitude && item.longitude"
-      ><h4>Location Event Series</h4>
-    </ng-container>
-
-    <ng-container *ngIf="item.type === 'Sleep'"
-      ><h4>Sleep Series</h4>
-    </ng-container>
-
-    <ng-container *ngIf="item.type === 'SmartRest'"
-      ><h4>SmartREST Series</h4>
-    </ng-container>
-
-        <button
-        class="transparent"
-         style="float: right;"
-        (click)="delete(item)"
-      >
-        <i c8yIcon="trash"></i>
-      </button>
-<!--
-    <div
-      id="collapseBasic"
-      class="collapse"
-      [collapse]="!item.active"
-      [isAnimated]="true"
-    ></div>
-</ng-template>
-<ng-template #addseries><h4>Add Series</h4></ng-template>-->
 
 <app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
 <ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>
 </section>
+<ng-template #popoverStats>
+  <p>Total Instructions: {{allInstructionsSeries.length}}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngIf="(allInstructionsSeries | count).alarms"><th><small>Alarms</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).alarms }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).sleep"><th><small>Sleep</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).sleep }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).events"><th><small>Events</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).events }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).measurements"><th><small>Measurements</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).measurements }}</small></td></tr>
+    <tr *ngIf="(allInstructionsSeries | count).smartRest"><th><small>Smart Rest</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).smartRest }}</small></td></tr>          
+  </tbody> 
+  </table>
+</ng-template>
