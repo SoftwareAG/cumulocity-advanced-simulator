@@ -6,7 +6,7 @@
 <app-edit-instruction *ngIf="!editedValue" [mo]="mo" [indexedCommandQueue]="commandQueue"></app-edit-instruction>
 <!-- {{resultTemplate.commandQueue | json }} -->
 <section style="height: calc(100% - 110px);">
-  <div class="col-sm-12 empty-command-queue" style="text-align: center;" *ngIf="!commandQueue.length">
+  <div class="col-sm-12 empty-command-queue" style="text-align: center;" *ngIf="!indexedCommandQueue.length">
     <div class="c8y-empty-state text-left">
       <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
       <p>
