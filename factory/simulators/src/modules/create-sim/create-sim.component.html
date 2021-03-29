@@ -8,35 +8,8 @@
     All Simulators
   </c8y-action-bar-item>
 <div class="row main-div" style="resize: vertical;overflow: auto;height: 70vh;">
-  <!--
-  <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
-    <div class="btn-group" role="group" *ngFor="let item of actionButtons">
-      <button
-        type="button"
-        [ngClass]="
-          currentSelection === item ? 'btn btn-primary' : 'btn btn-default'
-        "
-        (click)="selectButton(item)"
-      >
-        {{ item }}
-      </button>
-    </div>
-  </c8y-action-bar-item>-->
+  
   <div class="col-lg-8" style="height:100%;">
-<!--
-    <div class="tight-grid">
-      <div class="col-xs-6">
-        <button class="btn-add-block" (click)="viewNewSeries = !viewNewSeries">
-          <i c8yIcon="sort-amount-asc"></i> Add New Series
-        </button>
-      </div>
-      <div class="col-xs-6">
-        <button class="btn-add-block" (click)="viewHistoricalSeries = !viewHistoricalSeries">
-          <i c8yIcon="history"></i> Choose from existing 
-        </button>
-      </div>
-    </div>
-    -->
 
     <div >
       <app-sim-settings
@@ -75,6 +48,8 @@
           class="form-control"
           placeholder="Filter…"
           [(ngModel)]="searchString"
+          (click)="filterAllInstructionsList()"
+          (keyup.enter)="filterAllInstructionsList()"
         />
         <span class="input-group-addon">
           <i c8yIcon="filter" *ngIf="!searchString || searchString.length === 0"></i>
@@ -82,13 +57,12 @@
             c8yIcon="times"
             class="text-muted"
             *ngIf="searchString && searchString.length > 0"
-            (click)="data.searchString = ''"
           ></i>
         </span>
       </div>
       </div>
     </div>
-    <app-series-list [instructionsSeries]="allInstructionsSeries"></app-series-list>
+    <app-series-list [instructionsSeries]="filteredInstructionsSeries"></app-series-list>
   </div>
 
     <div *ngIf="false" class="col-sm-8">
@@ -166,53 +140,6 @@
   </div>
 </div>
 
-<!--
-<ng-template #addedSeries let-item="item">
-    <button class="transparent" aria-controls="collapseBasic" (click)="item.active = !item.active"
-    [attr.aria-expanded]="item.active"><i c8yIcon="caret-down"></i>
-    </button>
-    <ng-container *ngIf="item.type === 'Measurement'"
-      ><h4>Measurement Series</h4>
-    </ng-container
-    >
-
-    <ng-container *ngIf="item.alarmText && item.alarmType">
-      <h4>Alarm Series</h4>
-      </ng-container
-    >
-
-    <ng-container *ngIf="item.eventType && item.eventText"
-      ><h4>Basic Event Series</h4></ng-container
-    >
-
-    <ng-container *ngIf="item.latitude && item.longitude"
-      ><h4>Location Event Series</h4>
-    </ng-container>
-
-    <ng-container *ngIf="item.type === 'Sleep'"
-      ><h4>Sleep Series</h4>
-    </ng-container>
-
-    <ng-container *ngIf="item.type === 'SmartRest'"
-      ><h4>SmartREST Series</h4>
-    </ng-container>
-
-        <button
-        class="transparent"
-         style="float: right;"
-        (click)="delete(item)"
-      >
-        <i c8yIcon="trash"></i>
-      </button>
-<!--
-    <div
-      id="collapseBasic"
-      class="collapse"
-      [collapse]="!item.active"
-      [isAnimated]="true"
-    ></div>
-</ng-template>
-<ng-template #addseries><h4>Add Series</h4></ng-template>-->
 
 <app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
 <ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>

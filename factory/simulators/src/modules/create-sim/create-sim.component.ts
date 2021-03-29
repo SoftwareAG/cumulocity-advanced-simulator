@@ -14,7 +14,7 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { SmartRESTService } from "@services/smartREST.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { isEqual } from "lodash";
-import { ThemeService } from "ng2-charts";
+import * as _ from 'lodash';
 import { Subscription } from "rxjs";
 @Component({
   selector: "app-create-sim",
@@ -25,6 +25,7 @@ export class CreateSimComponent implements OnInit {
   warningModal: Modal;
   readyToStartSimulator = false;
   allInstructionsSeries = [];
+  filteredInstructionsSeries = [];
   alarmSeries = [];
   smartRestConfig = [];
   commandQueue: CommandQueueEntry[] = [];
@@ -73,6 +74,18 @@ export class CreateSimComponent implements OnInit {
   changeRouteLastSite() {
     this.router.navigate(["/"]);
   }
+
+  filterAllInstructionsList() {
+    this.filteredInstructionsSeries = this.allInstructionsSeries.filter((series) => this.objectContainsSearchString(series, this.searchString));
+  }
+
+  objectContainsSearchString(series, searchString) {
+    const value = _.pickBy(series, (value, key) => {
+      return (key.toLowerCase().includes(searchString.toLowerCase()) || value.toLowerCase().includes(searchString.toLowerCase()))
+    });
+    return _.isEmpty(value) ? false : true;
+  }
+
   ngOnInit() {
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
       this.allInstructionsSeries = instructions;
@@ -85,14 +98,14 @@ export class CreateSimComponent implements OnInit {
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     const MOIndices = this.mo.c8y_Indices;
-    // if (MOCommandQueue.length && MOCommandQueue.length === MOIndices.length) {
       this.commandQueue = MOCommandQueue;
       
       this.commandQueueIndices = MOIndices;
       this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
       this.simSettings.setCommandQueue(this.commandQueue);
       this.allInstructionsSeries = this.mo.c8y_Series;
-    // }
+      this.filteredInstructionsSeries = this.allInstructionsSeries;
+
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
 
