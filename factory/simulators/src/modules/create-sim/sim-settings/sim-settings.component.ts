@@ -28,7 +28,10 @@ import {
 } from "@models/instruction.model";
 import { MeasurementsService } from "@services/measurements.service";
 import { ColorsReduced } from "@models/colors.const";
-import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
+import {
+  CommandQueueEntry,
+  IndexedCommandQueueEntry,
+} from "@models/commandQueue.model";
 import { AlarmsService } from "@services/alarms.service";
 import { EventsService } from "@services/events.service";
 import { SmartRESTService } from "@services/smartREST.service";
@@ -38,7 +41,7 @@ import { CustomSimulator } from "@models/simulator.model";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { InstructionService } from "@services/Instruction.service";
 import { FormBuilder } from "@angular/forms";
-import * as _ from 'lodash';
+import * as _ from "lodash";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -56,18 +59,22 @@ export class SimSettingsComponent implements OnInit {
     SeriesEventsForm,
     SeriesSleepForm,
   ];
+  measurementOptions = ["linear", "random", "wave"];
+  // selectedMeasuementOption = this.measurementOptions[0];
   smartRestInstruction = {};
   smartRestArr = [];
-  selectedConfig = '';
+  selectedConfig = "";
   instructionValue: Partial<SeriesInstruction> = {};
   selectedSeries: SeriesInstruction;
   templateCtx: { item: SeriesInstruction };
   isSmartRestSelected = false;
   smartRestViewModel = {};
   randomize = false;
-  selected = {entryName: '', selected: false};
+  selected = { entryName: "", selected: false };
   validationInstruction: Partial<SeriesInstruction> = {};
   disableBtn = true;
+  smartRestOption = 'linear';
+  measurementOption = 'linear';
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
@@ -113,76 +120,92 @@ export class SimSettingsComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   updateSeries(index: number) {
-
     const isNumArr = this.allForms[index].filter((entry) => entry.isNumber);
-    const pos = isNumArr.findIndex((val) => isNaN(Number(this.instructionValue[val.name])));
+    const pos = isNumArr.findIndex((val) =>
+      isNaN(Number(this.instructionValue[val.name]))
+    );
     if (pos !== -1) {
-      this.updateService.simulatorUpdateFeedback('danger', 'Please fill in numbers for Minimum, Maximum and steps.');
+      this.updateService.simulatorUpdateFeedback(
+        "danger",
+        "Please fill in numbers for Minimum, Maximum and steps."
+      );
+    } else {
+      for (const entry of this.allForms[index]) {
+        if (entry.defaultValue && !this.instructionValue[entry.name]) {
+          this.instructionValue[entry.name] = entry.defaultValue;
+        }
+        if (
+          !entry.hidden &&
+          entry.required === true &&
+          !this.instructionValue[entry.name]
+        ) {
+          this.alertService.add({
+            text: `Not all the required fields are filled.`,
+            type: "danger",
+          });
+          return;
+        }
+        if (+entry.minimum > this.instructionValue[entry.name]) {
+          this.alertService.add({
+            text: `For ${entry.name} you need a value greater than or equal to ${entry.minimum}.`,
+            type: "danger",
+          });
+          return;
+        }
+      }
+      this.instructionValue.color = this.selectedColor;
+      this.instructionValue.type = this.defaultConfig[index];
+      let val = this.instructionValue;
+
+      this.instructionService.pushToSeriesArrays(
+        this.defaultConfig[index],
+        this.instructionValue
+      );
+      const assignedIndex = this.simSettingsService.setIndexForCommandQueueEntry();
+      console.log("Assigned index: ", assignedIndex);
+      const insVal = JSON.parse(JSON.stringify(this.instructionValue));
+      this.simSettingsService.pushToInstructionsArray({
+        ...insVal,
+        index: assignedIndex,
+        option: this.measurementOption
+      });
+      this.generateRequest();
     }
-    else {
-    
-    for (const entry of this.allForms[index]) {
-      if (entry.defaultValue && !this.instructionValue[entry.name]) {
-        this.instructionValue[entry.name] = entry.defaultValue;
-      }
-      if (
-        !entry.hidden &&
-        entry.required === true &&
-        !this.instructionValue[entry.name]
-      ) {
-        this.alertService.add({
-          text: `Not all the required fields are filled.`,
-          type: "danger",
-        });
-        return;
-      }
-      if (+entry.minimum > this.instructionValue[entry.name]) {
-        this.alertService.add({
-          text: `For ${entry.name} you need a value greater than or equal to ${entry.minimum}.`,
-          type: "danger",
-        });
-        return;
-      }
-    }
-    this.instructionValue.color = this.selectedColor;
-    this.instructionValue.type = this.defaultConfig[index];
-    let val = this.instructionValue;
-
-    this.instructionService.pushToSeriesArrays(this.defaultConfig[index], this.instructionValue);
-    const assignedIndex = this.simSettingsService.setIndexForCommandQueueEntry();
-    console.log('Assigned index: ', assignedIndex);
-    const insVal = JSON.parse(JSON.stringify(this.instructionValue));
-    this.simSettingsService.pushToInstructionsArray({...insVal, index: assignedIndex});
-    this.generateRequest();
-  }
   }
 
-  checkErrorsForValidation() {
-
-  }
+  checkErrorsForValidation() {}
 
   generateRequest() {
-    this.simSettingsService.randomSelected = this.randomize;
+    this.simSettingsService.randomSelected =
+      this.instructionValue.type === "Measurement" &&
+      this.instructionValue.measurementOption
+        ? this.instructionValue.measurementOption
+        : 'linear';
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
     this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray();
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
-      console.log(res);
-      Object.keys(this.instructionValue).forEach((key) => this.instructionValue[key] = '');
-      this.selectedConfig = '';
-      Object.keys(this.instructionValue).forEach((key) => delete this.instructionValue[key]);
-      this.simSettingsService.resetUsedArrays();
-      this.simSettingsService.allInstructionsArray = res.c8y_Series;
-      this.allSeriesEmitter.emit(res.c8y_Series);
-    });
+    this.updateService
+      .updateSimulatorObject(this.updateService.mo)
+      .then((res) => {
+        console.log(res);
+        Object.keys(this.instructionValue).forEach(
+          (key) => (this.instructionValue[key] = "")
+        );
+        this.selectedConfig = "";
+        Object.keys(this.instructionValue).forEach(
+          (key) => delete this.instructionValue[key]
+        );
+        this.simSettingsService.resetUsedArrays();
+        this.simSettingsService.allInstructionsArray = res.c8y_Series;
+        this.allSeriesEmitter.emit(res.c8y_Series);
+      });
   }
 
   onSelectFocus(value) {
-    this.selected = {entryName: value, selected: false};
+    this.selected = { entryName: value, selected: false };
     console.log(this.selected);
   }
 
@@ -195,66 +218,82 @@ export class SimSettingsComponent implements OnInit {
   }
 
   saveSmartRestTemplateToCommandQueue() {
-    
+    this.smartRESTService.smartRestOption = this.smartRestOption != '' ? this.smartRestOption : 'linear';
     let smartRestInstructionsArray = this.smartRESTService.convertToSmartRestModel(
-      this.smartRestInstruction, this.smartRestSelectedConfig
+      this.smartRestInstruction,
+      this.smartRestSelectedConfig
     );
     let inconsistent = [];
-    const found = Object.keys(this.smartRestInstruction).filter((entry) => entry.includes('_min' || '_max' || 'steps'));
+    const found = Object.keys(this.smartRestInstruction).filter((entry) =>
+      entry.includes("_min" || "_max" || "steps")
+    );
     if (found.length) {
-      inconsistent = found.filter((entry) => isNaN(Number(this.smartRestInstruction[entry])));
+      inconsistent = found.filter((entry) =>
+        isNaN(Number(this.smartRestInstruction[entry]))
+      );
     }
 
     if (inconsistent.length) {
-      this.updateService.simulatorUpdateFeedback('danger', 'Please fill in numbers for minimum, maximum and steps');
-    } else {
-    const copy = JSON.parse(JSON.stringify(this.smartRestInstruction));
-    const copy1 = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
-
-    const cmdQ = this.smartRESTService.generateSmartRestRequest(
-      smartRestInstructionsArray,
-      this.smartRestSelectedConfig
-    );
-    let indexed = this.simSettingsService.indexedCommandQueue;
-    const index = this.simSettingsService.setIndexForCommandQueueEntry();
-    const combinedSmartInstruction = {
-      instruction: copy,
-      type: InstructionCategory.SmartRest,
-      config: copy1,
-      index: index
-    };
-    this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
-    const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: index})) as IndexedCommandQueueEntry[];
-    indexed.push(...indexedCmdQ);
-    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(indexed);
-    this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
-      console.log(res);
-      const alert = {
-        text: `Smart REST instructions created successfully.`,
-        type: "success",
-      } as Alert;
-      this.alertService.add(alert);
-      // this.allInstructionsSeries = res.c8y_Series;
-      this.allSeriesEmitter.emit(res.c8y_Series);
-      this.simSettingsService.allInstructionsArray = res.c8y_Series;
-      Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
-        this.smartRestInstruction[key] = "";
-      });
-      this.smartRESTService.resetCommandQueueArray();
-      this.smartRestArr = [];
-      this.smartRestSelectedConfig = "";
-      Object.keys(this.smartRestInstruction).forEach(
-        (key) => delete this.smartRestInstruction[key]
+      this.updateService.simulatorUpdateFeedback(
+        "danger",
+        "Please fill in numbers for minimum, maximum and steps"
       );
-      this.simSettingsService.resetUsedArrays();
-      this.smartRestInstruction = {};
-      // this.smartRestInstructionsArray = [];
-      this.selectedConfig = '';
-      this.isSmartRestSelected = false;
-      // this.allInstructionsSeries = [];
-    });
-  }
+    } else {
+      const copy = JSON.parse(JSON.stringify(this.smartRestInstruction));
+      const copy1 = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
+
+      const cmdQ = this.smartRESTService.generateSmartRestRequest(
+        smartRestInstructionsArray,
+        this.smartRestSelectedConfig
+      );
+      let indexed = this.simSettingsService.indexedCommandQueue;
+      const index = this.simSettingsService.setIndexForCommandQueueEntry();
+      const combinedSmartInstruction = {
+        instruction: copy,
+        type: InstructionCategory.SmartRest,
+        config: copy1,
+        index: index,
+        option: this.smartRestOption
+      };
+      this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
+      const indexedCmdQ = cmdQ.map((entry) => ({
+        ...entry,
+        index: index,
+      })) as IndexedCommandQueueEntry[];
+      indexed.push(...indexedCmdQ);
+      this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(
+        indexed
+      );
+      this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
+      this.updateService
+        .updateSimulatorObject(this.updateService.mo)
+        .then((res) => {
+          console.log(res);
+          const alert = {
+            text: `Smart REST instructions created successfully.`,
+            type: "success",
+          } as Alert;
+          this.alertService.add(alert);
+          // this.allInstructionsSeries = res.c8y_Series;
+          this.allSeriesEmitter.emit(res.c8y_Series);
+          this.simSettingsService.allInstructionsArray = res.c8y_Series;
+          Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
+            this.smartRestInstruction[key] = "";
+          });
+          this.smartRESTService.resetCommandQueueArray();
+          this.smartRestArr = [];
+          this.smartRestSelectedConfig = "";
+          Object.keys(this.smartRestInstruction).forEach(
+            (key) => delete this.smartRestInstruction[key]
+          );
+          this.simSettingsService.resetUsedArrays();
+          this.smartRestInstruction = {};
+          // this.smartRestInstructionsArray = [];
+          this.selectedConfig = "";
+          this.isSmartRestSelected = false;
+          // this.allInstructionsSeries = [];
+        });
+    }
   }
 
   clearSeries() {
@@ -262,5 +301,4 @@ export class SimSettingsComponent implements OnInit {
     this.instructionValue = {};
     this.smartRestInstruction = {};
   }
-  
 }

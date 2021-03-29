@@ -41,7 +41,8 @@ export class SimulatorSettingsService {
   ];
   selectedEventConfig: string = this.eventConfig[0];
 
-  randomSelected = false;
+  // randomSelected = false;
+  randomSelected = 'linear';
 
   commandQueue: CommandQueueEntry[] = [];
   indices = [];
@@ -70,10 +71,8 @@ export class SimulatorSettingsService {
   }
 
   setCommandQueue(commandQueue: CommandQueueEntry[]) {
-    console.log('setCommandqueue', commandQueue);
     this.commandQueue = commandQueue;
     this.indexedCommandQueue = this.commandQueue.map((entry, index) => ({...entry, index:this.indices[index]}));
-    console.log('indexedCommandQueue', this.indexedCommandQueue);
     this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
   }
 
@@ -91,10 +90,9 @@ export class SimulatorSettingsService {
     this.resultTemplate.commandQueue = [];
     
     this.measurementService.createUniqueMeasurementsArray();
-    console.info(this.measurementService.uniqueMeasurementsArray);
     for (let value of this.measurementService.uniqueMeasurementsArray) {
       for (const { temp, index } of this.helperService
-        .scale(value.minValue, value.maxValue, value.steps, this.randomSelected)
+        .scaleTest(value.minValue, value.maxValue, value.steps, this.randomSelected)
         .map((temp, index) => ({ temp, index }))) {
           // if else
           const instruction: Instruction = {
@@ -110,12 +108,6 @@ export class SimulatorSettingsService {
           let index = this.setIndexForCommandQueueEntry();
           let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
           
-          console.log('toBePushed', toBePushed);
-          // const index = this.commandQueue[this.]
-          console.log('CQ ', this.commandQueue[this.commandQueue.length-1]);
-
-          // console.log('MUST DISPLAY INDEX', index);
-          console.info(temp, value, instruction, toBePushed);
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
         // Add sleep after inserting measurement

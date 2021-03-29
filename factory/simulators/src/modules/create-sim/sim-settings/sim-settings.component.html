@@ -44,13 +44,6 @@
 
           <div class="row">
             <ng-container *ngFor="let entry of form">
-              <div class="col-xs-12" *ngIf="entry.type === 'switch'">
-                <label class="c8y-switch">
-                  <input type="checkbox"  [ngModel]="randomize" (ngModelChange)="randomize=!randomize"/>
-                  <span></span><em>{{entry.label}}</em>
-                </label>
-                <br>
-              </div>
               
               <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
                 <div class="form-group">
@@ -125,6 +118,21 @@
                   {{ entry }}
                 </option>
               </select>
+              <ng-container *ngIf="selectedConfig === 'Measurement'">
+              <select
+                class="form-control"
+                style="max-width: 200px; margin-right: 20px; float: right"
+                [(ngModel)]="measurementOption">
+                <option disabled value="linear">
+                  Select Measurement Option
+                </option>
+
+                <option
+                  *ngFor="let entry of measurementOptions">
+                  {{ entry }}
+                </option>
+              </select>
+            </ng-container>
             </div>
           </div>
         </ng-template>
@@ -198,10 +206,23 @@
               <button
                 class="btn btn-default"
                 (click)="clearSeries()"
-                style="float: right"
+                style="float: right; margin-right: 20px;"
               >
                 Reset/Clear
               </button>
+              <select
+                class="form-control"
+                style="max-width: 200px; margin-right: 20px; float: right"
+                [(ngModel)]="smartRestOption">
+                <option disabled value="linear">
+                  Select SmartRest Option
+                </option>
+
+                <option
+                  *ngFor="let entry of measurementOptions">
+                  {{ entry }}
+                </option>
+              </select>
       </ng-container>
     </ng-container>
     </div>

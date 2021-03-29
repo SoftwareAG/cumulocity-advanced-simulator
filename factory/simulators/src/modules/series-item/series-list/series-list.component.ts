@@ -9,7 +9,14 @@ import { Subscription } from 'rxjs';
 })
 export class SeriesListComponent implements OnInit {
 
-  @Input() instructionsSeries;
+  allInstructionsSeries;
+  @Input() set instructionsSeries(instructionsArray) {
+    this.allInstructionsSeries = instructionsArray;
+  };
+
+  get instructionsSeries() {
+    return this.allInstructionsSeries;
+  }
   @Input() indexedCommandQueue;
   private instructionsSeriesSubscription: Subscription;
   constructor(

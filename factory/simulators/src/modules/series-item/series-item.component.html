@@ -4,6 +4,22 @@
               <h4 class="col-xs-2 text-truncate" [title]="selectedSeries.type">
                 <i [c8yIcon]="icon"></i>&nbsp;{{ selectedSeries.type }}
               </h4>
+              <ng-container *ngIf="selectedSeries.type === 'Measurement' || selectedSeries.type === 'SmartRest'">
+                <div class='col-xs-2'>
+                <label class="text-truncate" [title]="'Measurement Options'">Measurement Options:</label>
+              <select
+                class="form-control"
+                style="max-width: 200px; margin-right: 20px; float: right"
+                [(ngModel)]="selectedSeries.option">
+
+                <option
+                  *ngFor="let entry of measurementOptions"
+                  [style.background]="entry">
+                  {{ entry }}
+                </option>
+              </select>
+            </div>
+            </ng-container>
               <ng-container *ngFor="let entry of form">
                 <!-- <div class="col-xs-12" *ngIf="entry.type === 'switch'">
           <label class="c8y-switch">

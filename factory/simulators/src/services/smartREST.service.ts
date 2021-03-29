@@ -22,7 +22,7 @@ export class SmartRESTService {
   smartRestUpdate = new BehaviorSubject([]);
   smartRestUpdate$ = this.smartRestUpdate.asObservable();
 
-
+  smartRestOption = 'linear';
   setSmartRestUpdate(config) {
     this.smartRestConfig = config;
     this.smartRestUpdate.next(this.smartRestConfig);
@@ -56,11 +56,11 @@ export class SmartRESTService {
       const steps = instruction.steps;
       if (instruction.minValue && instruction.maxValue) {
       for (let { temp, index } of this.helperService
-        .scale(
+        .scaleTest(
           parseInt(instruction.minValue),
           parseInt(instruction.maxValue),
           parseInt(instruction.steps),
-          false
+          this.smartRestOption
         )
         .map((temp, index) => ({ temp, index }))) {
         vals.push(temp.toString());
