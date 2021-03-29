@@ -290,6 +290,7 @@ export class CreateSimComponent implements OnInit {
     });
   }
   openSimulatorInDevmanagement(){
+  }
 
   ngOnDestroy() {
     if (this.instructionsSubscription) {
