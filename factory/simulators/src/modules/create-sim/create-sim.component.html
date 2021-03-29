@@ -6,45 +6,57 @@
   <i c8yIcon="edit" style="font-size: small;" (click)="editMode=true"></i>
 </c8y-title>
   <c8y-action-bar-item [placement]="'left'" [itemClass]="'btn'">
-    <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i></button>
-    All Simulators
+    <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i>All Simulators</button>
   </c8y-action-bar-item>
 
 
-<h3 style="text-align: center;">Guidance to create Simulator</h3>
+<h3 style="text-align: center;">Wizard to create Simulator</h3>
 <div class="row wizard">
   <div style="position: absolute;width: 600px;left: 50%;top: 40px;height: 5px;background: #fff;margin-left: -300px;"></div>
   <div  [ngClass]="(commandQueue.length) ? 'wizard-item-success' : 'wizard-item'">
-    <div class="circle">1.</div>
+    <div class="circle">1</div>
     Create an Instruction or Series
   </div>
 
   <div [ngClass]="(commandQueue.length) ? (bulkView) ? 'wizard-item-success' : 'wizard-item' : 'wizard-item-disabled'">
-    <div class="circle">2.</div>
+    <div class="circle">2</div>
     Refine with bulk changes
   </div>
 
   <div [ngClass]="(bulkView && commandQueue.length) ? (simulatorRunning) ? 'wizard-item-success clickable circle-animate' : 'wizard-item clickable' : 'wizard-item-disabled'">
-    <div [ngClass]="'circle ' + ((commandQueue.length && bulkView && !simulatorRunning)? 'heartbeat' : '')" (click)="toggleSimulatorState()"><span>3.</span></div>
+    <div [ngClass]="'circle ' + ((commandQueue.length && bulkView && !simulatorRunning)? 'heartbeat' : '')" (click)="toggleSimulatorState()"><span>3</span></div>
     <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
     <span *ngIf="!simulatorRunning">Start this Simulator</span>
   </div>
 
   <div (click)="openSimulatorInDevmanagement()" [ngClass]="(bulkView && commandQueue.length  && simulatorRunning) ? 'wizard-item clickable' : 'wizard-item-disabled'">
-    <div class="circle">4.</div>
+    <div class="circle">4</div>
     Open Device Management
   </div>
 </div>
 
-<div class="row" *ngIf="commandQueue.length">
-  
-  <button title="Add sleep" title="This duplicates all values but in reverse order" (click)="createSinusWave()">
-    Mirror Y Axis
-  </button>
-
-  <button title="Skip this step" title="This duplicates all values but in reverse order" (click)="bulkView = true">
-    Skip
-  </button>
+<div class="row">
+  <div class="card-group interact-grid" *ngIf="commandQueue.length">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-arrows-h"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Mirror along Y Axis
+          </div>
+        </div>
+        <div class="card-block">
+          This duplicates all values but in reverse order
+          <label class="c8y-switch">
+            <input type="checkbox" [ngModel]="mirroredYAxis" (click)="mirroredYAxis = !mirroredYAxis" />
+            <span></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 

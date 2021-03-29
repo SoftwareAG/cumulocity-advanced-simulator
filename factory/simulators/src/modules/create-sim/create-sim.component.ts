@@ -52,6 +52,7 @@ export class CreateSimComponent implements OnInit {
   commandQueueIndices = [];
   indexedCommandQueue = [];
   instructionsSubscription: Subscription;
+  mirroredYAxis: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
