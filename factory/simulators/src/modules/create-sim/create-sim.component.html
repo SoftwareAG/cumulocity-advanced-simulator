@@ -116,8 +116,8 @@
       placement="auto"
       #pop="bs-popover">
       <b>Statistics</b>
-      <!-- <p>Total Instructions: {{allInstructionsSeries.length}}</p> -->
-      <!-- <em>{{allInstructionsSeries && allInstructionsSeries[0].type ? allInstructionsSeries[0].type: ''}} ...</em> -->
+      <p>Total Instructions: {{allInstructionsSeries && allInstructionsSeries.length ?  allInstructionsSeries.length : ''}}</p>
+      <em>{{allInstructionsSeries && allInstructionsSeries[0] ? allInstructionsSeries[0].type: ''}} ...</em>
     </div>
       <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
       </div>
