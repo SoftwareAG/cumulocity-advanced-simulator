@@ -48,8 +48,7 @@
           class="form-control"
           placeholder="Filter…"
           [(ngModel)]="searchString"
-          (click)="filterAllInstructionsList()"
-          (keyup.enter)="filterAllInstructionsList()"
+          (keyup.enter)="filterAllInstructionsList(this)"
         />
         <span class="input-group-addon">
           <i c8yIcon="filter" *ngIf="!searchString || searchString.length === 0"></i>

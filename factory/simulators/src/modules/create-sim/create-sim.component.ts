@@ -81,8 +81,9 @@ export class CreateSimComponent implements OnInit {
 
   objectContainsSearchString(series, searchString) {
     const value = _.pickBy(series, (value, key) => {
-      return (key.toLowerCase().includes(searchString.toLowerCase()) || value.toLowerCase().includes(searchString.toLowerCase()))
+      return (key.toLowerCase().replace('/ /g', '').includes(searchString.toLowerCase().replace('/ /g', '')) || value.toLowerCase().replace('/ /g', '').includes(searchString.toLowerCase().replace('/ /g', '')))
     });
+    console.log(value);
     return _.isEmpty(value) ? false : true;
   }
 
