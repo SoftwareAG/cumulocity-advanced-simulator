@@ -107,17 +107,11 @@ export class SimSettingsComponent implements OnInit {
   // allInstructionsSeries = [];
 
   constructor(
-    private simService: SimulatorsServiceService,
     private simSettingsService: SimulatorSettingsService,
-    private measurementsService: MeasurementsService,
-    private alarmService: AlarmsService,
-    private eventsService: EventsService,
     private smartRESTService: SmartRESTService,
     private alertService: AlertService,
-    private sleepService: SleepService,
     private updateService: ManagedObjectUpdateService,
     private instructionService: InstructionService,
-    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {}
@@ -190,7 +184,7 @@ export class SimSettingsComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        console.log(res);
+        this.updateService.simulatorUpdateFeedback('success', `${this.instructionValue.type} series has been added successfully.`)
         Object.keys(this.instructionValue).forEach(
           (key) => (this.instructionValue[key] = "")
         );
@@ -206,7 +200,6 @@ export class SimSettingsComponent implements OnInit {
 
   onSelectFocus(value) {
     this.selected = { entryName: value, selected: false };
-    console.log(this.selected);
   }
 
   onSelectBlur() {
