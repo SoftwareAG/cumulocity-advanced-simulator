@@ -60,11 +60,14 @@ export class SeriesListComponent implements OnInit {
     );
 
     console.log('Instructions series: ', this.instructionsSeries);
+    console.log('Indexed command queue: ', this.indexedCommandQueue);
     
     const filtered = this.instructionsSeries.map((entry, idx) => ({
       newIdx: idx.toString(),
       series: entry,
     }));
+
+    console.log('filtered: ', filtered);
 
     const filteredIndexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
     let rearranged = this.dragDropService.createUpdatedIndexedCommandQueue(filteredIndexedCommandQueue, filtered);
@@ -79,6 +82,7 @@ export class SeriesListComponent implements OnInit {
     let updatedInstructionsSeries = filtered.map(({newIdx, ...nonIdx}) => nonIdx.series);
     console.log('Updated Instructions Series: ', updatedInstructionsSeries);
     this.indexedCommandQueue = rearranged;
+    this.instructionsSeries = updatedInstructionsSeries;
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.simSettingsService.setAllInstructionsSeries(updatedInstructionsSeries);
     this.updatedService.updateSimulatorObject(this.updatedService.mo).then((res) => console.log(res));  

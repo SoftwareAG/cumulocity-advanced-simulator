@@ -120,8 +120,6 @@ export class SeriesItemComponent implements OnInit {
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(filtered);
     this.allInstructionsSeries = this.allInstructionsSeries.filter((entry) => entry.index !== this.selectedSeries.index);
     this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
-    this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
-    this.updateService.updateMOInstructionsArray(this.simSettingsService.allInstructionsArray);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const alertText = `Series has been deleted succesfully.`;
       this.updateService.simulatorUpdateFeedback('success', alertText)

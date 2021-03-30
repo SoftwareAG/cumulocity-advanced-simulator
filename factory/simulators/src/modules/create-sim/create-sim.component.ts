@@ -53,6 +53,7 @@ export class CreateSimComponent implements OnInit {
   commandQueueIndices = [];
   indexedCommandQueue = [];
   instructionsSubscription: Subscription;
+  indexedCommandQueueSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -97,6 +98,10 @@ export class CreateSimComponent implements OnInit {
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
       this.allInstructionsSeries = instructions;
       this.filteredInstructionsSeries = this.allInstructionsSeries;
+    });
+
+    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed) => {
+      this.indexedCommandQueue = indexed;
     });
 
     this.data = this.route.snapshot.data;
@@ -301,6 +306,9 @@ export class CreateSimComponent implements OnInit {
   ngOnDestroy() {
     if (this.instructionsSubscription) {
       this.instructionsSubscription.unsubscribe();
+    }
+    if (this.indexedCommandQueueSubscription) {
+      this.indexedCommandQueueSubscription.unsubscribe();
     }
   }
 
