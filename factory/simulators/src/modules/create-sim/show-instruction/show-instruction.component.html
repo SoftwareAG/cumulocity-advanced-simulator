@@ -36,6 +36,7 @@
     [style.background]="item.color"
     cdkDrag [cdkDragData]="item"
   >
+  <div class="custom-placeholder" *cdkDragPlaceholder></div>
     <!-- <div style="display: flex; cursor: move;"> -->
       <button class="list-group-item"  (click)="updateCurrentValue(item)">
         <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o drag-item"></i>
