@@ -1,7 +1,7 @@
-<div class="settings">
+<div class="settings" cdkDropList id="series" (cdkDropListDropped)="drop($event)">
   <ng-container>
     <div style="height: 500px;">
-    <div *ngFor="let first of instructionsSeries; let i = index" >
+    <div *ngFor="let first of instructionsSeries; let i = index" cdkDrag [cdkDragData]="first">
       <app-series-item
       [id]="'app-sim-settings_'+ i | toString"
       [series]="first" [index]="i"

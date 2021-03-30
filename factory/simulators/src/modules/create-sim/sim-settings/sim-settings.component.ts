@@ -193,8 +193,7 @@ export class SimSettingsComponent implements OnInit {
           (key) => delete this.instructionValue[key]
         );
         this.simSettingsService.resetUsedArrays();
-        this.simSettingsService.allInstructionsArray = res.c8y_Series;
-        this.allSeriesEmitter.emit(res.c8y_Series);
+        this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
       });
   }
 
