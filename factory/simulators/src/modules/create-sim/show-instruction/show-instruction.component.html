@@ -1,12 +1,25 @@
 <h3>Work with a single Instruction</h3>
-<br>
-<div class="alert alert-warning" *ngIf="warning && commandQueue.length" style="max-width:100%;display:inline-block;" role="alert">
-  <strong>{{warning.title}}</strong> {{warning.message}}
+<br />
+<div
+  class="alert alert-warning"
+  *ngIf="warning && commandQueue.length"
+  style="max-width: 100%; display: inline-block"
+  role="alert"
+>
+  <strong>{{ warning.title }}</strong> {{ warning.message }}
 </div>
-<app-edit-instruction *ngIf="!editedValue" [mo]="mo" [indexedCommandQueue]="commandQueue"></app-edit-instruction>
+<app-edit-instruction
+  *ngIf="!editedValue"
+  [mo]="mo"
+  [indexedCommandQueue]="commandQueue"
+></app-edit-instruction>
 <!-- {{resultTemplate.commandQueue | json }} -->
-<section style="height: calc(100% - 110px);">
-  <div class="col-sm-12 empty-command-queue" style="text-align: center;" *ngIf="!indexedCommandQueue.length">
+<section style="height: calc(100% - 110px)">
+  <div
+    class="col-sm-12 empty-command-queue"
+    style="text-align: center"
+    *ngIf="!indexedCommandQueue.length"
+  >
     <div class="c8y-empty-state text-left">
       <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
       <p>
@@ -15,39 +28,82 @@
       </p>
     </div>
   </div>
-  <ng-container *ngFor="let item of indexedCommandQueue; let i; of: commandQueue.length" [style.background]="item.color">
-    <div style="display: flex">
-      <button class="list-group-item" (click)="updateCurrentValue(item)" >
-        <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o"></i>
-        <span *ngIf="item.type === 'sleep'">&nbsp;Sleep
-          &nbsp;{{ item.seconds }} seconds
+  <div   cdkDropList
+  id="indexed"
+  (cdkDropListDropped)="drop($event)">
+  <div
+    *ngFor="let item of indexedCommandQueue; let i; of: commandQueue.length"
+    [style.background]="item.color"
+    cdkDrag [cdkDragData]="item"
+  >
+    <!-- <div style="display: flex; cursor: move;"> -->
+      <button class="list-group-item"  (click)="updateCurrentValue(item)">
+        <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o drag-item"></i>
+        <span *ngIf="item.type === 'sleep'"
+          >&nbsp;Sleep &nbsp;{{ item.seconds }} seconds
         </span>
-          <i *ngIf="item.type === 'builtin' || item.type === 'message'" class="fa fw fa-arrow-right"></i><span
-          *ngIf="item.type === 'builtin' && item.messageId === '200'">&nbsp;Custom measurement
-          &nbsp;<em>{{item.messageId}}</em>&nbsp;
-          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+        <i
+          *ngIf="item.type === 'builtin' || item.type === 'message'"
+          class="fa fw fa-list drag-item"
+        ></i
+        >&nbsp;<span *ngIf="item.type === 'builtin' && item.messageId === '200'"
+          >&nbsp;Custom measurement &nbsp;<em>{{ item.messageId }}</em
+          >&nbsp;
+          <ng-container *ngFor="let value of item.values"
+            >{{ value }}&nbsp;</ng-container
+          >
         </span>
         <span
-          *ngIf="item.type === 'builtin' && (item.messageId === '301' || item.messageId === '302' || item.messageId === '303')">&nbsp;Custom
-          alarm &nbsp;<em>{{item.messageId}}</em>&nbsp;
-          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+          *ngIf="
+            item.type === 'builtin' &&
+            (item.messageId === '301' ||
+              item.messageId === '302' ||
+              item.messageId === '303')
+          "
+          >&nbsp;Custom alarm &nbsp;<em>{{ item.messageId }}</em
+          >&nbsp;
+          <ng-container *ngFor="let value of item.values"
+            >{{ value }}&nbsp;</ng-container
+          >
         </span>
         <span
-          *ngIf="item.type === 'builtin' && (item.messageId === '400' || item.messageId === '401' || item.messageId === '402')">&nbsp;Custom
-          event &nbsp;<em>{{item.messageId}}</em>&nbsp;
-          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+          *ngIf="
+            item.type === 'builtin' &&
+            (item.messageId === '400' ||
+              item.messageId === '401' ||
+              item.messageId === '402')
+          "
+          >&nbsp;Custom event &nbsp;<em>{{ item.messageId }}</em
+          >&nbsp;
+          <ng-container *ngFor="let value of item.values"
+            >{{ value }}&nbsp;</ng-container
+          >
         </span>
-        <span
-          *ngIf="item.type === 'message'">&nbsp;SmartREST Template
-          &nbsp;<em>{{item.templateId}}</em>&nbsp; /
-          &nbsp;<em>{{item.messageId}}</em>&nbsp;
-          <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+        <span *ngIf="item.type === 'message'"
+          >&nbsp;SmartREST Template &nbsp;<em>{{ item.templateId }}</em
+          >&nbsp; / &nbsp;<em>{{ item.messageId }}</em
+          >&nbsp;
+          <ng-container *ngFor="let value of item.values"
+            >{{ value }}&nbsp;</ng-container
+          >
         </span>
-        <button  class="delete">
-          <i class="fa fw fa-trash" (click)="deleteMeasurementOrSleep(item)"></i>
+        <button class="delete">
+          <i
+            class="fa fw fa-trash"
+            (click)="deleteMeasurementOrSleep(item)"
+          ></i>
         </button>
       </button>
-    </div>
-    <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [edit]="editedValue" [mo]="mo" [indexedCommandQueue]="indexedCommandQueue" [editedValue]="editedValue"></app-edit-instruction>
-  </ng-container>
+    
+    <!-- </div> -->
+    <app-edit-instruction
+      *ngIf="item === editedValue"
+      [displayEditView]="true"
+      [edit]="editedValue"
+      [mo]="mo"
+      [indexedCommandQueue]="indexedCommandQueue"
+      [editedValue]="editedValue"
+    ></app-edit-instruction>
+  </div>
+</div>
 </section>

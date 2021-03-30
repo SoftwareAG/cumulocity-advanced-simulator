@@ -1,10 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IManagedObject } from "@c8y/client";
 import { CommandQueueEntry, CommandQueueType, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { EditedMeasurement } from '@models/editedMeasurement.model';
-import { InputField } from '@models/inputFields.const';
-import { InstructionCategory, SmartInstruction } from '@models/instruction.model';
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 // import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
@@ -95,6 +92,19 @@ export class ShowInstructionComponent implements OnInit {
 
   fetchAddInstructionsOrSleepView() {
     this.service.setInstructionsView(true);
+  }
+
+  drop(event: CdkDragDrop<IndexedCommandQueueEntry[]>) {
+    moveItemInArray(
+      this.indexedCommandQueue,
+      event.previousIndex,
+      event.currentIndex
+    );
+
+    console.log(this.indexedCommandQueue);
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => console.log(res));
+
   }
 
 }
