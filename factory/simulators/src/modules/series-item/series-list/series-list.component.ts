@@ -59,15 +59,10 @@ export class SeriesListComponent implements OnInit {
       event.currentIndex
     );
 
-    console.log('Instructions series: ', this.instructionsSeries);
-    console.log('Indexed command queue: ', this.indexedCommandQueue);
-    
     const filtered = this.instructionsSeries.map((entry, idx) => ({
       newIdx: idx.toString(),
       series: entry,
     }));
-
-    console.log('filtered: ', filtered);
 
     const filteredIndexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
     let rearranged = this.dragDropService.createUpdatedIndexedCommandQueue(filteredIndexedCommandQueue, filtered);

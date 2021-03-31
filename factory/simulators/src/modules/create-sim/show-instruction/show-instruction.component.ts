@@ -8,6 +8,7 @@ import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { UpdateInstructionsService } from '@services/updateInstructions.service';
 import { Subscription } from 'rxjs';
+import { ThemeService } from 'ng2-charts';
 
 @Component({
   selector: 'app-show-instruction',
@@ -70,8 +71,17 @@ export class ShowInstructionComponent implements OnInit {
     this.invalidSimulator = true;
   }
 
-  deleteMeasurementOrSleep(item) {
+  deleteMeasurementOrSleep(item: IndexedCommandQueueEntry) {
     const pos = this.indexedCommandQueue.findIndex((entry) => entry === item);
+    
+    // Remove series if item is last entry of series
+    if (item.index !== 'single') {
+      let indexedCommandQueueWithItemIndex = this.indexedCommandQueue.filter((entry) => entry.index === item.index);
+      if (indexedCommandQueueWithItemIndex.length && indexedCommandQueueWithItemIndex.length === 1) {
+        const updatedInstructionsArray = this.simSettings.allInstructionsArray.filter((series) => series.index !== item.index);
+        this.simSettings.setAllInstructionsSeries(updatedInstructionsArray);
+      }
+    }
     this.indexedCommandQueue.splice(pos, 1);
     this.currentCommandQueue.emit(this.indexedCommandQueue);
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
