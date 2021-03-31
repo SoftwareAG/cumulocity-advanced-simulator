@@ -105,6 +105,7 @@ export class SimulatorSettingsService {
           };
           
           let toBePushed = this.instructionService.instructionToCommand(instruction);
+          // this.instructionService.test(instruction);
           let index = this.setIndexForCommandQueueEntry();
           let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
           
@@ -214,13 +215,21 @@ export class SimulatorSettingsService {
 
   setIndexForCommandQueueEntry(): string {
     let index;
-    if (!this.indexedCommandQueue.length) {
+    // if (!this.indexedCommandQueue.length) {
+    //   index = '0';
+    // } else {
+    //   const lastEntryIndex = this.indexedCommandQueue[this.indexedCommandQueue.length-1].index;
+    //   if (lastEntryIndex !== 'single') {
+    //     index = (parseInt(lastEntryIndex) + 1).toString();
+    //   }
+    // }
+
+    let indexed = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
+    if (!indexed.length) {
       index = '0';
     } else {
-      const lastEntryIndex = this.indexedCommandQueue[this.indexedCommandQueue.length-1].index;
-      if (lastEntryIndex !== 'single') {
-        index = (parseInt(lastEntryIndex) + 1).toString();
-      }
+      const lastEntry = indexed[indexed.length-1].index;
+      index = (Number(lastEntry) + 1).toString();
     }
     return index;
   }

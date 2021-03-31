@@ -239,7 +239,9 @@ export class SimSettingsComponent implements OnInit {
         this.smartRestSelectedConfig
       );
       let indexed = this.simSettingsService.indexedCommandQueue;
+      console.log('indexed: ', indexed);
       const index = this.simSettingsService.setIndexForCommandQueueEntry();
+      console.log('index: ', index);
       const combinedSmartInstruction = {
         instruction: copy,
         type: InstructionCategory.SmartRest,
@@ -247,6 +249,7 @@ export class SimSettingsComponent implements OnInit {
         index: index,
         option: this.smartRestOption
       };
+      console.log('Combined smart instruction: ', combinedSmartInstruction);
       this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
       const indexedCmdQ = cmdQ.map((entry) => ({
         ...entry,

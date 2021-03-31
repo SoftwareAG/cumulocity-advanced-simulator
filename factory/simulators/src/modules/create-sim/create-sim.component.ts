@@ -164,6 +164,7 @@ export class CreateSimComponent implements OnInit {
         });
         this.instructionsService.SmartRestArray = this.smartRestConfig;
         this.smartRestService.setSmartRestUpdate(this.smartRestConfig);
+        console.log(this.smartRestConfig);
       });
     });
   }

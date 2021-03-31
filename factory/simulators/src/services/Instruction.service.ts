@@ -51,8 +51,9 @@ export class InstructionService {
           [
             instruction.fragment,
             instruction.series,
-            instruction.value,
+            instruction.value.toString(),
             instruction.unit,
+            ''
           ]
         );
         break;
