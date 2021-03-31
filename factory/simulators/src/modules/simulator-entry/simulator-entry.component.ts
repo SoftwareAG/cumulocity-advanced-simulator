@@ -16,6 +16,19 @@ import { SimulatorsBackendService } from "../../services/simulatorsBackend.servi
 export class SimulatorEntryComponent implements OnInit {
   subscriptions = new Subscription();
   allSimulators: IManagedObject[];
+  instructionTypes: {
+    category: {
+      icon: string;
+      type: string;
+      break: boolean;
+    };
+  }[] = [
+    { category: { icon: "sliders", type: "measurements", break: false } },
+    { category: { icon: "bell", type: "alarms", break: false} },
+    { category: { icon: "tasks", type: "events", break: true } },
+    { category: { icon: "clock-o", type: "sleep", break: false} },
+    { category: { icon: "sitemap", type: "smartRest", break: false} },
+  ];
   constructor(
     private modalService: BsModalService,
     private simService: SimulatorsServiceService,
@@ -54,7 +67,10 @@ export class SimulatorEntryComponent implements OnInit {
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
       console.log("State changed");
       const moId = res.id;
-      this.backend.connectToSimulatorsBackend(simulator.c8y_DeviceSimulator, moId);
+      this.backend.connectToSimulatorsBackend(
+        simulator.c8y_DeviceSimulator,
+        moId
+      );
     });
   }
 
@@ -69,18 +85,22 @@ export class SimulatorEntryComponent implements OnInit {
   }
 
   onDuplicateSelected(simulator) {
-    let copyDeviceSim = JSON.parse(JSON.stringify(simulator.c8y_DeviceSimulator));
-    copyDeviceSim.name = simulator.name + ' #(copy)';
+    let copyDeviceSim = JSON.parse(
+      JSON.stringify(simulator.c8y_DeviceSimulator)
+    );
+    copyDeviceSim.name = simulator.name + " #(copy)";
     const copyIndices = simulator.c8y_Indices;
     const copySeries = simulator.c8y_Series;
-    const copySimulator : Partial<CustomSimulator> = {
-      name: simulator.name + ' #(copy)',
+    const copySimulator: Partial<CustomSimulator> = {
+      name: simulator.name + " #(copy)",
       c8y_CustomSim: {},
       c8y_DeviceSimulator: copyDeviceSim,
       c8y_Indices: copyIndices,
-      c8y_Series: copySeries
-    }
-    this.simService.createCustomSimulator(copySimulator).then((res) => console.log(res));
+      c8y_Series: copySeries,
+    };
+    this.simService
+      .createCustomSimulator(copySimulator)
+      .then((res) => console.log(res));
   }
 
   refreshList() {
@@ -88,7 +108,7 @@ export class SimulatorEntryComponent implements OnInit {
       this.allSimulators = simulators.sort((entry1, entry2) => {
         const val1 = entry1.name.toLowerCase();
         const val2 = entry2.name.toLowerCase();
-        return (val1 < val2) ? -1 : (val1 > val2) ? 1 : 0; 
+        return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
       });
     });
   }
