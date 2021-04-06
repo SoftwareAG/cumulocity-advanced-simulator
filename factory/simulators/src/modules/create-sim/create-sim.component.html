@@ -8,35 +8,75 @@
   <c8y-action-bar-item [placement]="'left'" [itemClass]="'btn'">
     <button class="transparent" style="font-size: 1.5em;" (click)="changeRouteLastSite()"><i c8yIcon="arrow-circle-left"></i>All Simulators</button>
   </c8y-action-bar-item>
+  <c8y-action-bar-item [placement]="'left'" style="float:left;">
+    <div class="wizard">
+      <div style="position: absolute;width: 650px;left: 50%;top: 23px;height: 5px;background: #bbb;margin-left: -325px;">
+      </div>
+      <div [ngClass]="(commandQueue.length) ? 'wizard-item-success' : 'wizard-item'">
+        <div class="circle">1</div>
+        Create an Instruction or Series
+      </div>
+      
+      <div [ngClass]="(commandQueue.length) ? (bulkView) ? 'wizard-item-success' : 'wizard-item' : 'wizard-item-disabled'">
+        <div class="circle">2</div>
+        Refine with bulk changes
+      </div>
+    
+      <div
+      [ngClass]="(bulkView && commandQueue.length) ? (simulatorRunning) ? 'wizard-item-success clickable circle-animate' : 'wizard-item clickable' : 'wizard-item-disabled'">
+        <div [ngClass]="'circle ' + ((commandQueue.length && bulkView && !simulatorRunning)? 'heartbeat' : '')"
+        (click)="toggleSimulatorState()"><span>3</span></div>
+        <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
+        <span *ngIf="!simulatorRunning">Start this Simulator</span>
+      </div>
+    
+      <div (click)="openSimulatorInDevmanagement()"
+        [ngClass]="(bulkView && commandQueue.length  && simulatorRunning) ? 'wizard-item clickable' : 'wizard-item-disabled'">
+        <div class="circle">4</div>
+        Open Device Management
+      </div>
+    </div>
+  </c8y-action-bar-item>
 
 
-<h3 style="text-align: center;">Wizard to create Simulator</h3>
-<div class="row wizard">
-  <div style="position: absolute;width: 600px;left: 50%;top: 40px;height: 5px;background: #fff;margin-left: -300px;"></div>
-  <div  [ngClass]="(commandQueue.length) ? 'wizard-item-success' : 'wizard-item'">
-    <div class="circle">1</div>
-    Create an Instruction or Series
-  </div>
 
-  <div [ngClass]="(commandQueue.length) ? (bulkView) ? 'wizard-item-success' : 'wizard-item' : 'wizard-item-disabled'">
-    <div class="circle">2</div>
-    Refine with bulk changes
-  </div>
-
-  <div [ngClass]="(bulkView && commandQueue.length) ? (simulatorRunning) ? 'wizard-item-success clickable circle-animate' : 'wizard-item clickable' : 'wizard-item-disabled'">
-    <div [ngClass]="'circle ' + ((commandQueue.length && bulkView && !simulatorRunning)? 'heartbeat' : '')" (click)="toggleSimulatorState()"><span>3</span></div>
-    <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
-    <span *ngIf="!simulatorRunning">Start this Simulator</span>
-  </div>
-
-  <div (click)="openSimulatorInDevmanagement()" [ngClass]="(bulkView && commandQueue.length  && simulatorRunning) ? 'wizard-item clickable' : 'wizard-item-disabled'">
-    <div class="circle">4</div>
-    Open Device Management
-  </div>
-</div>
-
-<div class="row">
+<div class="row" style="margin-top:70px;">
   <div class="card-group interact-grid" *ngIf="commandQueue.length">
+    <ng-container *ngIf="bulkView">
+      <!-- 
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-arrows-h"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Open in Device Management
+          </div>
+        </div>
+        <div class="card-block">
+          <button type="button" class="btn btn-primary">Open Device Management</button>
+        </div>
+      </div>
+    </div>-->
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-arrows-h"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Finalize the Simulator
+          </div>
+        </div>
+        <div class="card-block">
+          <button type="button" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
+          <button type="button" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device Management</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
       <div class="card">
         <div class="card-header separator text-truncate">
@@ -48,14 +88,33 @@
           </div>
         </div>
         <div class="card-block">
-          This duplicates all values but in reverse order
+          This duplicates all values in the instruction set in reverse order
           <label class="c8y-switch">
-            <input type="checkbox" [ngModel]="mirroredYAxis" (click)="mirroredYAxis = !mirroredYAxis" />
+            <input type="checkbox" [ngModel]="mirroredYAxis" (click)="bulkView=!bulkView;mirroredYAxis = !mirroredYAxis" />
             <span></span>
           </label>
         </div>
       </div>
     </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-area-chart"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Add some salt
+          </div>
+        </div>
+        <div class="card-block">
+          Set a percentage in which ballpark you want to randomize values (only works on Measurements)
+          <input type="text" placeholder="Percentage %">&nbsp;
+          <button class="btn btn-primary">Randomize</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>

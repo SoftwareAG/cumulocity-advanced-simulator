@@ -32,12 +32,6 @@ export const DefaultConfig: InstructionCategory[] = [
 
 export const MeasurementsForm: InputField[] = [
   {
-    name: "Randomize",
-    required: false,
-    label: "Randomize Measurements",
-    type: 'switch'
-  },
-  {
     name: "messageId",
     required: true,
     type: 'textField',
@@ -101,6 +95,12 @@ export const SeriesMeasurementsForm: InputField[] = [
     type: "textField",
     isNumber: true
   },
+  {
+    name: "Randomize",
+    required: false,
+    label: "Randomize Measurements",
+    type: 'switch'
+  }
 ];
 
 export const AlarmsForm: InputField[] = [

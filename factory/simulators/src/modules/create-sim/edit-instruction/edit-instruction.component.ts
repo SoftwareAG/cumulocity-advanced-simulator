@@ -29,7 +29,7 @@ export class EditInstructionComponent implements OnInit {
   @Input() indexedCommandQueue : IndexedCommandQueueEntry[];
   @Input() edit;
   @Input() displayEditView = false;
-  @Input() displayAddView = false;
+  @Input() displayAddView = true;
   smartRestForm: InputField[] = [];
   selectedEditView: string;
   defaultConfig: InstructionCategory[] = DefaultConfig;

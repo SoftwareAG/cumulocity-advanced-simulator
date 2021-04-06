@@ -1,5 +1,4 @@
-<br>
-<div class="tight-grid">
+<div class="tight-grid" *ngIf="displayAddView"><br>
   <div class="col-xs-4">
     <button title="Add instruction" class="btn-add-block" (click)="onAddInstruction()">
       <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add single Instruction
@@ -113,5 +112,22 @@
 
     </div>
   </div>
-
 </section>
+
+<div class="tight-grid"  *ngIf="displayEditView">
+  <div class="col-xs-4">
+    <button title="Add instruction" class="btn-add-block" (click)="onAddInstruction()">
+      <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add single Instruction
+    </button>
+  </div>
+  <div class="col-xs-4">
+    <button title="Add sleep" class="btn-add-block" (click)="onAddSleep()">
+      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Add sleep
+    </button>
+  </div>
+  <div class="col-xs-4">
+    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
+      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Clear all Instructions
+    </button>
+  </div>
+</div>

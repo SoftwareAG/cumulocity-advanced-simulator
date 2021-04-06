@@ -48,6 +48,8 @@
         </button>
       </button>
     </div>
-    <app-edit-instruction *ngIf="item === editedValue" [displayEditView]="true" [edit]="editedValue" [mo]="mo" [indexedCommandQueue]="indexedCommandQueue" [editedValue]="editedValue"></app-edit-instruction>
+    <div  [ngClass]="item === editedValue ? 'scale-in-ver-top' : 'scale-out-ver-top'" >
+      <app-edit-instruction [displayEditView]="true" [edit]="editedValue" [mo]="mo" [indexedCommandQueue]="indexedCommandQueue" [editedValue]="editedValue"></app-edit-instruction>
+    </div>
   </ng-container>
 </section>
