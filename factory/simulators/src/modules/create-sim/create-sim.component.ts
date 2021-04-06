@@ -17,6 +17,7 @@ import { UpdateInstructionsService } from "@services/updateInstructions.service"
 import { isEqual } from "lodash";
 import * as _ from 'lodash';
 import { Subscription } from "rxjs";
+import { HelperService } from "@services/helper.service";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
@@ -53,6 +54,7 @@ export class CreateSimComponent implements OnInit {
   indexedCommandQueue = [];
   instructionsSubscription: Subscription;
   mirroredYAxis: boolean = false;
+  indexedCommandQueueSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,7 +68,8 @@ export class CreateSimComponent implements OnInit {
     private instructionsService: InstructionService,
     private alertService: AlertService,
     private updateService: ManagedObjectUpdateService,
-    private smartRestService: SmartRESTService
+    private smartRestService: SmartRESTService,
+    private helperService: HelperService
   ) {}
 
   getCurrentSimulatorState(event: boolean) {
@@ -95,7 +98,13 @@ export class CreateSimComponent implements OnInit {
   ngOnInit() {
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
       this.allInstructionsSeries = instructions;
+      this.filteredInstructionsSeries = this.allInstructionsSeries;
     });
+
+    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed) => {
+      this.indexedCommandQueue = indexed;
+    });
+
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
     console.log(this.mo);
@@ -111,7 +120,8 @@ export class CreateSimComponent implements OnInit {
       this.simSettings.setCommandQueue(this.commandQueue);
       this.allInstructionsSeries = this.mo.c8y_Series;
       this.filteredInstructionsSeries = this.allInstructionsSeries;
-
+    console.log('All Instructions series: ', this.allInstructionsSeries);
+    console.log('Filtered Series: ', this.filteredInstructionsSeries);
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
     this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
@@ -155,6 +165,7 @@ export class CreateSimComponent implements OnInit {
         });
         this.instructionsService.SmartRestArray = this.smartRestConfig;
         this.smartRestService.setSmartRestUpdate(this.smartRestConfig);
+        console.log(this.smartRestConfig);
       });
     });
   }
@@ -297,6 +308,9 @@ export class CreateSimComponent implements OnInit {
   ngOnDestroy() {
     if (this.instructionsSubscription) {
       this.instructionsSubscription.unsubscribe();
+    }
+    if (this.indexedCommandQueueSubscription) {
+      this.indexedCommandQueueSubscription.unsubscribe();
     }
   }
 

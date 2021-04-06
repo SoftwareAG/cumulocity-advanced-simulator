@@ -52,7 +52,7 @@ export class EventsService {
   toEventTemplateFormat(event) {
     let toBePushed = `{
   "messageId": "CODE",
-  "values": ["TYPE", "TEXT"], "type": "builtin"
+  "values": ["TYPE", "TEXT", ""], "type": "builtin"
 }`;
     let toBePushedLoc = `{
   "messageId": "CODE",

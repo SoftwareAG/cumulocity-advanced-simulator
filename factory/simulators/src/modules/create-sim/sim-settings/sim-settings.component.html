@@ -36,7 +36,8 @@
         </div>
       </ng-container>
     -->
-      
+
+      <!-- Add all series except type SmartRest -->
       <div [ngSwitch]="selectedConfig" *ngIf="!isSmartRestSelected">
         <ng-template
           *ngFor="let form of allForms; let i = index"
@@ -44,13 +45,6 @@
 
           <div class="row">
             <ng-container *ngFor="let entry of form">
-              <div class="col-xs-12" *ngIf="entry.type === 'switch'">
-                <label class="c8y-switch">
-                  <input type="checkbox"  [ngModel]="randomize" (ngModelChange)="randomize=!randomize"/>
-                  <span></span><em>{{entry.label}}</em>
-                </label>
-                <br>
-              </div>
               
               <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
                 <div class="form-group">
@@ -82,17 +76,17 @@
                     [(ngModel)]="instructionValue[entry.name]"
                     placeholder="{{ entry.placeholder }}"
                   />
-                  <!-- <span id="helpBlock" class="help-block" >
-                    A long block of help text that fits below the input field.
-                  </span> -->
-
+                  <!-- Custom validation for type number -->
                   <em  class="custom-validation" *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
                     <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
                     <div> Please enter a number </div></em>
+                 <!-- ----------------------------------- -->
 
+                    <!-- Custom validation of type required -->
                     <em  class="custom-validation" *ngIf="selected.selected && selected.entryName === entry.name && !instructionValue[entry.name]">
                       <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
                       <div> Required </div></em>
+                 <!-- ------------------------------------ -->
                 </div>
               </div>
             </ng-container>
@@ -125,11 +119,28 @@
                   {{ entry }}
                 </option>
               </select>
+              <ng-container *ngIf="selectedConfig === 'Measurement'">
+              <select
+                class="form-control"
+                style="max-width: 200px; margin-right: 20px; float: right"
+                [(ngModel)]="measurementOption">
+                <option disabled value="linear">
+                  Select Measurement Option
+                </option>
+
+                <option
+                  *ngFor="let entry of measurementOptions">
+                  {{ entry }}
+                </option>
+              </select>
+            </ng-container>
             </div>
           </div>
         </ng-template>
       </div>
 
+
+      <!-- Add Series of type SmartRest -->
       <ng-container *ngIf="isSmartRestSelected">
       <br>
       <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
@@ -154,9 +165,11 @@
                 class="form-control"
                 placeholder="minimum"
                 />
+                <!-- custom validation for type number -->
                 <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_min'] && !(smartRestInstruction[entry.path+'_min'] | isNumber)">
                   <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
                   <div> Please enter a number </div></em>
+                  <!-- ------------------------------- -->
               </div>
               <div class="col-xs-6">
                 <label class="text-truncate" [title]="entry.path+'.maximum'">{{ entry.path +'.maximum'}}</label>
@@ -167,9 +180,11 @@
                   class="form-control"
                   placeholder="maximum"
                   />
+                  <!-- custom validation for type number -->
                   <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_max'] && !(smartRestInstruction[entry.path+'_max'] | isNumber)">
                     <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
                     <div> Please enter a number </div></em>
+                    <!-- -------------------------------- -->
               </div>
             </div>
           </ng-container>
@@ -183,9 +198,11 @@
         [(ngModel)]="smartRestInstruction['steps']"
         class="form-control"
       />
+      <!-- custom validation for type number -->
       <em  class="custom-validation" *ngIf="smartRestInstruction['steps'] && !(smartRestInstruction['steps'] | isNumber)">
         <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
         <div> Please enter a number </div></em>
+        <!-- ------------------------------ -->
     </ng-container>
         <br>
         <button
@@ -193,15 +210,28 @@
                 (click)="saveSmartRestTemplateToCommandQueue()"
                 style="float: right"
               >
-                Save
+                Add SmartRest
               </button>
               <button
                 class="btn btn-default"
                 (click)="clearSeries()"
-                style="float: right"
+                style="float: right; margin-right: 20px;"
               >
                 Reset/Clear
               </button>
+              <select
+                class="form-control"
+                style="max-width: 200px; margin-right: 20px; float: right"
+                [(ngModel)]="smartRestOption">
+                <option disabled value="linear">
+                  Select SmartRest Option
+                </option>
+
+                <option
+                  *ngFor="let entry of measurementOptions">
+                  {{ entry }}
+                </option>
+              </select>
       </ng-container>
     </ng-container>
     </div>

@@ -46,6 +46,7 @@ export class SeriesItemComponent implements OnInit {
   smartRestInstruction;
   form;
   icon: string;
+  measurementOptions = ['linear', 'random', 'wave'];
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
@@ -111,31 +112,22 @@ export class SeriesItemComponent implements OnInit {
     }
   }
 
-  duplicateSeries() {
-    console.log(this.index);
-    console.log(this.selectedSeries);
-    console.log(this.allInstructionsSeries[this.index]);
-  }
-
   deleteSeries() {
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
     const indexOfItem = this.selectedSeries.index;
     const filtered = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfItem);
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(filtered);
-    this.allInstructionsSeries = this.allInstructionsSeries.filter((entry) => entry !== this.instructionValue);
+    this.allInstructionsSeries = this.allInstructionsSeries.filter((entry) => entry.index !== this.selectedSeries.index);
     this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
-    this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
-    this.updateService.updateMOInstructionsArray(this.simSettingsService.allInstructionsArray);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
-      console.log(res);
       const alertText = `Series has been deleted succesfully.`;
-      this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
       this.updateService.simulatorUpdateFeedback('success', alertText)
     });  
   }
 
   updateSeries() {
+   this.simSettingsService.randomSelected = this.selectedSeries.type === 'Measurement' || this.selectedSeries.type === 'SmartRest' ? this.selectedSeries.measurementOption : null;
    this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
    const indexOfSeries = this.selectedSeries.index;
    let itemPos = this.indexedCommandQueue.findIndex((entry) => entry.index === indexOfSeries);

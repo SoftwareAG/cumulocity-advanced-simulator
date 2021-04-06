@@ -40,10 +40,12 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   steps: number | string;
   sleep?: number | string;
   index?: string;
+  measurementOption?: string;
 }
 
 export interface SmartInstruction extends Instruction2 {
   type: InstructionCategory.SmartRest;
+  // measurementOption?: string;
   [key: string]: string;
 }
 

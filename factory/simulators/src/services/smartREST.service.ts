@@ -3,7 +3,10 @@ import {
   CommandQueueEntry,
   CommandQueueType,
 } from "@models/commandQueue.model";
-import { InstructionCategory, SmartRestInstruction } from "@models/instruction.model";
+import {
+  InstructionCategory,
+  SmartRestInstruction,
+} from "@models/instruction.model";
 import { SmartRest } from "@models/smartREST.model";
 import { BehaviorSubject } from "rxjs";
 import { HelperService } from "./helper.service";
@@ -22,7 +25,7 @@ export class SmartRESTService {
   smartRestUpdate = new BehaviorSubject([]);
   smartRestUpdate$ = this.smartRestUpdate.asObservable();
 
-
+  smartRestOption = "linear";
   setSmartRestUpdate(config) {
     this.smartRestConfig = config;
     this.smartRestUpdate.next(this.smartRestConfig);
@@ -49,37 +52,44 @@ export class SmartRESTService {
   generateSmartRestRequest(
     smartRestInstructionArray: SmartRestInstruction[],
     smartRESTTemplate: SmartRest
-  ): CommandQueueEntry[]{
-    
+  ): CommandQueueEntry[] {
     smartRestInstructionArray.forEach((instruction) => {
       let vals = [];
       const steps = instruction.steps;
       if (instruction.minValue && instruction.maxValue) {
-      for (let { temp, index } of this.helperService
-        .scale(
-          parseInt(instruction.minValue),
-          parseInt(instruction.maxValue),
-          parseInt(instruction.steps),
-          false
-        )
-        .map((temp, index) => ({ temp, index }))) {
-        vals.push(temp.toString());
-      }} else {
+        for (let { temp, index } of this.helperService
+          .scaleTest(
+            parseInt(instruction.minValue),
+            parseInt(instruction.maxValue),
+            parseInt(instruction.steps),
+            this.smartRestOption
+          )
+          .map((temp, index) => ({ temp, index }))) {
+          vals.push(temp.toString());
+        }
+      } else {
         vals.push(...this.fillArray(instruction.value, instruction.steps));
       }
       this.values.push(vals);
     });
-    
+
     for (let i = 0; i < this.transposeArray(this.values).length; i++) {
+      let initialValues = [];
+      if (smartRESTTemplate.smartRestFields.mandatoryValues.length) {
+        initialValues = [""];
+      } else {
+        initialValues = [];
+      }
       let commandQueueEntry: CommandQueueEntry = {
         type: CommandQueueType.message,
-        values: [""]
+        values: initialValues,
       };
       commandQueueEntry.values.push(...this.transposeArray(this.values)[i]);
       commandQueueEntry.messageId = smartRESTTemplate.smartRestFields.msgId;
       commandQueueEntry.templateId = smartRESTTemplate.templateId;
       this.commandQueueArray.push(commandQueueEntry);
     }
+
     return this.commandQueueArray;
   }
 
@@ -106,9 +116,12 @@ export class SmartRESTService {
     this.values = [];
   }
 
-  convertToSmartRestModel(smartRestData: {
-    [key: string]: number | string;
-  }, smartRestSelectedConfig): SmartRestInstruction[] {
+  convertToSmartRestModel(
+    smartRestData: {
+      [key: string]: number | string;
+    },
+    smartRestSelectedConfig
+  ): SmartRestInstruction[] {
     const smartRestInstructionArray: SmartRestInstruction[] = [];
     smartRestSelectedConfig.smartRestFields.customValues.forEach(
       (customValue) => {

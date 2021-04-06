@@ -36,6 +36,8 @@ import { CountPipe } from "./src/shared/count.pipe";
 import { PopoverModule, TooltipModule } from 'ngx-bootstrap';
 import { IsNumberPipe } from "./src/shared/isNumber.pipe";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { InstructionTypePipe } from "./src/shared/instructionType.pipe";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -80,6 +82,7 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
+    DragDropModule
   ],
   declarations: [
     SimulatorEntryComponent,
@@ -99,7 +102,8 @@ const appRoutes: Routes = [
     SeriesItemComponent,
     SeriesListComponent,
     CountPipe,
-    IsNumberPipe
+    IsNumberPipe,
+    InstructionTypePipe
   ],
   entryComponents: [
     SimulatorEntryComponent,
