@@ -54,6 +54,13 @@ export class CreateSimComponent implements OnInit {
   indexedCommandQueue = [];
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
+  instructionSeriesTypes = [
+    { category: { icon: "sliders", type: "measurements", break: true } },
+    { category: { icon: "bell", type: "alarms", break: false} },
+    { category: { icon: "tasks", type: "events", break: true } },
+    { category: { icon: "clock-o", type: "sleep", break: false} },
+    { category: { icon: "sitemap", type: "smartRest", break: false} },
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -217,31 +224,7 @@ export class CreateSimComponent implements OnInit {
     );
   }
 
-  deleteSeries(val) {
-    if (val) {
-      const minimumOfSeries = this.measurementsService.toMeasurementTemplate(
-        val,
-        val.minValue
-      );
-      const maximumOfSeries = this.measurementsService.toMeasurementTemplate(
-        val,
-        val.maxValue
-      );
-      const positionOfMinimum = this.commandQueue.findIndex((value) =>
-        isEqual(value, minimumOfSeries)
-      );
-      const positionOfMaximum = this.commandQueue.findIndex((value) =>
-        isEqual(value, maximumOfSeries)
-      );
-      this.commandQueue.splice(
-        positionOfMinimum,
-        positionOfMaximum - positionOfMinimum + 1
-      );
-
-      // TODO: add call to save to backend
-    }
-  }
-
+  
   editSimulatorTitle() {
     this.editMode = false;
     this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;

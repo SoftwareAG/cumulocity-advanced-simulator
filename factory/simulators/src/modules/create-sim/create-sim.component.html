@@ -50,35 +50,8 @@
 
 
 <div class="row main-div" [style.height.px]='height'>
-  <!--
-  <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
-    <div class="btn-group" role="group" *ngFor="let item of actionButtons">
-      <button
-        type="button"
-        [ngClass]="
-          currentSelection === item ? 'btn btn-primary' : 'btn btn-default'
-        "
-        (click)="selectButton(item)"
-      >
-        {{ item }}
-      </button>
-    </div>
-  </c8y-action-bar-item>-->
+  
   <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
-  <!--
-    <div class="tight-grid">
-      <div class="col-xs-6">
-        <button class="btn-add-block" (click)="viewNewSeries = !viewNewSeries">
-          <i c8yIcon="sort-amount-asc"></i> Add New Series
-        </button>
-      </div>
-      <div class="col-xs-6">
-        <button class="btn-add-block" (click)="viewHistoricalSeries = !viewHistoricalSeries">
-          <i c8yIcon="history"></i> Choose from existing 
-        </button>
-      </div>
-    </div>
-    -->
 
     <div >
       <app-sim-settings
@@ -104,10 +77,10 @@
       placement="auto"
       #pop="bs-popover">
       <b>Statistics</b>
-      <p>Total Instructions: {{allInstructionsSeries && allInstructionsSeries.length ?  allInstructionsSeries.length : ''}}</p>
+      <p>Total Instruction Series: {{allInstructionsSeries && allInstructionsSeries.length ?  allInstructionsSeries.length : ''}}</p>
       <em>{{allInstructionsSeries && allInstructionsSeries[0] ? allInstructionsSeries[0].type: ''}} ...</em>
     </div>
-      <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
+      
       </div>
       
       <div class="filter common-header">
@@ -203,11 +176,10 @@
       </tr>
     </thead>
     <tbody>
-    <tr *ngIf="(allInstructionsSeries | count).alarms"><th><small>Alarms</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).alarms }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).sleep"><th><small>Sleep</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).sleep }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).events"><th><small>Events</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).events }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).measurements"><th><small>Measurements</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).measurements }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).smartRest"><th><small>Smart Rest</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).smartRest }}</small></td></tr>          
+    <tr *ngFor="let item of instructionSeriesTypes">
+      <td><i [c8yIcon]="item.category.icon" style="color: #b0b9bf"></i>&nbsp;<span>{{item.category.type}}</span></td>
+      <td>{{(allInstructionsSeries | count)[item.category.type]}}</td>
+    </tr>
   </tbody> 
   </table>
 </ng-template>

@@ -84,27 +84,10 @@ export class SimSettingsComponent implements OnInit {
 
   smartRestSelectedConfig;
 
-  @Input() set series(value: SeriesInstruction) {
-    this.selectedSeries = value;
-    this.selectedConfig = this.selectedSeries.type;
-    this.instructionValue = value;
-    this.templateCtx = { item: this.selectedSeries };
-    if (this.selectedSeries.type === InstructionCategory.SmartRest) {
-      this.isSmartRestSelected = true;
-      this.smartRestSelectedConfig = this.selectedSeries.config;
-      this.smartRestInstruction = this.selectedSeries.instruction;
-    }
-  }
-
-  get series() {
-    return this.selectedSeries;
-  }
-
   @Input() commandQueue: CommandQueueEntry[];
   @Input() allInstructionsSeries;
   @Input() mo;
   @Output() allSeriesEmitter = new EventEmitter();
-  // allInstructionsSeries = [];
 
   constructor(
     private simSettingsService: SimulatorSettingsService,
@@ -169,8 +152,6 @@ export class SimSettingsComponent implements OnInit {
       this.generateRequest();
     }
   }
-
-  checkErrorsForValidation() {}
 
   generateRequest() {
     this.simSettingsService.randomSelected =
