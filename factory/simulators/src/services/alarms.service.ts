@@ -70,7 +70,6 @@ toAlarmTemplateFormat(alarm) {
 
 pushToAlarms(alarms: AlarmInstruction) {
   this.alarms.push(alarms);
-  console.log(this.alarms)
 }
 
 

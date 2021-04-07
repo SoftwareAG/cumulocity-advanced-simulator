@@ -12,15 +12,14 @@ export class SleepService {
     for (let sleep of this.sleeps) {
       toBePushed.push((this.toSleepTemplateFormat(sleep)));
     }
-    return toBePushed;
+    return toBePushed[0];
   }
 
-  toSleepTemplateFormat(sleep: { sleep: string; type: string }) {
+  toSleepTemplateFormat(sleep) {
     let toBePushedSleep = {
       type: "sleep",
-      seconds: parseFloat(sleep.sleep),
+      seconds: Number(sleep.seconds),
     };
-
     return toBePushedSleep;
   }
 

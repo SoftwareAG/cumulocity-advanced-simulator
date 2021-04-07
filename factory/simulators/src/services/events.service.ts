@@ -9,7 +9,7 @@ import { BasicEventInstruction, EventInstruction } from "@models/instruction.mod
 export class EventsService {
   constructor() {}
 
-  events: Event[] = [];
+  events = [];
   
   eventConfig = [
     "Generate repeated events",

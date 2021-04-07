@@ -62,23 +62,9 @@
             [popover] = "popStats"
             placement="auto"
             #pop="bs-popover">
-              <ng-container *ngIf="!simulator.c8y_DeviceSimulator.commandQueue.length">
-                &nbsp;<i
-                  c8yIcon="sort-amount-asc"
-                  style="color: #b0b9bf"
-                ></i
-                >&nbsp;
-                {{
-                  simulator.c8y_DeviceSimulator.commandQueue.length
-                }}
-              </ng-container>
               <ng-container *ngFor="let item of instructionTypes">
-                &nbsp;<i
+                &nbsp;&nbsp;<i
                   [c8yIcon]="item.category.icon"
-                  *ngIf="
-                    (simulator.c8y_DeviceSimulator.commandQueue
-                      | instructionType)[item.category.type]
-                  "
                   style="color: #b0b9bf"
                 ></i
                 >&nbsp;
@@ -87,7 +73,7 @@
                     | instructionType)[item.category.type]
                     ? (simulator.c8y_DeviceSimulator.commandQueue
                         | instructionType)[item.category.type]
-                    : ""
+                    : "0"
                 }}<ng-container *ngIf="item.category.break"
                   ><br
                 /></ng-container>

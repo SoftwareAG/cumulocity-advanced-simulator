@@ -113,7 +113,7 @@ export interface EventInstruction extends GeoCoordinate, Instruction2 {
 }
 
 export interface SleepInstruction extends Instruction2 {
-  seconds: number;
+  seconds: number | string;
   type:InstructionCategory.Sleep;
   index?: string;
 }

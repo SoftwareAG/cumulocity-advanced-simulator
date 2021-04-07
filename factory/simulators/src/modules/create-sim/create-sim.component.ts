@@ -15,7 +15,7 @@ import { SimulatorsServiceService } from "@services/simulatorsService.service";
 import { SmartRESTService } from "@services/smartREST.service";
 import { UpdateInstructionsService } from "@services/updateInstructions.service";
 import { isEqual } from "lodash";
-import * as _ from 'lodash';
+import * as _ from "lodash";
 import { Subscription } from "rxjs";
 import { HelperService } from "@services/helper.service";
 @Component({
@@ -75,7 +75,7 @@ export class CreateSimComponent implements OnInit {
     this.invalidSimulator = event;
   }
   getCurrentValue(event) {
-    console.log(event)
+    console.log(event);
     this.editedValue = event;
   }
   changeRouteLastSite() {
@@ -83,26 +83,60 @@ export class CreateSimComponent implements OnInit {
   }
 
   filterAllInstructionsList() {
-    this.filteredInstructionsSeries = this.allInstructionsSeries.filter((series) => this.objectContainsSearchString(series, this.searchString));
+    this.filteredInstructionsSeries = this.allInstructionsSeries.filter(
+      (series) => this.objectContainsSearchString(series, this.searchString)
+    );
   }
 
   objectContainsSearchString(series, searchString) {
-    const value = _.pickBy(series, (value, key) => {
-      return (key.toLowerCase().replace('/ /g', '').includes(searchString.toLowerCase().replace('/ /g', '')) || value.toLowerCase().replace('/ /g', '').includes(searchString.toLowerCase().replace('/ /g', '')))
+    let modifiedSeries = series.type === 'SmartRest' ? {...series.instruction, type: series.type } : series;
+    const value = _.pickBy(modifiedSeries, (value, key) => {
+      if (isNaN(Number(value.toString())) && isNaN(Number(searchString.toString()))) {
+      return (
+        key
+          .toString()
+          .toLowerCase()
+          .replace("/ /g", "")
+          .includes(
+            searchString.toString().toLowerCase().replace("/ /g", "")
+          ) ||
+        value
+          .toString()
+          .toLowerCase()
+          .replace("/ /g", "")
+          .includes(searchString.toLowerCase().replace("/ /g", ""))
+      ); } else {
+        return (
+          key
+            .toString()
+            .toLowerCase()
+            .replace("/ /g", "")
+            .includes(
+              searchString.toString().toLowerCase().replace("/ /g", "")
+            ) ||
+          value
+            .toString()
+            .replace("/ /g", "")
+            .includes(searchString.replace("/ /g", ""))
+        );
+      }
     });
-    console.log(value);
     return _.isEmpty(value) ? false : true;
   }
 
   ngOnInit() {
-    this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
-      this.allInstructionsSeries = instructions;
-      this.filteredInstructionsSeries = this.allInstructionsSeries;
-    });
+    this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe(
+      (instructions) => {
+        this.allInstructionsSeries = instructions;
+        this.filteredInstructionsSeries = this.allInstructionsSeries;
+      }
+    );
 
-    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed) => {
-      this.indexedCommandQueue = indexed;
-    });
+    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe(
+      (indexed) => {
+        this.indexedCommandQueue = indexed;
+      }
+    );
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
@@ -112,18 +146,18 @@ export class CreateSimComponent implements OnInit {
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     const MOIndices = this.mo.c8y_Indices;
-      this.commandQueue = MOCommandQueue;
-      
-      this.commandQueueIndices = MOIndices;
-      this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
-      this.simSettings.setCommandQueue(this.commandQueue);
-      this.allInstructionsSeries = this.mo.c8y_Series;
-      this.filteredInstructionsSeries = this.allInstructionsSeries;
-    console.log('All Instructions series: ', this.allInstructionsSeries);
-    console.log('Filtered Series: ', this.filteredInstructionsSeries);
+    this.commandQueue = MOCommandQueue;
+
+    this.commandQueueIndices = MOIndices;
+    this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
+    this.simSettings.setCommandQueue(this.commandQueue);
+    this.allInstructionsSeries = this.mo.c8y_Series;
+    this.filteredInstructionsSeries = this.allInstructionsSeries;
+    console.log("All Instructions series: ", this.allInstructionsSeries);
+    console.log("Filtered Series: ", this.filteredInstructionsSeries);
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
-    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
+    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
 
     const filter = {
       withTotalPages: true,
@@ -174,9 +208,7 @@ export class CreateSimComponent implements OnInit {
     this.editedVal = val.editedValue;
   }
 
-  onClearAllInstructions() {
-
-  }
+  onClearAllInstructions() {}
 
   createSinusWave() {
     console.log("create sinuswave");
@@ -187,14 +219,14 @@ export class CreateSimComponent implements OnInit {
   }
 
   delete(value) {
-    if(!this.warningModal){
-      this.warningModal = { 
-        title: 'Delete Series',
-        type: 'warning',
-        message: '',
-        options: ['','']
-     };
-     return;
+    if (!this.warningModal) {
+      this.warningModal = {
+        title: "Delete Series",
+        type: "warning",
+        message: "",
+        options: ["", ""],
+      };
+      return;
     }
     var index = this.allInstructionsSeries.indexOf(value);
     if (index !== -1) {
@@ -202,20 +234,22 @@ export class CreateSimComponent implements OnInit {
     }
     console.log(this.allInstructionsSeries);
     this.updateService.mo.c8y_Series = this.allInstructionsSeries;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
-      const alert = {
-        text: `Instruction Series deleted successfully.`,
-        type: "success",
-      } as Alert;
-      this.alertService.add(alert);
-    }, (err) => {
-      const alert = {
-        text: `Instruction Series could not be deleted`,
-        type: "danger",
-      } as Alert;
-      this.alertService.add(alert);
-      
-    });
+    this.updateService.updateSimulatorObject(this.updateService.mo).then(
+      (res) => {
+        const alert = {
+          text: `Instruction Series deleted successfully.`,
+          type: "success",
+        } as Alert;
+        this.alertService.add(alert);
+      },
+      (err) => {
+        const alert = {
+          text: `Instruction Series could not be deleted`,
+          type: "danger",
+        } as Alert;
+        this.alertService.add(alert);
+      }
+    );
   }
 
   deleteSeries(val) {
@@ -247,7 +281,9 @@ export class CreateSimComponent implements OnInit {
     this.editMode = false;
     this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
     this.updateService.mo.name = this.simulatorTitle;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => console.log(res));
+    this.updateService
+      .updateSimulatorObject(this.updateService.mo)
+      .then((res) => console.log(res));
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {
@@ -265,7 +301,7 @@ export class CreateSimComponent implements OnInit {
       : (this.viewNewSeries = false);
   }
 
-  height = window.innerHeight*0.7;
+  height = window.innerHeight * 0.7;
   y = 100;
   oldY = 0;
   grabber = false;
@@ -292,17 +328,20 @@ export class CreateSimComponent implements OnInit {
   }
 
   toggleSimulatorState() {
-    this.mo.c8y_DeviceSimulator.state = (this.mo.c8y_DeviceSimulator.state === "RUNNING") ? "PAUSED" : "RUNNING";
+    this.mo.c8y_DeviceSimulator.state =
+      this.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
 
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
       console.log("State changed");
       const moId = res.id;
-      this.backend.connectToSimulatorsBackend(this.mo.c8y_DeviceSimulator, moId);
-      this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING"; 
+      this.backend.connectToSimulatorsBackend(
+        this.mo.c8y_DeviceSimulator,
+        moId
+      );
+      this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
     });
   }
-  openSimulatorInDevmanagement(){
-  }
+  openSimulatorInDevmanagement() {}
 
   ngOnDestroy() {
     if (this.instructionsSubscription) {
@@ -312,5 +351,4 @@ export class CreateSimComponent implements OnInit {
       this.indexedCommandQueueSubscription.unsubscribe();
     }
   }
-
 }
