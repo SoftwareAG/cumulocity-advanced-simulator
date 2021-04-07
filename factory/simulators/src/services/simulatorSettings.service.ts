@@ -10,9 +10,7 @@ import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
-import { typeWithParameters } from "@angular/compiler/src/render3/util";
-// import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
-
+import * as _ from 'lodash';
 @Injectable({
   providedIn: "root",
 })
@@ -248,5 +246,58 @@ export class SimulatorSettingsService {
     this.setIndexedCommandQueueUpdate();
     this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices);
   }
+
+  objectContainsSearchString(series, searchString) {
+
+    const modifiedSeries = this.modifyInstructionSeries(series);
+    const value = _.pickBy(modifiedSeries, (value, key) => {
+      if (isNaN(Number(value.toString())) && isNaN(Number(searchString.toString()))) {
+      return (
+        key
+          .toString()
+          .toLowerCase()
+          .replace("/ /g", "")
+          .includes(
+            searchString.toString().toLowerCase().replace("/ /g", "")
+          ) ||
+        value
+          .toString()
+          .toLowerCase()
+          .replace("/ /g", "")
+          .includes(searchString.toLowerCase().replace("/ /g", ""))
+      ); } else {
+        return (
+          key
+            .toString()
+            .toLowerCase()
+            .replace("/ /g", "")
+            .includes(
+              searchString.toString().toLowerCase().replace("/ /g", "")
+            ) ||
+          value
+            .toString()
+            .replace("/ /g", "")
+            .includes(searchString.replace("/ /g", ""))
+        );
+      }
+    });
+    return _.isEmpty(value) ? false : true;
+  }
+
+  modifyInstructionSeries(series) {
+    let modifiedSeries = series.type === 'SmartRest' ? {...series.instruction, type: series.type } : series;
+    if (series.type !== 'SmartRest' || series.type !== 'Measurement') {
+      const {option, ...nonOptionSeries} = modifiedSeries;
+      modifiedSeries = nonOptionSeries;
+    }
+    if (modifiedSeries.type === InstructionCategory.Alarm || modifiedSeries.type === InstructionCategory.BasicEvent || modifiedSeries.type === InstructionCategory.LocationUpdateEvent) {
+      const category = {'301': 'CRITICAL', '302': 'MAJOR', '303': 'MINOR', '400': 'Basic', '401': 'Location Update', '402': 'Location Update with Device'} [modifiedSeries.messageId];
+      const series = {...modifiedSeries, category: category.toLowerCase()};
+      const {messageId, ...nonMessageId} = series;
+      modifiedSeries = nonMessageId;
+    }
+    return modifiedSeries;
+  }
+
  
 }

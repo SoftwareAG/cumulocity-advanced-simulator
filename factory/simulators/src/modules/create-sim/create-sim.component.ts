@@ -84,46 +84,11 @@ export class CreateSimComponent implements OnInit {
 
   filterAllInstructionsList() {
     this.filteredInstructionsSeries = this.allInstructionsSeries.filter(
-      (series) => this.objectContainsSearchString(series, this.searchString)
+      (series) => this.simSettings.objectContainsSearchString(series, this.searchString)
     );
   }
 
-  objectContainsSearchString(series, searchString) {
-    let modifiedSeries = series.type === 'SmartRest' ? {...series.instruction, type: series.type } : series;
-    const value = _.pickBy(modifiedSeries, (value, key) => {
-      if (isNaN(Number(value.toString())) && isNaN(Number(searchString.toString()))) {
-      return (
-        key
-          .toString()
-          .toLowerCase()
-          .replace("/ /g", "")
-          .includes(
-            searchString.toString().toLowerCase().replace("/ /g", "")
-          ) ||
-        value
-          .toString()
-          .toLowerCase()
-          .replace("/ /g", "")
-          .includes(searchString.toLowerCase().replace("/ /g", ""))
-      ); } else {
-        return (
-          key
-            .toString()
-            .toLowerCase()
-            .replace("/ /g", "")
-            .includes(
-              searchString.toString().toLowerCase().replace("/ /g", "")
-            ) ||
-          value
-            .toString()
-            .replace("/ /g", "")
-            .includes(searchString.replace("/ /g", ""))
-        );
-      }
-    });
-    return _.isEmpty(value) ? false : true;
-  }
-
+  
   ngOnInit() {
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe(
       (instructions) => {
