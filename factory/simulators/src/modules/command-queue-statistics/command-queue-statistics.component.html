@@ -45,7 +45,7 @@
       <!-- Card header containing the title, make sure you always add text-truncate -->
       <div class="card-header separator text-truncate">
         <div class="card-icon">
-          <i c8y-icon="c8y-group-open" class="c8y-icon c8y-icon-group-open"></i>
+          <i class="fa fw fa-sliders"></i>
         </div>
         <!-- Always add the title attribute -->
         <div class="card-title" title="BeagleBone Black">
@@ -69,7 +69,7 @@
           <label class="small ng-binding">Sum per day: </label> <b>{{entry.runthroughsPerDay}} {{entry.unit}}</b>
         </div>
         <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Average: </label> <b>{{entry.avg / commandQueue.length | number: '1.0-2'}} {{entry.unit}}</b>
+          <label class="small ng-binding">Average: </label> <b>{{entry.avg / indexedCommandQueue.length | number: '1.0-2'}} {{entry.unit}}</b>
         </div>
         <div class="col-xs-12 col-sm-6 text-truncate">
           <label class="small ng-binding">Lowest: </label> <b>{{entry.lowest}}</b>

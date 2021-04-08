@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class CommandQueueStatisticsComponent implements OnInit {
   time = {day: 24*60*60, hour: 60 * 60, minute: 60};
-  commandQueue: CommandQueueEntry[];
+  indexedCommandQueue: CommandQueueEntry[];
   
   runthroughsPerMinute: number = 0;
   runthroughsPerHour: number = 0;
@@ -34,8 +34,8 @@ export class CommandQueueStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.commandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
-      this.commandQueue = commandQueue;
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
+      this.indexedCommandQueue = commandQueue;
       console.error(commandQueue);
       this.calculateInformationFromCommandQueue();
     });
@@ -44,13 +44,13 @@ export class CommandQueueStatisticsComponent implements OnInit {
   //measurementCategory: { [key: string]: number } = {};
   measurementCategory = [];
   calculateInformationFromCommandQueue( ) {
-    for(let i = 0; i < this.commandQueue.length; i++) {
-      let entry = this.commandQueue[i];
+    for(let i = 0; i < this.indexedCommandQueue.length; i++) {
+      let entry = this.indexedCommandQueue[i];
       if (entry.type === 'sleep') {
         this.timeForOneLoop += +entry.seconds;
       }
        /* if(this.measurementCategory.length > 0){
-          this.measurementCategory[this.measurementCategory.length - 1].avg += +this.commandQueue[i-1].values[2] * +entry.seconds;
+          this.measurementCategory[this.measurementCategory.length - 1].avg += +this.indexedCommandQueue[i-1].values[2] * +entry.seconds;
         }
       }*/
 

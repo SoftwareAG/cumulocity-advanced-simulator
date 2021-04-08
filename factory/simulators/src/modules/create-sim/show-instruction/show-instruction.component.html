@@ -2,7 +2,7 @@
 <br />
 <div
   class="alert alert-warning"
-  *ngIf="warning && commandQueue.length"
+  *ngIf="warning && indexedCommandQueue.length"
   style="max-width: 100%; display: inline-block"
   role="alert"
 >
@@ -39,60 +39,59 @@
   <div class="custom-placeholder" *cdkDragPlaceholder></div>
     <!-- <div style="display: flex; cursor: move;"> -->
       <button class="list-group-item"  (click)="updateCurrentValue(item)">
-        <i *ngIf="item.type === 'sleep'" class="fa fw fa-clock-o drag-item"></i>
-        <span *ngIf="item.type === 'sleep'"
-          >&nbsp;Sleep &nbsp;{{ item.seconds }} seconds
+        
+        <span *ngIf="item.type === 'sleep'">
+          <i class="fa fw fa-clock-o drag-item"></i>&nbsp;
+          &nbsp;Sleep &nbsp;{{ item.seconds }} seconds
         </span>
-        <i
-          *ngIf="item.type === 'builtin' || item.type === 'message'"
-          class="fa fw fa-list drag-item"
-        ></i
-        >&nbsp;<span *ngIf="item.type === 'builtin' && item.messageId === '200'"
-          >&nbsp;Custom measurement &nbsp;<em>{{ item.messageId }}</em
-          >&nbsp;
+
+
+        
+        <span *ngIf="item.type === 'builtin' && item.messageId === '200'">
+          <i class="fa fw fa-list drag-item"></i>&nbsp;
+          &nbsp;Custom measurement &nbsp;<em>{{ item.messageId }}</em>&nbsp;
           <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
         </span>
-        <span
-          *ngIf="
-            item.type === 'builtin' &&
-            (item.messageId === '301' ||
-              item.messageId === '302' ||
-              item.messageId === '303')
-          "
-          >&nbsp;Custom alarm &nbsp;<em>{{ item.messageId }}</em
-          >&nbsp;
-          <ng-container *ngFor="let value of item.values"
-            >{{ value }}&nbsp;</ng-container
-          >
-        </span>
-        <span
-          *ngIf="
-            item.type === 'builtin' &&
-            (item.messageId === '400' ||
-              item.messageId === '401' ||
-              item.messageId === '402')
-          "
-          >&nbsp;Custom event &nbsp;<em>{{ item.messageId }}</em
-          >&nbsp;
+
+        
+        <span *ngIf="item.type === 'builtin' &&
+        (item.messageId === '301' ||
+        item.messageId === '302' ||
+        item.messageId === '303')">
+          <i class="fa fw fa-bell"></i>&nbsp;
+          &nbsp;Custom alarm &nbsp;<em>{{ item.messageId }}</em>&nbsp;
           <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
         </span>
-        <span *ngIf="item.type === 'message'"
-          >&nbsp;SmartREST Template &nbsp;<em>{{ item.templateId }}</em
-          >&nbsp; / &nbsp;<em>{{ item.messageId }}</em
-          >&nbsp;
+        
+        
+        <span *ngIf="item.type === 'builtin' &&
+        (item.messageId === '400' ||
+        item.messageId === '401' ||
+        item.messageId === '402')">
+              <i class="fa fw fa-tasks"></i>&nbsp;
+              &nbsp;Custom event &nbsp;<em>{{ item.messageId }}</em>&nbsp;
+              <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+            </span>
+            
+            
+        <span *ngIf="item.type === 'message'">
+              <i class="fa fw fa-sitemap"></i>&nbsp;
+              &nbsp;SmartREST Template &nbsp;<em>{{ item.templateId }}</em>&nbsp; / &nbsp;<em>{{ item.messageId }}</em>&nbsp;
           <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
         </span>
+
+
         <button class="delete">
           <i
             class="fa fw fa-trash"
-            (click)="deleteMeasurementOrSleep(item)"
-          ></i>
+            (click)="deleteMeasurementOrSleep(item)"></i>
         </button>
       </button>
     </div>
     <div [ngClass]="item === editedValue ? 'scale-in-ver-top' : 'scale-out-ver-top'" >
       <app-edit-instruction [displayEditView]="true" [edit]="editedValue" [mo]="mo" [indexedCommandQueue]="indexedCommandQueue" [editedValue]="editedValue"></app-edit-instruction>
     </div>
+  </div>
 </section>
     
     <!-- </div> </ng-container>

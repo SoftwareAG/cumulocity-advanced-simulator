@@ -74,6 +74,7 @@ export class CreateSimComponent implements OnInit {
 
   getCurrentSimulatorState(event: boolean) {
     this.invalidSimulator = event;
+    console.error(event);
   }
   getCurrentValue(event) {
     console.log(event)

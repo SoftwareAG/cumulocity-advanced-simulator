@@ -17,7 +17,6 @@ import { ThemeService } from 'ng2-charts';
 })
 export class ShowInstructionComponent implements OnInit {
   @Input() mo;
-  public commandQueue: CommandQueueEntry[] = [];
   public indexedCommandQueue: IndexedCommandQueueEntry[] = [];
   private commandQueueSubscription: Subscription;
 
@@ -54,19 +53,21 @@ export class ShowInstructionComponent implements OnInit {
   }
 
   checkIfAtLeastOneSleepIsSet() {
-    for (let entry of this.commandQueue) {
+    for (let entry of this.indexedCommandQueue) {
       if (entry.seconds && +entry.seconds >= 5) {
         this.getInvalidSimulator.emit(false);
         this.invalidSimulator = false;
         this.warning = null;
+        console.error(this.warning, this.indexedCommandQueue.length);
         return;
       }
     }
     this.warning = {
       title: "Invalid Simulator!",
       message:
-        "You need at least a 5 seconds sleep somewhere in the Instruction Queue.",
+      "You need at least a 5 seconds sleep somewhere in the Instruction Queue.",
     };
+    console.error(this.warning, this.indexedCommandQueue.length);
     this.getInvalidSimulator.emit(true);
     this.invalidSimulator = true;
   }

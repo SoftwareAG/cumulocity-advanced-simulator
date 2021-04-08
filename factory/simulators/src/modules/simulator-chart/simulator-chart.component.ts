@@ -23,7 +23,7 @@ export interface SleepChartBox {
 })
 export class SimulatorChartComponent implements OnInit, OnDestroy {
   public lineChartData: ChartDataSets[] = [];
-  public commandQueue: CommandQueueEntry[] = [];
+  public indexedCommandQueue: CommandQueueEntry[] = [];
   private commandQueueSubscription: Subscription;
   public lineChartType: ChartType = 'line';
 
@@ -110,8 +110,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
 
   
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.commandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
-      this.commandQueue = commandQueue;
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
+      this.indexedCommandQueue = commandQueue;
       this.createDataSetFromCommandQueue();
     });
     this.chart.plugins = [ChartAnnotation];
@@ -124,9 +124,9 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     let numberOfSleeps = 0, secondsOfSleep = 0;
     for (let i = 0; i < this.numberOfRuns; i++) {
       let lastXValue = 0;
-      for (let j = 0; j < this.commandQueue.length; j++) {
-        const entry  = this.commandQueue[j];
-        const xPosition = (j + (i * this.commandQueue.length)) + lastXValue + (secondsOfSleep - numberOfSleeps);
+      for (let j = 0; j < this.indexedCommandQueue.length; j++) {
+        const entry  = this.indexedCommandQueue[j];
+        const xPosition = (j + (i * this.indexedCommandQueue.length)) + lastXValue + (secondsOfSleep - numberOfSleeps);
 
         if(this.numberOfRuns === 1)
           console.log(dataSet);
@@ -218,7 +218,7 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
             found.lastXValue++;*/
           } else {
             if(this.numberOfRuns === 1)
-            console.info(this.commandQueue);
+            console.info(this.indexedCommandQueue);
             dataSet.push({
               data: [{ x: xPosition, y: +entry.values[2] }],
               label: entry.values[1],

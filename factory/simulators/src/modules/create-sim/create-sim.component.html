@@ -39,88 +39,7 @@
   </c8y-action-bar-item>
 
 
-
-<div class="row" style="margin-top:70px;">
-  <div class="card-group interact-grid" *ngIf="commandQueue.length">
-    <ng-container *ngIf="bulkView">
-      <!-- 
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-arrows-h"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Open in Device Management
-          </div>
-        </div>
-        <div class="card-block">
-          <button type="button" class="btn btn-primary">Open Device Management</button>
-        </div>
-      </div>
-    </div>-->
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-arrows-h"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Finalize the Simulator
-          </div>
-        </div>
-        <div class="card-block">
-          <button type="button" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
-          <button type="button" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device Management</button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-arrows-h"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Mirror along Y Axis
-          </div>
-        </div>
-        <div class="card-block">
-          This duplicates all values in the instruction set in reverse order
-          <label class="c8y-switch">
-            <input type="checkbox" [ngModel]="mirroredYAxis" (click)="bulkView=!bulkView;mirroredYAxis = !mirroredYAxis" />
-            <span></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-area-chart"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Add some salt
-          </div>
-        </div>
-        <div class="card-block">
-          Set a percentage in which ballpark you want to randomize values (only works on Measurements)
-          <input type="text" placeholder="Percentage %">&nbsp;
-          <button class="btn btn-primary">Randomize</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-
-<div class="row main-div" [style.height.px]='height'>
+<div class="row main-div" [style.height.px]='height' style="margin-top:70px;">
   <!--
   <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
     <div class="btn-group" role="group" *ngFor="let item of actionButtons">
@@ -254,9 +173,12 @@
 </div>
 
 
-<div class="row" style="margin:40px 0px 150px 0px;" *ngIf="this.commandQueue.length && !this.invalidSimulator">
-  <div class="col-xs-12">
+<div class="row" style="margin:40px 0px 150px 0px;">
+  <div class="col-xs-12" *ngIf="this.commandQueue.length && !this.invalidSimulator">
     <app-command-queue-statistics></app-command-queue-statistics>
+  </div>
+  <div class="col-xs-12" *ngIf="!this.commandQueue.length || this.invalidSimulator">
+      No Instruction or Series found
   </div>
 </div>
 
@@ -282,3 +204,86 @@
   </tbody> 
   </table>
 </ng-template>
+
+
+<div class="row">
+  <div class="card-group interact-grid" [ngClass]="commandQueue.length ? '' : 'disabled'">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-arrows-h"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Mirror along Y Axis
+          </div>
+        </div>
+        <div class="card-block">
+          This duplicates all values in the instruction set in reverse order
+          <label class="c8y-switch">
+            <input type="checkbox" [ngModel]="mirroredYAxis"
+              (click)="bulkView=!bulkView;mirroredYAxis = !mirroredYAxis" />
+            <span></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-area-chart"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Add some salt
+          </div>
+        </div>
+        <div class="card-block">
+          Set a percentage in which ballpark you want to randomize values (only works on Measurements)
+          <input type="text" placeholder="Percentage %">&nbsp;
+          <button class="btn btn-primary">Randomize</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="row">
+  <ng-container>
+    <!-- 
+          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="card">
+          <div class="card-header separator text-truncate">
+            <div class="card-icon">
+              <i class="fa fa-arrows-h"></i>
+            </div>
+            <div class="card-title" title="BeagleBone Black">
+              Open in Device Management
+            </div>
+          </div>
+          <div class="card-block">
+            <button type="button" class="btn btn-primary">Open Device Management</button>
+          </div>
+        </div>
+      </div>-->
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-header separator text-truncate">
+          <div class="card-icon">
+            <i class="fa fa-arrows-h"></i>
+          </div>
+          <div class="card-title" title="BeagleBone Black">
+            Finalize the Simulator
+          </div>
+        </div>
+        <div class="card-block">
+          <button type="button" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
+          <button type="button" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device
+            Management</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
