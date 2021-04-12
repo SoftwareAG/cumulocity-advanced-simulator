@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { BsModalService } from "ngx-bootstrap";
+import { BsModalService } from "ngx-bootstrap/modal";
 import { Subscription } from "rxjs";
 import { IManagedObject } from "@c8y/client";
 import { SimulatorConfigComponent } from "../simulator-config/simulator-config.component";

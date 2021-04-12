@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { CustomSimulator } from "@models/simulator.model";
 import { ManagedObjectService } from "@services/ManagedObject.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
-import { BsModalService } from "ngx-bootstrap";
+import { BsModalService } from "ngx-bootstrap/modal";
 import { Subscription } from "rxjs";
 import { CustomOperationComponent } from "./custom-operation/custom-operation.component";
 
