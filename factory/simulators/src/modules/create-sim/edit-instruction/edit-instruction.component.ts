@@ -26,7 +26,7 @@ import { SmartRESTService } from "@services/smartREST.service";
 })
 export class EditInstructionComponent implements OnInit {
   @Input() mo;
-  @Input() indexedCommandQueue : IndexedCommandQueueEntry[];
+  @Input() indexedCommandQueue : IndexedCommandQueueEntry[] = [];
   @Input() edit;
   @Input() displayEditView = false;
   @Input() displayAddView = true;
@@ -58,7 +58,7 @@ export class EditInstructionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.smartConfigSubscription = this.smartService.smartRestUpdate$.subscribe((config) => {this.smartRestConfig = config});
+    this.smartConfigSubscription = this.smartService.smartRestUpdate$.subscribe((config) => { this.smartRestConfig = config });
   }
 
   change(val) {
@@ -125,7 +125,6 @@ export class EditInstructionComponent implements OnInit {
     if(this.displayAddView && this.selectedEditView !== 'SmartRest'){
       let indexedCommandQueueEntry = {...commandQueueEntry, index: 'single'};
       if(this.commandQueueEntryIndex){ 
-        
         this.indexedCommandQueue.splice(this.commandQueueEntryIndex+1, 0, indexedCommandQueueEntry);
       }else{
         this.indexedCommandQueue.push(indexedCommandQueueEntry);

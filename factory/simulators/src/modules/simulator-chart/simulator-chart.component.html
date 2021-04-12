@@ -1,4 +1,13 @@
 <div>
+  <div class="col-sm-12 empty-command-queue" style="text-align: center" *ngIf="!indexedCommandQueue.length">
+    <div class="c8y-empty-state text-left">
+      <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+      <p>
+        <strong>No Instruction found.</strong>
+        Create your first Instruction or Series...
+      </p>
+    </div>
+  </div>
 
   <canvas
   baseChart

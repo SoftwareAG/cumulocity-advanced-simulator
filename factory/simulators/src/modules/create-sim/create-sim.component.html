@@ -12,180 +12,245 @@
     <div class="wizard">
       <div style="position: absolute;width: 650px;left: 50%;top: 23px;height: 5px;background: #bbb;margin-left: -325px;">
       </div>
-      <div [ngClass]="(commandQueue.length) ? 'wizard-item-success' : 'wizard-item'">
+
+      <div (click)="autoScrollTo(0)" [ngClass]="(wizardStep === 0) ? 'wizard-item' : (commandQueue.length) ? 'wizard-item-success' : 'wizard-item-disabled'">
         <div class="circle">1</div>
         Create an Instruction or Series
       </div>
       
-      <div [ngClass]="(commandQueue.length) ? (bulkView) ? 'wizard-item-success' : 'wizard-item' : 'wizard-item-disabled'">
+      <div (click)="autoScrollTo(1)" [ngClass]="(wizardStep === 1) ? 'wizard-item' : 'wizard-item-disabled'">
         <div class="circle">2</div>
-        Refine with bulk changes
+        Check the Simulator
+      </div>
+
+      <div (click)="autoScrollTo(2)" [ngClass]="(wizardStep === 2) ? 'wizard-item' : 'wizard-item-disabled'">
+        <div class="circle">3</div>
+        Bulk updates
       </div>
     
-      <div
-      [ngClass]="(bulkView && commandQueue.length) ? (simulatorRunning) ? 'wizard-item-success clickable circle-animate' : 'wizard-item clickable' : 'wizard-item-disabled'">
-        <div [ngClass]="'circle ' + ((commandQueue.length && bulkView && !simulatorRunning)? 'heartbeat' : '')"
-        (click)="toggleSimulatorState()"><span>3</span></div>
+      <div (click)="autoScrollTo(3)" [ngClass]="[(simulatorRunning) ? 'circle-animate' : '', (wizardStep === 3) ? 'wizard-item' : ((simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled')]">
+        <div class="circle"><span>4</span></div>
         <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
-        <span *ngIf="!simulatorRunning">Start this Simulator</span>
-      </div>
-    
-      <div (click)="openSimulatorInDevmanagement()"
-        [ngClass]="(bulkView && commandQueue.length  && simulatorRunning) ? 'wizard-item clickable' : 'wizard-item-disabled'">
-        <div class="circle">4</div>
-        Open Device Management
+        <span *ngIf="!simulatorRunning">Start the Simulator</span>
       </div>
     </div>
   </c8y-action-bar-item>
 
 
-<div class="row main-div" [style.height.px]='height' style="margin-top:70px;">
-  <!--
-  <c8y-action-bar-item [placement]="'right'"  *ngif="false" [itemClass]="'btn-group'">
-    <div class="btn-group" role="group" *ngFor="let item of actionButtons">
-      <button
-        type="button"
-        [ngClass]="
-          currentSelection === item ? 'btn btn-primary' : 'btn btn-default'
-        "
-        (click)="selectButton(item)"
-      >
-        {{ item }}
-      </button>
-    </div>
-  </c8y-action-bar-item>-->
-  <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
-  <!--
-    <div class="tight-grid">
-      <div class="col-xs-6">
-        <button class="btn-add-block" (click)="viewNewSeries = !viewNewSeries">
-          <i c8yIcon="sort-amount-asc"></i> Add New Series
-        </button>
-      </div>
-      <div class="col-xs-6">
-        <button class="btn-add-block" (click)="viewHistoricalSeries = !viewHistoricalSeries">
-          <i c8yIcon="history"></i> Choose from existing 
-        </button>
-      </div>
-    </div>
-    -->
+<section id="create-simulator" class="row main-div" [style.height.px]='height' style="margin-top:70px;">
+    <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
 
-    <div >
-      <app-sim-settings
+      <div >
+        <app-sim-settings
+          [mo]="mo"
+          [header]="addseries"
+          [commandQueue]="commandQueue"
+          [allInstructionsSeries]="allInstructionsSeries"
+          [isExpanded]="true"
+          [smartRestConfig]="smartRestConfig"
+          (allSeriesEmitter)="updateAllSeries($event)"
+        ></app-sim-settings>
+
+        
+        <div *ngIf="allInstructionsSeries.length" class="card page-sticky-header series-header" style="display: flex; justify-content: space-between; border-radius: 5px;">
+          <div style="display: flex; float: left;  padding: 5px; margin: 5px">
+            <div class="header">
+          <i c8yIcon="server" style="font-size: larger;"></i>
+          &nbsp;&nbsp;<h4>Series</h4>
+        </div> &nbsp;&nbsp;&nbsp;&nbsp;
+        <div style="display: flex; flex-direction: column;" triggers="hover"
+        popoverTitle="Statistics"
+        [popover] = "popoverStats"
+        placement="auto"
+        #pop="bs-popover">
+        <b>Statistics</b>
+        <p>Total Instructions: {{allInstructionsSeries && allInstructionsSeries.length ?  allInstructionsSeries.length : ''}}</p>
+        <em>{{allInstructionsSeries && allInstructionsSeries[0] ? allInstructionsSeries[0].type: ''}} ...</em>
+      </div>
+        <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
+        </div>
+        
+        <div class="filter common-header">
+        <div id="filter" class="input-group input-group-search" style="padding: 5px" >
+          <input
+            type="search"
+            class="form-control"
+            placeholder="Filter…"
+            [(ngModel)]="searchString"
+            (keyup.enter)="filterAllInstructionsList(this)"
+          />
+          <span class="input-group-addon">
+            <i c8yIcon="filter" *ngIf="!searchString || searchString.length === 0"></i>
+            <i
+              c8yIcon="times"
+              class="text-muted"
+              *ngIf="searchString && searchString.length > 0"
+            ></i>
+          </span>
+        </div>
+        </div>
+      </div>
+      <app-series-list [instructionsSeries]="filteredInstructionsSeries" [indexedCommandQueue]="indexedCommandQueue"></app-series-list>
+    </div>
+
+      <div *ngIf="false" class="col-sm-8">
+        <br />
+        <button
+          class="btn btn-success"
+          style="float: right; top: 0; z-index: 2; position: sticky"
+        >
+          Generate Instructions
+        </button>
+      </div>
+    </div>
+
+    <div class="col-lg-4" style="overflow-y:scroll; height:100%;">
+      <app-show-instruction
         [mo]="mo"
-        [header]="addseries"
-        [commandQueue]="commandQueue"
-        [allInstructionsSeries]="allInstructionsSeries"
-        [isExpanded]="true"
-        [smartRestConfig]="smartRestConfig"
-        (allSeriesEmitter)="updateAllSeries($event)"
-      ></app-sim-settings>
-
-      
-      <div *ngIf="allInstructionsSeries.length" class="card page-sticky-header series-header" style="display: flex; justify-content: space-between; border-radius: 5px;">
-        <div style="display: flex; float: left;  padding: 5px; margin: 5px">
-          <div class="header">
-        <i c8yIcon="server" style="font-size: larger;"></i>
-        &nbsp;&nbsp;<h4>Series</h4>
-      </div> &nbsp;&nbsp;&nbsp;&nbsp;
-      <div style="display: flex; flex-direction: column;" triggers="hover"
-      popoverTitle="Statistics"
-      [popover] = "popoverStats"
-      placement="auto"
-      #pop="bs-popover">
-      <b>Statistics</b>
-      <p>Total Instructions: {{allInstructionsSeries && allInstructionsSeries.length ?  allInstructionsSeries.length : ''}}</p>
-      <em>{{allInstructionsSeries && allInstructionsSeries[0] ? allInstructionsSeries[0].type: ''}} ...</em>
+        (getInvalidSimulator)="getCurrentSimulatorState($event)"
+        (currentValue)="getCurrentValue($event)"
+        (currentViewState)="updateViewState($event)"
+      ></app-show-instruction>
     </div>
-      <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
-      </div>
-      
-      <div class="filter common-header">
-      <div id="filter" class="input-group input-group-search" style="padding: 5px" >
-        <input
-          type="search"
-          class="form-control"
-          placeholder="Filter…"
-          [(ngModel)]="searchString"
-          (keyup.enter)="filterAllInstructionsList(this)"
-        />
-        <span class="input-group-addon">
-          <i c8yIcon="filter" *ngIf="!searchString || searchString.length === 0"></i>
-          <i
-            c8yIcon="times"
-            class="text-muted"
-            *ngIf="searchString && searchString.length > 0"
-          ></i>
-        </span>
-      </div>
-      </div>
-    </div>
-    <app-series-list [instructionsSeries]="filteredInstructionsSeries" [indexedCommandQueue]="indexedCommandQueue"></app-series-list>
-  </div>
+    <div id="grabber" [style.top.px]='height - 9' (mouseup)="onMouseUp($event)" (mousedown)="onMouseDown($event)"></div>
+</section>
 
-    <div *ngIf="false" class="col-sm-8">
-      <br />
-      <button
-        class="btn btn-success"
-        style="float: right; top: 0; z-index: 2; position: sticky"
-      >
-        Generate Instructions
-      </button>
-    </div>
-  </div>
+<section id="check-simulator" style="margin-top:120px;" >
+    <div class="row" *ngIf="this.commandQueue.length && !this.invalidSimulator">
+      <div class="col-xs-12">
+        <h3>Dashboard / Simulation</h3>
+        <br>
+        <div class="card-group interact-grid">
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" *ngFor="let entry of [1,3]">
 
-  <div class="col-lg-4" style="overflow-y:scroll; height:100%;">
-    <app-show-instruction
-      [mo]="mo"
-      (getInvalidSimulator)="getCurrentSimulatorState($event)"
-      (currentValue)="getCurrentValue($event)"
-      (currentViewState)="updateViewState($event)"
-    ></app-show-instruction>
-  </div>
-  <div id="grabber" [style.top.px]='height - 9' (mouseup)="onMouseUp($event)" (mousedown)="onMouseDown($event)"></div>
-</div>
+            <div class="card">
+              <!-- Card header containing the title, make sure you always add text-truncate -->
+              <div class="card-header separator text-truncate">
+                <div class="card-title" title="BeagleBone Black">
+                  {{ (entry === 1) ? 'Just one Cycle' : 'Multiple Runthroughs'}}
+                </div>
+              </div>
 
-
-<div class="row" style="margin-top:40px;" *ngIf="this.commandQueue.length && !this.invalidSimulator">
-  <div class="col-xs-12">
-  <h3>Dashboard / Simulation</h3>
-  <br>
-  <div class="card-group interact-grid">
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" *ngFor="let entry of [1,3]">
-
-      <div class="card">
-        <!-- Card header containing the title, make sure you always add text-truncate -->
-        <div class="card-header separator text-truncate">
-          <div class="card-title" title="BeagleBone Black">
-            {{ (entry === 1) ? 'Just one Cycle' : 'Multiple Runthroughs'}}
+            <div class="card-block">
+              <app-simulator-chart [numberOfRuns]="entry"></app-simulator-chart>
+            </div>
+            
+            </div>
           </div>
         </div>
-
-      <div class="card-block">
-        <app-simulator-chart [numberOfRuns]="entry"></app-simulator-chart>
-      </div>
-      
       </div>
     </div>
-  </div>
-  </div>
 
-</div>
+    <div class="row" style="margin:30px 0px 150px 0px;">
+      <ng-container *ngIf="this.commandQueue.length && !this.invalidSimulator">
+        <app-command-queue-statistics></app-command-queue-statistics>
+      </ng-container>
+      <ng-container *ngIf="this.invalidSimulator || !indexedCommandQueue.length">
+      <div class="col-sm-12 empty-command-queue" style="text-align: center;font-size: 1.2em;">
+          <div class="c8y-empty-state text-left">
+            <h1 class="c8y-icon c8y-icon-duocolor c8y-icon-chart"></h1>
+            <p>
+              <strong>Can't create Dashboard</strong><br>
+              Create your first Instruction or Series...
+            </p>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+</section>
 
+<section id="bulk-simulator" class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <h3>Bulk changes</h3>
+          <br>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" [ngClass]="{'disabled' : invalidSimulator}">
+        <div class="card">
+          <div class="card-header separator text-truncate">
+            <div class="card-icon">
+              <i class="fa fa-arrows-h"></i>
+            </div>
+            <div class="card-title" title="BeagleBone Black">
+              Mirror along Y Axis
+            </div>
+          </div>
+          <div class="card-block">
+            This duplicates all values in the instruction set in reverse order<br>
+            <label class="c8y-switch">
+              <input type="checkbox" [ngModel]="mirroredYAxis" [disabled]="invalidSimulator"
+                (click)="bulkView=!bulkView;mirroredYAxis = !mirroredYAxis" />
+              <span></span>
+            </label>
+          </div>
+        </div>
+      </div>
 
-<div class="row" style="margin:40px 0px 150px 0px;">
-  <div class="col-xs-12" *ngIf="this.commandQueue.length && !this.invalidSimulator">
-    <app-command-queue-statistics></app-command-queue-statistics>
-  </div>
-  <div class="col-xs-12" *ngIf="!this.commandQueue.length || this.invalidSimulator">
-      No Instruction or Series found
-  </div>
-</div>
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" [ngClass]="{'disabled' : invalidSimulator}">
+        <div class="card">
+          <div class="card-header separator text-truncate">
+            <div class="card-icon">
+              <i class="fa fa-area-chart"></i>
+            </div>
+            <div class="card-title" title="BeagleBone Black">
+              Add some salt
+            </div>
+          </div>
+          <div class="card-block">
+            Set a percentage in which ballpark you want to randomize values (only works on Measurements)
+            <input type="text" [disabled]="invalidSimulator" placeholder="Percentage %">&nbsp;
+            <button [disabled]="invalidSimulator" class="btn btn-primary">Randomize</button>
+          </div>
+        </div>
+      </div>
+</section>
 
+  <section id="maintain-simulator" class="row" style="margin-top:150px;margin-bottom:1000px;">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <h3>Dashboard / Simulation</h3>
+      <br>
+    </div>
+        <!-- 
+              <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+              <div class="card">
+              <div class="card-header separator text-truncate">
+                <div class="card-icon">
+                  <i class="fa fa-arrows-h"></i>
+                </div>
+                <div class="card-title" title="BeagleBone Black">
+                  Open in Device Management
+                </div>
+              </div>
+              <div class="card-block">
+                <button type="button" class="btn btn-primary">Open Device Management</button>
+              </div>
+            </div>
+          </div>-->
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" [ngClass]="{'disabled' : invalidSimulator}">
+          <div class="card">
+            <div class="card-header separator text-truncate">
+              <div class="card-icon">
+                <i class="fa fa-arrows-h"></i>
+              </div>
+              <div class="card-title" title="BeagleBone Black">
+                Finalize the Simulator
+              </div>
+            </div>
+            <div class="card-block">
+              <button type="button" [disabled]="invalidSimulator" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
+              <button type="button" [disabled]="invalidSimulator" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device
+                Management</button>
+            </div>
+          </div>
+        </div>
+  </section>
 
 <app-warning-modal *ngIf="warningModal" modal="warningModal"></app-warning-modal>
-<ng-template #addseries><h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4></ng-template>
+<ng-template #addseries>
+  <h4><i c8yIcon="plus-circle" style="font-size: large; color: text-primary"></i>&nbsp;Create Series</h4>
+</ng-template>
 </section>
+
+
 <ng-template #popoverStats>
   <p>Total Instructions: {{allInstructionsSeries.length}}</p>
   <table class="table">
@@ -196,94 +261,22 @@
       </tr>
     </thead>
     <tbody>
-    <tr *ngIf="(allInstructionsSeries | count).alarms"><th><small>Alarms</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).alarms }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).sleep"><th><small>Sleep</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).sleep }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).events"><th><small>Events</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).events }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).measurements"><th><small>Measurements</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).measurements }}</small></td></tr>
-    <tr *ngIf="(allInstructionsSeries | count).smartRest"><th><small>Smart Rest</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).smartRest }}</small></td></tr>          
-  </tbody> 
+      <tr *ngIf="(allInstructionsSeries | count).alarms">
+        <th><small>Alarms</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).alarms }}</small></td>
+      </tr>
+      <tr *ngIf="(allInstructionsSeries | count).sleep">
+        <th><small>Sleep</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).sleep }}</small></td>
+      </tr>
+      <tr *ngIf="(allInstructionsSeries | count).events">
+        <th><small>Events</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).events }}</small></td>
+      </tr>
+      <tr *ngIf="(allInstructionsSeries | count).measurements">
+        <th><small>Measurements</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).measurements }}</small>
+        </td>
+      </tr>
+      <tr *ngIf="(allInstructionsSeries | count).smartRest">
+        <th><small>Smart Rest</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).smartRest }}</small></td>
+      </tr>
+    </tbody>
   </table>
 </ng-template>
-
-
-<div class="row">
-  <div class="card-group interact-grid" [ngClass]="commandQueue.length ? '' : 'disabled'">
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-arrows-h"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Mirror along Y Axis
-          </div>
-        </div>
-        <div class="card-block">
-          This duplicates all values in the instruction set in reverse order
-          <label class="c8y-switch">
-            <input type="checkbox" [ngModel]="mirroredYAxis"
-              (click)="bulkView=!bulkView;mirroredYAxis = !mirroredYAxis" />
-            <span></span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-area-chart"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Add some salt
-          </div>
-        </div>
-        <div class="card-block">
-          Set a percentage in which ballpark you want to randomize values (only works on Measurements)
-          <input type="text" placeholder="Percentage %">&nbsp;
-          <button class="btn btn-primary">Randomize</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="row">
-  <ng-container>
-    <!-- 
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-          <div class="card">
-          <div class="card-header separator text-truncate">
-            <div class="card-icon">
-              <i class="fa fa-arrows-h"></i>
-            </div>
-            <div class="card-title" title="BeagleBone Black">
-              Open in Device Management
-            </div>
-          </div>
-          <div class="card-block">
-            <button type="button" class="btn btn-primary">Open Device Management</button>
-          </div>
-        </div>
-      </div>-->
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div class="card">
-        <div class="card-header separator text-truncate">
-          <div class="card-icon">
-            <i class="fa fa-arrows-h"></i>
-          </div>
-          <div class="card-title" title="BeagleBone Black">
-            Finalize the Simulator
-          </div>
-        </div>
-        <div class="card-block">
-          <button type="button" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
-          <button type="button" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device
-            Management</button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-</div>

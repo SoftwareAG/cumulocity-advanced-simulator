@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
@@ -271,6 +271,45 @@ export class CreateSimComponent implements OnInit {
   y = 100;
   oldY = 0;
   grabber = false;
+  wizardStep = 0;
+  scrollTransitionInPercentage = 0.3; 
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event){
+    var createSimulator = document.getElementById("create-simulator");
+    var checkSimulator = document.getElementById("check-simulator");
+    var bulkSimulator = document.getElementById("bulk-simulator");
+    var maintainSimulator = document.getElementById("maintain-simulator");
+    var scrollValue = window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
+    
+    if (scrollValue < checkSimulator.offsetTop) {
+      this.wizardStep = 0;
+      console.log("Create");
+    } else if (scrollValue > checkSimulator.offsetTop && scrollValue < bulkSimulator.offsetTop) {
+      this.wizardStep = 1;
+      console.log("check");
+    } else if (scrollValue > bulkSimulator.offsetTop && scrollValue < maintainSimulator.offsetTop) {
+      this.wizardStep = 2;
+      console.log("finalize");
+    } else if (scrollValue > maintainSimulator.offsetTop) {
+      this.wizardStep = 3;
+      console.log("finalize end");
+    }
+  }
+
+  autoScrollTo(newStep: number) {
+    let element = "";
+    switch (newStep){
+      case 0: element = "create-simulator";break;
+      case 1: element = "check-simulator";break;
+      case 2: element = "bulk-simulator";break;
+      case 3: element = "maintain-simulator";break;
+    }
+    
+    let y = document.getElementById(element).offsetTop;
+    window.scrollTo({ top: y - 170, behavior: 'smooth' });
+
+  }
 
   onMouseMove(event: MouseEvent) {
     if (!this.grabber) {

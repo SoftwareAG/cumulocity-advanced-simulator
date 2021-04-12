@@ -47,7 +47,8 @@
 
 #grabber{
   position: absolute;
-  width: 100%;
+  left:13px;
+  width: calc(100% - 42px);
   box-shadow: rgb(204, 204, 204) 0px 0px 4px;
   height: 20px;
   content: '';
@@ -76,12 +77,13 @@
   display: inline-block;
   left:22vw;
   width:1000px;
+  cursor:pointer;
 }
 .clickable{
   cursor:pointer;
 }
 
-.disabled{
+.disabled div{
   color:#aaa !important;
 }
 
@@ -95,7 +97,6 @@
 
 .wizard-item-disabled{
   color:#aaa;
-  cursor:default !important;
 }
 
 @keyframes rotate-animation {
