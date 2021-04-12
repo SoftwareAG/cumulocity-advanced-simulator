@@ -278,5 +278,10 @@
         <th><small>Smart Rest</small></th>&nbsp; <td><small>{{(allInstructionsSeries | count).smartRest }}</small></td>
       </tr>
     </tbody>
+    <tr *ngFor="let item of instructionSeriesTypes">
+      <td><i [c8yIcon]="item.category.icon" style="color: #b0b9bf"></i>&nbsp;<span>{{item.category.type}}</span></td>
+      <td>{{(allInstructionsSeries | count)[item.category.type]}}</td>
+    </tr>
+  </tbody> 
   </table>
 </ng-template>

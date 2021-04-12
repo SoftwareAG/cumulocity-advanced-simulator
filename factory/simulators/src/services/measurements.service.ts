@@ -69,18 +69,5 @@ public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
     console.info('uniqueMeasurementsArray', this.uniqueMeasurementsArray);
   }
 
-toMeasurementTemplate(measurement, value) {
-  let toBePushed = `{
-  "messageId": "200",
-  "values": ["FRAGMENT", "SERIES", "VALUE", "UNIT"], "type": "builtin"
-  }`;
-
-  toBePushed = toBePushed.replace("FRAGMENT", measurement.fragment);
-  toBePushed = toBePushed.replace("SERIES", measurement.series);
-  toBePushed = toBePushed.replace("VALUE", value);
-  toBePushed = toBePushed.replace("UNIT", measurement.unit);
-  return JSON.parse(toBePushed);
-}
-
 
 }

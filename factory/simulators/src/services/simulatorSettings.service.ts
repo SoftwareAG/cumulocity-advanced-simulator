@@ -6,12 +6,11 @@ import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
 import { Instruction, InstructionCategory } from "@models/instruction.model";
-import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
+import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
-// import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
-
+import * as _ from 'lodash';
 @Injectable({
   providedIn: "root",
 })
@@ -119,13 +118,9 @@ export class SimulatorSettingsService {
             seconds: value.sleep,
           });
         }
-        // FIXME: get alarm config value directly from the sim-alarm component, preferably in the object.
-        // Similarly for events and sleep
       } 
     }
-    this.generateAlarms();
-    this.generateEvents();
-    this.generateSleeps();
+    this.generateAlarmsOrEventsOrSleep();
     return this.resultTemplate.commandQueue;
   }
 
@@ -164,39 +159,51 @@ export class SimulatorSettingsService {
     this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
   }
 
-  generateAlarms() {
-    if (
-      this.alarmsService.alarms.length &&
-      !this.resultTemplate.commandQueue.length
-    ) {
-      let toBePushed = this.alarmsService.generateAlarms();
+  generateAlarmsOrEventsOrSleep() {
+
+      let instruction: Instruction;
+
+      if (this.alarmsService.alarms.length && !this.resultTemplate.commandQueue.length) {
+        const alarm = this.alarmsService.alarms[0];
+        instruction = {
+          alarmText: alarm.alarmText,
+          messageId: alarm.messageId,
+          alarmType: alarm.alarmType,
+          type: InstructionCategory.Alarm,
+        };
+      } else if (this.eventsService.events.length && !this.resultTemplate.commandQueue.length) {
+        const event = this.eventsService.events[0];
+        if (event.messageId === MessageIds.Basic) {
+          instruction = {
+            messageId: event.messageId,
+            eventText: event.eventText,
+            eventType: event.eventType,
+            eventCategory: '',
+            type: InstructionCategory.BasicEvent
+          }
+        } else if (event.messageId === MessageIds.LocationUpdate || event.messageId === MessageIds.LocationUpdateDevice) {
+          instruction = {
+            messageId: event.messageId,
+            type: InstructionCategory.LocationUpdateEvent,
+            eventCategory: '',
+            latitude: event.latitude,
+            longitude: event.longitude,
+            altitude: event.altitude,
+            accuracy: event.accuracy
+          }
+        }
+      } else if (this.sleepService.sleeps.length && !this.resultTemplate.commandQueue.length) {
+        const sleep = this.sleepService.sleeps[0];
+        instruction = {
+          type: InstructionCategory.Sleep,
+          seconds: sleep.seconds
+        }
+      }
+
+      let toBePushed = this.instructionService.instructionToCommand(instruction);
       let index = this.setIndexForCommandQueueEntry();
-      let toBePushedWithIndex = {...toBePushed, index};
+      let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
       this.resultTemplate.commandQueue.push(toBePushedWithIndex);
-
-    }
-  }
-
-  generateEvents() {
-    if (
-      this.eventsService.events.length &&
-      !this.resultTemplate.commandQueue.length
-    ) {
-      let toBePushed = this.eventsService.generateEvents();
-      let index = this.setIndexForCommandQueueEntry();
-      let toBePushedWithIndex = {...toBePushed, index};
-      this.resultTemplate.commandQueue.push(toBePushedWithIndex);
-    }
-  }
-
-  generateSleeps() {
-    if (
-      this.sleepService.sleeps.length &&
-      !this.resultTemplate.commandQueue.length
-    ) {
-      this.resultTemplate.commandQueue.push(...this.sleepService.generateSleep());
-      // FIXME: Fix here!
-    }
   }
 
   resetUsedArrays() {
@@ -210,19 +217,10 @@ export class SimulatorSettingsService {
 
   pushToInstructionsArray(instructionValue) {
     this.allInstructionsArray.push(instructionValue);
-    console.log('instructions array', this.allInstructionsArray);
   }
 
   setIndexForCommandQueueEntry(): string {
     let index;
-    // if (!this.indexedCommandQueue.length) {
-    //   index = '0';
-    // } else {
-    //   const lastEntryIndex = this.indexedCommandQueue[this.indexedCommandQueue.length-1].index;
-    //   if (lastEntryIndex !== 'single') {
-    //     index = (parseInt(lastEntryIndex) + 1).toString();
-    //   }
-    // }
 
     let indexed = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
     if (!indexed.length) {
@@ -248,5 +246,58 @@ export class SimulatorSettingsService {
     this.setIndexedCommandQueueUpdate();
     this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices);
   }
+
+  objectContainsSearchString(series, searchString) {
+
+    const modifiedSeries = this.modifyInstructionSeries(series);
+    const value = _.pickBy(modifiedSeries, (value, key) => {
+      if (isNaN(Number(value.toString())) && isNaN(Number(searchString.toString()))) {
+      return (
+        key
+          .toString()
+          .toLowerCase()
+          .replace("/ /g", "")
+          .includes(
+            searchString.toString().toLowerCase().replace("/ /g", "")
+          ) ||
+        value
+          .toString()
+          .toLowerCase()
+          .replace("/ /g", "")
+          .includes(searchString.toLowerCase().replace("/ /g", ""))
+      ); } else {
+        return (
+          key
+            .toString()
+            .toLowerCase()
+            .replace("/ /g", "")
+            .includes(
+              searchString.toString().toLowerCase().replace("/ /g", "")
+            ) ||
+          value
+            .toString()
+            .replace("/ /g", "")
+            .includes(searchString.replace("/ /g", ""))
+        );
+      }
+    });
+    return _.isEmpty(value) ? false : true;
+  }
+
+  modifyInstructionSeries(series) {
+    let modifiedSeries = series.type === 'SmartRest' ? {...series.instruction, type: series.type } : series;
+    if (series.type !== 'SmartRest' || series.type !== 'Measurement') {
+      const {option, ...nonOptionSeries} = modifiedSeries;
+      modifiedSeries = nonOptionSeries;
+    }
+    if (modifiedSeries.type === InstructionCategory.Alarm || modifiedSeries.type === InstructionCategory.BasicEvent || modifiedSeries.type === InstructionCategory.LocationUpdateEvent) {
+      const category = {'301': 'CRITICAL', '302': 'MAJOR', '303': 'MINOR', '400': 'Basic', '401': 'Location Update', '402': 'Location Update with Device'} [modifiedSeries.messageId];
+      const series = {...modifiedSeries, category: category.toLowerCase()};
+      const {messageId, ...nonMessageId} = series;
+      modifiedSeries = nonMessageId;
+    }
+    return modifiedSeries;
+  }
+
  
 }

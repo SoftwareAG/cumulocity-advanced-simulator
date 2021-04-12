@@ -23,7 +23,7 @@ export class SimulatorEntryComponent implements OnInit {
       break: boolean;
     };
   }[] = [
-    { category: { icon: "sliders", type: "measurements", break: false } },
+    { category: { icon: "sliders", type: "measurements", break: true } },
     { category: { icon: "bell", type: "alarms", break: false} },
     { category: { icon: "tasks", type: "events", break: true } },
     { category: { icon: "clock-o", type: "sleep", break: false} },
