@@ -33,7 +33,8 @@ import { WarningModalComponent } from "@modules/shared/warning-modal/warning-mod
 import { SeriesItemComponent } from "@modules/series-item/series-item.component";
 import { SeriesListComponent } from "@modules/series-item/series-list/series-list.component";
 import { CountPipe } from "./src/shared/count.pipe";
-import { PopoverModule, TooltipModule } from 'ngx-bootstrap';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { IsNumberPipe } from "./src/shared/isNumber.pipe";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {DragDropModule} from '@angular/cdk/drag-drop';
