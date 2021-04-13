@@ -9,6 +9,7 @@
   <strong>{{ warning.title }}</strong> {{ warning.message }}
 </div>
 <app-edit-instruction
+  [displayAddView]="true" 
   *ngIf="!editedValue"
   [mo]="mo"
   [indexedCommandQueue]="indexedCommandQueue"
@@ -84,9 +85,14 @@
                 (click)="deleteMeasurementOrSleep(item)"></i>
             </button>
           </button>
-    </div>
-    <div [ngClass]="item === editedValue ? 'scale-in-ver-top' : 'scale-out-ver-top'" >
-      <app-edit-instruction [displayEditView]="true" [edit]="editedValue" [mo]="mo" [indexedCommandQueue]="indexedCommandQueue" [editedValue]="editedValue"></app-edit-instruction>
+          <div >
+            <app-edit-instruction 
+              [displayEditView]="true" 
+              [edit]="editedValue" 
+              [mo]="mo" 
+              [indexedCommandQueue]="indexedCommandQueue" 
+              [editedValue]="editedValue"></app-edit-instruction>
+          </div>
     </div>
   </div>
 </section>

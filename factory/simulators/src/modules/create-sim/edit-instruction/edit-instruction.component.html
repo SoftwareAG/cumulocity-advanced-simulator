@@ -1,4 +1,67 @@
-<div class="tight-grid" *ngIf="displayAddView"><br>
+
+<section [ngClass]="displayEditView ? 'scale-in-ver-top' : 'scale-out-ver-top'">
+  <div class="card">
+    <div class="card-block">
+        <h4>Edit Instruction</h4>
+      <br>
+
+      <!-- Edit all series, add single all series types except smartrest -->
+      <div [ngSwitch]="selectedEditView">
+        <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
+          <div class="row">
+            <ng-container *ngFor="let entry of form">
+              <div class="col-xs-6" *ngIf="!entry.hidden">
+                <div class="form-group">
+                  <label class="text-truncate" *ngIf="entry.type !== 'switch'" [title]="entry.label">{{ entry.label
+                    }}</label>
+                  <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
+                    <div class="c8y-select-wrapper">
+                      <select class="form-control" [(ngModel)]="instructionValue[entry.name]">
+                        {{instructionValue[entry.name]}}
+                        <option *ngFor="let option of entry.options"
+                          [selected]="instructionValue[entry.name] === option.id" [value]="option.id">
+                          {{ option.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <input *ngIf="entry.type === 'textField'" id="{{entry.name}}" [required]="entry.required"
+                    class="form-control" [(ngModel)]="instructionValue[entry.name]" placeholder="{{entry.placeholder}}">
+                  <!-- Custom validation for type number -->
+                  <em class="custom-validation"
+                    *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
+                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                    <div> Please enter a number </div>
+                  </em>
+                  <!-- ------------------------------ -->
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="row" style="text-align:right;">
+            <div class="col-xs-12">
+              <button title="Add sleep" *ngIf="commandQueueEntryIndex && displayEditView" class="btn btn-default"
+                (click)="onDuplicateInstruction()" style="display:inline-block;margin-right:5px;">
+                <i class="fa fa-copy"></i> Duplicate {{defaultConfig[i]}}
+              </button>
+
+              <button class="btn btn-primary" style="display:inline-block" (click)="addOrUpdateInstruction(i)">
+                {{(displayAddView) ? "Add" : "Update"}} {{defaultConfig[i]}}
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+
+
+
+<div class="tight-grid"><br>
   <div class="col-xs-4">
     <button title="Add instruction" class="btn-add-block" (click)="onAddInstruction()">
       <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add single Instruction
@@ -16,10 +79,12 @@
   </div>
 </div>
 
-<section *ngIf="displayAddView||displayEditView">
+
+
+
+<section [ngClass]="displayAddView ? 'scale-in-ver-top' : 'scale-out-ver-top'">
   <div class="card">
     <div class="card-block">
-      <div *ngIf="displayAddView">
         <h4>Add single Instruction</h4>
         <br>
         <select class="form-control" [(ngModel)]="selectedEditView" (ngModelChange)="change($event)">
@@ -34,58 +99,9 @@
         </select>
 
         <br>
-      </div>
-      <div *ngIf="displayEditView">
-        <h4>Edit Instruction</h4>
-      </div>
       <br>
-
-
-      <!-- Edit all series, add single all series types except smartrest -->
-      <div [ngSwitch]="selectedEditView" *ngIf="!displayAddView || !(selectedEditView==='SmartRest')">
-        <ng-template *ngFor="let form of allForms; let i = index;" [ngSwitchCase]="defaultConfig[i]">
-          <div class="row">
-            <ng-container *ngFor="let entry of form">
-                <div class="col-xs-6" *ngIf="!entry.hidden">
-                <div class="form-group">
-                  <label class="text-truncate" *ngIf="entry.type !== 'switch'" [title]="entry.label">{{ entry.label }}</label>
-                  <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
-                    <div class="c8y-select-wrapper">
-                      <select class="form-control" [(ngModel)]="instructionValue[entry.name]">
-                        {{instructionValue[entry.name]}}
-                        <option *ngFor="let option of entry.options" [selected]="instructionValue[entry.name] === option.id" [value]="option.id">
-                          {{ option.name }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <input *ngIf="entry.type === 'textField'" id="{{entry.name}}" [required]="entry.required" class="form-control" [(ngModel)]="instructionValue[entry.name]"
-                  placeholder="{{entry.placeholder}}">
-                  <!-- Custom validation for type number -->
-                  <em  class="custom-validation" *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
-                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
-                    <div> Please enter a number </div></em>
-                    <!-- ------------------------------ -->
-                </div>
-              </div>
-            </ng-container>
-          </div>
-          <div class="row" style="text-align:right;">
-            <div class="col-xs-12">
-              <button title="Add sleep" *ngIf="commandQueueEntryIndex && displayEditView" class="btn btn-default" (click)="onDuplicateInstruction()" style="display:inline-block;margin-right:5px;">
-                <i class="fa fa-copy"></i> Duplicate {{defaultConfig[i]}}
-              </button>
-
-              <button class="btn btn-primary" style="display:inline-block" (click)="addOrUpdateInstruction(i)">
-                {{(displayAddView) ? "Add" : "Update"}} {{defaultConfig[i]}}
-              </button>
-            </div>
-          </div>
-        </ng-template>
-      </div>
-
       <!-- Add single instruction of type SmartRest -->
-      <div [ngSwitch]="selectedEditView" *ngIf="displayAddView && (selectedEditView==='SmartRest')">
+      <div [ngSwitch]="selectedEditView">
           <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
             <div class="row">
           <ng-container *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues;">
@@ -123,21 +139,3 @@
     </div>
   </div>
 </section>
-
-<div class="tight-grid"  *ngIf="displayEditView">
-  <div class="col-xs-4">
-    <button title="Add instruction" class="btn-add-block" (click)="onAddInstruction()">
-      <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add single Instruction
-    </button>
-  </div>
-  <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" (click)="onAddSleep()">
-      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Add sleep
-    </button>
-  </div>
-  <div class="col-xs-4">
-    <button title="Add sleep" class="btn-add-block" (click)="onClearAllInstructions()">
-      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Clear all Instructions
-    </button>
-  </div>
-</div>

@@ -1,75 +1,30 @@
 
-.scale-in-ver-top {
-  overflow:hidden;
-	-webkit-animation: scale-in-ver-top .3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	        animation: scale-in-ver-top .3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-}
-
-@-webkit-keyframes scale-in-ver-top {
-  0% {
-    -webkit-transform: scaleY(0.4);
-            transform: scaleY(0.4);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-  }
-  100% {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-  }
-}
-@keyframes scale-in-ver-top {
-  0% {
-    -webkit-transform: scaleY(0.4);
-            transform: scaleY(0.4);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-  }
-  100% {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-  }
-}
 
 .scale-out-ver-top {
   overflow:hidden;
-	-webkit-animation: scale-out-ver-top .3s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-	        animation: scale-out-ver-top .3s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+  animation: scale-out-ver-top forwards linear .3s;
 }
 
-@-webkit-keyframes scale-out-ver-top {
-  0% {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-    opacity: 1;
-  }
-  100% {
-    -webkit-transform: scaleY(0);
-            transform: scaleY(0);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-    opacity: 1;
-  }
-}
 @keyframes scale-out-ver-top {
   0% {
-    -webkit-transform: scaleY(1);
-            transform: scaleY(1);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-    opacity: 1;
+    max-height:10000px;
   }
   100% {
-    -webkit-transform: scaleY(0);
-            transform: scaleY(0);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-    opacity: 1;
+    max-height:0px;
+  }
+}
+
+.scale-in-ver-top {
+  overflow:hidden;
+  animation: scale-in-ver-top forwards linear .3s;
+}
+
+@keyframes scale-in-ver-top {
+  0%{
+    max-height:0px;
+  }
+  100% {
+    max-height:10000px;
   }
 }
 [hidden] {

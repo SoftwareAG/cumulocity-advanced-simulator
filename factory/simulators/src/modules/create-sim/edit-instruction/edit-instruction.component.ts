@@ -29,7 +29,7 @@ export class EditInstructionComponent implements OnInit {
   @Input() indexedCommandQueue : IndexedCommandQueueEntry[] = [];
   @Input() edit;
   @Input() displayEditView = false;
-  @Input() displayAddView = true;
+  @Input() displayAddView = false;
   smartRestForm: InputField[] = [];
   selectedEditView: string;
   defaultConfig: InstructionCategory[] = DefaultConfig;
@@ -43,6 +43,15 @@ export class EditInstructionComponent implements OnInit {
   smartRestInstruction;
 
   smartConfigSubscription: Subscription;
+
+  toEmit = false;
+  edited: EditedMeasurement;
+  data: any;
+
+  @Output() updatedVal = new EventEmitter();
+
+
+  displayInstructionsOrSleep = false;
 
 
   constructor(
@@ -194,15 +203,6 @@ export class EditInstructionComponent implements OnInit {
   }
 
   onClearAllInstructions() {}
-
-  toEmit = false;
-  edited: EditedMeasurement;
-  data: any;
-  
-  @Output() updatedVal = new EventEmitter();
-
-
-  displayInstructionsOrSleep = false;
 
 
   updateCurrent(val) {
