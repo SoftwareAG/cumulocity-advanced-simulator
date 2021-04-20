@@ -260,16 +260,12 @@ export class CreateSimComponent implements OnInit {
     
     if (scrollValue < checkSimulator.offsetTop) {
       this.wizardStep = 0;
-      console.log("Create");
     } else if (scrollValue > checkSimulator.offsetTop && scrollValue < bulkSimulator.offsetTop) {
       this.wizardStep = 1;
-      console.log("check");
     } else if (scrollValue > bulkSimulator.offsetTop && scrollValue < maintainSimulator.offsetTop) {
       this.wizardStep = 2;
-      console.log("finalize");
     } else if (scrollValue > maintainSimulator.offsetTop) {
       this.wizardStep = 3;
-      console.log("finalize end");
     }
   }
 
@@ -313,7 +309,6 @@ export class CreateSimComponent implements OnInit {
       this.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
 
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
-      console.log("State changed");
       const moId = res.id;
       this.backend.connectToSimulatorsBackend(
         this.mo.c8y_DeviceSimulator,
