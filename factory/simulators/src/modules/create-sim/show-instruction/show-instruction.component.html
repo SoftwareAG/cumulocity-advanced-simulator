@@ -9,7 +9,6 @@
   <strong>{{ warning.title }}</strong> {{ warning.message }}
 </div>
 <app-edit-instruction
-  [displayAddView]="true" 
   *ngIf="!editedValue"
   [mo]="mo"
   [indexedCommandQueue]="indexedCommandQueue"
@@ -87,6 +86,7 @@
           </button>
           <div >
             <app-edit-instruction 
+              *ngIf="item === editedValue"
               [displayEditView]="true" 
               [edit]="editedValue" 
               [mo]="mo" 

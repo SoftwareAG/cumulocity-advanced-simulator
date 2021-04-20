@@ -21,9 +21,10 @@ updateSimulatorObject(mo: CustomSimulator) {
   return this.simService.updateSimulatorManagedObject(mo);
 }
 
-updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], indices: string[]) {
+updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], indices: string[], mirrored: boolean[]) {
   this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
   this.mo.c8y_Indices = indices;
+  this.mo.c8y_MirroredValues = mirrored;
 }
 
 updateMOInstructionsArray(instructionsArray) {

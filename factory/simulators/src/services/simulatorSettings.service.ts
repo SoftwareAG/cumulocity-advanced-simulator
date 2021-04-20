@@ -146,7 +146,7 @@ export class SimulatorSettingsService {
   }
 
   removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
-    return (({index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
+    return ( ({mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
   }
 
   removeIndicesFromIndexedCommandQueueArray(indexedCommandQueueArray: IndexedCommandQueueEntry[]): CommandQueueEntry[] {
@@ -221,7 +221,6 @@ export class SimulatorSettingsService {
 
   setIndexForCommandQueueEntry(): string {
     let index;
-
     let indexed = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
     if (!indexed.length) {
       index = '0';
@@ -244,7 +243,7 @@ export class SimulatorSettingsService {
     let indices = this.indexedCommandQueue.map((entry) => entry.index);
     this.updateAll(indexedCommandQueue, commandQueue, indices);
     this.setIndexedCommandQueueUpdate();
-    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices);
+    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices, this.indexedCommandQueue.map((entry) => entry.mirrored));
   }
 
   objectContainsSearchString(series, searchString) {

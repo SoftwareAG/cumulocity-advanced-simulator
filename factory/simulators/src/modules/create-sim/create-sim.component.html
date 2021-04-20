@@ -181,7 +181,7 @@
             This duplicates all values in the instruction set in reverse order<br>
             <label class="c8y-switch">
               <input type="checkbox" [ngModel]="mirroredYAxis" [disabled]="invalidSimulator"
-                (click)="bulkView=!bulkView;mirroredYAxis = !mirroredYAxis" />
+                (click)="mirroredYAxis = !mirroredYAxis; mirrorYAxis();" />
               <span></span>
             </label>
           </div>

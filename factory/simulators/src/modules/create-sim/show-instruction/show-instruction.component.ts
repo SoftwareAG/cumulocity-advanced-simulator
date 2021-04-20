@@ -48,7 +48,7 @@ export class ShowInstructionComponent implements OnInit {
     this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed: IndexedCommandQueueEntry[]) => {
       this.indexedCommandQueue = indexed;
       this.checkIfAtLeastOneSleepIsSet();
-      console.error('commandQueue Change', JSON.stringify(this.indexedCommandQueue));
+      console.error('commandQueue Change', this.indexedCommandQueue);
     });
   }
 

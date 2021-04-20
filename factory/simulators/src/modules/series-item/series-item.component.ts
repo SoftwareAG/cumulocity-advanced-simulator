@@ -146,7 +146,7 @@ export class SeriesItemComponent implements OnInit {
      this.indexedCommandQueue.splice(itemPos, 0, ...indexedCmdQ);
    }
    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-   this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices);
+   this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices, []);
    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) =>{
     const alertText = `Series has been updated successfully.`; 
     this.updateService.simulatorUpdateFeedback('success', alertText);

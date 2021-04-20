@@ -1,13 +1,14 @@
-
-
 .scale-out-ver-top {
   overflow:hidden;
-  animation: scale-out-ver-top forwards linear .3s;
+  animation-duration: .5s;
+  animation-delay: 0s;
+  animation-name: scale-out-ver-top;
+  animation-fill-mode: forwards;
 }
 
 @keyframes scale-out-ver-top {
   0% {
-    max-height:10000px;
+    max-height:5000px;
   }
   100% {
     max-height:0px;
@@ -16,7 +17,11 @@
 
 .scale-in-ver-top {
   overflow:hidden;
-  animation: scale-in-ver-top forwards linear .3s;
+  animation-delay: 0s;
+  animation-duration: .5s;
+  animation-name: scale-in-ver-top;
+  animation-fill-mode: forwards;
+
 }
 
 @keyframes scale-in-ver-top {
@@ -24,9 +29,10 @@
     max-height:0px;
   }
   100% {
-    max-height:10000px;
+    max-height:5000px;
   }
 }
+
 [hidden] {
   display: none !important;
 }

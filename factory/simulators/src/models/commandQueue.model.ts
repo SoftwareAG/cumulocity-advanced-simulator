@@ -10,6 +10,7 @@ export interface CommandQueueEntry {
 
 export interface IndexedCommandQueueEntry extends CommandQueueEntry {
     index: string;
+    mirrored?: boolean;
 }
 
 

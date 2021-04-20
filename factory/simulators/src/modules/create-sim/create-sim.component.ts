@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
-import { CommandQueueEntry } from "@models/commandQueue.model";
+import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
@@ -34,7 +34,6 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
-  bulkView = false;
 
   viewNewSeries = false;
   viewHistoricalSeries = false;
@@ -51,7 +50,7 @@ export class CreateSimComponent implements OnInit {
   editMode = false;
   simulatorRunning = false;
   commandQueueIndices = [];
-  indexedCommandQueue = [];
+  indexedCommandQueue:IndexedCommandQueueEntry[] = [];
   instructionsSubscription: Subscription;
   mirroredYAxis: boolean = false;
   indexedCommandQueueSubscription: Subscription;
@@ -120,6 +119,7 @@ export class CreateSimComponent implements OnInit {
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     const MOIndices = this.mo.c8y_Indices;
+    const MOMirroredValues = this.mo.c8y_MirroredValues;
     this.commandQueue = MOCommandQueue;
 
     this.commandQueueIndices = MOIndices;
@@ -183,14 +183,6 @@ export class CreateSimComponent implements OnInit {
   }
 
   onClearAllInstructions() {}
-
-  createSinusWave() {
-    console.log("create sinuswave");
-    for (let i = this.commandQueue.length - 1; i >= 0; i--) {
-      this.commandQueue.push(this.commandQueue[i]);
-    }
-    this.simSettings.setCommandQueue(this.commandQueue);
-  }
 
   delete(value) {
     if (!this.warningModal) {
@@ -339,5 +331,26 @@ export class CreateSimComponent implements OnInit {
     if (this.indexedCommandQueueSubscription) {
       this.indexedCommandQueueSubscription.unsubscribe();
     }
+  }
+
+
+  mirrorYAxis() {
+    console.log("create sinuswave");
+    for (let i = this.indexedCommandQueue.length - 1; i >= 0; i--) {
+      let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
+      newEntry.mirrored = true;
+      this.indexedCommandQueue.push(newEntry);
+    }
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+
+    this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
+    this.updateService
+      .updateSimulatorObject(this.updateService.mo)
+      .then((res) => {
+        console.log(res, "test");
+      });
+  }
+  deepCopy(obj){
+    return JSON.parse(JSON.stringify(obj));
   }
 }
