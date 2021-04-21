@@ -161,28 +161,29 @@ export class SimulatorSettingsService {
 
   generateAlarmsOrEventsOrSleep() {
 
-      let instruction: Instruction;
-
+      
       if (this.alarmsService.alarms.length && !this.resultTemplate.commandQueue.length) {
         const alarm = this.alarmsService.alarms[0];
-        instruction = {
+        let instruction: Instruction = {
           alarmText: alarm.alarmText,
           messageId: alarm.messageId,
           alarmType: alarm.alarmType,
           type: InstructionCategory.Alarm,
         };
+        this.pushToResultTemplate(instruction);
       } else if (this.eventsService.events.length && !this.resultTemplate.commandQueue.length) {
         const event = this.eventsService.events[0];
         if (event.messageId === MessageIds.Basic) {
-          instruction = {
+          let instruction: Instruction = {
             messageId: event.messageId,
             eventText: event.eventText,
             eventType: event.eventType,
             eventCategory: '',
             type: InstructionCategory.BasicEvent
           }
+          this.pushToResultTemplate(instruction);
         } else if (event.messageId === MessageIds.LocationUpdate || event.messageId === MessageIds.LocationUpdateDevice) {
-          instruction = {
+          let instruction: Instruction = {
             messageId: event.messageId,
             type: InstructionCategory.LocationUpdateEvent,
             eventCategory: '',
@@ -191,19 +192,26 @@ export class SimulatorSettingsService {
             altitude: event.altitude,
             accuracy: event.accuracy
           }
+          this.pushToResultTemplate(instruction);
         }
       } else if (this.sleepService.sleeps.length && !this.resultTemplate.commandQueue.length) {
         const sleep = this.sleepService.sleeps[0];
-        instruction = {
+        let instruction: Instruction = {
           type: InstructionCategory.Sleep,
           seconds: sleep.seconds
         }
+        this.pushToResultTemplate(instruction);
+        
       }
 
-      let toBePushed = this.instructionService.instructionToCommand(instruction);
-      let index = this.setIndexForCommandQueueEntry();
-      let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
-      this.resultTemplate.commandQueue.push(toBePushedWithIndex);
+     
+  }
+
+  pushToResultTemplate(instruction: Instruction) {
+    let toBePushed = this.instructionService.instructionToCommand(instruction);
+    let index = this.setIndexForCommandQueueEntry();
+    let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
+    this.resultTemplate.commandQueue.push(toBePushedWithIndex);
   }
 
   resetUsedArrays() {
