@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
-import { CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
+import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
 import { Modal } from "@modules/shared/models/modal.model";
 import { AlarmsService } from "@services/alarms.service";
 import { InstructionService } from "@services/Instruction.service";
@@ -52,7 +52,7 @@ export class CreateSimComponent implements OnInit {
   commandQueueIndices = [];
   indexedCommandQueue:IndexedCommandQueueEntry[] = [];
   instructionsSubscription: Subscription;
-  mirroredYAxis: boolean = false;
+  mirroredAxis: boolean = false;
   indexedCommandQueueSubscription: Subscription;
   instructionSeriesTypes = [
     { category: { icon: "sliders", type: "measurements", break: true } },
@@ -119,11 +119,20 @@ export class CreateSimComponent implements OnInit {
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     const MOIndices = this.mo.c8y_Indices;
-    const MOMirroredValues = this.mo.c8y_MirroredValues;
-    this.commandQueue = MOCommandQueue;
+    this.mirroredAxis = this.mo.c8y_mirroredAxis;
+    this.saltValue = this.mo.c8y_saltValue;
+    const MOMirroredValues = (this.mo.c8y_MirroredValues) ? this.mo.c8y_MirroredValues : [];
+    const MODeviationValues = (this.mo.c8y_DeviationValue) ? this.mo.c8y_DeviationValue : [];
 
+    this.commandQueue = MOCommandQueue;
     this.commandQueueIndices = MOIndices;
-    this.simSettings.setCommandQueueIndices(this.commandQueueIndices);
+
+    let test: AdditionalParameter[] = MOCommandQueue;
+    test = this.commandQueue.map((element, index) => {
+      return { deviation: MODeviationValues[index], mirrored: MOMirroredValues[index], index: MOIndices[index]}
+    });
+    console.error('test', test, MODeviationValues, MOMirroredValues, MOIndices,this.mo);
+    this.simSettings.setCommandQueueAdditionals(test);
     this.simSettings.setCommandQueue(this.commandQueue);
     this.allInstructionsSeries = this.mo.c8y_Series;
     this.filteredInstructionsSeries = this.allInstructionsSeries;
@@ -329,23 +338,61 @@ export class CreateSimComponent implements OnInit {
   }
 
 
-  mirrorYAxis() {
-    console.log("create sinuswave");
-    for (let i = this.indexedCommandQueue.length - 1; i >= 0; i--) {
-      let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
-      newEntry.mirrored = true;
-      this.indexedCommandQueue.push(newEntry);
+  toggleMirrorYAxis() {
+    this.mirroredAxis = !this.mirroredAxis;
+    if(this.mirroredAxis){
+      for (let i = this.indexedCommandQueue.length - 1; i >= 0; i--) {
+        let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
+        newEntry.mirrored = true;
+        this.indexedCommandQueue.push(newEntry);
+      }
+    }else{
+      this.indexedCommandQueue = this.indexedCommandQueue.filter(element => !element.mirrored)
     }
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
+    this.updateService.mo.c8y_mirroredAxis = this.mirroredAxis;
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
         console.log(res, "test");
       });
   }
+
+  saltValue: number;
+  addSomeSalt() {
+    for(let entry of this.indexedCommandQueue){
+      if(entry.deviation){
+        entry.values[2] = String(+entry.values[2] - entry.deviation);
+        delete entry.deviation;
+      }
+      if (entry.index !== 'single' && !entry.deviation && this.saltValue > 0){
+        let percentValue = Math.abs(+entry.values[2] * (this.saltValue/100));
+        entry.deviation = this.randomInterval(-percentValue, percentValue, 2);
+        entry.values[2] = String(+entry.values[2] + entry.deviation);
+        console.info(percentValue, entry.deviation, entry.values[2]);
+      }
+    }
+    console.log(this.saltValue);
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+
+    this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
+    this.updateService.mo.c8y_saltValue = this.saltValue;
+    this.updateService
+      .updateSimulatorObject(this.updateService.mo)
+      .then((res) => {
+        console.log(res, "test");
+      });
+  }
+
   deepCopy(obj){
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  randomInterval(min, max, digits) {
+    let random = Math.random() * (max - min + 1) + min;
+    let powerOfDigits = Math.pow(10, digits);
+    return Math.round(random * powerOfDigits) / powerOfDigits;
   }
 }

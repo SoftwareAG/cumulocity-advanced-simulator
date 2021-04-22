@@ -6,7 +6,7 @@ import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
 import { Instruction, InstructionCategory } from "@models/instruction.model";
-import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models/commandQueue.model";
+import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
@@ -44,7 +44,7 @@ export class SimulatorSettingsService {
   randomSelected = 'linear';
 
   commandQueue: CommandQueueEntry[] = [];
-  indices = [];
+  additionals: AdditionalParameter[] = [];
   indexedCommandQueue: IndexedCommandQueueEntry[] = [];
 
   // allSeries = [];
@@ -65,13 +65,13 @@ export class SimulatorSettingsService {
     return new Promise((resolve, reject) => resolve(this.allTypesSeries));
   }
 
-  setCommandQueueIndices(commandQueueIndices) {
-    this.indices = commandQueueIndices;
+  setCommandQueueAdditionals(additionalParameter: AdditionalParameter[]) {
+    this.additionals = additionalParameter;
   }
 
   setCommandQueue(commandQueue: CommandQueueEntry[]) {
     this.commandQueue = commandQueue;
-    this.indexedCommandQueue = this.commandQueue.map((entry, index) => ({...entry, index:this.indices[index]}));
+    this.indexedCommandQueue = this.commandQueue.map((entry, index) =>  Object.assign(entry, this.additionals[index]));
     this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
   }
 
@@ -127,14 +127,14 @@ export class SimulatorSettingsService {
   generateInstructions() {
     const template = this.generateRequest();
     this.indexedCommandQueue.push(...template);
-    this.indices = this.indexedCommandQueue.map((entry) => entry.index);
+    this.additionals = this.indexedCommandQueue.map((entry) => { return { index: entry.index } });
     this.commandQueue = this.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
     this.setIndexedCommandQueueUpdate();
     return this.commandQueue;
   }
 
   getUpdatedIndicesArray() {
-    return this.indices;
+    return this.additionals;
   }
 
   getIndexedCommandQueue() {
@@ -146,7 +146,7 @@ export class SimulatorSettingsService {
   }
 
   removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
-    return ( ({mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
+    return (({deviation, mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
   }
 
   removeIndicesFromIndexedCommandQueueArray(indexedCommandQueueArray: IndexedCommandQueueEntry[]): CommandQueueEntry[] {
@@ -239,19 +239,20 @@ export class SimulatorSettingsService {
     return index;
   }
 
-  updateAll(indexedCommandQueue: IndexedCommandQueueEntry[], commandQueue: CommandQueueEntry[], indices: string[]) {
+  updateAll(indexedCommandQueue: IndexedCommandQueueEntry[], commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
     this.indexedCommandQueue = indexedCommandQueue;
     this.commandQueue = commandQueue;
-    this.indices = indices;
+    this.additionals = additionals;
   }
 
   updateCommandQueueAndIndicesFromIndexedCommandQueue(indexedCommandQueue: IndexedCommandQueueEntry[]) {
     this.setIndexedCommandQueue(indexedCommandQueue);
     let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
-    let indices = this.indexedCommandQueue.map((entry) => entry.index);
-    this.updateAll(indexedCommandQueue, commandQueue, indices);
+    let additionals = this.indexedCommandQueue.map((entry) => { return { index: entry.index, mirrored: entry.mirrored, deviation: entry.deviation }});
+    this.updateAll(indexedCommandQueue, commandQueue, additionals);
     this.setIndexedCommandQueueUpdate();
-    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices, this.indexedCommandQueue.map((entry) => entry.mirrored));
+    console.info("updateCommandQueue", this.commandQueue, this.additionals);
+    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.additionals);
   }
 
   objectContainsSearchString(series, searchString) {

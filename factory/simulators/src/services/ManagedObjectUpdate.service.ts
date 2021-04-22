@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertService, Alert } from '@c8y/ngx-components';
-import { CommandQueueEntry } from '@models/commandQueue.model';
+import { AdditionalParameter, CommandQueueEntry, CommandQueueC8YMapping } from '@models/commandQueue.model';
 import { CustomSimulator } from '@models/simulator.model';
 import { SimulatorsServiceService } from './simulatorsService.service';
 
@@ -21,10 +21,22 @@ updateSimulatorObject(mo: CustomSimulator) {
   return this.simService.updateSimulatorManagedObject(mo);
 }
 
-updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], indices: string[], mirrored: boolean[]) {
+
+  updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
   this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
-  this.mo.c8y_Indices = indices;
-  this.mo.c8y_MirroredValues = mirrored;
+    for(const key in CommandQueueC8YMapping){
+      this.mo[ CommandQueueC8YMapping[key] ] = [];
+      //console.log("this.mo overrwirde", this.mo, CommandQueueC8YMapping[key], key);
+    }
+
+    additionals.forEach((element: AdditionalParameter) => {
+      for(let key in element){
+        this.mo[ CommandQueueC8YMapping[key] ].push( element[key] );
+        console.info("details", element, key, CommandQueueC8YMapping, CommandQueueC8YMapping[key], element[key], this.mo);
+      }
+      
+    });
+  console.error("mo", this.mo, additionals, CommandQueueC8YMapping);
 }
 
 updateMOInstructionsArray(instructionsArray) {

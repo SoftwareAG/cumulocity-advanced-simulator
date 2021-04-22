@@ -24,6 +24,8 @@ export interface DeviceSimulator extends IManagedObject {
 export interface CustomSimulator extends IManagedObject {
   type?: string;
   id: string;
+  c8y_mirroredAxis:boolean;
+  c8y_saltValue:number;
   name: string;
   c8y_CustomSim: {};
   c8y_DeviceSimulator?: {

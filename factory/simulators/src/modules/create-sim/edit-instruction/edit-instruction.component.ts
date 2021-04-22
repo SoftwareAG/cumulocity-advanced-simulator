@@ -129,7 +129,6 @@ export class EditInstructionComponent implements OnInit {
 
     console.log(instructionValue);
     const commandQueueEntry = this.instructionService.instructionToCommand(instructionValue as Instruction);
-    console.info(this.displayAddView, this.indexedCommandQueue, instructionValue, this.commandQueueEntryIndex);
     
     if(this.displayAddView && this.selectedEditView !== 'SmartRest'){
       let indexedCommandQueueEntry = {...commandQueueEntry, index: 'single'};
@@ -147,6 +146,7 @@ export class EditInstructionComponent implements OnInit {
       }
       
     }
+    console.info(this.displayAddView, this.indexedCommandQueue, instructionValue, this.commandQueueEntryIndex);
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.updateCommandQueueInManagedObject(this.updateService.mo, this.defaultConfig[index]);
@@ -196,7 +196,7 @@ export class EditInstructionComponent implements OnInit {
     let updatedCommandQueue = this.simSettings.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
     let indices = this.updateService.mo.c8y_Indices;
     indices.splice(this.commandQueueEntryIndex, 0, this.indexedCommandQueue[this.commandQueueEntryIndex].index);
-    this.updateService.updateMOCommandQueueAndIndices(updatedCommandQueue, indices, []);
+    this.updateService.updateMOCommandQueueAndIndices(updatedCommandQueue, indices);
     this.simSettings.updateAll(this.indexedCommandQueue, updatedCommandQueue, this.updateService.mo.c8y_Indices);
     this.updateCommandQueueInManagedObject(this.updateService.mo, 'Duplication');
     this.simSettings.setIndexedCommandQueueUpdate();
