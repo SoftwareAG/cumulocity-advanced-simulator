@@ -154,10 +154,11 @@ export class SimSettingsComponent implements OnInit {
   }
 
   generateRequest() {
+    this.instructionValue['scalingOption'] = this.measurementOption;
     this.simSettingsService.randomSelected =
       this.instructionValue.type === "Measurement" &&
-      this.instructionValue.measurementOption
-        ? this.instructionValue.measurementOption
+      this.instructionValue.scalingOption
+        ? this.instructionValue.scalingOption
         : 'linear';
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
     this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray();
