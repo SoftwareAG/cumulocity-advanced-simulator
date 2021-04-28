@@ -8,12 +8,14 @@ export interface CommandQueueEntry {
     color?: string;
 }
 
-export interface IndexedCommandQueueEntry extends CommandQueueEntry, AdditionalParameter {}
+export interface IndexedCommandQueueEntry extends CommandQueueEntry, AdditionalParameter {
+}
 
 
 export interface AdditionalParameter {
     index: string;
     mirrored?: boolean;
+    color?: string;
     deviation?: number;
 }
 
@@ -21,7 +23,8 @@ export interface AdditionalParameter {
 export enum CommandQueueC8YMapping {
     "index" = "c8y_Indices",
     "mirrored" = "c8y_MirroredValues",
-    "deviation" = "c8y_DeviationValue"
+    "deviation" = "c8y_DeviationValue",
+    "color" = "c8y_SeriesColor"
 }
 
 

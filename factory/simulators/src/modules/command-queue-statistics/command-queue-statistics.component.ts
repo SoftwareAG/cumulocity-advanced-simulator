@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommandQueueEntry, MessageIds } from '@models/commandQueue.model';
+import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from '@models/commandQueue.model';
 import { Instruction } from '@models/instruction.model';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
@@ -34,9 +34,9 @@ export class CommandQueueStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
-      this.indexedCommandQueue = commandQueue;
-      console.error(commandQueue);
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
+      this.indexedCommandQueue = indexedCommandQueue;
+      console.error(indexedCommandQueue);
       this.calculateInformationFromCommandQueue();
     });
   }

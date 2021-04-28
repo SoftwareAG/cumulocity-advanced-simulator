@@ -18,6 +18,7 @@ import { isEqual } from "lodash";
 import * as _ from "lodash";
 import { Subscription } from "rxjs";
 import { HelperService } from "@services/helper.service";
+import { SeriesInstruction } from "@models/instruction.model";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
@@ -53,7 +54,10 @@ export class CreateSimComponent implements OnInit {
   indexedCommandQueue:IndexedCommandQueueEntry[] = [];
   instructionsSubscription: Subscription;
   mirroredAxis: boolean = false;
+  intertwinedValues: boolean = false;
   indexedCommandQueueSubscription: Subscription;
+  simulatorDuration: string;
+
   instructionSeriesTypes = [
     { category: { icon: "sliders", type: "measurements", break: true } },
     { category: { icon: "bell", type: "alarms", break: false} },
@@ -105,21 +109,21 @@ export class CreateSimComponent implements OnInit {
       }
     );
 
-    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe(
-      (indexed) => {
-        this.indexedCommandQueue = indexed;
+    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
+        this.indexedCommandQueue = indexedCommandQueue;
       }
     );
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    console.log(this.mo);
+    console.log(this.deepCopy(this.mo));
     const mo = JSON.parse(JSON.stringify(this.mo));
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
     const MOIndices = this.mo.c8y_Indices;
     this.mirroredAxis = this.mo.c8y_mirroredAxis;
+    this.intertwinedValues = this.mo.c8y_intertwinedValues;
     this.saltValue = this.mo.c8y_saltValue;
     const MOMirroredValues = (this.mo.c8y_MirroredValues) ? this.mo.c8y_MirroredValues : [];
     const MODeviationValues = (this.mo.c8y_DeviationValue) ? this.mo.c8y_DeviationValue : [];
@@ -141,6 +145,7 @@ export class CreateSimComponent implements OnInit {
     this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
     this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
+    console.error("running", this.simulatorRunning);
 
     const filter = {
       withTotalPages: true,
@@ -312,8 +317,21 @@ export class CreateSimComponent implements OnInit {
     this.grabber = true;
     this.oldY = event.clientY;
   }
-
+  
+  countdownInterval;
+  savedInterval:string;
   toggleSimulatorState() {
+    if (+this.simulatorDuration > 0){
+      this.savedInterval = this.simulatorDuration;
+      this.countdownInterval = setInterval(() => { 
+        this.simulatorDuration = String(+this.simulatorDuration - 1);
+        if(+this.simulatorDuration === 0){
+          this.toggleSimulatorState();
+          this.simulatorDuration = this.savedInterval;
+          clearInterval(this.countdownInterval);
+        }
+      }, 1000);
+    }
     this.mo.c8y_DeviceSimulator.state =
       this.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
 
@@ -345,6 +363,7 @@ export class CreateSimComponent implements OnInit {
         let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
         newEntry.mirrored = true;
         this.indexedCommandQueue.push(newEntry);
+        console.log("newEntry", newEntry);
       }
     }else{
       this.indexedCommandQueue = this.indexedCommandQueue.filter(element => !element.mirrored)
@@ -353,6 +372,65 @@ export class CreateSimComponent implements OnInit {
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
     this.updateService.mo.c8y_mirroredAxis = this.mirroredAxis;
+    this.updateService
+      .updateSimulatorObject(this.updateService.mo)
+      .then((res) => {
+        console.log(res, "test");
+      });
+  }
+
+
+  toggleIntertwineSeries(){
+    this.intertwinedValues = !this.intertwinedValues;
+    let indexDistribution: { iterations?: number, index: number, count: number, start?: number }[] = [{index: -1, count:-1}];
+    let newIndexedCommandQueue: IndexedCommandQueueEntry[] = [];
+    let filteredCommandQueue = this.indexedCommandQueue.filter(a => a.index === 'single');
+    if(this.intertwinedValues === true){
+      let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1, nextIndex = 1,endCondition = false;
+      if(maxIndex <= 2){
+        return;
+      }
+
+      for(let entry of this.allInstructionsSeries){
+        indexDistribution.push( { index: +entry.index, count: +entry.steps+1, iterations: 0 } );
+        numberOfTwines += +entry.steps + 1;
+      }
+
+      let startPosition = 0;
+      for(let entry of this.indexedCommandQueue){
+        if(+entry.index !== lastIndex){
+          for(let distributed of indexDistribution){
+            if(distributed.index === +entry.index){
+              distributed.start = startPosition;
+            }
+          }
+          lastIndex = +entry.index;
+        }
+        startPosition++;
+      }
+
+      indexDistribution.sort((a, b) => b.count - a.count);
+
+      for (let i = 0; i < numberOfTwines; i++){
+        for (let distributed of indexDistribution) {
+          if(distributed.count <= 0){ continue; }
+          newIndexedCommandQueue.push(this.deepCopy(this.indexedCommandQueue[distributed.iterations + distributed.start]));
+          distributed.count--;
+          distributed.iterations++;
+        }
+      }
+      newIndexedCommandQueue = newIndexedCommandQueue.concat(filteredCommandQueue);
+      
+    } else {
+      newIndexedCommandQueue = this.indexedCommandQueue;
+      newIndexedCommandQueue.sort( (a, b) => { return +a.index - +b.index } );
+    }
+    console.error("newCommandQueue", indexDistribution, newIndexedCommandQueue, filteredCommandQueue, this.allInstructionsSeries);
+    
+    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
+
+    this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
+    this.updateService.mo.c8y_intertwinedValues = this.intertwinedValues;
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {

@@ -16,17 +16,17 @@
       <div style="position: absolute;width: 650px;left: 50%;top: 23px;height: 5px;background: #bbb;margin-left: -325px;">
       </div>
 
-      <div (click)="autoScrollTo(0)" [ngClass]="(wizardStep === 0) ? 'wizard-item' : (commandQueue.length) ? 'wizard-item-success' : 'wizard-item-disabled'">
+      <div (click)="autoScrollTo(0)" [ngClass]="(wizardStep === 0) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
         <div class="circle">1</div>
         Create an Instruction or Series
       </div>
       
-      <div (click)="autoScrollTo(1)" [ngClass]="(wizardStep === 1) ? 'wizard-item' : 'wizard-item-disabled'">
+      <div (click)="autoScrollTo(1)" [ngClass]="(wizardStep === 1) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
         <div class="circle">2</div>
         Check the Simulator
       </div>
 
-      <div (click)="autoScrollTo(2)" [ngClass]="(wizardStep === 2) ? 'wizard-item' : 'wizard-item-disabled'">
+      <div (click)="autoScrollTo(2)" [ngClass]="(wizardStep === 2) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
         <div class="circle">3</div>
         Bulk updates
       </div>
@@ -180,8 +180,8 @@
           <div class="card-block">
             Rather than having all Series after another this picks an instruction from each series<br>
             <label class="c8y-switch">
-              <input type="checkbox" [ngModel]="mirroredYAxis" [disabled]="invalidSimulator"
-                (click)="mirroredYAxis = !mirroredYAxis; toggleMirrorYAxis();" />
+              <input type="checkbox" [ngModel]="intertwinedValues" [disabled]="invalidSimulator"
+                (click)="toggleIntertwineSeries();" />
               <span></span>
             </label>
           </div>
@@ -257,13 +257,29 @@
                 <i class="fa fa-arrows-h"></i>
               </div>
               <div class="card-title" title="BeagleBone Black">
-                Finalize the Simulator
+                Control the Simulator
               </div>
             </div>
             <div class="card-block">
-              <button type="button" [disabled]="invalidSimulator" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
-              <button type="button" [disabled]="invalidSimulator" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device
-                Management</button>
+              Duration turns the Simulator off after the given time in seconds. This only works when you keep this site open. 0 or empty Input let it run until you stop the Simulator. &nbsp; <input type="text" [(ngModel)]="simulatorDuration" [disabled]="invalidSimulator || simulatorRunning" placeholder="Duration in seconds">
+              <br>
+              <br>
+              <button type="button" [disabled]="invalidSimulator" (click)="toggleSimulatorState()" class="btn" [ngClass]="!simulatorRunning ? 'btn-success' : 'btn-danger'">{{ (!simulatorRunning) ? 'Start' : 'Stop' }} Simulator</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" [ngClass]="{'disabled' : invalidSimulator}">
+          <div class="card">
+            <div class="card-header separator text-truncate">
+              <div class="card-icon">
+                <i class="fa fa-arrows-h"></i>
+              </div>
+              <div class="card-title" title="BeagleBone Black">
+                See the running Simulator
+              </div>
+            </div>
+            <div class="card-block">
+              <button type="button" [disabled]="invalidSimulator" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device Management</button>
             </div>
           </div>
         </div>

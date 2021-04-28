@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlertService, Alert } from '@c8y/ngx-components';
 import { AdditionalParameter, CommandQueueEntry, CommandQueueC8YMapping } from '@models/commandQueue.model';
+import { SeriesInstruction } from '@models/instruction.model';
 import { CustomSimulator } from '@models/simulator.model';
 import { SimulatorsServiceService } from './simulatorsService.service';
 
@@ -22,7 +23,7 @@ updateSimulatorObject(mo: CustomSimulator) {
 }
 
 
-  updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
+updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
   this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
     for(const key in CommandQueueC8YMapping){
       this.mo[ CommandQueueC8YMapping[key] ] = [];
@@ -39,7 +40,7 @@ updateSimulatorObject(mo: CustomSimulator) {
   console.error("mo", this.mo, additionals, CommandQueueC8YMapping);
 }
 
-updateMOInstructionsArray(instructionsArray) {
+updateMOInstructionsArray(instructionsArray: SeriesInstruction[]) {
   this.mo.c8y_Series = instructionsArray;
 }
 

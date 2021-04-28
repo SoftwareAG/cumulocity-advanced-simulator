@@ -146,7 +146,7 @@ export class EditInstructionComponent implements OnInit {
       }
       
     }
-    console.info(this.displayAddView, this.indexedCommandQueue, instructionValue, this.commandQueueEntryIndex);
+    console.info(this.displayAddView, this.indexedCommandQueue, instructionValue, this.commandQueueEntryIndex, JSON.stringify(this.indexedCommandQueue));
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.updateCommandQueueInManagedObject(this.updateService.mo, this.defaultConfig[index]);
@@ -192,14 +192,14 @@ export class EditInstructionComponent implements OnInit {
   }
 
   onDuplicateInstruction() {
-    this.indexedCommandQueue.splice(this.commandQueueEntryIndex, 0, JSON.parse(JSON.stringify(this.indexedCommandQueue[this.commandQueueEntryIndex])));
+    /*this.indexedCommandQueue.splice(this.commandQueueEntryIndex, 0, JSON.parse(JSON.stringify(this.indexedCommandQueue[this.commandQueueEntryIndex])));
     let updatedCommandQueue = this.simSettings.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
     let indices = this.updateService.mo.c8y_Indices;
     indices.splice(this.commandQueueEntryIndex, 0, this.indexedCommandQueue[this.commandQueueEntryIndex].index);
     this.updateService.updateMOCommandQueueAndIndices(updatedCommandQueue, indices);
     this.simSettings.updateAll(this.indexedCommandQueue, updatedCommandQueue, this.updateService.mo.c8y_Indices);
     this.updateCommandQueueInManagedObject(this.updateService.mo, 'Duplication');
-    this.simSettings.setIndexedCommandQueueUpdate();
+    this.simSettings.setIndexedCommandQueueUpdate();*/
   }
 
   onClearAllInstructions() {}

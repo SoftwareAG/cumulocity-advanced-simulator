@@ -45,8 +45,8 @@ export class ShowInstructionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexed: IndexedCommandQueueEntry[]) => {
-      this.indexedCommandQueue = indexed;
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
+      this.indexedCommandQueue = indexedCommandQueue;
       this.checkIfAtLeastOneSleepIsSet();
       console.error('commandQueue Change', this.indexedCommandQueue);
     });

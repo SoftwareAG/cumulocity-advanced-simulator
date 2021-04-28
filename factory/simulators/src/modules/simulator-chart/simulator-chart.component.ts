@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommandQueueEntry, MessageIds } from '@models/commandQueue.model';
+import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from '@models/commandQueue.model';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { Chart, ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
@@ -110,8 +110,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
 
   
   ngOnInit() {
-    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((commandQueue: CommandQueueEntry[]) => {
-      this.indexedCommandQueue = commandQueue;
+    this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
+      this.indexedCommandQueue = indexedCommandQueue;
       this.createDataSetFromCommandQueue();
     });
     this.chart.plugins = [ChartAnnotation];
@@ -128,8 +128,8 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
         const entry  = this.indexedCommandQueue[j];
         const xPosition = (j + (i * this.indexedCommandQueue.length)) + lastXValue + (secondsOfSleep - numberOfSleeps);
 
-        if(this.numberOfRuns === 1)
-          console.log(dataSet);
+      //  if(this.numberOfRuns === 1)
+      //    console.log(dataSet);
 
         if (dataSet.length > 0) {
           if (entry.type === 'sleep'){
