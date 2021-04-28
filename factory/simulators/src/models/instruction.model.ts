@@ -41,7 +41,7 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   steps: number | string;
   sleep?: number | string;
   index?: string;
-  measurementOption?: string;
+  scalingOption?: string;
 }
 
 export interface SmartInstruction extends Instruction2 {
