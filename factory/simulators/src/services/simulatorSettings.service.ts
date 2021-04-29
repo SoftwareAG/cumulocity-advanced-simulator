@@ -5,7 +5,7 @@ import { AlarmsService } from "./alarms.service";
 import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
-import { Instruction, InstructionCategory } from "@models/instruction.model";
+import { Instruction, InstructionCategory, SeriesInstruction } from "@models/instruction.model";
 import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 })
 export class SimulatorSettingsService {
   allTypesSeries = [];
-  allInstructionsArray = [];
+  allInstructionsArray: SeriesInstruction[] = [];
   commandQueueUpdate = new BehaviorSubject<CommandQueueEntry[]>([]);
   commandQueueUpdate$ = this.commandQueueUpdate.asObservable();
 

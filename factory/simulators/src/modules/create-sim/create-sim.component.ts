@@ -62,6 +62,8 @@ export class CreateSimComponent implements OnInit {
     { category: { icon: "sitemap", type: "smartRest", break: false} },
   ];
 
+  listClass = 'interact-list';
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -75,7 +77,7 @@ export class CreateSimComponent implements OnInit {
     private alertService: AlertService,
     private updateService: ManagedObjectUpdateService,
     private smartRestService: SmartRESTService,
-    private helperService: HelperService
+    private helperService: HelperService,
   ) {}
 
   getCurrentSimulatorState(event: boolean) {
@@ -218,6 +220,11 @@ export class CreateSimComponent implements OnInit {
     );
   }
 
+  redirectToDeviceManagement() {
+    const deviceOfSimulator = this.mo.c8y_DeviceSimulator.name + ' #1';
+    console.log(deviceOfSimulator);
+    // this.router.navigateByUrl("/devicemanagement/index.html#/"+deviceOfSimulator);
+  }
   
   editSimulatorTitle() {
     this.editMode = false;

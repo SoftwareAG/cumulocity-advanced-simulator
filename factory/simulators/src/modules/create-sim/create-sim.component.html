@@ -11,6 +11,7 @@
       All Simulators
     </button>
   </c8y-action-bar-item>
+
   <c8y-action-bar-item [placement]="'left'" style="float:left;">
     <div class="wizard">
       <div style="position: absolute;width: 650px;left: 50%;top: 23px;height: 5px;background: #bbb;margin-left: -325px;">
@@ -240,7 +241,7 @@
             </div>
             <div class="card-block">
               <button type="button" [disabled]="invalidSimulator" (click)="toggleSimulatorState()" class="btn btn-success">Start Simulator</button>
-              <button type="button" [disabled]="invalidSimulator" class="btn btn-primary" [disabled]="!simulatorRunning">Check in Device
+              <button type="button" [disabled]="invalidSimulator" class="btn btn-primary" [disabled]="!simulatorRunning" (click)="redirectToDeviceManagement()">Check in Device
                 Management</button>
             </div>
           </div>

@@ -104,7 +104,7 @@ const appRoutes: Routes = [
     SeriesListComponent,
     CountPipe,
     IsNumberPipe,
-    InstructionTypePipe
+    InstructionTypePipe,
   ],
   entryComponents: [
     SimulatorEntryComponent,

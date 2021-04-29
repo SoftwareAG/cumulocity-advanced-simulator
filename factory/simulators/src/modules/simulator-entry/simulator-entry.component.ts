@@ -23,12 +23,13 @@ export class SimulatorEntryComponent implements OnInit {
       break: boolean;
     };
   }[] = [
-    { category: { icon: "sliders", type: "measurements", break: true } },
+    { category: { icon: "sliders", type: "measurements", break: false } },
     { category: { icon: "bell", type: "alarms", break: false} },
-    { category: { icon: "tasks", type: "events", break: true } },
+    { category: { icon: "tasks", type: "events", break: false } },
     { category: { icon: "clock-o", type: "sleep", break: false} },
     { category: { icon: "sitemap", type: "smartRest", break: false} },
   ];
+  listClass = 'interact-list';
   constructor(
     private modalService: BsModalService,
     private simService: SimulatorsServiceService,
@@ -50,6 +51,12 @@ export class SimulatorEntryComponent implements OnInit {
       })
     );
   }
+
+  
+  onListTypeChange(layout: string) {
+    this.listClass = layout;
+  }
+
 
   modalUnsubscribe() {
     this.subscriptions.unsubscribe();
