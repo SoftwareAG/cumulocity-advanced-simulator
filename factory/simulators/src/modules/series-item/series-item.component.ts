@@ -115,36 +115,37 @@ export class SeriesItemComponent implements OnInit {
   duplicateSeries() {
     //TODO CHRISMEY FIX THIS
     
-    // const duplicated = JSON.parse(JSON.stringify(this.selectedSeries));
-    // this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
-    // this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
-    // this.allInstructionsSeries.push(duplicated);
-
-    // const indexOfSeries = this.simSettingsService.setIndexForCommandQueueEntry();
-    // if (this.instructionValue.type !== 'SmartRest') {
-    //   this.instructionService.pushToSeriesArrays(duplicated.type, duplicated);
-    //   let template = this.simSettingsService.generateRequest();
-    //   template.map((entry) => entry.index = indexOfSeries);
-    //   this.indexedCommandQueue.push(...template);
-      
-    // } else {
-    //   let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(duplicated.instruction, duplicated.config);
-    //   let cmdQ = this.smartRestService.generateSmartRestRequest(smartRestInstructionsArray, this.selectedSeries.config);
-    //   const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: indexOfSeries})) as IndexedCommandQueueEntry[];
-    //   this.indexedCommandQueue.push(...indexedCmdQ);
-    // }
-    // this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-    // this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
-    // this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
-    // this.updateService.simulatorUpdateFeedback('success', 'Series successfully duplicated.');
-    // }
-    // );
+    const duplicated = JSON.parse(JSON.stringify(this.selectedSeries));
+    this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
+    duplicated.index = this.allInstructionsSeries.length.toString();
+    const indexOfSeries = duplicated.index;
+    this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
+    this.allInstructionsSeries.push(duplicated);
+    if (this.instructionValue.type !== 'SmartRest') {
+      this.instructionService.pushToSeriesArrays(duplicated.type, duplicated);
+      let template = this.simSettingsService.generateRequest();
+      template.map((entry) => entry.index = indexOfSeries);
+      this.indexedCommandQueue.push(...template);
+    } else {
+      let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(duplicated.instruction, duplicated.config);
+      let cmdQ = this.smartRestService.generateSmartRestRequest(smartRestInstructionsArray, this.selectedSeries.config);
+      const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: indexOfSeries})) as IndexedCommandQueueEntry[];
+      this.indexedCommandQueue.push(...indexedCmdQ);
+    }
+    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+    this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
+    this.updateService.simulatorUpdateFeedback('success', 'Series successfully duplicated.');
+    }
+    );
   }
 
   deleteSeries() {
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
-    const indexOfItem: number = +this.selectedSeries.index;
+    const indexOfItem = +this.selectedSeries.index;
+    console.log('index of item: ', indexOfItem);
+    console.log('selected series: ', this.selectedSeries);
     const filtered = this.indexedCommandQueue.filter((entry: IndexedCommandQueueEntry) => +entry.index !== +indexOfItem);
     console.error("delete Series", filtered, this.indexedCommandQueue, indexOfItem, this.allInstructionsSeries);
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(filtered);
