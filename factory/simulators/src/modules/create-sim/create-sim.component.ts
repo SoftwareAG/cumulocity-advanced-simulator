@@ -235,9 +235,8 @@ export class CreateSimComponent implements OnInit {
   }
 
   redirectToDeviceManagement() {
-    const deviceOfSimulator = this.mo.c8y_DeviceSimulator.name + ' #1';
-    console.log(deviceOfSimulator);
-    // this.router.navigateByUrl("/devicemanagement/index.html#/"+deviceOfSimulator);
+    const deviceIdOfSimulator = this.mo.id;
+    this.router.navigateByUrl("/devicemanagement/index.html#/device/"+deviceIdOfSimulator);
   }
   
   editSimulatorTitle() {
