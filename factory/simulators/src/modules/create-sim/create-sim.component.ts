@@ -236,7 +236,7 @@ export class CreateSimComponent implements OnInit {
 
   redirectToDeviceManagement() {
     const deviceIdOfSimulator = this.mo.id;
-    this.router.navigate(["https://psfactory.eu-latest.cumulocity.com/apps/devicemanagement/index.html#/device/"+deviceIdOfSimulator]);
+    this.router.navigateByUrl("devicemanagement/index.html/device/"+deviceIdOfSimulator);
   }
   
   editSimulatorTitle() {
