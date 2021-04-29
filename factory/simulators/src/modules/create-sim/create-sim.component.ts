@@ -132,15 +132,20 @@ export class CreateSimComponent implements OnInit {
 
     this.commandQueue = MOCommandQueue;
     this.commandQueueIndices = MOIndices;
+    this.allInstructionsSeries = this.mo.c8y_Series;
 
     let test: AdditionalParameter[] = MOCommandQueue;
     test = this.commandQueue.map((element, index) => {
-      return { deviation: MODeviationValues[index], mirrored: MOMirroredValues[index], index: MOIndices[index]}
+      let color = '#fff';
+      if (MOIndices[index] != 'single'){
+        color = this.allInstructionsSeries[(MOIndices[index])].color;
+      }
+
+      return { deviation: MODeviationValues[index], mirrored: MOMirroredValues[index], index: MOIndices[index], color: color}
     });
-    console.error('test', test, MODeviationValues, MOMirroredValues, MOIndices,this.mo);
+    console.error('test', this.allInstructionsSeries, test, MODeviationValues, MOMirroredValues, MOIndices,this.mo);
     this.simSettings.setCommandQueueAdditionals(test);
     this.simSettings.setCommandQueue(this.commandQueue);
-    this.allInstructionsSeries = this.mo.c8y_Series;
     this.filteredInstructionsSeries = this.allInstructionsSeries;
     console.log("All Instructions series: ", this.allInstructionsSeries);
     console.log("Filtered Series: ", this.filteredInstructionsSeries);

@@ -102,6 +102,7 @@ export class SimulatorSettingsService {
             type: InstructionCategory.Measurement,
             value: temp
           };
+          console.error("instr", instruction);
           
           let toBePushed = this.instructionService.instructionToCommand(instruction);
           // this.instructionService.test(instruction);
@@ -151,7 +152,7 @@ export class SimulatorSettingsService {
   }
 
   removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
-    return (({color, deviation, mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
+    return (({deviation, mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
   }
 
   removeIndicesFromIndexedCommandQueueArray(indexedCommandQueueArray: IndexedCommandQueueEntry[]): CommandQueueEntry[] {
@@ -241,7 +242,7 @@ export class SimulatorSettingsService {
   updateCommandQueueAndIndicesFromIndexedCommandQueue(indexedCommandQueue: IndexedCommandQueueEntry[]) {
     this.setIndexedCommandQueue(indexedCommandQueue);
     let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
-    let additionals:AdditionalParameter[] = this.indexedCommandQueue.map((entry) => { return { index: entry.index, mirrored: entry.mirrored, deviation: entry.deviation, color: entry.color } as AdditionalParameter});
+    let additionals:AdditionalParameter[] = this.indexedCommandQueue.map((entry) => { return { index: entry.index, mirrored: entry.mirrored, deviation: entry.deviation } as AdditionalParameter});
     this.updateAll(indexedCommandQueue, commandQueue, additionals);
     this.setIndexedCommandQueueUpdate();
     console.info("updateCommandQueue", this.commandQueue, this.additionals);
