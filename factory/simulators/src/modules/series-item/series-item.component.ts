@@ -158,24 +158,30 @@ export class SeriesItemComponent implements OnInit {
   }
 
   updateSeries() {
-   this.simSettingsService.randomSelected = this.selectedSeries.type === 'Measurement' || this.selectedSeries.type === 'SmartRest' ? this.selectedSeries.measurementOption : null;
+    console.log('scaling option: ', this.selectedSeries);
+   this.simSettingsService.randomSelected = this.selectedSeries.type === 'Measurement' || this.selectedSeries.type === 'SmartRest' ? this.selectedSeries.option : null;
    this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
    const indexOfSeries = this.selectedSeries.index;
+   console.log('indexOfSeries: ', indexOfSeries);
    let itemPos = this.indexedCommandQueue.findIndex((entry) => entry.index === indexOfSeries);
    this.indexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfSeries);
+   console.log('idxdCmdq: ', this.indexedCommandQueue);
 
    if (this.instructionValue.type !== 'SmartRest') {
+     this.simSettingsService.randomSelected = this.selectedSeries.option;
      this.instructionService.pushToSeriesArrays(this.instructionValue.type, this.instructionValue);
      let template = this.simSettingsService.generateRequest();
      template.map((entry) => entry.index = indexOfSeries);
      this.indexedCommandQueue.splice(itemPos, 0, ...template);
      
    } else {
+     this.smartRestService.smartRestOption = this.selectedSeries.option;
      let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(this.selectedSeries.instruction, this.selectedSeries.config);
      let cmdQ = this.smartRestService.generateSmartRestRequest(smartRestInstructionsArray, this.selectedSeries.config);
      const indexedCmdQ = cmdQ.map((entry) => ({...entry, index: indexOfSeries})) as IndexedCommandQueueEntry[];
      this.indexedCommandQueue.splice(itemPos, 0, ...indexedCmdQ);
    }
+   console.log('idxdCmdq: ', this.indexedCommandQueue);
    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
    this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.additionals);
    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) =>{

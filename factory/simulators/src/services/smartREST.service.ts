@@ -53,6 +53,8 @@ export class SmartRESTService {
     smartRestInstructionArray: SmartRestInstruction[],
     smartRESTTemplate: SmartRest
   ): CommandQueueEntry[] {
+    this.values = [];
+    this.commandQueueArray = [];
     smartRestInstructionArray.forEach((instruction) => {
       let vals = [];
       const steps = instruction.steps;
@@ -72,7 +74,7 @@ export class SmartRESTService {
       }
       this.values.push(vals);
     });
-
+    console.log('this.values: ', this.values);
     for (let i = 0; i < this.transposeArray(this.values).length; i++) {
       let initialValues = [];
       if (smartRESTTemplate.smartRestFields.mandatoryValues.length) {

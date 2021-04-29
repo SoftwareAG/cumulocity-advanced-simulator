@@ -224,6 +224,7 @@ export class SimSettingsComponent implements OnInit {
         smartRestInstructionsArray,
         this.smartRestSelectedConfig
       );
+      console.log('cmdQ: ', cmdQ);
       let indexed = this.simSettingsService.indexedCommandQueue;
       console.log('indexed: ', indexed);
       const index = this.allInstructionsSeries.length.toString();

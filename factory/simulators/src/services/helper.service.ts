@@ -29,7 +29,7 @@ export class HelperService {
         values.push(+values[i] + calcStep);
       }
     } else if (randomSelected === "random") {
-      for (let i = 1; i < steps; i++) {
+      for (let i = 1; i <= steps; i++) {
         values.push(Math.floor(Math.random() * (max - min)) + min);
       }
     } else if (randomSelected === "wave") {
@@ -47,6 +47,7 @@ export class HelperService {
         } else {
           values.push(val - height);
         }
+        values.shift();
       });
     }
     return values;
