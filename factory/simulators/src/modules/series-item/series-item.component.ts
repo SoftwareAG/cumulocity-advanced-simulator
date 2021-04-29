@@ -113,6 +113,8 @@ export class SeriesItemComponent implements OnInit {
   }
 
   duplicateSeries() {
+    //TODO CHRISMEY FIX THIS
+    /*
     const duplicated = JSON.parse(JSON.stringify(this.selectedSeries));
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
@@ -136,14 +138,15 @@ export class SeriesItemComponent implements OnInit {
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
     this.updateService.simulatorUpdateFeedback('success', 'Series successfully duplicated.');
     }
-    );
+    );*/
   }
 
   deleteSeries() {
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
-    const indexOfItem = this.selectedSeries.index;
-    const filtered = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfItem);
+    const indexOfItem: number = +this.selectedSeries.index;
+    const filtered = this.indexedCommandQueue.filter((entry: IndexedCommandQueueEntry) => +entry.index !== +indexOfItem);
+    console.error("delete Series", filtered, this.indexedCommandQueue, indexOfItem, this.allInstructionsSeries);
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(filtered);
     this.allInstructionsSeries = this.allInstructionsSeries.filter((entry) => entry.index !== this.selectedSeries.index);
     this.simSettingsService.setAllInstructionsSeries(this.allInstructionsSeries);
@@ -173,7 +176,7 @@ export class SeriesItemComponent implements OnInit {
      this.indexedCommandQueue.splice(itemPos, 0, ...indexedCmdQ);
    }
    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-   this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.indices, []);
+   this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.additionals);
    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) =>{
     const alertText = `Series has been updated successfully.`; 
     this.updateService.simulatorUpdateFeedback('success', alertText);

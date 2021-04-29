@@ -17,6 +17,7 @@ export type Instruction =
   | SleepInstruction
   | EventInstruction
   | SmartInstruction;
+  
 export type SeriesInstruction =
   | SeriesMeasurementInstruction
   | AlarmInstruction

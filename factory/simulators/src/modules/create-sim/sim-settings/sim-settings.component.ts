@@ -29,6 +29,7 @@ import {
 import { MeasurementsService } from "@services/measurements.service";
 import { ColorsReduced } from "@models/colors.const";
 import {
+  AdditionalParameter,
   CommandQueueEntry,
   IndexedCommandQueueEntry,
 } from "@models/commandQueue.model";
@@ -135,20 +136,19 @@ export class SimSettingsComponent implements OnInit {
       }
       this.instructionValue.color = this.selectedColor;
       this.instructionValue.type = this.defaultConfig[index];
-      let val = this.instructionValue;
 
       this.instructionService.pushToSeriesArrays(
         this.defaultConfig[index],
         this.instructionValue
       );
-      const assignedIndex = this.simSettingsService.setIndexForCommandQueueEntry();
+      const assignedIndex: string = this.allInstructionsSeries.length;
       console.log("Assigned index: ", assignedIndex);
       const insVal = JSON.parse(JSON.stringify(this.instructionValue));
       this.simSettingsService.pushToInstructionsArray({
         ...insVal,
         index: assignedIndex,
         option: this.measurementOption
-      });
+      } as SeriesInstruction);
       this.generateRequest();
     }
   }
@@ -161,7 +161,7 @@ export class SimSettingsComponent implements OnInit {
         ? this.instructionValue.scalingOption
         : 'linear';
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
-    this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray();
+    this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray().map((entry:AdditionalParameter)=> entry.index);
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
@@ -189,6 +189,10 @@ export class SimSettingsComponent implements OnInit {
 
   onChangeConfig(value) {
     this.isSmartRestSelected = value === InstructionCategory.SmartRest;
+  }
+
+  updateSeriesColor() {
+    console.log(this.selectedColor);
   }
 
   saveSmartRestTemplateToCommandQueue() {
@@ -222,9 +226,9 @@ export class SimSettingsComponent implements OnInit {
       );
       let indexed = this.simSettingsService.indexedCommandQueue;
       console.log('indexed: ', indexed);
-      const index = this.simSettingsService.setIndexForCommandQueueEntry();
+      const index = this.allInstructionsSeries.length;
       console.log('index: ', index);
-      const combinedSmartInstruction = {
+      const combinedSmartInstruction: SeriesInstruction = {
         instruction: copy,
         type: InstructionCategory.SmartRest,
         config: copy1,

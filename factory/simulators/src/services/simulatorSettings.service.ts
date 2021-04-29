@@ -6,7 +6,7 @@ import { EventsService } from "./events.service";
 import { CustomSimulator } from "@models/simulator.model";
 import { InstructionService } from "./Instruction.service";
 import { Instruction, InstructionCategory, SeriesInstruction } from "@models/instruction.model";
-import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models/commandQueue.model";
+import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from "@models/commandQueue.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
@@ -27,7 +27,7 @@ export class SimulatorSettingsService {
   instructionsSeriesUpdate = new BehaviorSubject<any[]>([]);
   instructionsSeriesUpdate$ = this.instructionsSeriesUpdate.asObservable();
 
-  resultTemplate = { commandQueue: [], name: "" };
+  resultTemplate: { commandQueue: IndexedCommandQueueEntry[], name: string} = { commandQueue: [], name: "" };
   
   alarmConfig = [
     "Generate repeated alarms",
@@ -44,7 +44,7 @@ export class SimulatorSettingsService {
   randomSelected = 'linear';
 
   commandQueue: CommandQueueEntry[] = [];
-  indices = [];
+  additionals: AdditionalParameter[] = [];
   indexedCommandQueue: IndexedCommandQueueEntry[] = [];
 
   // allSeries = [];
@@ -65,17 +65,17 @@ export class SimulatorSettingsService {
     return new Promise((resolve, reject) => resolve(this.allTypesSeries));
   }
 
-  setCommandQueueIndices(commandQueueIndices) {
-    this.indices = commandQueueIndices;
+  setCommandQueueAdditionals(additionalParameter: AdditionalParameter[]) {
+    this.additionals = additionalParameter;
   }
 
   setCommandQueue(commandQueue: CommandQueueEntry[]) {
     this.commandQueue = commandQueue;
-    this.indexedCommandQueue = this.commandQueue.map((entry, index) => ({...entry, index:this.indices[index]}));
+    this.indexedCommandQueue = this.commandQueue.map((entry, index) =>  Object.assign(entry, this.additionals[index]));
     this.indexedCommandQueueUpdate.next(this.indexedCommandQueue);
   }
 
-  setAllInstructionsSeries(allInstructions) {
+  setAllInstructionsSeries(allInstructions: SeriesInstruction[]) {
     this.allInstructionsArray = allInstructions;
     this.updateService.updateMOInstructionsArray(this.allInstructionsArray);
     this.setInstructionsUpdate();
@@ -105,8 +105,8 @@ export class SimulatorSettingsService {
           
           let toBePushed = this.instructionService.instructionToCommand(instruction);
           // this.instructionService.test(instruction);
-          let index = this.setIndexForCommandQueueEntry();
-          let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
+          let index = String(this.allInstructionsArray.length - 1);
+          let toBePushedWithIndex: IndexedCommandQueueEntry = {...toBePushed, index: index} as IndexedCommandQueueEntry;
           
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
@@ -116,7 +116,7 @@ export class SimulatorSettingsService {
           this.resultTemplate.commandQueue.push({
             type: "sleep",
             seconds: value.sleep,
-          });
+          } as IndexedCommandQueueEntry);
         }
       } 
     }
@@ -124,20 +124,25 @@ export class SimulatorSettingsService {
     return this.resultTemplate.commandQueue;
   }
 
-  generateInstructions() {
+  generateInstructions(): CommandQueueEntry[] {
     const template = this.generateRequest();
     this.indexedCommandQueue.push(...template);
-    this.indices = this.indexedCommandQueue.map((entry) => entry.index);
+    this.additionals = this.indexedCommandQueue.map((entry) => { return { index: entry.index } });
     this.commandQueue = this.removeIndicesFromIndexedCommandQueueArray(this.indexedCommandQueue);
     this.setIndexedCommandQueueUpdate();
     return this.commandQueue;
   }
 
-  getUpdatedIndicesArray() {
-    return this.indices;
+  getUpdatedIndicesArray(): AdditionalParameter[] {
+    console.error(JSON.parse(JSON.stringify(this.additionals)))
+    return this.additionals;
+  }
+  getAdditionalsArray(): AdditionalParameter[] {
+    console.error(JSON.parse(JSON.stringify(this.additionals)))
+    return this.additionals;
   }
 
-  getIndexedCommandQueue() {
+  getIndexedCommandQueue(): IndexedCommandQueueEntry[] {
     return this.indexedCommandQueue;
   }
 
@@ -146,7 +151,7 @@ export class SimulatorSettingsService {
   }
 
   removeIndices(commandQueueEntryWithIndex: IndexedCommandQueueEntry): CommandQueueEntry {
-    return ( ({mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
+    return (({color, deviation, mirrored, index, ...nonIndex}) => nonIndex) (commandQueueEntryWithIndex);
   }
 
   removeIndicesFromIndexedCommandQueueArray(indexedCommandQueueArray: IndexedCommandQueueEntry[]): CommandQueueEntry[] {
@@ -208,9 +213,9 @@ export class SimulatorSettingsService {
   }
 
   pushToResultTemplate(instruction: Instruction) {
-    let toBePushed = this.instructionService.instructionToCommand(instruction);
-    let index = this.setIndexForCommandQueueEntry();
-    let toBePushedWithIndex = {...toBePushed, index} as IndexedCommandQueueEntry;
+    let toBePushed: CommandQueueEntry = this.instructionService.instructionToCommand(instruction);
+    let index = String(this.allInstructionsArray.length-1);
+    let toBePushedWithIndex: IndexedCommandQueueEntry = {...toBePushed, index: index} as IndexedCommandQueueEntry;
     this.resultTemplate.commandQueue.push(toBePushedWithIndex);
   }
 
@@ -223,35 +228,24 @@ export class SimulatorSettingsService {
     // this.allInstructionsArray = [];
   }
 
-  pushToInstructionsArray(instructionValue) {
+  pushToInstructionsArray(instructionValue: SeriesInstruction) {
     this.allInstructionsArray.push(instructionValue);
   }
 
-  setIndexForCommandQueueEntry(): string {
-    let index;
-    let indexed = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
-    if (!indexed.length) {
-      index = '0';
-    } else {
-      const lastEntry = indexed[indexed.length-1].index;
-      index = (Number(lastEntry) + 1).toString();
-    }
-    return index;
-  }
-
-  updateAll(indexedCommandQueue: IndexedCommandQueueEntry[], commandQueue: CommandQueueEntry[], indices: string[]) {
+  updateAll(indexedCommandQueue: IndexedCommandQueueEntry[], commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
     this.indexedCommandQueue = indexedCommandQueue;
     this.commandQueue = commandQueue;
-    this.indices = indices;
+    this.additionals = additionals;
   }
 
   updateCommandQueueAndIndicesFromIndexedCommandQueue(indexedCommandQueue: IndexedCommandQueueEntry[]) {
     this.setIndexedCommandQueue(indexedCommandQueue);
     let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
-    let indices = this.indexedCommandQueue.map((entry) => entry.index);
-    this.updateAll(indexedCommandQueue, commandQueue, indices);
+    let additionals:AdditionalParameter[] = this.indexedCommandQueue.map((entry) => { return { index: entry.index, mirrored: entry.mirrored, deviation: entry.deviation, color: entry.color } as AdditionalParameter});
+    this.updateAll(indexedCommandQueue, commandQueue, additionals);
     this.setIndexedCommandQueueUpdate();
-    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.indices, this.indexedCommandQueue.map((entry) => entry.mirrored));
+    console.info("updateCommandQueue", this.commandQueue, this.additionals);
+    this.updateService.updateMOCommandQueueAndIndices(this.commandQueue, this.additionals);
   }
 
   objectContainsSearchString(series, searchString) {
