@@ -18,12 +18,14 @@ createUpdatedIndexedCommandQueue(indexedCommandQueue, filtered) {
     indexedCommandQueue,
     "index"
   ));
-
+  console.log('rearranged: ', rearranged);
   const temp: {index: string, commands: any}[] = rearranged.map((val, idx) => ({index: val[0].index as string, commands: val as any}));
+  console.log('temp: ', temp);
   const rearrIdxCmdQ = temp.map((entry, idx) => ({
     newIdx: filtered.find((val: any) => val.series.index === entry.index).newIdx,
     series: entry,
   }));
+  console.log('rearrIdxCmdQ: ', rearrIdxCmdQ);
   let finalUpdatedIndexedCommandQueue = [];
   rearrIdxCmdQ.forEach((entry) => {entry.series.index = entry.newIdx;});
   console.log(rearrIdxCmdQ);

@@ -63,7 +63,7 @@ export class SeriesListComponent implements OnInit {
       newIdx: idx.toString(),
       series: entry,
     }));
-
+    console.log('filtered: ', filtered);
     const filteredIndexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== 'single');
     let rearranged = this.dragDropService.createUpdatedIndexedCommandQueue(filteredIndexedCommandQueue, filtered);
 

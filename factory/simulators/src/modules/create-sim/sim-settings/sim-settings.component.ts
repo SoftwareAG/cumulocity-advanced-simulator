@@ -141,7 +141,7 @@ export class SimSettingsComponent implements OnInit {
         this.defaultConfig[index],
         this.instructionValue
       );
-      const assignedIndex: string = this.allInstructionsSeries.length;
+      const assignedIndex: string = this.allInstructionsSeries.length.toString();
       console.log("Assigned index: ", assignedIndex);
       const insVal = JSON.parse(JSON.stringify(this.instructionValue));
       this.simSettingsService.pushToInstructionsArray({
@@ -226,7 +226,7 @@ export class SimSettingsComponent implements OnInit {
       );
       let indexed = this.simSettingsService.indexedCommandQueue;
       console.log('indexed: ', indexed);
-      const index = this.allInstructionsSeries.length;
+      const index = this.allInstructionsSeries.length.toString();
       console.log('index: ', index);
       const combinedSmartInstruction: SeriesInstruction = {
         instruction: copy,
