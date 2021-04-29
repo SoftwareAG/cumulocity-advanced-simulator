@@ -236,7 +236,7 @@ export class CreateSimComponent implements OnInit {
 
   redirectToDeviceManagement() {
     const deviceIdOfSimulator = this.mo.id;
-    window.location.href = "https://psfactory.eu-latest.cumulocity.com/apps/devicemanagement/device/"+deviceIdOfSimulator;
+    window.location.href = "https://psfactory.eu-latest.cumulocity.com/apps/devicemanagement/index.html#/device/"+deviceIdOfSimulator+'/device-info';
   }
   
   editSimulatorTitle() {
