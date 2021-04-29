@@ -27,7 +27,7 @@
       </p>
     </div>
   </div>
-  <div  dkDropList
+  <div  cdkDropList
   id="indexed"
   (cdkDropListDropped)="drop($event)">
     <div *ngFor="let item of indexedCommandQueue; let i; of: commandQueue.length"
@@ -55,7 +55,7 @@
             (item.messageId === '301' ||
             item.messageId === '302' ||
             item.messageId === '303')">
-              <i class="fa fw fa-bell"></i>&nbsp;
+              <i class="fa fw fa-bell drag-item"></i>&nbsp;
               &nbsp;Custom alarm &nbsp;<em>{{ item.messageId }}</em>&nbsp;
               <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
             </span>
@@ -65,14 +65,14 @@
             (item.messageId === '400' ||
             item.messageId === '401' ||
             item.messageId === '402')">
-                  <i class="fa fw fa-tasks"></i>&nbsp;
+                  <i class="fa fw fa-tasks drag-item"></i>&nbsp;
                   &nbsp;Custom event &nbsp;<em>{{ item.messageId }}</em>&nbsp;
                   <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
                 </span>
                 
                 
             <span *ngIf="item.type === 'message'">
-                  <i class="fa fw fa-sitemap"></i>&nbsp;
+                  <i class="fa fw fa-sitemap drag-item"></i>&nbsp;
                   &nbsp;SmartREST Template &nbsp;<em>{{ item.templateId }}</em>&nbsp; / &nbsp;<em>{{ item.messageId }}</em>&nbsp;
               <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
             </span>

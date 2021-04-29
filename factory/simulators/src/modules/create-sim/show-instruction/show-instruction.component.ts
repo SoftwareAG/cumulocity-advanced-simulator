@@ -112,7 +112,7 @@ export class ShowInstructionComponent implements OnInit {
       event.currentIndex
     );
 
-    console.log(this.indexedCommandQueue);
+    console.log('Dragged item', this.indexedCommandQueue);
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => console.log(res));
 
