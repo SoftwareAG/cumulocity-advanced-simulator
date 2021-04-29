@@ -236,6 +236,7 @@ export class CreateSimComponent implements OnInit {
 
   redirectToDeviceManagement() {
     const deviceIdOfSimulator = this.mo.id;
+    console.log(this.router.url);
     this.router.navigate(["../../../../../"]);
   }
   
