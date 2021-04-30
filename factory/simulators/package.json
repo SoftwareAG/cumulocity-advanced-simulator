@@ -42,7 +42,7 @@
   },
   "c8y": {
     "application": {
-      "name": "Simulators",
+      "name": "Advanced Simulators",
       "contextPath": "simulators",
       "key": "simulators-application-key",
       "icon": {
