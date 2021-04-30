@@ -126,6 +126,7 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
       }*/
     this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
       this.indexedCommandQueue = indexedCommandQueue;
+      console.info(indexedCommandQueue);
       this.createDataSetFromCommandQueue();
       this.allInstructionsArray = this.simSettings.allInstructionsArray;
       for(let series of this.allInstructionsArray){

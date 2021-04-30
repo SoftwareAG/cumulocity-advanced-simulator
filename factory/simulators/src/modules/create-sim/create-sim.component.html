@@ -120,7 +120,7 @@
 </section>
 
 <section id="check-simulator" style="margin-top:120px;" >
-    <div class="row" *ngIf="this.commandQueue.length && !this.invalidSimulator">
+    <div class="row" *ngIf="this.indexedCommandQueue.length && !this.invalidSimulator">
       <div class="col-xs-12">
         <h3>Dashboard / Simulation</h3>
         <br>
@@ -146,7 +146,7 @@
     </div>
 
     <div class="row" style="margin:30px 0px 150px 0px;">
-      <ng-container *ngIf="this.commandQueue.length && !this.invalidSimulator">
+      <ng-container *ngIf="this.indexedCommandQueue.length && !this.invalidSimulator">
         <app-command-queue-statistics></app-command-queue-statistics>
       </ng-container>
       <ng-container *ngIf="this.invalidSimulator || !indexedCommandQueue.length">
@@ -155,7 +155,8 @@
             <h1 class="c8y-icon c8y-icon-duocolor c8y-icon-chart"></h1>
             <p>
               <strong>Can't create Dashboard</strong><br>
-              Create your first Instruction or Series...
+              <span *ngIf="!this.indexedCommandQueue.length">Create your first Instruction or Series...</span>
+              <span *ngIf="this.indexedCommandQueue.length && this.invalidSimulator">The Simulator is invalid...</span>
             </p>
           </div>
         </div>
