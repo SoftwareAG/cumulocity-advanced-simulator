@@ -1,7 +1,7 @@
 <c8y-title>Simulators</c8y-title>
 
 <c8y-action-bar-item>
-  <div class="dropdown" dropdown *ngIf="allSimulators.length > 1">
+  <div class="dropdown" dropdown *ngIf="allSimulators && allSimulators.length > 1">
     <button type="button" title="dropdown-toggle" dropdownToggle class="btn btn-default dropdown-toggle c8y-dropdown">
       <span><i c8yIcon="{{(listClass == 'interact-list') ? 'align-justify' : 'th-large'}}"></i> {{(listClass == 'interact-list') ? 'List Layout' : 'Grid Layout'}}</span> <span class="caret"></span>
     </button>
