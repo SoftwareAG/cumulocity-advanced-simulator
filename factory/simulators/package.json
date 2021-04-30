@@ -44,7 +44,10 @@
     "application": {
       "name": "Simulators",
       "contextPath": "simulators",
-      "key": "simulators-application-key"
+      "key": "simulators-application-key",
+      "icon": {
+        "class": "c8y-icon-duocolor c8y-icon-simulator"
+      }
     },
     "cli": {}
   }
