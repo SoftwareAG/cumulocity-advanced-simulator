@@ -47,8 +47,9 @@ export class HelperService {
         } else {
           values.push(val - height);
         }
-        values.shift();
+        // values.splice(0, 1);
       });
+      values.shift();
     }
     return values;
   }
