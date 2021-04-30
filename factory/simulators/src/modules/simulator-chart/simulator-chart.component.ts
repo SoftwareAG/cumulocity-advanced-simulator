@@ -5,6 +5,8 @@ import { Chart, ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import { Subscription } from 'rxjs';
 import * as ChartAnnotation from 'chartjs-plugin-annotation';
+import { SeriesInstruction } from '@models/instruction.model';
+import { ColorsReduced } from '@models/colors.const';
 
 export interface VerticalChartLine {
   type: string,
@@ -22,6 +24,7 @@ export interface SleepChartBox {
   styleUrls: ['./simulator-chart.component.less']
 })
 export class SimulatorChartComponent implements OnInit, OnDestroy {
+  public colors = ColorsReduced;
   public lineChartData: ChartDataSets[] = [];
   public indexedCommandQueue: CommandQueueEntry[] = [];
   private commandQueueSubscription: Subscription;
@@ -106,13 +109,39 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     this.updateAnnotations();
   }
 
-  
+  allInstructionsArray: SeriesInstruction[] = [];
 
   
   ngOnInit() {
+    /*
+      for (let color of this.colors) {
+        this.lineChartColors.push({
+          backgroundColor: color,
+          borderColor: color,
+          pointBackgroundColor: color,
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: color+'bb'
+        });
+      }*/
     this.commandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
       this.indexedCommandQueue = indexedCommandQueue;
+      console.info(indexedCommandQueue);
       this.createDataSetFromCommandQueue();
+      this.allInstructionsArray = this.simSettings.allInstructionsArray;
+      for(let series of this.allInstructionsArray){
+        if(series.color && series.color != '#fff'){
+          this.lineChartColors.splice(+series.index, 0, {
+            backgroundColor: series.color+'33',
+            borderColor: series.color,
+            pointBackgroundColor: series.color,
+            pointBorderColor: '#333',
+            pointHoverBackgroundColor: '#333',
+            pointHoverBorderColor: series.color + 'cc',
+          });
+        }
+        
+      }
     });
     this.chart.plugins = [ChartAnnotation];
   }

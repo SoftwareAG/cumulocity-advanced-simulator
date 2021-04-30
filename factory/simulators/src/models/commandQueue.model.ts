@@ -5,7 +5,6 @@ export interface CommandQueueEntry {
     values?: string[];
     seconds?: number;
     templateId?: string;
-    color?: string;
 }
 
 export interface IndexedCommandQueueEntry extends CommandQueueEntry, AdditionalParameter {
@@ -15,16 +14,15 @@ export interface IndexedCommandQueueEntry extends CommandQueueEntry, AdditionalP
 export interface AdditionalParameter {
     index: string;
     mirrored?: boolean;
-    color?: string;
     deviation?: number;
+    color?: string;
 }
 
 
 export enum CommandQueueC8YMapping {
     "index" = "c8y_Indices",
     "mirrored" = "c8y_MirroredValues",
-    "deviation" = "c8y_DeviationValue",
-    "color" = "c8y_SeriesColor"
+    "deviation" = "c8y_DeviationValue"
 }
 
 

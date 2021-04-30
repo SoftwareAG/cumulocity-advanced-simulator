@@ -176,6 +176,7 @@ export class SimSettingsComponent implements OnInit {
         );
         this.simSettingsService.resetUsedArrays();
         this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
+        this.selectedColor = '#fff';
       });
   }
 
