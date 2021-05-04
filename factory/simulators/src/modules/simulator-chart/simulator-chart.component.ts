@@ -26,7 +26,7 @@ export interface SleepChartBox {
 export class SimulatorChartComponent implements OnInit, OnDestroy {
   public colors = ColorsReduced;
   public lineChartData: ChartDataSets[] = [];
-  public indexedCommandQueue: CommandQueueEntry[] = [];
+  public indexedCommandQueue: IndexedCommandQueueEntry[] = [];
   private commandQueueSubscription: Subscription;
   public lineChartType: ChartType = 'line';
 

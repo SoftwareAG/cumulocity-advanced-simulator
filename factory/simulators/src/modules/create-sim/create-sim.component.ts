@@ -19,6 +19,7 @@ import * as _ from "lodash";
 import { Subscription } from "rxjs";
 import { HelperService } from "@services/helper.service";
 import { SeriesInstruction } from "@models/instruction.model";
+import { elementAt } from "rxjs/operators";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
@@ -50,11 +51,8 @@ export class CreateSimComponent implements OnInit {
   invalidSimulator = false;
   editMode = false;
   simulatorRunning = false;
-  commandQueueIndices = [];
   indexedCommandQueue:IndexedCommandQueueEntry[] = [];
   instructionsSubscription: Subscription;
-  mirroredAxis: boolean = false;
-  intertwinedValues: boolean = false;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
 
@@ -118,38 +116,34 @@ export class CreateSimComponent implements OnInit {
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    console.log(this.deepCopy(this.mo));
+    
     const mo = JSON.parse(JSON.stringify(this.mo));
+    console.info("mo", mo);
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
-    const MOIndices = this.mo.c8y_Indices;
-    this.mirroredAxis = this.mo.c8y_mirroredAxis;
-    this.intertwinedValues = this.mo.c8y_intertwinedValues;
-    this.saltValue = this.mo.c8y_saltValue;
-    const MOMirroredValues = (this.mo.c8y_MirroredValues) ? this.mo.c8y_MirroredValues : [];
-    const MODeviationValues = (this.mo.c8y_DeviationValue) ? this.mo.c8y_DeviationValue : [];
-
     this.commandQueue = MOCommandQueue;
-    this.commandQueueIndices = MOIndices;
+
     this.allInstructionsSeries = this.mo.c8y_Series;
-
-    let test: AdditionalParameter[] = MOCommandQueue;
-    test = this.commandQueue.map((element, index) => {
-      let color = '#fff';
-      if (MOIndices[index] != 'single'){
-        color = this.allInstructionsSeries[(MOIndices[index])].color;
+    let additionals: AdditionalParameter[] = this.mo.c8y_additionals;
+      if(additionals){
+        additionals.forEach((element) => {
+          let color = '#fff';
+          if (element.index != 'single'){
+            color = this.allInstructionsSeries[ (+element.index) ].color;
+          }
+          element.color = color;
+        });
+        MOCommandQueue.forEach((element, index) => { 
+          this.indexedCommandQueue.push( {...element, ...additionals[index]} as IndexedCommandQueueEntry);
+        });
       }
-
-      return { deviation: MODeviationValues[index], mirrored: MOMirroredValues[index], index: MOIndices[index], color: color}
-    });
-    console.error('test', this.allInstructionsSeries, test, MODeviationValues, MOMirroredValues, MOIndices,this.mo);
-    this.simSettings.setCommandQueueAdditionals(test);
+    console.info(this.indexedCommandQueue, additionals, this.commandQueue);
     this.simSettings.setCommandQueue(this.commandQueue);
+    this.simSettings.setIndexedCommandQueue(this.indexedCommandQueue);
     this.filteredInstructionsSeries = this.allInstructionsSeries;
     console.log("All Instructions series: ", this.allInstructionsSeries);
     console.log("Filtered Series: ", this.filteredInstructionsSeries);
-    this.indexedCommandQueue = this.simSettings.getIndexedCommandQueue();
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
     this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
     console.error("running", this.simulatorRunning);
@@ -367,121 +361,4 @@ export class CreateSimComponent implements OnInit {
   }
 
 
-  toggleMirrorYAxis() {
-    this.mirroredAxis = !this.mirroredAxis;
-    if(this.mirroredAxis){
-      for (let i = this.indexedCommandQueue.length - 1; i >= 0; i--) {
-        let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
-        newEntry.mirrored = true;
-        this.indexedCommandQueue.push(newEntry);
-        console.log("newEntry", newEntry);
-      }
-    }else{
-      this.indexedCommandQueue = this.indexedCommandQueue.filter(element => !element.mirrored)
-    }
-    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-
-    this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
-    this.updateService.mo.c8y_mirroredAxis = this.mirroredAxis;
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {
-        console.log(res, "test");
-      });
-  }
-
-
-  toggleIntertwineSeries(){
-    this.intertwinedValues = !this.intertwinedValues;
-    let indexDistribution: { iterations?: number, index: number, count: number, start?: number }[] = [{index: -1, count:-1}];
-    let newIndexedCommandQueue: IndexedCommandQueueEntry[] = [];
-    let filteredCommandQueue = this.indexedCommandQueue.filter(a => a.index === 'single');
-    if(this.intertwinedValues === true){
-      let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1, nextIndex = 1,endCondition = false;
-      if(maxIndex <= 2){
-        return;
-      }
-
-      for(let entry of this.allInstructionsSeries){
-        indexDistribution.push( { index: +entry.index, count: +entry.steps+1, iterations: 0 } );
-        numberOfTwines += +entry.steps + 1;
-      }
-
-      let startPosition = 0;
-      for(let entry of this.indexedCommandQueue){
-        if(+entry.index !== lastIndex){
-          for(let distributed of indexDistribution){
-            if(distributed.index === +entry.index){
-              distributed.start = startPosition;
-            }
-          }
-          lastIndex = +entry.index;
-        }
-        startPosition++;
-      }
-
-      indexDistribution.sort((a, b) => b.count - a.count);
-
-      for (let i = 0; i < numberOfTwines; i++){
-        for (let distributed of indexDistribution) {
-          if(distributed.count <= 0){ continue; }
-          newIndexedCommandQueue.push(this.deepCopy(this.indexedCommandQueue[distributed.iterations + distributed.start]));
-          distributed.count--;
-          distributed.iterations++;
-        }
-      }
-      newIndexedCommandQueue = newIndexedCommandQueue.concat(filteredCommandQueue);
-      
-    } else {
-      newIndexedCommandQueue = this.indexedCommandQueue;
-      newIndexedCommandQueue.sort( (a, b) => { return +a.index - +b.index } );
-    }
-    console.error("newCommandQueue", indexDistribution, newIndexedCommandQueue, filteredCommandQueue, this.allInstructionsSeries);
-    
-    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
-
-    this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
-    this.updateService.mo.c8y_intertwinedValues = this.intertwinedValues;
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {
-        console.log(res, "test");
-      });
-  }
-
-  saltValue: number;
-  addSomeSalt() {
-    for(let entry of this.indexedCommandQueue){
-      if(entry.deviation){
-        entry.values[2] = String(+entry.values[2] - entry.deviation);
-        delete entry.deviation;
-      }
-      if (entry.index !== 'single' && !entry.deviation && this.saltValue > 0){
-        let percentValue = Math.abs(+entry.values[2] * (this.saltValue/100));
-        entry.deviation = this.randomInterval(-percentValue, percentValue, 2);
-        entry.values[2] = String(+entry.values[2] + entry.deviation);
-        console.info(percentValue, entry.deviation, entry.values[2]);
-      }
-    }
-    console.log(this.saltValue);
-    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-
-    this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
-    this.updateService.mo.c8y_saltValue = this.saltValue;
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {
-        console.log(res, "test");
-      });
-  }
-
-  deepCopy(obj){
-    return JSON.parse(JSON.stringify(obj));
-  }
-
-  randomInterval(min, max, digits) {
-    let random = Math.random() * (max - min + 1) + min;
-    let powerOfDigits = Math.pow(10, digits);
-    return Math.round(random * powerOfDigits) / powerOfDigits;
-  }
 }

@@ -1,6 +1,7 @@
 import { IManagedObject } from "@c8y/client";
-import { CommandQueueEntry } from "./commandQueue.model";
+import { AdditionalParameter, CommandQueueEntry } from "./commandQueue.model";
 import { SeriesInstruction } from "./instruction.model";
+
 export interface SimulatorModel {
   id: string;
   name: string;
@@ -27,6 +28,7 @@ export interface CustomSimulator extends IManagedObject {
   id: string;
   c8y_Series: SeriesInstruction[];
   c8y_mirroredAxis:boolean;
+  c8y_additionals: AdditionalParameter[];
   c8y_intertwinedValues:boolean;
   c8y_saltValue:number;
   name: string;

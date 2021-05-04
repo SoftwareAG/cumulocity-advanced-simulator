@@ -160,9 +160,12 @@ export class SimSettingsComponent implements OnInit {
       this.instructionValue.scalingOption
         ? this.instructionValue.scalingOption
         : 'linear';
-    this.updateService.mo.c8y_DeviceSimulator.commandQueue = this.simSettingsService.generateInstructions();
-    this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray().map((entry:AdditionalParameter)=> entry.index);
+    let asdkoas = this.simSettingsService.generateInstructions();
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = asdkoas;
+    console.log(asdkoas);
+    //this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray().map((entry:AdditionalParameter)=> entry.index);
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
+
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {

@@ -25,6 +25,9 @@ updateSimulatorObject(mo: CustomSimulator) {
 
 updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
   this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
+  this.mo.c8y_additionals = additionals;
+/*{
+  this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
     for(const key in CommandQueueC8YMapping){
       this.mo[ CommandQueueC8YMapping[key] ] = [];
       //console.log("this.mo overrwirde", this.mo, CommandQueueC8YMapping[key], key);
@@ -37,7 +40,7 @@ updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], additionals: A
       }
       
     });
-  console.error("mo", this.mo, additionals, CommandQueueC8YMapping);
+  console.error("mo", this.mo, additionals, CommandQueueC8YMapping);*/
 }
 
 updateMOInstructionsArray(instructionsArray: SeriesInstruction[]) {

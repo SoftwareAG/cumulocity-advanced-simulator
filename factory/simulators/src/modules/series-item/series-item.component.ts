@@ -183,7 +183,6 @@ export class SeriesItemComponent implements OnInit {
    }
    console.log('idxdCmdq: ', this.indexedCommandQueue);
    this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-   this.updateService.updateMOCommandQueueAndIndices(this.simSettingsService.commandQueue, this.simSettingsService.additionals);
    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) =>{
     const alertText = `Series has been updated successfully.`; 
     this.updateService.simulatorUpdateFeedback('success', alertText);
