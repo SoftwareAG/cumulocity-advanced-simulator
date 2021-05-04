@@ -19,21 +19,21 @@ export class MeasurementsService {
   
   constructor(private helperService: HelperService) {}
 
-setMeasurements(measurements: SeriesMeasurementInstruction[]) {
-  this.measurements = measurements;
-}
+// setMeasurements(measurements: SeriesMeasurementInstruction[]) {
+//   this.measurements = measurements;
+// }
 
 pushToMeasurements(measurements: SeriesMeasurementInstruction) {
   console.error(measurements);
   this.measurements.push(measurements);
 }
 
-public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      this.measurementSeries = mo.c8y_MeasurementSeries;
-      resolve(this.measurementSeries);
-    });
-  }
+// public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
+//     return new Promise((resolve, reject) => {
+//       this.measurementSeries = mo.c8y_MeasurementSeries;
+//       resolve(this.measurementSeries);
+//     });
+//   }
 
   createUniqueMeasurementsArray() {
     for (let value of this.measurements.filter((a) => a.fragment)) {

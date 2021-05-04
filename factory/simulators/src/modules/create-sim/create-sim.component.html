@@ -14,7 +14,7 @@
 
   <c8y-action-bar-item [placement]="'left'" style="float:left;">
     <div class="wizard">
-      <div style="position: absolute;width: 650px;left: 50%;top: 23px;height: 5px;background: #bbb;margin-left: -325px;">
+      <div class="wizard-styling">
       </div>
 
       <div (click)="autoScrollTo(0)" [ngClass]="(wizardStep === 0) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
@@ -56,13 +56,13 @@
         ></app-sim-settings>
 
         
-        <div *ngIf="allInstructionsSeries.length" class="card series-header" style="display: flex; justify-content: space-between; border-radius: 5px;">
-          <div style="display: flex; float: left;  padding: 5px; margin: 5px">
+        <div *ngIf="allInstructionsSeries.length" class="card series-header series-list">
+          <div class="series-item">
             <div class="header">
           <i c8yIcon="server" style="font-size: larger;"></i>
           &nbsp;&nbsp;<h4>Series</h4>
         </div> &nbsp;&nbsp;&nbsp;&nbsp;
-        <div style="display: flex; flex-direction: column;" triggers="hover"
+        <div class="details-popover" triggers="hover"
         popoverTitle="Statistics"
         [popover] = "popoverStats"
         placement="auto"
@@ -168,7 +168,7 @@
   <app-bulk-updates [mo]="mo"></app-bulk-updates>
 </section>
 
-  <section id="maintain-simulator" class="row" style="margin-top:150px;margin-bottom:1000px;">
+  <section id="maintain-simulator" class="row maintain-simulator">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <h3>Dashboard / Simulation</h3>
       <br>

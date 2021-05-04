@@ -205,44 +205,41 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestInstruction,
       this.smartRestSelectedConfig
     );
-    let inconsistent = [];
-    const found = Object.keys(this.smartRestInstruction).filter((entry) =>
+    let entryFieldsWithInconsistentTypes = [];
+    const entriesWithMinMaxOrSteps = Object.keys(this.smartRestInstruction).filter((entry) =>
       entry.includes("_min" || "_max" || "steps")
     );
-    if (found.length) {
-      inconsistent = found.filter((entry) =>
+    if (entriesWithMinMaxOrSteps.length) {
+      entryFieldsWithInconsistentTypes = entriesWithMinMaxOrSteps.filter((entry) =>
         isNaN(Number(this.smartRestInstruction[entry]))
       );
     }
 
-    if (inconsistent.length) {
+    if (entryFieldsWithInconsistentTypes.length) {
       this.updateService.simulatorUpdateFeedback(
         "danger",
         "Please fill in numbers for minimum, maximum and steps"
       );
     } else {
-      const copy = JSON.parse(JSON.stringify(this.smartRestInstruction));
-      const copy1 = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
+      const copySmartRestInstruction = JSON.parse(JSON.stringify(this.smartRestInstruction));
+      const copySmartRestSelectedConfig = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
 
-      const cmdQ = this.smartRESTService.generateSmartRestRequest(
+      const smartRestCommandQueue = this.smartRESTService.generateSmartRestRequest(
         smartRestInstructionsArray,
         this.smartRestSelectedConfig
       );
-      console.log('cmdQ: ', cmdQ);
       let indexed = this.simSettingsService.indexedCommandQueue;
-      console.log('indexed: ', indexed);
       const index = this.allInstructionsSeries.length.toString();
-      console.log('index: ', index);
       const combinedSmartInstruction: SeriesInstruction = {
-        instruction: copy,
+        instruction: copySmartRestInstruction,
         type: InstructionCategory.SmartRest,
-        config: copy1,
+        config: copySmartRestSelectedConfig,
         index: index,
         option: this.smartRestOption
       };
-      console.log('Combined smart instruction: ', combinedSmartInstruction);
+      
       this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
-      const indexedCmdQ = cmdQ.map((entry) => ({
+      const indexedCmdQ = smartRestCommandQueue.map((entry) => ({
         ...entry,
         index: index,
       })) as IndexedCommandQueueEntry[];
@@ -260,7 +257,6 @@ export class SimSettingsComponent implements OnInit {
             type: "success",
           } as Alert;
           this.alertService.add(alert);
-          // this.allInstructionsSeries = res.c8y_Series;
           this.allSeriesEmitter.emit(res.c8y_Series);
           this.simSettingsService.allInstructionsArray = res.c8y_Series;
           Object.entries(this.smartRestInstruction).forEach(([key, value]) => {
@@ -274,10 +270,8 @@ export class SimSettingsComponent implements OnInit {
           );
           this.simSettingsService.resetUsedArrays();
           this.smartRestInstruction = {};
-          // this.smartRestInstructionsArray = [];
           this.selectedConfig = "";
           this.isSmartRestSelected = false;
-          // this.allInstructionsSeries = [];
         });
     }
   }

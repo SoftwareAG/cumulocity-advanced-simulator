@@ -1,11 +1,11 @@
 .transparent {
-    background-color: Transparent;
-    background-repeat: no-repeat;
-    border: none;
-    cursor: pointer;
-    overflow: hidden;
-    outline: none;
-  }
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
 
 .settings {
   height: 100%;
@@ -27,7 +27,33 @@
   margin: 3px;
 }
 
+.wizard-styling {
+  position: absolute;
+  width: 650px;
+  left: 50%;
+  top: 23px;
+  height: 5px;
+  background: #bbb;
+  margin-left: -325px;
+}
 
+.series-list {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 5px;
+}
+
+.series-item {
+  display: flex;
+  float: left;
+  padding: 5px;
+  margin: 5px;
+}
+
+.details-popover {
+  display: flex;
+  flex-direction: column;
+}
 
 .series-header {
   margin-top: 20px;
@@ -40,22 +66,23 @@
   float: right;
 }
 
-.main-div{
+.main-div {
   height: 70vh;
-  position:relative;
+  position: relative;
 }
 
-#grabber{
+#grabber {
   position: absolute;
-  left:13px;
+  left: 13px;
   width: calc(100% - 42px);
   box-shadow: rgb(204, 204, 204) 0px 0px 4px;
   height: 20px;
-  content: '';
+  content: "";
   cursor: s-resize;
   overflow: hidden;
   background-color: #fff;
-  background-image: url('https://cdn.sstatic.net/Sites/stackoverflow/img/sprites.svg'),none;
+  background-image: url("https://cdn.sstatic.net/Sites/stackoverflow/img/sprites.svg"),
+    none;
   background-position: 50% -359px;
   background-size: initial;
   background-repeat: no-repeat;
@@ -63,106 +90,110 @@
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+.maintain-simulator {
+  margin-top: 150px;
+  margin-bottom: 1000px;
+}
 
-.wizard{
-  position:relative;
-  text-align:center;
+.wizard {
+  position: relative;
+  text-align: center;
   display: inline-block;
-  left:22vw;
-  width:1000px;
-  cursor:pointer;
+  left: 22vw;
+  width: 1000px;
+  cursor: pointer;
 }
-.clickable{
-  cursor:pointer;
-}
-
-.disabled div{
-  color:#aaa !important;
+.clickable {
+  cursor: pointer;
 }
 
-.wizard-item, .wizard-item-disabled, .wizard-item-success {
+.disabled div {
+  color: #aaa !important;
+}
+
+.wizard-item,
+.wizard-item-disabled,
+.wizard-item-success {
   display: inline-block;
-  margin:10px 20px 10px 20px;
-  width:180px;
-  color:#000;
+  margin: 10px 20px 10px 20px;
+  width: 180px;
+  color: #000;
   vertical-align: top;
 }
 
-.wizard-item-disabled{
-  color:#aaa;
+.wizard-item-disabled {
+  color: #aaa;
 }
 
 @keyframes rotate-animation {
   0% {
-    transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-    transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 @keyframes rotate-animation-inverse {
   0% {
-    transform:rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-    transform:rotate(-360deg);
+    transform: rotate(-360deg);
   }
 }
 
 .circle {
-  position:relative;
-  width:30px;
-  height:30px;
+  position: relative;
+  width: 30px;
+  height: 30px;
   border-style: dashed;
   border-radius: 50%;
   text-align: center;
   margin: 0px auto;
   box-shadow: 0px 0px 7px #aaa;
-  font-weight:bold;
+  font-weight: bold;
   background: #1776bf;
   border-color: #fff;
-  color:#fff;
+  color: #fff;
   font-size: 1em;
   font-weight: bold;
   line-height: 25px;
 }
-.wizard-item-disabled .circle{
+.wizard-item-disabled .circle {
   background: #bbb;
-  color:#333;
+  color: #333;
   border-color: #fff;
 }
 
-.wizard-item-success .circle{
+.wizard-item-success .circle {
   background: rgb(72, 221, 97);
-  color:#333;
+  color: #333;
   border-color: rgb(150, 255, 167);
 }
 
-.circle-animate .circle{
+.circle-animate .circle {
   animation: rotate-animation 8s infinite linear;
 }
-.circle-animate .circle span{
-  display:inline-block;
+.circle-animate .circle span {
+  display: inline-block;
   animation: rotate-animation-inverse 8s infinite linear;
 }
 
-
-
-.heartbeat :hover{
-	-webkit-animation: none;
-	        animation: none;
+.heartbeat :hover {
+  -webkit-animation: none;
+  animation: none;
 }
 .heartbeat {
-  cursor:pointer;
-	-webkit-animation: heartbeat 1.5s ease-in-out infinite both;
-	        animation: heartbeat 1.5s ease-in-out infinite both;
+  cursor: pointer;
+  -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
+  animation: heartbeat 1.5s ease-in-out infinite both;
 }
 
 /* ----------------------------------------------
@@ -180,68 +211,68 @@
 @-webkit-keyframes heartbeat {
   from {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     -webkit-transform-origin: center center;
-            transform-origin: center center;
+    transform-origin: center center;
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
   10% {
     -webkit-transform: scale(0.91);
-            transform: scale(0.91);
+    transform: scale(0.91);
     -webkit-animation-timing-function: ease-in;
-            animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
   }
   17% {
     -webkit-transform: scale(0.98);
-            transform: scale(0.98);
+    transform: scale(0.98);
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
   33% {
     -webkit-transform: scale(0.87);
-            transform: scale(0.87);
+    transform: scale(0.87);
     -webkit-animation-timing-function: ease-in;
-            animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
   }
   45% {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
 }
 @keyframes heartbeat {
   from {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     -webkit-transform-origin: center center;
-            transform-origin: center center;
+    transform-origin: center center;
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
   10% {
     -webkit-transform: scale(0.91);
-            transform: scale(0.91);
+    transform: scale(0.91);
     -webkit-animation-timing-function: ease-in;
-            animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
   }
   17% {
     -webkit-transform: scale(0.98);
-            transform: scale(0.98);
+    transform: scale(0.98);
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
   33% {
     -webkit-transform: scale(0.87);
-            transform: scale(0.87);
+    transform: scale(0.87);
     -webkit-animation-timing-function: ease-in;
-            animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
   }
   45% {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
     -webkit-animation-timing-function: ease-out;
-            animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
   }
 }
