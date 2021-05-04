@@ -30,7 +30,7 @@
                   <!-- Custom validation for type number -->
                   <em class="custom-validation"
                     *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
-                    <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                    <i c8yIcon="exclamation-circle" class="validation-icon"></i>&nbsp;&nbsp;
                     <div> Please enter a number </div>
                   </em>
                   <!-- ------------------------------ -->
@@ -41,7 +41,7 @@
           <div class="row" style="text-align:right;">
             <div class="col-xs-12">
               <button title="Add sleep" *ngIf="commandQueueEntryIndex && displayEditView" class="btn btn-default"
-                (click)="onDuplicateInstruction()" style="display:inline-block;margin-right:5px;">
+                (click)="onDuplicateInstruction()" class="duplicate-btn">
                 <i class="fa fa-copy"></i> Duplicate {{defaultConfig[i]}}
               </button>
 
@@ -125,7 +125,7 @@
                 <!-- Custom validation for type number -->
                 <em class="custom-validation"
                   *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)">
-                  <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+                  <i c8yIcon="exclamation-circle" class="validation-icon"></i>&nbsp;&nbsp;
                   <div> Please enter a number </div>
                 </em>
                 <!-- ------------------------------ -->
@@ -159,7 +159,7 @@
             />
             <!-- Custom validation for type number -->
             <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path] && !(smartRestInstruction[entry.path] | isNumber)">
-              <i c8yIcon="exclamation-circle" style="color:#E0000E; font-size: medium;"></i>&nbsp;&nbsp;
+              <i c8yIcon="exclamation-circle" class="validation-icon"></i>&nbsp;&nbsp;
               <div> Please enter a number </div></em>
               <!-- -------------------------------- -->
               </div>
