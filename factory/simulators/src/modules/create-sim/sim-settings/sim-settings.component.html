@@ -1,5 +1,19 @@
 <h3>Create / Edit a Series of Instructions</h3>
 <br>
+<c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
+  <div class="display:flex; flex-direction: row;">
+  <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
+    <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }}
+  </button>
+</div>
+</c8y-action-bar-item>
+<c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
+  <div class="display:flex; flex-direction: row;">
+  <button class="btn btn-link" (click)="downloadSimulator()">
+    <i c8yIcon="file-text"></i>&nbsp; {{ 'Export' | translate }}
+  </button>
+</div>
+</c8y-action-bar-item>
 <div class="card" [style.background]="selectedColor">
   <div class="card-header separator">
     <ng-container *ngTemplateOutlet="header; context: templateCtx"></ng-container>

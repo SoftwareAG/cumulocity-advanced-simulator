@@ -40,6 +40,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { InstructionTypePipe } from "./src/shared/instructionType.pipe";
 import { BulkUpdatesComponent } from "@modules/bulk-updates/bulk-updates.component";
+import { SimulatorFileUploadDialog } from "@modules/create-sim/sim-settings/simulator-file-upload-dialog";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -107,6 +108,7 @@ const appRoutes: Routes = [
     CountPipe,
     IsNumberPipe,
     InstructionTypePipe,
+    SimulatorFileUploadDialog
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -123,7 +125,8 @@ const appRoutes: Routes = [
     SupportedOperationsComponent, 
     CustomOperationComponent,
     SeriesItemComponent,
-    SeriesListComponent
+    SeriesListComponent,
+    SimulatorFileUploadDialog
   ],
   providers: [ThemeService],
 

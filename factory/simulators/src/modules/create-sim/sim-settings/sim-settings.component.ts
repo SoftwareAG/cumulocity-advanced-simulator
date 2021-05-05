@@ -42,7 +42,11 @@ import { CustomSimulator } from "@models/simulator.model";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { InstructionService } from "@services/Instruction.service";
 import { FormBuilder } from "@angular/forms";
+import { BsModalService } from "ngx-bootstrap/modal";
 import * as _ from "lodash";
+import { SimulatorFileUploadDialog } from "./simulator-file-upload-dialog";
+import { Subscription } from "rxjs";
+import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -74,8 +78,10 @@ export class SimSettingsComponent implements OnInit {
   selected = { entryName: "", selected: false };
   validationInstruction: Partial<SeriesInstruction> = {};
   disableBtn = true;
-  smartRestOption = 'linear';
-  measurementOption = 'linear';
+  smartRestOption = "linear";
+  measurementOption = "linear";
+  subscriptions: Subscription[] = [];
+  importUrl;
 
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
@@ -96,6 +102,8 @@ export class SimSettingsComponent implements OnInit {
     private alertService: AlertService,
     private updateService: ManagedObjectUpdateService,
     private instructionService: InstructionService,
+    private modalService: BsModalService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {}
@@ -147,19 +155,19 @@ export class SimSettingsComponent implements OnInit {
       this.simSettingsService.pushToInstructionsArray({
         ...insVal,
         index: assignedIndex,
-        option: this.measurementOption
+        option: this.measurementOption,
       } as SeriesInstruction);
       this.generateRequest();
     }
   }
 
   generateRequest() {
-    this.instructionValue['scalingOption'] = this.measurementOption;
+    this.instructionValue["scalingOption"] = this.measurementOption;
     this.simSettingsService.randomSelected =
       this.instructionValue.type === "Measurement" &&
       this.instructionValue.scalingOption
         ? this.instructionValue.scalingOption
-        : 'linear';
+        : "linear";
     let asdkoas = this.simSettingsService.generateInstructions();
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = asdkoas;
     console.log(asdkoas);
@@ -169,7 +177,10 @@ export class SimSettingsComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        this.updateService.simulatorUpdateFeedback('success', `${this.instructionValue.type} series has been added successfully.`)
+        this.updateService.simulatorUpdateFeedback(
+          "success",
+          `${this.instructionValue.type} series has been added successfully.`
+        );
         Object.keys(this.instructionValue).forEach(
           (key) => (this.instructionValue[key] = "")
         );
@@ -179,7 +190,7 @@ export class SimSettingsComponent implements OnInit {
         );
         this.simSettingsService.resetUsedArrays();
         this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
-        this.selectedColor = '#fff';
+        this.selectedColor = "#fff";
       });
   }
 
@@ -199,19 +210,42 @@ export class SimSettingsComponent implements OnInit {
     console.log(this.selectedColor);
   }
 
+  openSimulatorUploadFileDialog() {
+    const modal = this.modalService.show(SimulatorFileUploadDialog);
+    // modal.content.device = this.device;
+    this.subscriptions.push(
+      modal.content.closeSubject.subscribe((result: any) => {
+        if (result) {
+          // this.uploadedSignalFiles.push(result);
+          const fileType = result.name;
+          // this.signalDataImportService.createOperationAndNotify(result.id, this.device.id, fileType);
+          console.log("filename: ", fileType);
+        }
+        // this.signalModalUnsubscribe();
+      })
+    );
+  }
+
+  downloadSimulator() {
+    const data = 'some-text';
+    const blob = new Blob([data as BlobPart], { type: 'application/octet-stream' });
+    this.importUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+  }
+
   saveSmartRestTemplateToCommandQueue() {
-    this.smartRESTService.smartRestOption = this.smartRestOption != '' ? this.smartRestOption : 'linear';
+    this.smartRESTService.smartRestOption =
+      this.smartRestOption != "" ? this.smartRestOption : "linear";
     let smartRestInstructionsArray = this.smartRESTService.convertToSmartRestModel(
       this.smartRestInstruction,
       this.smartRestSelectedConfig
     );
     let entryFieldsWithInconsistentTypes = [];
-    const entriesWithMinMaxOrSteps = Object.keys(this.smartRestInstruction).filter((entry) =>
-      entry.includes("_min" || "_max" || "steps")
-    );
+    const entriesWithMinMaxOrSteps = Object.keys(
+      this.smartRestInstruction
+    ).filter((entry) => entry.includes("_min" || "_max" || "steps"));
     if (entriesWithMinMaxOrSteps.length) {
-      entryFieldsWithInconsistentTypes = entriesWithMinMaxOrSteps.filter((entry) =>
-        isNaN(Number(this.smartRestInstruction[entry]))
+      entryFieldsWithInconsistentTypes = entriesWithMinMaxOrSteps.filter(
+        (entry) => isNaN(Number(this.smartRestInstruction[entry]))
       );
     }
 
@@ -221,8 +255,12 @@ export class SimSettingsComponent implements OnInit {
         "Please fill in numbers for minimum, maximum and steps"
       );
     } else {
-      const copySmartRestInstruction = JSON.parse(JSON.stringify(this.smartRestInstruction));
-      const copySmartRestSelectedConfig = JSON.parse(JSON.stringify(this.smartRestSelectedConfig));
+      const copySmartRestInstruction = JSON.parse(
+        JSON.stringify(this.smartRestInstruction)
+      );
+      const copySmartRestSelectedConfig = JSON.parse(
+        JSON.stringify(this.smartRestSelectedConfig)
+      );
 
       const smartRestCommandQueue = this.smartRESTService.generateSmartRestRequest(
         smartRestInstructionsArray,
@@ -235,9 +273,9 @@ export class SimSettingsComponent implements OnInit {
         type: InstructionCategory.SmartRest,
         config: copySmartRestSelectedConfig,
         index: index,
-        option: this.smartRestOption
+        option: this.smartRestOption,
       };
-      
+
       this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
       const indexedCmdQ = smartRestCommandQueue.map((entry) => ({
         ...entry,

@@ -5,7 +5,7 @@
   <input *ngIf="editMode" [(ngModel)]="simulatorTitle"  (focusout)="editSimulatorTitle()">&nbsp;&nbsp;
   <i c8yIcon="edit" style="font-size: small;" (click)="editMode=true"></i>
 </c8y-title>
-  <c8y-action-bar-item [placement]="'left'">
+  <c8y-action-bar-item [itemClass]="'btn-group'" [placement]="'left'">
     <button class="btn btn-link" (click)="changeRouteLastSite()">
       <i c8yIcon="arrow-circle-left"></i>
       All Simulators

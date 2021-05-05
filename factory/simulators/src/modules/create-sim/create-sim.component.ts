@@ -342,10 +342,10 @@ export class CreateSimComponent implements OnInit {
 
     this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
       const moId = res.id;
-      this.backend.connectToSimulatorsBackend(
-        this.mo.c8y_DeviceSimulator,
-        moId
-      );
+      // this.backend.connectToSimulatorsBackend(
+      //   this.mo.c8y_DeviceSimulator,
+      //   moId
+      // );
       this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
     });
   }
