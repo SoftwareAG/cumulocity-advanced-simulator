@@ -23,6 +23,15 @@ export interface DeviceSimulator extends IManagedObject {
   };
 }
 
+export interface C8YDeviceSimulator {
+  id: string;
+  instances?: number;
+  name: string;
+  state: string;
+  commandQueue?: CommandQueueEntry[],
+  c8y_SupportedOperations: string[] 
+}
+
 export interface CustomSimulator extends IManagedObject {
   type?: string;
   id: string;

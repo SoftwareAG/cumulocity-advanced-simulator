@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { InventoryService } from "@c8y/ngx-components/api";
 import { Subject } from "rxjs";
-import { IManagedObject } from "@c8y/client";
 import {
   CustomSimulator,
-  DeviceSimulator,
-  SimulatorModel,
 } from "src/models/simulator.model";
 import { Router } from "@angular/router";
+import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
+import { SimulatorsServiceService } from "@services/simulatorsService.service";
 export interface ILabels {
   ok?: string;
   cancel?: string;
@@ -49,10 +48,8 @@ export class SimulatorConfigComponent implements OnInit {
       commandQueue: [],
       c8y_SupportedOperations: [],
     },
-    c8y_CustomSim: {
-    },
-    c8y_Series: [],
-    c8y_Indices: []
+    c8y_additionals: [],
+    c8y_Series: []
   };
   public labels: ILabels = {
     ok: "Save",
@@ -60,7 +57,9 @@ export class SimulatorConfigComponent implements OnInit {
   };
   constructor(
     private inventoryService: InventoryService,
-    private router: Router
+    private router: Router,
+    private backendService: SimulatorsBackendService,
+    private simulatorService: SimulatorsServiceService
   ) {}
 
   ngOnInit() {}
@@ -68,10 +67,22 @@ export class SimulatorConfigComponent implements OnInit {
   saveSimulatorDetails() {
     this.simModel.c8y_DeviceSimulator.name = this.simulatorTitle;
     this.simModel.name = this.simulatorTitle;
-    this.inventoryService.create(this.simModel).then((result) => {
-      console.log(result);
-      const simulatorId = result.data.id;
-      this.router.navigate(["/createSim/" + simulatorId]);
+    this.backendService.createSimulator(this.simModel.c8y_DeviceSimulator).then((result) => {
+      const simulator = {
+        type: "c8y_DeviceSimulator",
+        owner: "service_device-simulator",
+        name: result.name,
+        c8y_CustomSim: {},
+        id: result.id,
+        c8y_DeviceSimulator: result,
+        c8y_additionals: [],
+        c8y_Series: [],
+      }
+      this.addCustomSimulatorProperties(simulator).then((res) => {
+        
+        this.router.navigate(["/createSim/" + result.id]);
+        console.log('CustomSim Created here: ', res);
+      });
     });
   }
 
@@ -81,5 +92,9 @@ export class SimulatorConfigComponent implements OnInit {
 
   onClose(event) {
     this.closeSubject.next(event);
+  }
+
+  addCustomSimulatorProperties(simulator: Partial<CustomSimulator>) {
+    return this.simulatorService.updateSimulatorManagedObject(simulator);
   }
 }

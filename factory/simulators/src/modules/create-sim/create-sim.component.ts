@@ -337,16 +337,17 @@ export class CreateSimComponent implements OnInit {
         }
       }, 1000);
     }
-    this.mo.c8y_DeviceSimulator.state =
-      this.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
+    this.updateService.mo.c8y_DeviceSimulator.state =
+      this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
 
-    this.simService.updateSimulatorManagedObject(this.mo).then((res) => {
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const moId = res.id;
-      // this.backend.connectToSimulatorsBackend(
-      //   this.mo.c8y_DeviceSimulator,
-      //   moId
-      // );
-      this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
+      console.log('MO: ', this.updateService.mo);
+      this.backend.connectToSimulatorsBackend(
+        this.updateService.mo.c8y_DeviceSimulator,
+        moId
+      );
+      this.simulatorRunning = this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING";
     });
   }
   openSimulatorInDevmanagement() {}
