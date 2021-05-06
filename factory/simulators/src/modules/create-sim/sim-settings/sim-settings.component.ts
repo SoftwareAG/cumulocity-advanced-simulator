@@ -227,8 +227,11 @@ export class SimSettingsComponent implements OnInit {
   }
 
   downloadSimulator() {
-    const data = 'some-text';
-    const blob = new Blob([data as BlobPart], { type: 'application/octet-stream' });
+    const {id, ...nonId} = this.updateService.mo.c8y_DeviceSimulator;
+    let simulatorToImport = (({type, owner, name, c8y_CustomSim, c8y_additionals, c8y_Series}) => ({type, owner, name, c8y_CustomSim, c8y_additionals, c8y_Series})) (this.updateService.mo);
+    simulatorToImport['c8y_DeviceSimulator'] = nonId;
+    const simulator = JSON.stringify(simulatorToImport);
+    const blob = new Blob([simulator as BlobPart], { type: 'application/octet-stream' });
     this.importUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
 
