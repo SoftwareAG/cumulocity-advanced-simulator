@@ -1,12 +1,57 @@
 .list-item {
-    margin-bottom: 3px;
-    min-height: 55px;
-    border-radius: 5px;
-    cursor: move;
+  margin-bottom: 3px;
+  min-height: 55px;
+  border-radius: 5px;
+  cursor: move;
 }
 
 .copy-item {
-    width: 30px;
-    height: 30px;
-    float: inline-end;
+  width: 30px;
+  height: 30px;
+  float: inline-end;
+}
+
+.field-scaling-options {
+  max-width: 200px;
+
+  select {
+    width: 100%;
+  }
+}
+
+.button-update {
+  flex: 0 0 auto;
+  margin: 24px 12px;
+}
+
+.button-update[disabled] {
+  background-color: #efefef;
+  color: #ccc;
+  border-color: #ccc;
+}
+
+.row > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.row {
+  h4 {
+    flex: 0 0 120px;
+  }
+
+  .form-fields {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .field {
+    flex: 1 1 auto;
+    margin: 0 12px;
+  }
+
+  .dropdown {
+    flex: 0 0 auto;
+  }
 }
