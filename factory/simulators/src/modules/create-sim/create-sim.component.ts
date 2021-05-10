@@ -126,8 +126,7 @@ export class CreateSimComponent implements OnInit {
 
     this.allInstructionsSeries = this.mo.c8y_Series;
     let additionals: AdditionalParameter[] = this.mo.c8y_additionals;
-    this.simSettings.setIndexedCommandQueue(this.simSettings.createIndexedCommandQueue(additionals, this.allInstructionsSeries, MOCommandQueue));
-    this.simSettings.setIndexedCommandQueueUpdate();
+    this.indexedCommandQueue = this.simSettings.createIndexedCommandQueue(additionals, this.allInstructionsSeries, MOCommandQueue);
     console.info(this.indexedCommandQueue, additionals, this.commandQueue);
     this.simSettings.setCommandQueue(this.commandQueue);
     this.simSettings.setIndexedCommandQueue(this.indexedCommandQueue);

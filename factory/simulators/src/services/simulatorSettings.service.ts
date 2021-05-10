@@ -191,6 +191,7 @@ export class SimulatorSettingsService {
 
   setIndexedCommandQueue(newIndexedCommandQueue: IndexedCommandQueueEntry[]) {
     this.indexedCommandQueue = newIndexedCommandQueue;
+    this.setIndexedCommandQueueUpdate();
   }
 
   removeIndices(

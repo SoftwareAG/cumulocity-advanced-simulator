@@ -118,8 +118,6 @@ export class SimulatorFileUploadDialog {
                       console.log('idx:: ', indexedCommandQueue);
                       this.simSettingsService.setIndexedCommandQueue(indexedCommandQueue);
                       this.simSettingsService.setAllInstructionsSeries(res2.c8y_Series);
-                      this.simSettingsService.setInstructionsUpdate();
-                      this.simSettingsService.setIndexedCommandQueueUpdate();
                     });
                 });
             });
