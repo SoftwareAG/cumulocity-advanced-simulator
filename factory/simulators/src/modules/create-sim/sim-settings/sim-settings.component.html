@@ -161,6 +161,7 @@
       <br>
       <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
+          <ng-container *ngIf="entry.value === null">
           <div [hidden]="entry | isValue"> 
             <label class="text-truncate" [title]="entry.path">{{ entry.path }}</label>
             <input
@@ -203,6 +204,7 @@
                     <!-- -------------------------------- -->
               </div>
             </div>
+          </ng-container>
           </ng-container>
          
         </div>

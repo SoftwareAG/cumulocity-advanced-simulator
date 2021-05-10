@@ -126,24 +126,11 @@ export class CreateSimComponent implements OnInit {
 
     this.allInstructionsSeries = this.mo.c8y_Series;
     let additionals: AdditionalParameter[] = this.mo.c8y_additionals;
-      if(additionals){
-        additionals.forEach((element) => {
-          let color = '#fff';
-          if (element.index != 'single'){
-            color = this.allInstructionsSeries[ (+element.index) ].color;
-          }
-          element.color = color;
-        });
-        MOCommandQueue.forEach((element, index) => { 
-          this.indexedCommandQueue.push( {...element, ...additionals[index]} as IndexedCommandQueueEntry);
-        });
-      }
+    this.indexedCommandQueue = this.simSettings.createIndexedCommandQueue(additionals, this.allInstructionsSeries, MOCommandQueue);
     console.info(this.indexedCommandQueue, additionals, this.commandQueue);
     this.simSettings.setCommandQueue(this.commandQueue);
     this.simSettings.setIndexedCommandQueue(this.indexedCommandQueue);
     this.filteredInstructionsSeries = this.allInstructionsSeries;
-    console.log("All Instructions series: ", this.allInstructionsSeries);
-    console.log("Filtered Series: ", this.filteredInstructionsSeries);
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
     this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
     console.error("running", this.simulatorRunning);

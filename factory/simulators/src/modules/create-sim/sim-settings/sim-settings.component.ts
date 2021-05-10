@@ -212,16 +212,12 @@ export class SimSettingsComponent implements OnInit {
 
   openSimulatorUploadFileDialog() {
     const modal = this.modalService.show(SimulatorFileUploadDialog);
-    // modal.content.device = this.device;
     this.subscriptions.push(
       modal.content.closeSubject.subscribe((result: any) => {
         if (result) {
-          // this.uploadedSignalFiles.push(result);
           const fileType = result.name;
-          // this.signalDataImportService.createOperationAndNotify(result.id, this.device.id, fileType);
-          console.log("filename: ", fileType);
+          // const data = 
         }
-        // this.signalModalUnsubscribe();
       })
     );
   }

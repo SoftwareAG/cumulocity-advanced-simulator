@@ -70,6 +70,7 @@ export class SmartRESTService {
           vals.push(temp.toString());
         }
       } else {
+        console.log('instr vals ype string: ', instruction);
         vals.push(...this.fillArray(instruction.value, instruction.steps));
       }
       this.values.push(vals);
