@@ -3,7 +3,7 @@
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="display:flex; flex-direction: row;">
   <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
-    <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }}
+    <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br> Simulator
   </button>
 </div>
 </c8y-action-bar-item>
@@ -11,7 +11,7 @@
   <div class="display:flex; flex-direction: row;">
     <a [href]="importUrl" download="Simulator_To_Import.txt">
   <button class="btn btn-link" (click)="downloadSimulator()">
-    <i c8yIcon="file-text"></i>&nbsp; {{ 'Export' | translate }}
+    <i c8yIcon="file-text"></i>&nbsp; {{ 'Export'| translate }} <br> Simulator
   </button>
 </a>
 </div>
