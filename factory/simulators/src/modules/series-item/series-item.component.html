@@ -38,7 +38,10 @@
     </div>
   </header>
 
-  <div class="body">
+  <div
+    class="body"
+    [ngClass]="{ 'smart-rest': selectedSeries.type == 'SmartRest' }"
+  >
     <div class="form-fields">
       <ng-container
         *ngIf="
@@ -113,7 +116,7 @@
         </ng-container>
 
         <ng-template #smartRestForm>
-          <div>
+          <div class="field">
             <label class="text-truncate" [title]="entry.label">{{
               entry.label
             }}</label>
