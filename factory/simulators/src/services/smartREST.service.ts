@@ -48,7 +48,7 @@ export class SmartRESTService {
     commandQueueEntry.templateId = smartRESTTemplate.templateId;
     return commandQueueEntry;
   }
-
+  
   generateSmartRestRequest(
     smartRestInstructionArray: SmartRestInstruction[],
     smartRESTTemplate: SmartRest
@@ -59,16 +59,13 @@ export class SmartRESTService {
       let vals = [];
       const steps = instruction.steps;
       if (instruction.minValue && instruction.maxValue) {
-        for (let { temp, index } of this.helperService
+        vals = this.helperService
           .scaleTest(
-            parseInt(instruction.minValue),
-            parseInt(instruction.maxValue),
-            parseInt(instruction.steps),
+            +instruction.minValue,
+            +instruction.maxValue,
+            +instruction.steps,
             this.smartRestOption
-          )
-          .map((temp, index) => ({ temp, index }))) {
-          vals.push(temp.toString());
-        }
+          ).map((temp) => (Math.round(temp*10000)/10000).toString());
       } else {
         vals.push(...this.fillArray(instruction.value, instruction.steps));
       }
@@ -125,31 +122,30 @@ export class SmartRESTService {
     smartRestSelectedConfig
   ): SmartRestInstruction[] {
     const smartRestInstructionArray: SmartRestInstruction[] = [];
-    smartRestSelectedConfig.smartRestFields.customValues.forEach(
-      (customValue) => {
-        let obj: SmartRestInstruction = {
-          value: "",
-          steps: "",
-          type: InstructionCategory.SmartRest,
-        };
-        Object.entries(smartRestData).forEach(([key, value]) => {
-          if (key === customValue.path) {
-            obj.value = value as string;
-          } else if (key === customValue.path + "_max") {
-            obj.maxValue = value as string;
-            obj.isNumber = true;
-          } else if (key === customValue.path + "_min") {
-            obj.minValue = value as string;
-            obj.isNumber = true;
-          } else if (key === "steps") {
-            obj.steps = value as string;
-            obj.isNumber = true;
-          }
-        });
+    for (let customValue of smartRestSelectedConfig.smartRestFields.customValues) {
+      if(customValue.value){ continue; }
+      let obj: SmartRestInstruction = {
+        value: "",
+        steps: "",
+        type: InstructionCategory.SmartRest,
+      };
+      Object.entries(smartRestData).forEach(([key, value]) => {
+        if (key === customValue.path) {
+          obj.value = value as string;
+        } else if (key === customValue.path + "_max") {
+          obj.maxValue = value as string;
+          obj.isNumber = true;
+        } else if (key === customValue.path + "_min") {
+          obj.minValue = value as string;
+          obj.isNumber = true;
+        } else if (key === "steps") {
+          obj.steps = value as string;
+          obj.isNumber = true;
+        }
+      });
 
-        smartRestInstructionArray.push(obj as SmartRestInstruction);
-      }
-    );
+      smartRestInstructionArray.push(obj as SmartRestInstruction);
+    }
     return smartRestInstructionArray;
   }
 }

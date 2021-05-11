@@ -158,8 +158,37 @@
       <ng-container *ngIf="isSmartRestSelected">
       <br>
       <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
+        <ng-container>
+          <div class="col-xs-6">
+            <label class="text-truncate" [title]="'for_all.minimum'">{{ 'Minimum for all values' }}</label>
+            <input id="{{ 'id_for_all.minimum' }}" [(ngModel)]="smartRestAllValues['minimum']" (change)="changeAllSmartRestValues()" class="form-control"
+              placeholder="minimum" />
+          </div>
+          <div class="col-xs-6">
+            <label class="text-truncate" [title]="'for_all.maximum'">{{ 'Maximum for all values' }}</label>
+            <input id="{{ 'id_for_all.maximum' }}" [(ngModel)]="smartRestAllValues['maximum']" (change)="changeAllSmartRestValues()" class="form-control"
+              placeholder="maximum" />
+          </div>
+          <div class="col-xs-6">
+            <label class="text-truncate" [title]="'for_all.minIncrement'">{{ 'Minimum Incrementation *Optional' }}</label>
+            <input id="{{ 'id_for_all.minIncrement' }}" [(ngModel)]="smartRestAllValues['minIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
+              placeholder="unit" />
+          </div>
+          <div class="col-xs-6">
+            <label class="text-truncate" [title]="'for_all.maxIncrement'">{{ 'Maximum Incrementation *Optional' }}</label>
+            <input id="{{ 'id_for_all.maxIncrement' }}" [(ngModel)]="smartRestAllValues['maxIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
+              placeholder="unit" />
+          </div>
+          <div class="col-xs-6">
+            <label class="text-truncate" [title]="'for_all.unit'">{{ 'Unit for all values' }}</label>
+            <input id="{{ 'id_for_all.unit' }}" [(ngModel)]="smartRestAllValues['unit']" (change)="changeAllSmartRestValues()" class="form-control"
+              placeholder="unit" />
+          </div>
+        
+        </ng-container>
+        <br>
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
-          <div [hidden]="entry | isValue"> 
+          <div [hidden]="entry | isValue" *ngIf="entry.value == null"> 
             <label class="text-truncate" [title]="entry.path">{{ entry.path }}</label>
             <input
               id="{{id + entry.path }}"
@@ -173,11 +202,10 @@
               <div class="col-xs-6">
                 <label class="text-truncate" [title]="entry.path+'.minimum'">{{ entry.path +'.minimum'}}</label>
                 <input
-                id="{{ id + entry.path + '_min'}}"
-                [required]="true"
-                [(ngModel)]="smartRestInstruction[entry.path+'_min']"
-                class="form-control"
-                placeholder="minimum"
+                  id="{{ id + entry.path + '_min'}}"
+                  [(ngModel)]="smartRestInstruction[entry.path+'_min']"
+                  class="form-control"
+                  placeholder="minimum"
                 />
                 <!-- custom validation for type number -->
                 <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_min'] && !(smartRestInstruction[entry.path+'_min'] | isNumber)">
@@ -188,12 +216,11 @@
               <div class="col-xs-6">
                 <label class="text-truncate" [title]="entry.path+'.maximum'">{{ entry.path +'.maximum'}}</label>
                 <input
-                id="{{ id + entry.path + '_max'}}"
-                [required]="true"
-                [(ngModel)]="smartRestInstruction[entry.path+'_max']"
+                  id="{{ id + entry.path + '_max'}}"
+                  [(ngModel)]="smartRestInstruction[entry.path+'_max']"
                   class="form-control"
                   placeholder="maximum"
-                  />
+                />
                   <!-- custom validation for type number -->
                   <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_max'] && !(smartRestInstruction[entry.path+'_max'] | isNumber)">
                     <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;

@@ -56,7 +56,15 @@
     </div>
     <div class="card-block">
       Set a percentage in which ballpark you want to randomize values (only works on Measurements)
+      <br>
+      <select class="form-control select-config" [(ngModel)]="randomizeValueType">
+        <option>All</option>
+        <option>SmartRest</option>
+        <option>Measurements</option>
+      </select>
+      &nbsp;
       <input type="text" [(ngModel)]="saltValue" [disabled]="invalidSimulator" placeholder="Percentage %">&nbsp;
+      <br>
       <button (click)="addSomeSalt()" [disabled]="invalidSimulator" class="btn btn-primary">Randomize</button>
     </div>
   </div>

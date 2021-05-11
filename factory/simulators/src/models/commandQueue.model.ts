@@ -14,7 +14,7 @@ export interface IndexedCommandQueueEntry extends CommandQueueEntry, AdditionalP
 export interface AdditionalParameter {
     index: string;
     mirrored?: boolean;
-    deviation?: number;
+    deviation?: number[];
     color?: string;
 }
 
