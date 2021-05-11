@@ -35,7 +35,7 @@ import { SmartRESTService } from "@services/smartREST.service";
 @Component({
   selector: "app-series-item",
   templateUrl: "./series-item.component.html",
-  styleUrls: ["./series-item.component.less"],
+  styleUrls: ["./series-item.component.scss"],
 })
 export class SeriesItemComponent implements OnInit {
   selectedSeries: any;

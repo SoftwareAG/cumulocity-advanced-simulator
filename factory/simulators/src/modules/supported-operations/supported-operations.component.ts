@@ -10,7 +10,7 @@ import { CustomOperationComponent } from "./custom-operation/custom-operation.co
 @Component({
   selector: "app-supported-operations",
   templateUrl: "./supported-operations.component.html",
-  styleUrls: ["./supported-operations.component.less"],
+  styleUrls: ["./supported-operations.component.scss"],
 })
 export class SupportedOperationsComponent implements OnInit {
   data: any;

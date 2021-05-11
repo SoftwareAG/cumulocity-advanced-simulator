@@ -13,7 +13,7 @@ import { ThemeService } from 'ng2-charts';
 @Component({
   selector: 'app-show-instruction',
   templateUrl: './show-instruction.component.html',
-  styleUrls: ['./show-instruction.component.less']
+  styleUrls: ['./show-instruction.component.scss']
 })
 export class ShowInstructionComponent implements OnInit {
   @Input() mo;
