@@ -86,9 +86,11 @@ export class SimulatorSettingsService {
     
     this.measurementService.createUniqueMeasurementsArray();
     for (let value of this.measurementService.uniqueMeasurementsArray) {
-      for (const { temp, index } of this.helperService
-        .scaleTest(value.minValue, value.maxValue, value.steps, this.randomSelected)
-        .map((temp, index) => ({ temp, index }))) {
+
+
+      for (const { temp } of this.helperService
+        .scaleTest(+value.minValue, +value.maxValue, +value.steps, this.randomSelected)
+        .map((temp) => ({ temp }))) {
           // if else
           const instruction: Instruction = {
             fragment: value.fragment,
@@ -96,7 +98,7 @@ export class SimulatorSettingsService {
             unit: value.unit,
             color: value.color,
             type: InstructionCategory.Measurement,
-            value: temp
+            value: String(temp)
           };
           console.error("instr", instruction);
           

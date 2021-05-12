@@ -187,13 +187,18 @@ export class BulkUpdatesComponent implements OnInit {
     }
     return entry;
   }
+
   deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  randomInterval(min, max, maxDigits) {
-    let random = Math.random() * (max*100 - min*100 + 1) + min*100;
-    let powerOfDigits = Math.pow(10, maxDigits);
-    return Math.round(random * powerOfDigits) / powerOfDigits / 100;
+  randomInterval(min: number, max: number, maxDigits: number):number {
+    let random = (Math.random() * (max * 100 - min * 100 + 1) + min * 100) / 100;
+    return this.numberOfDigitsAfterComma(random, maxDigits);
+  }
+
+  numberOfDigitsAfterComma(input: number, maxDigits: number):number{
+    const powerOfDigits = Math.pow(10, maxDigits)
+    return Math.round(input * powerOfDigits) / powerOfDigits;
   }
 }
