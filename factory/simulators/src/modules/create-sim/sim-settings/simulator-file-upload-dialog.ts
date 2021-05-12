@@ -49,7 +49,6 @@ export class SimulatorFileUploadDialog {
     cancel: "Cancel",
   };
   public modalTitle: string = "Upload Simulator";
-  // @Input() device: Ship;
 
   files: File[];
   deviceSimulator: C8YDeviceSimulator;
@@ -76,52 +75,48 @@ export class SimulatorFileUploadDialog {
     };
     this.inventoryBinary.create(file, mo).then(
       (result) => {
-        this.inventory
-          .childAdditionsAdd(result.data.id, this.updateService.mo.id)
-          .then((res) => {
-            this.readFileContent(file).then((res) => {
-              const data = JSON.parse(res);
-              this.deviceSimulator = data.c8y_DeviceSimulator;
-              this.deviceSimulator.id = this.updateService.mo.id;
-              // const simulator: Partial<CustomSimulator> = {
-              //   type: "c8y_DeviceSimulator",
-              //   owner: "service_device-simulator",
-              //   name: this.updateService.mo.name,
-              //   c8y_CustomSim: {},
-              //   id: this.updateService.mo.id,
-              //   c8y_DeviceSimulator: this.deviceSimulator,
-              //   c8y_additionals: data.c8y_additionals,
-              //   c8y_Series: data.c8y_Series,
-              // }
-              let simulator: CustomSimulator = this.updateService.mo;
-              simulator.c8y_DeviceSimulator = this.deviceSimulator;
-              simulator.c8y_additionals = data.c8y_additionals;
-              simulator.c8y_Series = data.c8y_Series;
-              simulator.name = data.c8y_DeviceSimulator.name;
-              this.backend
-                .addCustomSimulatorProperties(simulator)
-                .then((res1) => {
-                  console.log("CustomSim Created here: ", res1);
-                  console.log("the original mo: ", this.updateService.mo);
-                  // simulator.id
-                  this.updateService.setManagedObject(simulator);
-                  this.updateService
-                    .updateSimulatorObject(simulator)
-                    .then((res2) => {
-                      // sim settings indexed command queue, command queue, instruction series
-                      let indexedCommandQueue: IndexedCommandQueueEntry[] = [];
-                      indexedCommandQueue = this.simSettingsService.createIndexedCommandQueue(
-                        res2.c8y_additionals,
-                        res2.c8y_Series,
-                        res2.c8y_DeviceSimulator.commandQueue
-                      );
-                      console.log('idx:: ', indexedCommandQueue);
-                      this.simSettingsService.setIndexedCommandQueue(indexedCommandQueue);
-                      this.simSettingsService.setAllInstructionsSeries(res2.c8y_Series);
-                    });
-                });
-            });
-          });
+        this.readFileContent(file).then((res) => {
+          const data = JSON.parse(res);
+          if (
+            this.instanceOfC8YDeviceSimulator(data.c8y_DeviceSimulator) &&
+            (file.name.endsWith(".txt") || file.name.endsWith(".json"))
+          ) {
+            this.deviceSimulator = data.c8y_DeviceSimulator;
+            this.deviceSimulator.id = this.updateService.mo.id;
+            let simulator: CustomSimulator = this.updateService.mo;
+            simulator.c8y_DeviceSimulator = this.deviceSimulator;
+            simulator.c8y_additionals = data.c8y_additionals;
+            simulator.c8y_Series = data.c8y_Series;
+            simulator.name = data.c8y_DeviceSimulator.name;
+            this.backend
+              .addCustomSimulatorProperties(simulator)
+              .then((res1) => {
+                this.updateService.setManagedObject(simulator);
+                this.updateService
+                  .updateSimulatorObject(simulator)
+                  .then((res2) => {
+                    // sim settings indexed command queue, command queue, instruction series
+                    let indexedCommandQueue: IndexedCommandQueueEntry[] = [];
+                    indexedCommandQueue = this.simSettingsService.createIndexedCommandQueue(
+                      res2.c8y_additionals,
+                      res2.c8y_Series,
+                      res2.c8y_DeviceSimulator.commandQueue
+                    );
+                    this.simSettingsService.setIndexedCommandQueue(
+                      indexedCommandQueue
+                    );
+                    this.simSettingsService.setAllInstructionsSeries(
+                      res2.c8y_Series
+                    );
+                  });
+              });
+          } else {
+            this.updateService.simulatorUpdateFeedback(
+              "danger",
+              "The uploaded simulator is invalid. Please upload a compatible file!"
+            );
+          }
+        });
       },
       (error) => {
         this.alertService.add({
@@ -157,5 +152,9 @@ export class SimulatorFileUploadDialog {
 
       reader.readAsText(file);
     });
+  }
+
+  instanceOfC8YDeviceSimulator(object: any): object is C8YDeviceSimulator {
+    return true;
   }
 }
