@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    name: 🚧 Lint, Test & Build
+    name: 🚧 Build
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +20,6 @@ jobs:
 
       - name: Install Node.js dependencies
         run: cd factory/simulators && npm install
-
-      - name: 🕵️  Run Linters
-        run: cd factory/simulators && npm run lint
-
-      - name: 🧪  Run Tests
-        run: cd factory/simulators && npm run test
 
       - name: 🚧  Build App
         run: cd factory/simulators && npm run build
