@@ -19,17 +19,13 @@ jobs:
           node-version: 12
 
       - name: Install Node.js dependencies
-        run: cd factory/simulators
-        run: npm install
+        run: cd factory/simulators && npm install
 
       - name: 🕵️  Run Linters
-        run: cd factory/simulators
         run: npm run lint
 
       - name: 🧪  Run Tests
-        run: cd factory/simulators
         run: npm run test
 
       - name: 🚧  Build App
-        run: cd factory/simulators
         run: npm run build
