@@ -1,12 +1,12 @@
-name: Develop Pull Request (CI)
+name: Develop Deploy After Merge (CD)
 
 on:
-  pull_request:
+  push:
     branches: [develop]
 
 jobs:
   deploy:
-    name: 🚧 Lint, Test & Build
+    name: 🚀 Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -21,11 +21,8 @@ jobs:
       - name: Install Node.js dependencies
         run: cd factory/simulators && npm install
 
-      - name: 🕵️‍♂️  Lint
-        run: cd factory/simulators && npm run-script lint --if-present
-
-      - name: 🧪  Test
-        run: cd factory/simulators && npm run test --if-present
-
       - name: 🚧  Build App
         run: cd factory/simulators && npm run build
+
+      - name: 🚀 Deploy
+        run: cd factory/simulators && npm run-script c8ycli deploy -u https://psfactory.eu-latest.cumulocity.com --user ${{ secrets.DEV_DEPLOY_USER }} --password ${{ secrets.DEV_DEPLOY_PASS }} ./dist/apps/simulators
