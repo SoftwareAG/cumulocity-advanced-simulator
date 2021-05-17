@@ -19,10 +19,16 @@ jobs:
           node-version: 12
 
       - name: Install Node.js dependencies
-        run: cd factory/simulators && npm install
+        run: |
+        cd factory/simulators
+        npm install
 
       - name: 🚧  Build App
-        run: cd factory/simulators && npm run build
+        run: |
+          cd factory/simulators
+          npm run build
 
       - name: 🚀 Deploy
-        run: cd factory/simulators && npm run-script c8ycli deploy -su https://psfactory.eu-latest.cumulocity.com -T ${{ secrets.DEV_DEPLOY_TENANT }} -U ${{ secrets.DEV_DEPLOY_USER }} -P ${{ secrets.DEV_DEPLOY_PASS }} ./dist/apps/simulators
+        run: |
+          cd factory/simulators
+          npm run-script c8ycli deploy -u "https://psfactory.eu-latest.cumulocity.com" -T ${{ secrets.DEV_DEPLOY_TENANT }} -U "${{ secrets.DEV_DEPLOY_USER }}"" -P "${{ secrets.DEV_DEPLOY_PASS }}"" ./dist/apps/simulators
