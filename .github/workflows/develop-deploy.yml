@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - shell: bash
+        env:
+          DEV_DEPLOY_USER: ${{ secrets.DEV_DEPLOY_USER }}
+          DEV_DEPLOY_TENANT: ${{ secrets.DEV_DEPLOY_TENANT }}
+          DEV_DEPLOY_PASS: ${{ secrets.DEV_DEPLOY_PASS }}
+
       - name: Check out Git repository
         uses: actions/checkout@v2
 
@@ -26,17 +32,9 @@ jobs:
       - name: 🚧  Build App
         run: |
           cd factory/simulators
-          npm run-script c8ycli build \
-          --app.key="advanced-simulator-dev" \
-          --app.name="Advanced Simulators DEV"  \
-          --app.contextPath="advanced-simulators-dev"
+          npm run-script c8ycli build --app.key="advanced-simulator-dev" --app.name="Advanced Simulators DEV" --app.contextPath="advanced-simulators-dev"
 
       - name: 🚀 Deploy
         run: |
           cd factory/simulators
-          npm run-script c8ycli deploy \
-          -u https://psfactory.eu-latest.cumulocity.com \
-          -T ${{ secrets.DEV_DEPLOY_TENANT }} \
-          -U "${{ secrets.DEV_DEPLOY_USER }}" \
-          -P "${{ secrets.DEV_DEPLOY_PASS }}" \
-          ./dist/apps/simulators
+          npm run-script c8ycli deploy -u https://psfactory.eu-latest.cumulocity.com -T $DEV_DEPLOY_TENANT -U "$DEV_DEPLOY_USER" -P "$DEV_DEPLOY_PASS" ./dist/apps/simulators
