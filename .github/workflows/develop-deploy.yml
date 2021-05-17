@@ -31,4 +31,4 @@ jobs:
       - name: 🚀 Deploy
         run: |
           cd factory/simulators
-          npm run-script c8ycli deploy -u "https://psfactory.eu-latest.cumulocity.com" -T ${{ secrets.DEV_DEPLOY_TENANT }} -U "${{ secrets.DEV_DEPLOY_USER }}" -P "${{ secrets.DEV_DEPLOY_PASS }}" ./dist/apps/simulators
+          npm run-script c8ycli 'deploy -u https://psfactory.eu-latest.cumulocity.com -T ${{ secrets.DEV_DEPLOY_TENANT }} -U "${{ secrets.DEV_DEPLOY_USER }}" -P "${{ secrets.DEV_DEPLOY_PASS }}" ./dist/apps/simulators'
