@@ -24,5 +24,8 @@ jobs:
       - name: 🚧  Build App
         run: cd factory/simulators && npm run build
 
+      - name: display name
+        run: echo ${{ secrets.DEV_DEPLOY_USER }}
+
       - name: 🚀 Deploy
         run: cd factory/simulators && npm run-script c8ycli deploy -u https://psfactory.eu-latest.cumulocity.com --user ${{ secrets.DEV_DEPLOY_USER }} --password ${{ secrets.DEV_DEPLOY_PASS }} ./dist/apps/simulators
