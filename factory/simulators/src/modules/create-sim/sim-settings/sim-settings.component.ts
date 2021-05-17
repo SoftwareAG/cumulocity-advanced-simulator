@@ -50,7 +50,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
-  styleUrls: ["./sim-settings.component.less"],
+  styleUrls: ["./sim-settings.component.scss"],
 })
 export class SimSettingsComponent implements OnInit {
   reducedColors = ColorsReduced;

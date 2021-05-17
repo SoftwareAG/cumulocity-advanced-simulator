@@ -77,11 +77,11 @@
   width: calc(100% - 42px);
   box-shadow: rgb(204, 204, 204) 0px 0px 4px;
   height: 20px;
-  content: "";
+  content: '';
   cursor: s-resize;
   overflow: hidden;
   background-color: #fff;
-  background-image: url("https://cdn.sstatic.net/Sites/stackoverflow/img/sprites.svg"),
+  background-image: url('https://cdn.sstatic.net/Sites/stackoverflow/img/sprites.svg'),
     none;
   background-position: 50% -359px;
   background-size: initial;

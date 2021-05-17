@@ -11,7 +11,7 @@ import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.servic
 @Component({
   selector: "app-series-list",
   templateUrl: "./series-list.component.html",
-  styleUrls: ["./series-list.component.less"],
+  styleUrls: ["./series-list.component.scss"],
 })
 export class SeriesListComponent implements OnInit {
 
