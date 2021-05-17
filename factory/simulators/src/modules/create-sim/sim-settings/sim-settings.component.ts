@@ -161,24 +161,21 @@ export class SimSettingsComponent implements OnInit {
       this.generateRequest();
     }
   }
-  smartRestAllValues: { minIncrement?: string, maxIncrement?: string, minimum?: string, maximum?:string, unit?: string} = {};
-  changeAllSmartRestValues() {
 
-    console.log("smart", this.smartRestSelectedConfig);
-    console.log("smart", this.smartRestSelectedConfig.smartRestFields);
-    console.log("smart", this.smartRestSelectedConfig.smartRestFields.customValues);
-    
+  smartRestAllValues: { minIncrement?: string, maxIncrement?: string, minimum?: string, maximum?:string, unit?: string} = {};
+
+  changeAllSmartRestValues() {
     let currentMinIncrement:number = 0;
     let currentMaxIncrement:number = 0;
     for (let entry of this.smartRestSelectedConfig.smartRestFields.customValues) {
         if (this.smartRestAllValues.minimum && entry.path.includes('value')) {
-          this.smartRestInstruction[entry.path+'_min'] = String(Math.round((+this.smartRestAllValues.minimum + currentMinIncrement) * 100000) / 100000);
+          this.smartRestInstruction[entry.path+'_min'] = String(+this.smartRestAllValues.minimum + currentMinIncrement);
           if (this.smartRestAllValues.maxIncrement){
             currentMaxIncrement += +this.smartRestAllValues.maxIncrement;
           }
         }
         if (this.smartRestAllValues.maximum && entry.path.includes('value')) {
-          this.smartRestInstruction[entry.path + '_max'] = String(Math.round((+this.smartRestAllValues.maximum + currentMaxIncrement) * 100000) / 100000);
+          this.smartRestInstruction[entry.path + '_max'] = String(+this.smartRestAllValues.maximum + currentMaxIncrement);
           if (this.smartRestAllValues.minIncrement){
             currentMinIncrement += +this.smartRestAllValues.minIncrement;
           }
@@ -189,6 +186,9 @@ export class SimSettingsComponent implements OnInit {
     }
     console.error(this.smartRestAllValues, this.smartRestInstruction, this.smartRestSelectedConfig.smartRestFields.customValues);
   }
+
+
+
   generateRequest() {
     this.instructionValue["scalingOption"] = this.measurementOption;
     this.simSettingsService.randomSelected =
@@ -196,9 +196,9 @@ export class SimSettingsComponent implements OnInit {
       this.instructionValue.scalingOption
         ? this.instructionValue.scalingOption
         : "linear";
-    let asdkoas = this.simSettingsService.generateInstructions();
-    this.updateService.mo.c8y_DeviceSimulator.commandQueue = asdkoas;
-    console.log(asdkoas);
+    let instructionSet = this.simSettingsService.generateInstructions();
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = instructionSet;
+    
     //this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray().map((entry:AdditionalParameter)=> entry.index);
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
 

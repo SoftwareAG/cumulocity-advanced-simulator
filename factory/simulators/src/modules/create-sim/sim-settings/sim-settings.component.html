@@ -160,35 +160,40 @@
       <ng-container *ngIf="isSmartRestSelected">
       <br>
       <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
-        <ng-container>
-          <div class="col-xs-6">
-            <label class="text-truncate" [title]="'for_all.minimum'">{{ 'Minimum for all values' }}</label>
-            <input id="{{ 'id_for_all.minimum' }}" [(ngModel)]="smartRestAllValues['minimum']" (change)="changeAllSmartRestValues()" class="form-control"
-              placeholder="minimum" />
-          </div>
-          <div class="col-xs-6">
-            <label class="text-truncate" [title]="'for_all.maximum'">{{ 'Maximum for all values' }}</label>
-            <input id="{{ 'id_for_all.maximum' }}" [(ngModel)]="smartRestAllValues['maximum']" (change)="changeAllSmartRestValues()" class="form-control"
-              placeholder="maximum" />
-          </div>
-          <div class="col-xs-6">
-            <label class="text-truncate" [title]="'for_all.minIncrement'">{{ 'Minimum Incrementation *Optional' }}</label>
-            <input id="{{ 'id_for_all.minIncrement' }}" [(ngModel)]="smartRestAllValues['minIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
-              placeholder="unit" />
-          </div>
-          <div class="col-xs-6">
-            <label class="text-truncate" [title]="'for_all.maxIncrement'">{{ 'Maximum Incrementation *Optional' }}</label>
-            <input id="{{ 'id_for_all.maxIncrement' }}" [(ngModel)]="smartRestAllValues['maxIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
-              placeholder="unit" />
-          </div>
-          <div class="col-xs-6">
-            <label class="text-truncate" [title]="'for_all.unit'">{{ 'Unit for all values' }}</label>
-            <input id="{{ 'id_for_all.unit' }}" [(ngModel)]="smartRestAllValues['unit']" (change)="changeAllSmartRestValues()" class="form-control"
-              placeholder="unit" />
-          </div>
-        
+        <ng-container *ngIf="smartRestSelectedConfig.smartRestFields.customValues.length > 5">
+          <h3>Bulk Changes</h3>
+          <div class="row">
+            <div class="col-xs-6">
+              <label class="text-truncate" [title]="'for_all.minimum'">{{ 'Minimum for all values' }}</label>
+              <input id="{{ 'id_for_all.minimum' }}" [(ngModel)]="smartRestAllValues['minimum']" (change)="changeAllSmartRestValues()" class="form-control"
+                placeholder="minimum" />
+              </div>
+              <div class="col-xs-6">
+                <label class="text-truncate" [title]="'for_all.maximum'">{{ 'Maximum for all values' }}</label>
+                <input id="{{ 'id_for_all.maximum' }}" [(ngModel)]="smartRestAllValues['maximum']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="maximum" />
+              </div>
+              <div class="col-xs-6">
+                <label class="text-truncate" [title]="'for_all.minIncrement'">{{ 'Increment all Minimum values' }}</label>
+                <input id="{{ 'id_for_all.minIncrement' }}" [(ngModel)]="smartRestAllValues['minIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="Increment" />
+              </div>
+              <div class="col-xs-6">
+                <label class="text-truncate" [title]="'for_all.maxIncrement'">{{ 'Increment all Maximum values' }}</label>
+                <input id="{{ 'id_for_all.maxIncrement' }}" [(ngModel)]="smartRestAllValues['maxIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="Increment" />
+              </div>
+              <div class="col-xs-6">
+                <label class="text-truncate" [title]="'for_all.unit'">{{ 'Unit for all values' }}</label>
+                <input id="{{ 'id_for_all.unit' }}" [(ngModel)]="smartRestAllValues['unit']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="unit" />
+              </div>
+            </div>
+            <br/>
+            <hr/>
+            <br/>
+
         </ng-container>
-        <br>
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
           <ng-container *ngIf="entry.value === null">
           <div [hidden]="entry | isValue"> 
