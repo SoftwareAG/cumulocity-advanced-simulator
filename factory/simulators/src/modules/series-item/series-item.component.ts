@@ -18,9 +18,9 @@ import { SmartRESTService } from '@services/smartREST.service';
 import { FormState } from '@models/formstate.model';
 
 @Component({
-  selector: 'app-series-item',
-  templateUrl: './series-item.component.html',
-  styleUrls: ['./series-item.component.less'],
+  selector: "app-series-item",
+  templateUrl: "./series-item.component.html",
+  styleUrls: ["./series-item.component.scss"],
 })
 export class SeriesItemComponent {
   @Input() header: TemplateRef<any>;

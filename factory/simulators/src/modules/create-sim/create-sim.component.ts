@@ -23,7 +23,7 @@ import { elementAt } from "rxjs/operators";
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
-  styleUrls: ["./create-sim.component.less"],
+  styleUrls: ["./create-sim.component.scss"],
 })
 export class CreateSimComponent implements OnInit {
   warningModal: Modal;

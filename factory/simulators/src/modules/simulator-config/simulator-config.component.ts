@@ -14,6 +14,7 @@ export interface ILabels {
 
 @Component({
   selector: "addCustomSimulator",
+  styleUrls: ["./simulator-config.component.scss"],
   template: ` <c8y-modal
     title="Create custom Simulator"
     (onClose)="saveSimulatorDetails($event)"

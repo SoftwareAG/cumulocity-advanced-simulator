@@ -3,18 +3,10 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@models/*": [
-        "./src/models/*"
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ],
-      "@modules/*": [
-        "./src/modules/*"
-      ],
-      "@directives/*": [
-        "./src/directives/*"
-      ]
+      "@models/*": ["./src/models/*"],
+      "@services/*": ["./src/services/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@directives/*": ["./src/directives/*"]
     },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -23,13 +15,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es6",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2019",
-      "dom",
-      "dom.iterable"
-    ]
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2019", "dom", "dom.iterable"]
   }
 }
