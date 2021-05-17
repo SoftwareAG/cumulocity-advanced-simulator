@@ -12,7 +12,8 @@ import { Subscription } from 'rxjs';
 export class BulkUpdatesComponent implements OnInit {
   mirroredAxis: boolean = false;
   intertwinedValues: boolean = false;
-  randomizeValueType: string = 'All';
+  randomizeValueType: 'All' | 'SmartRest' | 'Measurements' = 'All';
+  
   allInstructionsSeries = [];
   instructionsSubscription: Subscription;
   @Input() mo;
@@ -58,7 +59,7 @@ export class BulkUpdatesComponent implements OnInit {
         let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
         newEntry.mirrored = true;
         this.indexedCommandQueue.push(newEntry);
-        console.log("newEntry", newEntry);
+        
       }
     } else {
       this.indexedCommandQueue = this.indexedCommandQueue.filter(element => !element.mirrored)
@@ -70,7 +71,7 @@ export class BulkUpdatesComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        console.log(res, "test");
+        
       });
   }
 
@@ -120,7 +121,7 @@ export class BulkUpdatesComponent implements OnInit {
       newIndexedCommandQueue = this.indexedCommandQueue;
       newIndexedCommandQueue.sort((a, b) => { return +a.index - +b.index });
     }
-    console.error("newCommandQueue", indexDistribution, newIndexedCommandQueue, filteredCommandQueue, this.allInstructionsSeries);
+    
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
 
@@ -129,14 +130,14 @@ export class BulkUpdatesComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        console.log(res, "test");
+        
       });
   }
 
   saltValue: number;
   addSomeSalt() {
-    console.log(this.deepCopy(this.indexedCommandQueue));
     for (let entry of this.indexedCommandQueue) {
+      //removes old salt if possible
       if (entry.deviation && entry.deviation.length > 0) {
         for (let i = 0; i < entry.values.length; i++) {
           let number = entry.values[i];
@@ -146,7 +147,7 @@ export class BulkUpdatesComponent implements OnInit {
         }
       }
       delete entry.deviation;
-
+      //calculates new salt and adds it
       if (entry.index !== 'single' && !entry.deviation && this.saltValue > 0) {
         if (
           ((this.randomizeValueType === 'All' || this.randomizeValueType === 'Measurements') && entry.messageId == MessageIds.Measurement)
@@ -157,7 +158,6 @@ export class BulkUpdatesComponent implements OnInit {
 
       }
     }
-    console.log(this.deepCopy(this.indexedCommandQueue), this.saltValue);
 
     
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
@@ -167,7 +167,7 @@ export class BulkUpdatesComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        console.log(res, "test");
+        
       });
   }
 

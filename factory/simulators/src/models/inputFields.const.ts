@@ -215,7 +215,7 @@ export const SleepForm: InputField[] = [
     placeholder: "Sleep (in Seconds)",
     required: true,
     type: "textField",
-    minimum: 0,
+    minimum: 5,
     isNumber: true
   }
 ];

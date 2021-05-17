@@ -151,7 +151,6 @@ export class SimSettingsComponent implements OnInit {
         this.instructionValue
       );
       const assignedIndex: string = this.allInstructionsSeries.length.toString();
-      console.log("Assigned index: ", assignedIndex);
       const insVal = JSON.parse(JSON.stringify(this.instructionValue));
       this.simSettingsService.pushToInstructionsArray({
         ...insVal,
@@ -184,7 +183,6 @@ export class SimSettingsComponent implements OnInit {
           this.smartRestInstruction[entry.path] = this.smartRestAllValues.unit;
         }
     }
-    console.error(this.smartRestAllValues, this.smartRestInstruction, this.smartRestSelectedConfig.smartRestFields.customValues);
   }
 
 
@@ -266,7 +264,7 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestInstruction,
       this.smartRestSelectedConfig
     );
-    console.info("smartrestinstruction", this.smartRestSelectedConfig, this.smartRestInstruction, smartRestInstructionsArray);
+    
     let entryFieldsWithInconsistentTypes = [];
     const entriesWithMinMaxOrSteps = Object.keys(
       this.smartRestInstruction
@@ -294,7 +292,7 @@ export class SimSettingsComponent implements OnInit {
         smartRestInstructionsArray,
         this.smartRestSelectedConfig
       );
-      console.error(smartRestCommandQueue);
+      
       let indexed = this.simSettingsService.indexedCommandQueue;
       const index = this.allInstructionsSeries.length.toString();
       const combinedSmartInstruction: SeriesInstruction = {
@@ -318,7 +316,6 @@ export class SimSettingsComponent implements OnInit {
       this.updateService
         .updateSimulatorObject(this.updateService.mo)
         .then((res) => {
-          console.log(res);
           const alert = {
             text: `Smart REST instructions created successfully.`,
             type: "success",
