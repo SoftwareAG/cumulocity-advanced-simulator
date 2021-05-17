@@ -50,7 +50,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
-  styleUrls: ["./sim-settings.component.less"],
+  styleUrls: ["./sim-settings.component.scss"],
 })
 export class SimSettingsComponent implements OnInit {
   reducedColors = ColorsReduced;
@@ -240,23 +240,22 @@ export class SimSettingsComponent implements OnInit {
 
   openSimulatorUploadFileDialog() {
     const modal = this.modalService.show(SimulatorFileUploadDialog);
-    // modal.content.device = this.device;
     this.subscriptions.push(
       modal.content.closeSubject.subscribe((result: any) => {
         if (result) {
-          // this.uploadedSignalFiles.push(result);
           const fileType = result.name;
-          // this.signalDataImportService.createOperationAndNotify(result.id, this.device.id, fileType);
-          console.log("filename: ", fileType);
+          // const data = 
         }
-        // this.signalModalUnsubscribe();
       })
     );
   }
 
   downloadSimulator() {
-    const data = 'some-text';
-    const blob = new Blob([data as BlobPart], { type: 'application/octet-stream' });
+    const {id, ...nonId} = this.updateService.mo.c8y_DeviceSimulator;
+    let simulatorToImport = (({type, owner, name, c8y_CustomSim, c8y_additionals, c8y_Series}) => ({type, owner, name, c8y_CustomSim, c8y_additionals, c8y_Series})) (this.updateService.mo);
+    simulatorToImport['c8y_DeviceSimulator'] = nonId;
+    const simulator = JSON.stringify(simulatorToImport);
+    const blob = new Blob([simulator as BlobPart], { type: 'application/octet-stream' });
     this.importUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
 

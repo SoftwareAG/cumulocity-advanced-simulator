@@ -11,7 +11,7 @@ import { SimulatorsBackendService } from "../../services/simulatorsBackend.servi
 @Component({
   selector: "app-simulator-entry",
   templateUrl: "./simulator-entry.component.html",
-  styleUrls: ["./simulator-entry.component.less"],
+  styleUrls: ["./simulator-entry.component.scss"],
 })
 export class SimulatorEntryComponent implements OnInit {
   subscriptions = new Subscription();

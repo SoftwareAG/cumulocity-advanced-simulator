@@ -21,7 +21,7 @@ export interface SleepChartBox {
 @Component({
   selector: 'app-simulator-chart',
   templateUrl: './simulator-chart.component.html',
-  styleUrls: ['./simulator-chart.component.less']
+  styleUrls: ['./simulator-chart.component.scss']
 })
 export class SimulatorChartComponent implements OnInit, OnDestroy {
   public colors = ColorsReduced;

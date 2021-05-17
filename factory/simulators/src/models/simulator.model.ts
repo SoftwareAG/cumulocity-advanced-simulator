@@ -36,22 +36,22 @@ export interface CustomSimulator extends IManagedObject {
   type?: string;
   id: string;
   c8y_Series: SeriesInstruction[];
-  c8y_mirroredAxis:boolean;
+  c8y_mirroredAxis?:boolean;
   c8y_additionals: AdditionalParameter[];
-  c8y_intertwinedValues:boolean;
-  c8y_saltValue:number;
+  c8y_intertwinedValues?:boolean;
+  c8y_saltValue?:number;
   name: string;
   c8y_CustomSim: {};
-  c8y_Indices: string[];
+  c8y_Indices?: string[];
   c8y_DeviceSimulator?: {
     commandQueue?: CommandQueueEntry[];
     instances?: number;
     name?: string;
     id?: string;
     state?: string;
-    c8y_SupportedOperations: string[];
+    c8y_SupportedOperations?: string[];
     c8y_CustomOperations?: string[];
 
   };
-  c8y_MeasurementSeries: [];
+  c8y_MeasurementSeries?: [];
 }

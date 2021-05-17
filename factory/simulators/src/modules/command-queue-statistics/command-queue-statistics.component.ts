@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-command-queue-statistics',
   templateUrl: './command-queue-statistics.component.html',
-  styleUrls: ['./command-queue-statistics.component.less']
+  styleUrls: ['./command-queue-statistics.component.scss']
 })
 export class CommandQueueStatisticsComponent implements OnInit {
   time = {day: 24*60*60, hour: 60 * 60, minute: 60};

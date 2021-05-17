@@ -14,6 +14,7 @@ export interface ILabels {
 
 @Component({
   selector: "addCustomSimulator",
+  styleUrls: ["./simulator-config.component.scss"],
   template: ` <c8y-modal
     title="Create custom Simulator"
     (onClose)="saveSimulatorDetails($event)"
@@ -78,7 +79,7 @@ export class SimulatorConfigComponent implements OnInit {
         c8y_additionals: [],
         c8y_Series: [],
       }
-      this.addCustomSimulatorProperties(simulator).then((res) => {
+      this.backendService.addCustomSimulatorProperties(simulator).then((res) => {
         
         this.router.navigate(["/createSim/" + result.id]);
         console.log('CustomSim Created here: ', res);
@@ -92,9 +93,5 @@ export class SimulatorConfigComponent implements OnInit {
 
   onClose(event) {
     this.closeSubject.next(event);
-  }
-
-  addCustomSimulatorProperties(simulator: Partial<CustomSimulator>) {
-    return this.simulatorService.updateSimulatorManagedObject(simulator);
   }
 }

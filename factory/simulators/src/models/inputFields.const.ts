@@ -40,21 +40,21 @@ export const MeasurementsForm: InputField[] = [
   },
   {
     name: "series",
-    label: "Series:",
+    label: "Series",
     placeholder: "Vehicles, Airplanes",
     required: true,
     type: "textField"
   },
   {
     name: "fragment",
-    label: "Fragment:",
+    label: "Fragment",
     placeholder: "Speed, Distance, Velocity",
     required: true,
     type: "textField"
   },
   {
     name: "value",
-    label: "Value:",
+    label: "Value",
     placeholder: "Measurement",
     required: true,
     type: "textField",
@@ -62,7 +62,7 @@ export const MeasurementsForm: InputField[] = [
   },
   {
     name: "unit",
-    label: "Unit:",
+    label: "Unit",
     placeholder: "KM, °C, %, mph",
     required: true,
     type: "textField"
@@ -73,7 +73,7 @@ export const SeriesMeasurementsForm: InputField[] = [
   ...MeasurementsForm.filter((a) => a.name !== "value"), 
   {
     name: "minValue",
-    label: "Minimum:",
+    label: "Min",
     placeholder: "Lowest Measurement",
     required: true,
     type: "textField",
@@ -81,7 +81,7 @@ export const SeriesMeasurementsForm: InputField[] = [
   },
   {
     name: "maxValue",
-    label: "Maximum:",
+    label: "Max",
     placeholder: "Highest Measurement",
     required: true,
     type: "textField",
@@ -89,7 +89,7 @@ export const SeriesMeasurementsForm: InputField[] = [
   },
   {
     name: "steps",
-    label: "Steps:",
+    label: "Steps",
     placeholder: "Number of values between min and max",
     required: true,
     type: "textField",

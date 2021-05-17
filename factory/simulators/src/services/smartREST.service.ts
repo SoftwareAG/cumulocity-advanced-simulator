@@ -67,6 +67,7 @@ export class SmartRESTService {
             this.smartRestOption
           ).map((temp) => (Math.round(temp*10000)/10000).toString());
       } else {
+        console.log('instr vals ype string: ', instruction);
         vals.push(...this.fillArray(instruction.value, instruction.steps));
       }
       this.values.push(vals);

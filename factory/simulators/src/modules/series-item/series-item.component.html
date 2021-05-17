@@ -1,120 +1,145 @@
-        <div class="list-group-item list-item" [style.background]="selectedSeries.color">
-          <div class="row">
-            <div style="display: flex; justify-content: space-between">
-              <h4 class="col-xs-2 text-truncate" [title]="selectedSeries.type">
-                <i [c8yIcon]="icon"></i>&nbsp;{{ selectedSeries.type }}
-              </h4>
-              <ng-container *ngIf="selectedSeries.type === 'Measurement' || selectedSeries.type === 'SmartRest'">
-                <div class='col-xs-2'>
-                <label class="text-truncate" [title]="'Scaling Options'">Scaling Options:</label>
-              <select
-                class="form-control"
-                style="max-width: 200px; margin-right: 20px; float: right"
-                [(ngModel)]="selectedSeries.option">
+<div
+  class="list-group-item list-item"
+  [style.background]="selectedSeries.color"
+>
+  <header>
+    <h4 class="text-truncate" [title]="selectedSeries.type">
+      <i [c8yIcon]="icon"></i>&nbsp;{{ selectedSeries.type }}
+    </h4>
 
-                <option
-                  *ngFor="let entry of measurementOptions"
-                  [style.background]="entry">
-                  {{ entry }}
-                </option>
-              </select>
-            </div>
-            </ng-container>
+    <div class="dropdown settings" dropdown>
+      <button
+        type="button"
+        title="Actions"
+        dropdownToggle
+        class="dropdown-toggle c8y-dropdown"
+      >
+        <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
+      </button>
 
-            <div style="width: 85%">
-              <ng-container *ngFor="let entry of form">
-                <!-- <div class="col-xs-12" *ngIf="entry.type === 'switch'">
-          <label class="c8y-switch">
-            <input type="checkbox"  [ngModel]="randomize" (ngModelChange)="randomize=!randomize"/>
-            <span></span><em>{{entry.label}}</em>
-          </label>
-          <br>
-        </div> -->
-                <ng-container *ngIf="selectedSeries.type !== 'SmartRest'">
-                  <div
-                    [class]="'col-xs-' + (12 / form.length | number: '1.0-0')"
-                    id = "{{entry.path + '_'+ id}}"
-                    *ngIf="!entry.hidden && !(entry.type === 'switch')"
+      <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+        <li>
+          <button type="button" (click)="updateSeries()">
+            <i c8yIcon="arrow-circle-o-up"></i>
+            {{ 'Update Series' | translate }}
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="duplicateSeries()">
+            <i c8yIcon="copy"></i> Duplicate Series
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="deleteSeries()">
+            <i c8yIcon="trash"></i> Delete Series
+          </button>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div
+    class="body"
+    [ngClass]="{ 'smart-rest': selectedSeries.type == 'SmartRest' }"
+  >
+    <div class="form-fields">
+      <ng-container
+        *ngIf="
+          selectedSeries.type === 'Measurement' ||
+          selectedSeries.type === 'SmartRest'
+        "
+      >
+        <div class="field field-scaling-options">
+          <label class="text-truncate" [title]="'Scaling Options'"
+            >Scaling Options</label
+          >
+          <select
+            class="form-control"
+            (change)="inputChange($event)"
+            [(ngModel)]="selectedSeries.option"
+          >
+            <option
+              *ngFor="let entry of measurementOptions"
+              [style.background]="entry"
+            >
+              {{ entry }}
+            </option>
+          </select>
+        </div>
+      </ng-container>
+
+      <ng-container *ngFor="let entry of form">
+        <ng-container
+          *ngIf="selectedSeries.type !== 'SmartRest'; else smartRestForm"
+        >
+          <div
+            *ngIf="!entry.hidden && !(entry.type === 'switch')"
+            id="{{ entry.path + '_' + id }}"
+            class="field"
+          >
+            <div class="form-group">
+              <label class="text-truncate" [title]="entry.label">{{
+                entry.label
+              }}</label>
+              <div
+                class="form-group form-group-md"
+                *ngIf="entry.type === 'select'"
+              >
+                <div class="c8y-select-wrapper">
+                  <select
+                    class="form-control"
+                    [(ngModel)]="instructionValue[entry.name]"
+                    (change)="inputChange($event)"
                   >
-                    <div class="form-group">
-                      <label class="text-truncate" [title]="entry.label">{{
-                        entry.label
-                      }}</label>
-                      <div
-                        class="form-group form-group-md"
-                        *ngIf="entry.type === 'select'"
-                      >
-                        <div class="c8y-select-wrapper">
-                          <select
-                            class="form-control"
-                            [(ngModel)]="instructionValue[entry.name]"
-                          >
-                            <option
-                              *ngFor="let category of entry.options"
-                              [attr.disabled]="true"
-                              [value]="category.id"
-                            >
-                              {{ category.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <input
-                        *ngIf="entry.type === 'textField'"
-                        id="{{ entry.name + '_'+ id}}"
-                        [required]="entry.required"
-                        class="form-control"
-                        [(ngModel)]="instructionValue[entry.name]"
-                        placeholder="{{ entry.placeholder }}"
-                      />
-                    </div>
-                  </div>
-                </ng-container>
-                <ng-container *ngIf="selectedSeries.type === 'SmartRest'">
-                  <div [class]="'col-md-2'">
-                    <label class="text-truncate" [title]="entry.label">{{
-                      entry.label
-                    }}</label>
-                    <input
-                      *ngIf="entry.type === 'textField'"
-                      id="{{ entry.name + '_' + id}}"
-                      [required]="entry.required"
-                      class="form-control"
-                      [(ngModel)]="smartRestInstruction[entry.name]"
-                    />
-                  </div>
-                </ng-container>
-              </ng-container>
-            </div>
-
-              <div class="dropdown settings" style="float: right" dropdown>
-                <button
-                  type="button"
-                  title="Actions"
-                  dropdownToggle
-                  class="dropdown-toggle c8y-dropdown"
-                >
-                  <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-                  <li>
-                    <button type="button" (click)="updateSeries()">
-                      <i c8yIcon="arrow-circle-o-up"></i> Update Series
-                    </button>
-                  </li>
-                  <li>
-                    <button type="button" (click)="duplicateSeries()">
-                      <i c8yIcon="copy"></i> Duplicate Series
-                    </button>
-                  </li>
-                  <li>
-                    <button type="button" (click)="deleteSeries()">
-                      <i c8yIcon="trash"></i> Delete Series
-                    </button>
-                  </li>
-                </ul>
+                    <option
+                      *ngFor="let category of entry.options"
+                      [attr.disabled]="true"
+                      [value]="category.id"
+                    >
+                      {{ category.name }}
+                    </option>
+                  </select>
+                </div>
               </div>
+
+              <input
+                *ngIf="entry.type === 'textField'"
+                id="{{ entry.name + '_' + id }}"
+                class="form-control"
+                placeholder="{{ entry.placeholder }}"
+                [required]="entry.required"
+                [(ngModel)]="instructionValue[entry.name]"
+                (keyup)="inputChange($event)"
+              />
             </div>
           </div>
-        </div>
+        </ng-container>
+
+        <ng-template #smartRestForm>
+          <div class="field">
+            <label class="text-truncate" [title]="entry.label">{{
+              entry.label
+            }}</label>
+            <input
+              *ngIf="entry.type === 'textField'"
+              id="{{ entry.name + '_' + id }}"
+              class="form-control"
+              [required]="entry.required"
+              [(ngModel)]="smartRestInstruction[entry.name]"
+              (keyup)="inputChange($event)"
+            />
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-success button-update"
+      [disabled]="formState == defaultFormState"
+      (click)="updateSeries()"
+    >
+      {{ 'Update' | translate }}
+    </button>
+  </div>
+</div>
