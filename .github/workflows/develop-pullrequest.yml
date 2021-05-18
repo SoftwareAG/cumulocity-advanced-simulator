@@ -1,6 +1,8 @@
 name: Develop Pull Request (CI)
 
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches: [develop]
 
@@ -21,6 +23,19 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       - name: Install Node.js dependencies
         run: |
           cd factory/simulators
@@ -34,9 +49,9 @@ jobs:
       - name: 🧪  Test
         run: |
           cd factory/simulators
-          npm run test --if-present
+          npm test --if-present
 
       - name: 🚧  Build
         run: |
           cd factory/simulators
-          npm run build
+          npm run build --if-present
