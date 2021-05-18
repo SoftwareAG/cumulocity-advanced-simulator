@@ -1,4 +1,3 @@
-
 <h3>Statistcs about the Simulator</h3>
 <br>
 <div class="card-group interact-grid">
@@ -14,28 +13,41 @@
           General Information
         </div>
       </div>
-  
+
       <!-- Card content -->
       <!-- you may use the grid classes to structure the content horizontally -->
       <div class="card-block">
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Time for one loop: </label> <b>{{timeForOneLoop}}s</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Runthroughs per minute: </label> <b>{{runthroughsPerMinute}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Runthroughs per hour: </label> <b>{{runthroughsPerHour}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Runthroughs per day: </label> <b>{{runthroughsPerDay}}</b>
-        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Timing</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Time for one loop:</th>
+              <td>{{timeForOneLoop}}s</td>
+            </tr>
+            <tr>
+              <th scope="row">Runthroughs per minute:</th>
+              <td>{{runthroughsPerMinute}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Runthroughs per hour:</th>
+              <td>{{runthroughsPerHour}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Runthroughs per day:</th>
+              <td>{{runthroughsPerDay}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-  
+
     </div>
   </div>
 </div>
-
 
 <h3>Calculations about Measurements</h3>
 <br>
@@ -56,29 +68,40 @@
       <!-- Card content -->
       <!-- you may use the grid classes to structure the content horizontally -->
       <div class="card-block">
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Sum of one loop: </label> <b>{{entry.value}} {{entry.unit}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Sum per minute: </label> <b>{{entry.runthroughsPerMinute}} {{entry.unit}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Sum per hour: </label> <b>{{entry.runthroughsPerHour}} {{entry.unit}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Sum per day: </label> <b>{{entry.runthroughsPerDay}} {{entry.unit}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Average: </label> <b>{{entry.avg / indexedCommandQueue.length | number: '1.0-2'}} {{entry.unit}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Lowest: </label> <b>{{entry.lowest}}</b>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-truncate">
-          <label class="small ng-binding">Highest: </label> <b>{{entry.highest}}</b>
-        </div>
-
-
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Sums</th>
+                <th>Value</th>
+                <th>Aggregations</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Sum of one loop:</th>
+                <td>{{entry.value}} {{entry.unit}}</td>
+                <th scope="row">Average:</th>
+                <td>{{entry.avg / indexedCommandQueue.length | number: '1.0-2'}} {{entry.unit}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sum per minute:</th>
+                <td>{{entry.runthroughsPerMinute}} {{entry.unit}}</td>
+                <th scope="row">Lowest:</th>
+                <td>{{entry.lowest}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sum per hour:</th>
+                <td>{{entry.runthroughsPerHour}} {{entry.unit}}</td>
+                <th scope="row">Highest:</th>
+                <td>{{entry.highest}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sum per day:</th>
+                <td>{{entry.runthroughsPerDay}} {{entry.unit}}</td>
+              </tr>
+            </tbody>
+          </table>
       </div>
 
     </div>
