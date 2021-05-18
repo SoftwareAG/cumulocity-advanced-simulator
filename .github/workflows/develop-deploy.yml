@@ -44,6 +44,8 @@ jobs:
           cd factory/simulators
           npm install
 
+      - run: npm install -g @c8y/cli
+
       - name: 🧪  Test
         run: |
           cd factory/simulators
@@ -52,7 +54,7 @@ jobs:
       - name: 🚧  Build
         run: |
           cd factory/simulators
-          npx c8ycli build \
+          c8ycli build \
             --app.key="${{ env.APP_KEY }}" \
             --app.name="${{ env.APP_NAME }}" \
             --app.contextPath="${{ env.APP_CONTEXT_PATH }}"
@@ -60,7 +62,7 @@ jobs:
       - name: 🚀 Deploy
         run: |
           cd factory/simulators
-          npx c8ycli deploy \
+          c8ycli deploy \
             -u ${{ env.TENANT_DOMAIN }} \
             -T ${{ env.TENANT_ID }} \
             -U "${{ secrets.DEV_DEPLOY_USER }}" \
