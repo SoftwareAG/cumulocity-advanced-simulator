@@ -37,21 +37,13 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Node.js dependencies
-        run: |
-          cd factory/simulators
-          npm install
+        run: npm install
 
       - name: 🕵️‍♂️  Lint
-        run: |
-          cd factory/simulators
-          npm run-script lint --if-present
+        run: npm run-script lint --if-present
 
       - name: 🧪  Test
-        run: |
-          cd factory/simulators
-          npm test --if-present
+        run: npm test --if-present
 
       - name: 🚧  Build
-        run: |
-          cd factory/simulators
-          npm run build --if-present
+        run: npm run build --if-present
