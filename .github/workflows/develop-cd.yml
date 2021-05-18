@@ -38,18 +38,13 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Node.js dependencies
-        run: |
-          cd factory/simulators
-          npm install
+        run: npm install
 
       - name: 🧪  Test
-        run: |
-          cd factory/simulators
-          npm test --if-present
+        run: npm test --if-present
 
       - name: 🚧  Build
         run: |
-          cd factory/simulators
           npx c8ycli build \
             --app.key="${{ env.APP_KEY }}" \
             --app.name="${{ env.APP_NAME }}" \
@@ -57,7 +52,6 @@ jobs:
 
       - name: 🚀 Deploy
         run: |
-          cd factory/simulators
           npx c8ycli deploy \
             -u ${{ secrets.DEV_TENANT_URL }} \
             -T ${{ secrets.DEV_TENANT_ID }} \
