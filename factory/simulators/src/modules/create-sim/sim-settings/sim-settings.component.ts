@@ -52,7 +52,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   templateUrl: "./sim-settings.component.html",
   styleUrls: ["./sim-settings.component.scss"],
 })
-export class SimSettingsComponent implements OnInit {
+export class SimSettingsComponent {
   reducedColors = ColorsReduced;
   selectedColor: string = "#fff";
   defaultConfig: InstructionCategory[] = DefaultConfig;
@@ -83,6 +83,7 @@ export class SimSettingsComponent implements OnInit {
   subscriptions: Subscription[] = [];
   importUrl;
 
+  smartRestAllValues: { minIncrement?: string, maxIncrement?: string, minimum?: string, maximum?: string, unit?: string } = {};
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
 
@@ -106,8 +107,6 @@ export class SimSettingsComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit() {
-  }
 
   updateSeries(index: number) {
     const isNumArr = this.allForms[index].filter((entry) => entry.isNumber);
@@ -161,11 +160,10 @@ export class SimSettingsComponent implements OnInit {
     }
   }
 
-  smartRestAllValues: { minIncrement?: string, maxIncrement?: string, minimum?: string, maximum?:string, unit?: string} = {};
 
   changeAllSmartRestValues() {
-    let currentMinIncrement:number = 0;
-    let currentMaxIncrement:number = 0;
+    let currentMinIncrement = 0;
+    let currentMaxIncrement = 0;
     for (let entry of this.smartRestSelectedConfig.smartRestFields.customValues) {
         if (this.smartRestAllValues.minimum && entry.path.includes('value')) {
           this.smartRestInstruction[entry.path+'_min'] = String(+this.smartRestAllValues.minimum + currentMinIncrement);

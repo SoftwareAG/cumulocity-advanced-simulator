@@ -65,7 +65,7 @@ export class SmartRESTService {
             +instruction.maxValue,
             +instruction.steps,
             this.smartRestOption
-          ).map((temp) => (Math.round(temp*10000)/10000).toString());
+          ).map((temp) => temp.toString());
       } else {
         console.log('instr vals ype string: ', instruction);
         vals.push(...this.fillArray(instruction.value, instruction.steps));
@@ -131,18 +131,14 @@ export class SmartRESTService {
         type: InstructionCategory.SmartRest,
       };
       Object.entries(smartRestData).forEach(([key, value]) => {
-        if (key === customValue.path) {
-          obj.value = value as string;
-        } else if (key === customValue.path + "_max") {
-          obj.maxValue = value as string;
-          obj.isNumber = true;
-        } else if (key === customValue.path + "_min") {
-          obj.minValue = value as string;
-          obj.isNumber = true;
-        } else if (key === "steps") {
-          obj.steps = value as string;
-          obj.isNumber = true;
+        switch(key){
+          case customValue.path: obj.value = String(value);break;
+          case customValue.path + "_max": obj.isNumber = true;obj.maxValue = String(value);break;
+          case customValue.path + "_min": obj.isNumber = true;obj.minValue = String(value);break;
+          case "steps": obj.isNumber = true;obj.steps = String(value);break;
         }
+
+        
       });
 
       smartRestInstructionArray.push(obj as SmartRestInstruction);

@@ -111,7 +111,6 @@ export class SimulatorSettingsService {
             type: InstructionCategory.Measurement,
             value: String(temp)
           };
-          console.error("instr", instruction);
           
           let toBePushed = this.instructionService.instructionToCommand(instruction);
           // this.instructionService.test(instruction);

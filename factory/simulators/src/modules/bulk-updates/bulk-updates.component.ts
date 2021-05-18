@@ -13,7 +13,6 @@ export class BulkUpdatesComponent implements OnInit {
   mirroredAxis: boolean = false;
   intertwinedValues: boolean = false;
   randomizeValueType: 'All' | 'SmartRest' | 'Measurements' = 'All';
-  
   allInstructionsSeries = [];
   instructionsSubscription: Subscription;
   @Input() mo;
@@ -127,11 +126,7 @@ export class BulkUpdatesComponent implements OnInit {
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
     this.updateService.mo.c8y_intertwinedValues = this.intertwinedValues;
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {
-        
-      });
+    this.updateService.updateSimulatorObject(this.updateService.mo);
   }
 
   saltValue: number;
@@ -154,8 +149,6 @@ export class BulkUpdatesComponent implements OnInit {
           || ((this.randomizeValueType === 'All' || this.randomizeValueType === 'SmartRest') && entry.templateId) ){
           entry = this.calculateTheDeviation(entry);
         }
-
-
       }
     }
 
