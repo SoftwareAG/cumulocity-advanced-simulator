@@ -39,7 +39,6 @@ export class SimulatorEntryComponent implements OnInit {
 
   ngOnInit() {
     this.refreshList();
-    console.log('!!!!! deploy test success');
   }
 
   openAddNewSimulatorDialog() {
