@@ -26,19 +26,19 @@
           </thead>
           <tbody>
             <tr>
-              <tr scope="row"><strong>Time for one loop:</strong></tr>
+              <td scope="row"><strong>Time for one loop:</strong></td>
               <td>{{timeForOneLoop}}s</td>
             </tr>
             <tr>
-              <tr scope="row"><strong>Runthroughs per minute:</strong></tr>
+              <td scope="row"><strong>Runthroughs per minute:</strong></td>
               <td>{{runthroughsPerMinute}}</td>
             </tr>
             <tr>
-              <tr scope="row"><strong>Runthroughs per hour:</strong></tr>
+              <td scope="row"><strong>Runthroughs per hour:</strong></td>
               <td>{{runthroughsPerHour}}</td>
             </tr>
             <tr>
-              <tr scope="row"><strong>Runthroughs per day:</strong></tr>
+              <td scope="row"><strong>Runthroughs per day:</strong></td>
               <td>{{runthroughsPerDay}}</td>
             </tr>
           </tbody>
@@ -79,25 +79,25 @@
             </thead>
             <tbody>
               <tr>
-                <tr scope="row"><strong>Sum of one loop:</strong></tr>
+                <td scope="row"><strong>Sum of one loop:</strong></td>
                 <td>{{entry.value}} {{entry.unit}}</td>
-                <tr scope="row"><strong>Average:</strong></tr>
+                <td scope="row"><strong>Average:</strong></td>
                 <td>{{entry.avg / indexedCommandQueue.length | number: '1.0-2'}} {{entry.unit}}</td>
               </tr>
               <tr>
-                <tr scope="row"><strong>Sum per minute:</strong></tr>
+                <td scope="row"><strong>Sum per minute:</strong></td>
                 <td>{{entry.runthroughsPerMinute}} {{entry.unit}}</td>
-                <tr scope="row"><strong>Lowest:</strong></tr>
+                <td scope="row"><strong>Lowest:</strong></td>
                 <td>{{entry.lowest}}</td>
               </tr>
               <tr>
-                <tr scope="row"><strong>Sum per hour:</strong></tr>
+                <td scope="row"><strong>Sum per hour:</strong></td>
                 <td>{{entry.runthroughsPerHour}} {{entry.unit}}</td>
-                <tr scope="row"><strong>Highest:</strong></tr>
+                <td scope="row"><strong>Highest:</strong></td>
                 <td>{{entry.highest}}</td>
               </tr>
               <tr>
-                <tr scope="row"><strong>Sum per day:</strong></tr>
+                <td scope="row"><strong>Sum per day:</strong></td>
                 <td>{{entry.runthroughsPerDay}} {{entry.unit}}</td>
               </tr>
             </tbody>
