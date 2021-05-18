@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [develop]
 
+env:
+  NODE_VERSION: '12'
+
 jobs:
   deploy:
     name: 🚧 Lint, Test & Build
@@ -13,19 +16,27 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Node.js dependencies
-        run: cd factory/simulators && npm install
+        run: |
+          cd factory/simulators
+          npm install
 
       - name: 🕵️‍♂️  Lint
-        run: cd factory/simulators && npm run-script lint --if-present
+        run: |
+          cd factory/simulators
+          npm run-script lint --if-present
 
       - name: 🧪  Test
-        run: cd factory/simulators && npm run test --if-present
+        run: |
+          cd factory/simulators
+          npm run test --if-present
 
-      - name: 🚧  Build App
-        run: cd factory/simulators && npm run build
+      - name: 🚧  Build
+        run: |
+          cd factory/simulators
+          npm run build

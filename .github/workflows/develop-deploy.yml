@@ -4,6 +4,14 @@ on:
   pull_request:
     branches: [develop]
 
+env:
+  NODE_VERSION: '12'
+  APP_KEY: 'advanced-simulator-dev'
+  APP_NAME: 'Advanced Simulators DEV'
+  APP_CONTEXT_PATH: 'advanced-simulators-dev'
+  TENANT_ID: 't10452223'
+  TENANT_DOMAIN: 'https://psfactory.eu-latest.cumulocity.com'
+
 jobs:
   deploy:
     name: 🚀 Deploy
@@ -13,18 +21,35 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Node.js dependencies
         run: |
           cd factory/simulators
           npm install
 
-      - name: 🚀  Build and Deploy App
+      - name: 🧪  Test
         run: |
           cd factory/simulators
-          npx c8ycli build --app.key="advanced-simulator-dev" --app.name="Advanced Simulators DEV" --app.contextPath="advanced-simulators-dev"
-          npx c8ycli deploy -u https://psfactory.eu-latest.cumulocity.com -T ${{ secrets.DEV_DEPLOY_TENANT }} -U "${{ secrets.DEV_DEPLOY_USER }}" -P "${{ secrets.DEV_DEPLOY_PASS }}" ./dist/apps/simulators
+          npm run test --if-present
+
+      - name: 🚧  Build
+        run: |
+          cd factory/simulators
+          c8ycli build \
+            --app.key="${{ env.APP_KEY }}" \
+            --app.name="${{ env.APP_NAME }}" \
+            --app.contextPath="${{ env.APP_CONTEXT_PATH }}"
+
+      - name: 🚀 Deploy
+        run: |
+          cd factory/simulators
+          c8ycli deploy \
+            -u ${{ env.TENANT_DOMAIN }} \
+            -T ${{ env.TENANT_ID }} \
+            -U "${{ secrets.DEV_DEPLOY_USER }}" \
+            -P "${{ secrets.DEV_DEPLOY_PASS }}" \
+            ./dist/apps/simulators
