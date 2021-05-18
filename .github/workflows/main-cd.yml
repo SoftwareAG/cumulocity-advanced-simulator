@@ -1,8 +1,8 @@
-name: Master Deploy After Merge (CD)
+name: Main Deploy After Merge (CD)
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 env:
   NODE_VERSION: '12'

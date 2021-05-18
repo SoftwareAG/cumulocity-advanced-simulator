@@ -1,10 +1,10 @@
-name: Master Pull Request (CI)
+name: Main Pull Request (CI)
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 env:
   NODE_VERSION: '12'
