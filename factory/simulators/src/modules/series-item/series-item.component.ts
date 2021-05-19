@@ -60,6 +60,9 @@ export class SeriesItemComponent {
     private smartRestService: SmartRESTService
   ) {}
 
+  testomat(entry) {
+    console.info("entry", entry)
+  }
   setLabelsForSelected() {
     switch (this.selectedSeries.type) {
       case 'Measurement':
@@ -94,8 +97,6 @@ export class SeriesItemComponent {
   }
 
   duplicateSeries() {
-    //TODO CHRISMEY FIX THIS
-
     const duplicated = JSON.parse(JSON.stringify(this.selectedSeries));
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
     duplicated.index = this.allInstructionsSeries.length.toString();

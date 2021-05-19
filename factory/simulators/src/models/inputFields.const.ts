@@ -94,12 +94,6 @@ export const SeriesMeasurementsForm: InputField[] = [
     required: true,
     type: "textField",
     isNumber: true
-  },
-  {
-    name: "Randomize",
-    required: false,
-    label: "Randomize Measurements",
-    type: 'switch'
   }
 ];
 
@@ -217,6 +211,27 @@ export const SleepForm: InputField[] = [
     type: "textField",
     minimum: 5,
     isNumber: true
+  },
+  {
+    name: "numberOfSleeps",
+    label: "Number of sleeps",
+    placeholder: "",
+    required: true,
+    type: "textField",
+    minimum: 0,
+    isNumber: true
+  },
+  {
+    name: "sleepsEqualToInstructions",
+    label: "Number of sleeps equal to number of instructions",
+    required: false,
+    type: 'switch'
+  },
+  {
+    name: "intertwineValues",
+    label: "Sleep after each Instruction (Intertwine)",
+    required: false,
+    type: 'switch'
   }
 ];
 

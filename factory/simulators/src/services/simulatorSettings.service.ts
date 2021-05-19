@@ -129,15 +129,9 @@ export class SimulatorSettingsService {
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
         // Add sleep after inserting measurement
-
-        if (value.sleep && value.sleep !== +"") {
-          this.resultTemplate.commandQueue.push({
-            type: "sleep",
-            seconds: value.sleep,
-          } as IndexedCommandQueueEntry);
-        }
       }
     }
+    console.info("test");
     this.generateAlarmsOrEventsOrSleep();
     return this.resultTemplate.commandQueue;
   }
@@ -263,10 +257,12 @@ export class SimulatorSettingsService {
       !this.resultTemplate.commandQueue.length
     ) {
       const sleep = this.sleepService.sleeps[0];
+      if(sleep.)
       let instruction: Instruction = {
         type: InstructionCategory.Sleep,
         seconds: sleep.seconds,
       };
+      console.log('are you my sleep?', sleep, instruction);
       this.pushToResultTemplate(instruction);
     }
   }
