@@ -52,7 +52,7 @@ import { DomSanitizer } from "@angular/platform-browser";
   templateUrl: "./sim-settings.component.html",
   styleUrls: ["./sim-settings.component.scss"],
 })
-export class SimSettingsComponent implements OnInit {
+export class SimSettingsComponent {
   reducedColors = ColorsReduced;
   selectedColor: string = "#fff";
   defaultConfig: InstructionCategory[] = DefaultConfig;
@@ -83,6 +83,7 @@ export class SimSettingsComponent implements OnInit {
   subscriptions: Subscription[] = [];
   importUrl;
 
+  smartRestAllValues: { minIncrement?: string, maxIncrement?: string, minimum?: string, maximum?: string, unit?: string } = {};
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
 
@@ -106,7 +107,6 @@ export class SimSettingsComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit() {}
 
   updateSeries(index: number) {
     const isNumArr = this.allForms[index].filter((entry) => entry.isNumber);
@@ -150,7 +150,6 @@ export class SimSettingsComponent implements OnInit {
         this.instructionValue
       );
       const assignedIndex: string = this.allInstructionsSeries.length.toString();
-      console.log("Assigned index: ", assignedIndex);
       const insVal = JSON.parse(JSON.stringify(this.instructionValue));
       this.simSettingsService.pushToInstructionsArray({
         ...insVal,
@@ -161,6 +160,31 @@ export class SimSettingsComponent implements OnInit {
     }
   }
 
+
+  changeAllSmartRestValues() {
+    let currentMinIncrement = 0;
+    let currentMaxIncrement = 0;
+    for (let entry of this.smartRestSelectedConfig.smartRestFields.customValues) {
+        if (this.smartRestAllValues.minimum && entry.path.includes('value')) {
+          this.smartRestInstruction[entry.path+'_min'] = String(+this.smartRestAllValues.minimum + currentMinIncrement);
+          if (this.smartRestAllValues.maxIncrement){
+            currentMaxIncrement += +this.smartRestAllValues.maxIncrement;
+          }
+        }
+        if (this.smartRestAllValues.maximum && entry.path.includes('value')) {
+          this.smartRestInstruction[entry.path + '_max'] = String(+this.smartRestAllValues.maximum + currentMaxIncrement);
+          if (this.smartRestAllValues.minIncrement){
+            currentMinIncrement += +this.smartRestAllValues.minIncrement;
+          }
+        }
+        if (this.smartRestAllValues.unit && entry.path.includes('unit')) {
+          this.smartRestInstruction[entry.path] = this.smartRestAllValues.unit;
+        }
+    }
+  }
+
+
+
   generateRequest() {
     this.instructionValue["scalingOption"] = this.measurementOption;
     this.simSettingsService.randomSelected =
@@ -168,9 +192,9 @@ export class SimSettingsComponent implements OnInit {
       this.instructionValue.scalingOption
         ? this.instructionValue.scalingOption
         : "linear";
-    let asdkoas = this.simSettingsService.generateInstructions();
-    this.updateService.mo.c8y_DeviceSimulator.commandQueue = asdkoas;
-    console.log(asdkoas);
+    let instructionSet = this.simSettingsService.generateInstructions();
+    this.updateService.mo.c8y_DeviceSimulator.commandQueue = instructionSet;
+    
     //this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray().map((entry:AdditionalParameter)=> entry.index);
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
 
@@ -238,6 +262,7 @@ export class SimSettingsComponent implements OnInit {
       this.smartRestInstruction,
       this.smartRestSelectedConfig
     );
+    
     let entryFieldsWithInconsistentTypes = [];
     const entriesWithMinMaxOrSteps = Object.keys(
       this.smartRestInstruction
@@ -265,6 +290,7 @@ export class SimSettingsComponent implements OnInit {
         smartRestInstructionsArray,
         this.smartRestSelectedConfig
       );
+      
       let indexed = this.simSettingsService.indexedCommandQueue;
       const index = this.allInstructionsSeries.length.toString();
       const combinedSmartInstruction: SeriesInstruction = {
@@ -288,7 +314,6 @@ export class SimSettingsComponent implements OnInit {
       this.updateService
         .updateSimulatorObject(this.updateService.mo)
         .then((res) => {
-          console.log(res);
           const alert = {
             text: `Smart REST instructions created successfully.`,
             type: "success",

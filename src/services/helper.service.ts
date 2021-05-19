@@ -21,8 +21,8 @@ export class HelperService {
     return values;
   }
 
-  scaleTest(min, max, steps, randomSelected) {
-    let values = [min];
+  scaleTest(min:number, max:number, steps:number, randomSelected:string):number[] {
+    let values:number[] = [min];
     if (randomSelected === "linear") {
       let calcStep = (max - min) / steps;
       for (let i = 0; i < steps; i++) {
