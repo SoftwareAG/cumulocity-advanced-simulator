@@ -72,11 +72,16 @@
     </div>
     <div class="card-block">
       <p>
-        Set a percentage in which ballpark you want to randomize values (only
-        works on Measurements)
+        Set a percentage in which ballpark you want to randomize values
       </p>
 
       <div class="input-group">
+        <select class="form-control select-config" [(ngModel)]="randomizeValueType">
+          <option>All</option>
+          <option>SmartRest</option>
+          <option>Measurements</option>
+        </select>
+        &nbsp;
         <input
           type="text"
           [(ngModel)]="saltValue"

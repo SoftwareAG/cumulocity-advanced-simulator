@@ -160,10 +160,40 @@
       <ng-container *ngIf="isSmartRestSelected">
       <br>
       <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
+        <ng-container *ngIf="smartRestSelectedConfig.smartRestFields.customValues.length > 5">
+          <h3>Bulk Changes</h3>
+          <div class="row smartrest-bulk">
+            <div class="col-xs-6">
+              <label for="{{ 'id_for_all.minimum' }}" class="text-truncate" [title]="'for_all.minimum'">{{ 'Minimum for all values' }}</label>
+              <input id="{{ 'id_for_all.minimum' }}" [(ngModel)]="smartRestAllValues['minimum']" (change)="changeAllSmartRestValues()" class="form-control"
+                placeholder="minimum" />
+              </div>
+              <div class="col-xs-6">
+                <label for="{{ 'id_for_all.maximum' }}" class="text-truncate" [title]="'for_all.maximum'">{{ 'Maximum for all values' }}</label>
+                <input id="{{ 'id_for_all.maximum' }}" [(ngModel)]="smartRestAllValues['maximum']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="maximum" />
+              </div>
+              <div class="col-xs-6">
+                <label for="{{ 'id_for_all.minIncrement' }}" class="text-truncate" [title]="'for_all.minIncrement'">{{ 'Increment all Minimum values' }}</label>
+                <input id="{{ 'id_for_all.minIncrement' }}" [(ngModel)]="smartRestAllValues['minIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="Increment" />
+              </div>
+              <div class="col-xs-6">
+                <label for="{{ 'id_for_all.maxIncrement' }}" class="text-truncate" [title]="'for_all.maxIncrement'">{{ 'Increment all Maximum values' }}</label>
+                <input id="{{ 'id_for_all.maxIncrement' }}" [(ngModel)]="smartRestAllValues['maxIncrement']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="Increment" />
+              </div>
+              <div class="col-xs-6">
+                <label for="{{ 'id_for_all.unit' }}" class="text-truncate" [title]="'for_all.unit'">{{ 'Unit for all values' }}</label>
+                <input id="{{ 'id_for_all.unit' }}" [(ngModel)]="smartRestAllValues['unit']" (change)="changeAllSmartRestValues()" class="form-control"
+                  placeholder="unit" />
+              </div>
+            </div>
+        </ng-container>
         <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
           <ng-container *ngIf="entry.value === null">
           <div [hidden]="entry | isValue"> 
-            <label class="text-truncate" [title]="entry.path">{{ entry.path }}</label>
+            <label for="{{id + entry.path }}" class="text-truncate" [title]="entry.path">{{ entry.path }}</label>
             <input
               id="{{id + entry.path }}"
               [required]="true"
@@ -174,13 +204,12 @@
           <ng-container *ngIf="entry | isValue">
             <div class="row">
               <div class="col-xs-6">
-                <label class="text-truncate" [title]="entry.path+'.minimum'">{{ entry.path +'.minimum'}}</label>
+                <label class="text-truncate" for="{{ id + entry.path + '_min'}}" [title]="entry.path+'.minimum'">{{ entry.path +'.minimum'}}</label>
                 <input
-                id="{{ id + entry.path + '_min'}}"
-                [required]="true"
-                [(ngModel)]="smartRestInstruction[entry.path+'_min']"
-                class="form-control"
-                placeholder="minimum"
+                  id="{{ id + entry.path + '_min'}}"
+                  [(ngModel)]="smartRestInstruction[entry.path+'_min']"
+                  class="form-control"
+                  placeholder="minimum"
                 />
                 <!-- custom validation for type number -->
                 <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_min'] && !(smartRestInstruction[entry.path+'_min'] | isNumber)">
@@ -189,14 +218,13 @@
                   <!-- ------------------------------- -->
               </div>
               <div class="col-xs-6">
-                <label class="text-truncate" [title]="entry.path+'.maximum'">{{ entry.path +'.maximum'}}</label>
+                <label class="text-truncate" for="{{ id + entry.path + '_max'}}" [title]="entry.path+'.maximum'">{{ entry.path +'.maximum'}}</label>
                 <input
-                id="{{ id + entry.path + '_max'}}"
-                [required]="true"
-                [(ngModel)]="smartRestInstruction[entry.path+'_max']"
+                  id="{{ id + entry.path + '_max'}}"
+                  [(ngModel)]="smartRestInstruction[entry.path+'_max']"
                   class="form-control"
                   placeholder="maximum"
-                  />
+                />
                   <!-- custom validation for type number -->
                   <em  class="custom-validation" *ngIf="smartRestInstruction[entry.path+'_max'] && !(smartRestInstruction[entry.path+'_max'] | isNumber)">
                     <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;
@@ -209,7 +237,7 @@
          
         </div>
         <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig != ''">
-        <label class="text-truncate" [title]="'steps'">{{ 'steps'}}</label>
+        <label for="{{ id + 'steps' }}" class="text-truncate" [title]="'steps'">{{ 'steps'}}</label>
         <input
         id="{{ id + 'steps' }}"
         [required]="true"

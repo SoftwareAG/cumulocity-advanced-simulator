@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
+import { CommandQueueEntry, IndexedCommandQueueEntry, MessageIds } from '@models/commandQueue.model';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 export class BulkUpdatesComponent implements OnInit {
   mirroredAxis: boolean = false;
   intertwinedValues: boolean = false;
+  randomizeValueType: 'All' | 'SmartRest' | 'Measurements' = 'All';
   allInstructionsSeries = [];
   instructionsSubscription: Subscription;
   @Input() mo;
@@ -57,7 +58,7 @@ export class BulkUpdatesComponent implements OnInit {
         let newEntry = this.deepCopy(this.indexedCommandQueue[i]);
         newEntry.mirrored = true;
         this.indexedCommandQueue.push(newEntry);
-        console.log("newEntry", newEntry);
+        
       }
     } else {
       this.indexedCommandQueue = this.indexedCommandQueue.filter(element => !element.mirrored)
@@ -69,7 +70,7 @@ export class BulkUpdatesComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        console.log(res, "test");
+        
       });
   }
 
@@ -119,34 +120,39 @@ export class BulkUpdatesComponent implements OnInit {
       newIndexedCommandQueue = this.indexedCommandQueue;
       newIndexedCommandQueue.sort((a, b) => { return +a.index - +b.index });
     }
-    console.error("newCommandQueue", indexDistribution, newIndexedCommandQueue, filteredCommandQueue, this.allInstructionsSeries);
+    
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
     this.updateService.mo.c8y_intertwinedValues = this.intertwinedValues;
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {
-        console.log(res, "test");
-      });
+    this.updateService.updateSimulatorObject(this.updateService.mo);
   }
 
   saltValue: number;
   addSomeSalt() {
     for (let entry of this.indexedCommandQueue) {
-      if (entry.deviation) {
-        entry.values[2] = String(+entry.values[2] - entry.deviation);
-        delete entry.deviation;
+      //removes old salt if possible
+      if (entry.deviation && entry.deviation.length > 0) {
+        for (let i = 0; i < entry.values.length; i++) {
+          let number = entry.values[i];
+          if (number && !Number.isNaN(+number)) {
+            entry.values[i] = String(+number - entry.deviation.shift());
+          }
+        }
       }
+      delete entry.deviation;
+      //calculates new salt and adds it
       if (entry.index !== 'single' && !entry.deviation && this.saltValue > 0) {
-        let percentValue = Math.abs(+entry.values[2] * (this.saltValue / 100));
-        entry.deviation = this.randomInterval(-percentValue, percentValue, 2);
-        entry.values[2] = String(+entry.values[2] + entry.deviation);
-        console.info(percentValue, entry.deviation, entry.values[2]);
+        if (
+          ((this.randomizeValueType === 'All' || this.randomizeValueType === 'Measurements') && entry.messageId == MessageIds.Measurement)
+          || ((this.randomizeValueType === 'All' || this.randomizeValueType === 'SmartRest') && entry.templateId) ){
+          entry = this.calculateTheDeviation(entry);
+        }
       }
     }
-    console.log(this.saltValue);
+
+    
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
@@ -154,17 +160,38 @@ export class BulkUpdatesComponent implements OnInit {
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
       .then((res) => {
-        console.log(res, "test");
+        
       });
+  }
+
+  calculateTheDeviation(entry: IndexedCommandQueueEntry) {
+    for (let i = 0; i < entry.values.length; i++) {
+      let number = entry.values[i];
+      if (number && !Number.isNaN(+number)) {
+        let percentValue = Math.abs(+number * (this.saltValue / 100));
+        let deviation = this.randomInterval(-percentValue, percentValue, 2);
+        if (!entry.deviation) {
+          entry.deviation = [deviation];
+        } else {
+          entry.deviation.push(deviation);
+        }
+        entry.values[i] = String(+number + deviation);
+      }
+    }
+    return entry;
   }
 
   deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  randomInterval(min, max, digits) {
-    let random = Math.random() * (max - min + 1) + min;
-    let powerOfDigits = Math.pow(10, digits);
-    return Math.round(random * powerOfDigits) / powerOfDigits;
+  randomInterval(min: number, max: number, maxDigits: number):number {
+    let random = (Math.random() * (max * 100 - min * 100 + 1) + min * 100) / 100;
+    return this.numberOfDigitsAfterComma(random, maxDigits);
+  }
+
+  numberOfDigitsAfterComma(input: number, maxDigits: number):number{
+    const powerOfDigits = Math.pow(10, maxDigits)
+    return Math.round(input * powerOfDigits) / powerOfDigits;
   }
 }

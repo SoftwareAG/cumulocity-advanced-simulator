@@ -97,35 +97,26 @@ export class SimulatorSettingsService {
 
     this.measurementService.createUniqueMeasurementsArray();
     for (let value of this.measurementService.uniqueMeasurementsArray) {
-      for (const { temp, index } of this.helperService
-        .scaleTest(
-          value.minValue,
-          value.maxValue,
-          value.steps,
-          this.randomSelected
-        )
-        .map((temp, index) => ({ temp, index }))) {
-        // if else
-        const instruction: Instruction = {
-          fragment: value.fragment,
-          series: value.series,
-          unit: value.unit,
-          color: value.color,
-          type: InstructionCategory.Measurement,
-          value: temp,
-        };
-        console.error("instr", instruction);
 
-        let toBePushed = this.instructionService.instructionToCommand(
-          instruction
-        );
-        // this.instructionService.test(instruction);
-        let index = String(this.allInstructionsArray.length - 1);
-        let toBePushedWithIndex: IndexedCommandQueueEntry = {
-          ...toBePushed,
-          index: index,
-        } as IndexedCommandQueueEntry;
 
+      for (const { temp } of this.helperService
+        .scaleTest(+value.minValue, +value.maxValue, +value.steps, this.randomSelected)
+        .map((temp) => ({ temp }))) {
+          // if else
+          const instruction: Instruction = {
+            fragment: value.fragment,
+            series: value.series,
+            unit: value.unit,
+            color: value.color,
+            type: InstructionCategory.Measurement,
+            value: String(temp)
+          };
+          
+          let toBePushed = this.instructionService.instructionToCommand(instruction);
+          // this.instructionService.test(instruction);
+          let index = String(this.allInstructionsArray.length - 1);
+          let toBePushedWithIndex: IndexedCommandQueueEntry = {...toBePushed, index: index} as IndexedCommandQueueEntry;
+          
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
         // Add sleep after inserting measurement
