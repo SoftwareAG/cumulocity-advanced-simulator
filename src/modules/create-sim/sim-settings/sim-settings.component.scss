@@ -1,0 +1,45 @@
+::ng-deep {
+  .card-block h4 {
+    display: inline-block;
+    min-width: 170px;
+  }
+}
+
+.custom-validation {
+  display: flex;
+  width: 100%;
+  padding-left: 0px;
+  // justify-content: space-between;
+}
+
+.validation-icon {
+  color: #e0000e;
+  font-size: medium;
+}
+
+.smartrest-select {
+  max-width: 200px;
+  margin-right: 20px;
+  float: right;
+}
+
+.select-config {
+  margin-top: -5px;
+  margin-left: 20px;
+  max-width: 200px;
+  display: inline-block;
+}
+
+.warning {
+  box-shadow: 0px 3px 0px 0px #e0000e;
+  // border: 1px solid;
+}
+
+
+.smartrest-bulk{
+  padding-bottom:35px;
+  margin-bottom:35px;
+  border-style:none none solid none;
+  border-color:#ddd;
+  border-width:1px;
+}
