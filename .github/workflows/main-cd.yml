@@ -53,7 +53,7 @@ jobs:
       - name: 🚀 Deploy
         run: |
           npx c8ycli deploy \
-            -u ${{ secrets.DEV_TENANT_URL }} \
-            -T ${{ secrets.DEV_TENANT_ID }} \
-            -U "${{ secrets.DEV_DEPLOY_USER }}" \
-            -P "${{ secrets.DEV_DEPLOY_PASS }}" \
+            -u ${{ secrets.MAIN_TENANT_URL }} \
+            -T ${{ secrets.MAIN_TENANT_ID }} \
+            -U "${{ secrets.MAIN_DEPLOY_USER }}" \
+            -P "${{ secrets.MAIN_DEPLOY_PASS }}" \
