@@ -50,7 +50,7 @@ export class SimulatorFileUploadDialog {
   };
   public modalTitle: string = "Upload Simulator";
 
-  file: File;
+  files: File[];
   deviceSimulator: C8YDeviceSimulator;
   fileOutput;
   constructor(
@@ -62,14 +62,17 @@ export class SimulatorFileUploadDialog {
     private translateService: TranslateService
   ) {}
 
-  selectFile(file: File) {
-    this.file = file;
+  selectFile(files: File[]) {
+    this.files = files;
   }
 
-  uploadFile(event) {
-    if (this.file) {
-      const file = this.file;
-
+  uploadFile(event) {      
+      if (this.files === undefined) {
+        const errorText = 'Import file not selected. Please select file to import';
+        this.errorFeedback(errorText);
+        return;
+      }
+      const file = this.files[0];
       const mo: Partial<IManagedObject> = {
         name: file.name,
         type: file.type,
@@ -130,17 +133,14 @@ export class SimulatorFileUploadDialog {
               }
             },
             (err) => {
-              this.errorFeedback("Error when trying to upload the file.");
+              this.errorFeedback("File content could not be read. Please import file of suitable format.");
             }
           );
         },
         (error) => {
-          this.errorFeedback("Error when trying to upload the file.");
+          this.errorFeedback("File could not be uploaded. Please try again.");
         }
       );
-    } else {
-      this.errorFeedback("No file was uploaded! Please upload file to import");
-    }
   }
 
   onDismiss(event) {
