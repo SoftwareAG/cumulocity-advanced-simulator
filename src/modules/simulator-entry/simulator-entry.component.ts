@@ -1,3 +1,4 @@
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -9,6 +10,7 @@ import { CustomSimulator } from 'src/models/simulator.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
+import { version } from '../../../package.json';
 
 @Component({
   selector: 'app-simulator-entry',
@@ -32,6 +34,8 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     { category: { icon: 'sitemap', type: 'smartRest', break: false } },
   ];
   listClass = 'interact-list';
+  appVersion: string;
+
   constructor(
     private modalService: BsModalService,
     private simService: SimulatorsServiceService,
@@ -39,7 +43,9 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     private backend: SimulatorsBackendService,
     private alertService: AlertService,
     private translateService: TranslateService
-  ) {}
+  ) {
+    this.appVersion = version;
+  }
 
   ngOnInit(): void {
     this.refreshList();
