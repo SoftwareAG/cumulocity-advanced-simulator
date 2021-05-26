@@ -39,10 +39,12 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm install
+        env:
+          project-version: npm version
 
       - name: 🎲  Set Project version
         run: |
-          npm version "1.0.0-$GITHUB_ACTION"
+          echo "${{ env.project-version.simulators }}-$GITHUB_RUN_ID"
 
       - name: 🚧  Build
         run: |
