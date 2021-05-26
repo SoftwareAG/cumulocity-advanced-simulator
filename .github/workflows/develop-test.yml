@@ -1,4 +1,4 @@
-name: Develop Deploy After Merge (CD)
+name: CD Test
 
 on:
   pull_request:
@@ -41,7 +41,7 @@ jobs:
       - name: Install Node.js dependencies
         run: npm install
 
-      - name: 🎲  Set Project version:
+      - name: 🎲  Set Project version
         run: |
           npm version "${ project-version.simulators }-${{ GITHUB_ACTION }}"
           echo ${ project-version.simulators }
@@ -52,4 +52,3 @@ jobs:
             --app.key="${{ env.APP_KEY }}" \
             --app.name="${{ env.APP_NAME }}" \
             --app.contextPath="${{ env.APP_CONTEXT_PATH }}"
-
