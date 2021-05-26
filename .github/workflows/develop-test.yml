@@ -42,8 +42,17 @@ jobs:
 
       - name: 🎲  Set Project version
         run: |
-          echo "${{ env.project-version }}-$GITHUB_RUN_ID"
-          echo "url: https://$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/runs/$GITHUB_RUN_ID"
+          echo "version: ${{ env.project-version }}"
+          echo "action: $GITHUB_ACTION"
+          echo "action-path: $GITHUB_ACTION_PATH"
+          echo "event-name: $GITHUB_EVENT_NAME"
+          echo "job: $GITHUB_JOB"
+          echo "ref: $GITHUB_REF"
+          echo "run-id: $GITHUB_RUN_ID"
+          echo "run-number: $GITHUB_RUN_NUMBER"
+          echo "workflow: $GITHUB_WORKFLOW"
+          echo "workspace: $GITHUB_WORKSPACE"
+          echo "url: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/runs/$GITHUB_JOB"
           echo "sha: $GITHUB_SHA"
         env:
           project-version: npm version
