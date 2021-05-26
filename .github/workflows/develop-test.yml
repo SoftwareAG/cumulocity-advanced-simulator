@@ -39,18 +39,11 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm install
-        env:
-          project-version: npm version
 
       - name: 🎲  Set Project version
         run: |
           echo "${{ env.project-version }}-$GITHUB_RUN_ID"
-          echo "url: $GITHUB_SERVER_URL"
+          echo "url: https://$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/runs/$GITHUB_RUN_ID"
           echo "sha: $GITHUB_SHA"
-
-      - name: 🚧  Build
-        run: |
-          npx c8ycli build \
-            --app.key="${{ env.APP_KEY }}" \
-            --app.name="${{ env.APP_NAME }}" \
-            --app.contextPath="${{ env.APP_CONTEXT_PATH }}"
+        env:
+          project-version: npm version
