@@ -44,7 +44,9 @@ jobs:
 
       - name: 🎲  Set Project version
         run: |
-          echo "${{ env.project-version.simulators }}-$GITHUB_RUN_ID"
+          echo "${{ env.project-version }}-$GITHUB_RUN_ID"
+          echo "url: $GITHUB_SERVER_URL"
+          echo "sha: $GITHUB_SHA"
 
       - name: 🚧  Build
         run: |
