@@ -81,14 +81,17 @@ export class BulkUpdatesComponent implements OnInit {
     let newIndexedCommandQueue: IndexedCommandQueueEntry[] = [];
     let filteredCommandQueue = this.indexedCommandQueue.filter(a => a.index === 'single');
     if (this.intertwinedValues === true) {
-      let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1, nextIndex = 1, endCondition = false;
+      let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1;
       if (maxIndex <= 2) {
         return;
       }
-
+      //Prepare Structure to intertwine
       for (let entry of this.allInstructionsSeries) {
-        indexDistribution.push({ index: +entry.index, count: +entry.steps + 1, iterations: 0 });
-        numberOfTwines += +entry.steps + 1;
+        let count = 0;
+        if(entry.steps){ count = +entry.steps + 1;}
+        if (entry.numberOfSleeps){ count = +entry.numberOfSleeps;}
+        indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
+        numberOfTwines += count;
       }
 
       let startPosition = 0;
@@ -103,9 +106,9 @@ export class BulkUpdatesComponent implements OnInit {
         }
         startPosition++;
       }
-
       indexDistribution.sort((a, b) => b.count - a.count);
-
+      
+      // Actual intertwine / rearrange of the array
       for (let i = 0; i < numberOfTwines; i++) {
         for (let distributed of indexDistribution) {
           if (distributed.count <= 0) { continue; }

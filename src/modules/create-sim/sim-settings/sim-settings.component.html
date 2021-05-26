@@ -48,7 +48,7 @@
                 <div class="form-group">
                   <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
                   <label class="c8y-switch" *ngIf="entry.type === 'switch'">
-                    <input type="checkbox" [(ngModel)]="instructionValue[entry.name]" (change)="testomat(instructionValue)" />
+                    <input type="checkbox" [(ngModel)]="instructionValue[entry.name]" (change)="switchHandler(entry)" />
                     <span></span><em>{{entry.label}}</em>
                   </label>
                   <div

@@ -248,13 +248,13 @@ export class SimulatorSettingsService {
       !this.resultTemplate.commandQueue.length
     ) {
       const sleep = this.sleepService.sleeps[0];
-      if(sleep.)
-      let instruction: Instruction = {
-        type: InstructionCategory.Sleep,
-        seconds: sleep.seconds,
-      };
-      console.log('are you my sleep?', sleep, instruction);
-      this.pushToResultTemplate(instruction);
+      for (let i = 0; i < (sleep.numberOfSleeps ? +sleep.numberOfSleeps : 1); i++) {
+        let instruction: Instruction = {
+          type: InstructionCategory.Sleep,
+          seconds: sleep.seconds
+        };
+        this.pushToResultTemplate(instruction);
+      }
     }
   }
 

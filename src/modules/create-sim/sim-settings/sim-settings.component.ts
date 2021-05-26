@@ -15,6 +15,7 @@ import {
   SeriesBasicEventsForm,
   SeriesEventsForm,
   SeriesSleepForm,
+  InputField,
 } from "@models/inputFields.const";
 import {
   AlarmInstruction,
@@ -181,6 +182,21 @@ export class SimSettingsComponent {
           this.smartRestInstruction[entry.path] = this.smartRestAllValues.unit;
         }
     }
+  }
+  switchHandler(inputField: InputField){
+    if (inputField.name === 'sleepsEqualToInstructions'){
+      let steps = 0;
+      for(let entry of this.allInstructionsSeries){
+        if(entry.steps){
+          steps += +entry.steps + 1;
+        }
+        if(entry.numberOfSleeps){
+          steps += +entry.numberOfSleeps;
+        }
+      }
+      this.instructionValue['numberOfSleeps'] = String(steps);
+    }
+    console.log(this.allInstructionsSeries, this.instructionValue, inputField);
   }
 
 

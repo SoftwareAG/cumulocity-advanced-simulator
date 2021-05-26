@@ -215,7 +215,7 @@ export const SleepForm: InputField[] = [
   {
     name: "numberOfSleeps",
     label: "Number of sleeps",
-    placeholder: "",
+    placeholder: "10",
     required: true,
     type: "textField",
     minimum: 0,
