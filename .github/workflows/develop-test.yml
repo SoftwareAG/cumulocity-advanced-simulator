@@ -43,7 +43,7 @@ jobs:
 
       - name: 🎲  Set Project version
         run: |
-          npm version "${ project-version.simulators }-${{ GITHUB_ACTION }}"
+          npm version "${ project-version.simulators }-$GITHUB_ACTION"
           echo ${ project-version.simulators }
 
       - name: 🚧  Build
