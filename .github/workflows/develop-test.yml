@@ -28,7 +28,6 @@ jobs:
         uses: actions/cache@v2
         env:
           cache-name: cache-node-modules
-          project-version: npm version
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: ~/.npm
@@ -43,8 +42,7 @@ jobs:
 
       - name: 🎲  Set Project version
         run: |
-          npm version "${ project-version.simulators }-$GITHUB_ACTION"
-          echo ${ project-version.simulators }
+          npm version "1.0.0-$GITHUB_ACTION"
 
       - name: 🚧  Build
         run: |
