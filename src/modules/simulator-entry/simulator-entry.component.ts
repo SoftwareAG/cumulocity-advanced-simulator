@@ -1,17 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { BsModalService } from "ngx-bootstrap/modal";
-import { Subscription } from "rxjs";
-import { IManagedObject } from "@c8y/client";
-import { SimulatorConfigComponent } from "../simulator-config/simulator-config.component";
-import { SimulatorsServiceService } from "../../services/simulatorsService.service";
-import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
-import { Router } from "@angular/router";
-import { SimulatorsBackendService } from "../../services/simulatorsBackend.service";
+import { Component, OnInit } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { Subscription } from 'rxjs';
+import { IManagedObject } from '@c8y/client';
+import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
+import { SimulatorsServiceService } from '../../services/simulatorsService.service';
+import { CustomSimulator, DeviceSimulator } from 'src/models/simulator.model';
+import { Router } from '@angular/router';
+import { SimulatorsBackendService } from '../../services/simulatorsBackend.service';
+import { version } from '../../../package.json';
 
 @Component({
-  selector: "app-simulator-entry",
-  templateUrl: "./simulator-entry.component.html",
-  styleUrls: ["./simulator-entry.component.scss"],
+  selector: 'app-simulator-entry',
+  templateUrl: './simulator-entry.component.html',
+  styleUrls: ['./simulator-entry.component.scss'],
 })
 export class SimulatorEntryComponent implements OnInit {
   subscriptions = new Subscription();
@@ -23,19 +24,23 @@ export class SimulatorEntryComponent implements OnInit {
       break: boolean;
     };
   }[] = [
-    { category: { icon: "sliders", type: "measurements", break: false } },
-    { category: { icon: "bell", type: "alarms", break: false} },
-    { category: { icon: "tasks", type: "events", break: false } },
-    { category: { icon: "clock-o", type: "sleep", break: false} },
-    { category: { icon: "sitemap", type: "smartRest", break: false} },
+    { category: { icon: 'sliders', type: 'measurements', break: false } },
+    { category: { icon: 'bell', type: 'alarms', break: false } },
+    { category: { icon: 'tasks', type: 'events', break: false } },
+    { category: { icon: 'clock-o', type: 'sleep', break: false } },
+    { category: { icon: 'sitemap', type: 'smartRest', break: false } },
   ];
   listClass = 'interact-list';
+  appVersion: string;
+
   constructor(
     private modalService: BsModalService,
     private simService: SimulatorsServiceService,
     private router: Router,
     private backend: SimulatorsBackendService
-  ) {}
+  ) {
+    this.appVersion = version;
+  }
 
   ngOnInit() {
     this.refreshList();
@@ -52,27 +57,25 @@ export class SimulatorEntryComponent implements OnInit {
     );
   }
 
-  
   onListTypeChange(layout: string) {
     this.listClass = layout;
   }
-
 
   modalUnsubscribe() {
     this.subscriptions.unsubscribe();
   }
 
   editSimulator(simulator: CustomSimulator) {
-    this.router.navigate(["/createSim/" + simulator.id]);
+    this.router.navigate(['/createSim/' + simulator.id]);
   }
 
   onStateChange(simulator) {
-    simulator.c8y_DeviceSimulator.state === "RUNNING"
-      ? (simulator.c8y_DeviceSimulator.state = "PAUSED")
-      : (simulator.c8y_DeviceSimulator.state = "RUNNING");
+    simulator.c8y_DeviceSimulator.state === 'RUNNING'
+      ? (simulator.c8y_DeviceSimulator.state = 'PAUSED')
+      : (simulator.c8y_DeviceSimulator.state = 'RUNNING');
 
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
-      console.log("State changed");
+      console.log('State changed');
       const moId = res.id;
       this.backend.connectToSimulatorsBackend(
         simulator.c8y_DeviceSimulator,
@@ -87,7 +90,7 @@ export class SimulatorEntryComponent implements OnInit {
         (entry) => entry.id === simulator.id
       );
       this.allSimulators.splice(pos, 1);
-      console.log("Successfully Deleted");
+      console.log('Successfully Deleted');
     });
   }
 
@@ -95,11 +98,11 @@ export class SimulatorEntryComponent implements OnInit {
     let copyDeviceSim = JSON.parse(
       JSON.stringify(simulator.c8y_DeviceSimulator)
     );
-    copyDeviceSim.name = simulator.name + " #(copy)";
+    copyDeviceSim.name = simulator.name + ' #(copy)';
     const copyIndices = simulator.c8y_Indices;
     const copySeries = simulator.c8y_Series;
     const copySimulator: Partial<CustomSimulator> = {
-      name: simulator.name + " #(copy)",
+      name: simulator.name + ' #(copy)',
       c8y_CustomSim: {},
       c8y_DeviceSimulator: copyDeviceSim,
       c8y_Indices: copyIndices,
