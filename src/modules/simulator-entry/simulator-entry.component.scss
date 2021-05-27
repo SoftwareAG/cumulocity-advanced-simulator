@@ -3,6 +3,14 @@
   vertical-align: bottom;
 }
 
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100px;
+}
+
 .app-version {
   flex: 1 0 auto;
   margin: 2em 0 -1em;
