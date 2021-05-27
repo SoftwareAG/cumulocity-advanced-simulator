@@ -184,6 +184,9 @@ export class SimSettingsComponent {
     }
   }
   switchHandler(inputField: InputField){
+    
+  }
+  buttonHandler(inputField: InputField){
     if (inputField.name === 'sleepsEqualToInstructions'){
       let steps = 0;
       for(let entry of this.allInstructionsSeries){

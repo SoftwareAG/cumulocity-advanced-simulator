@@ -251,7 +251,8 @@ export class SimulatorSettingsService {
       for (let i = 0; i < (sleep.numberOfSleeps ? +sleep.numberOfSleeps : 1); i++) {
         let instruction: Instruction = {
           type: InstructionCategory.Sleep,
-          seconds: sleep.seconds
+          seconds: sleep.seconds,
+          color: (sleep.color) ? sleep.color : ''
         };
         this.pushToResultTemplate(instruction);
       }

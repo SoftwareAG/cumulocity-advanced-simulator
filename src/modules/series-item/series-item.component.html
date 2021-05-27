@@ -86,6 +86,9 @@
                 <input type="checkbox"  [(ngModel)]="instructionValue[entry.name]" (change)="testomat(instructionValue)"/>
                 <span></span><em>{{entry.label}}</em>
               </label>
+              <label class="c8y-switch" *ngIf="entry.type === 'button'">
+                <button type="button" (click)="buttonHandler(entry)" class="btn btn-primary">{{entry.placeholder}}</button>
+              </label>
               <div
                 class="form-group form-group-md"
                 *ngIf="entry.type === 'select'"

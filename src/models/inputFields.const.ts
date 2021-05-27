@@ -7,7 +7,7 @@ export interface InputField {
   placeholder?: string;
   required: boolean;
   label?: string;
-  type: 'select' | 'textField' | 'switch';
+  type: 'select' | 'textField' | 'switch' | 'button';
   options?: MessageId[];
   defaultValue?: string | number;
   hidden?: boolean;
@@ -224,14 +224,9 @@ export const SleepForm: InputField[] = [
   {
     name: "sleepsEqualToInstructions",
     label: "Number of sleeps equal to number of instructions",
+    placeholder: "Max Sleeps",
     required: false,
-    type: 'switch'
-  },
-  {
-    name: "intertwineValues",
-    label: "Sleep after each Instruction (Intertwine)",
-    required: false,
-    type: 'switch'
+    type: 'button'
   }
 ];
 
