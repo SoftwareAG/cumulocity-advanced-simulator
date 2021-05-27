@@ -33,6 +33,7 @@ export interface ILabels {
           <label translate>File to upload</label>
           <input
             type="file"
+            accept=".txt,.json"
             class="form-control"
             (change)="selectFile($event.target.files)"
           />
