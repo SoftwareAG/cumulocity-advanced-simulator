@@ -93,9 +93,10 @@ export class SimulatorFileUploadDialog {
                   this.deviceSimulator.id = this.updateService.mo.id;
                   const simulator: CustomSimulator = this.updateService.mo;
                   simulator.c8y_DeviceSimulator = this.deviceSimulator;
+                  simulator.c8y_DeviceSimulator.name = this.updateService.mo.name;
                   simulator.c8y_additionals = data.c8y_additionals;
                   simulator.c8y_Series = data.c8y_Series;
-                  simulator.name = this.updateService.mo.c8y_DeviceSimulator.name;
+                  simulator.name = this.updateService.mo.name;
                   this.backend
                     .addCustomSimulatorProperties(simulator)
                     .then((res1) => {
