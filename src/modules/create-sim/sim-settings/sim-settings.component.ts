@@ -238,7 +238,7 @@ export class SimSettingsComponent {
   }
 
   updateSeriesColor() {
-    console.log(this.selectedColor);
+    
   }
 
   openSimulatorUploadFileDialog() {
