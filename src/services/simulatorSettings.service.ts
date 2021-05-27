@@ -20,6 +20,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
 import * as _ from "lodash";
+import { InputField } from "@models/inputFields.const";
 @Injectable({
   providedIn: "root",
 })
@@ -257,6 +258,22 @@ export class SimulatorSettingsService {
         this.pushToResultTemplate(instruction);
       }
     }
+  }
+
+  buttonHandler(inputField: InputField, instructionValue: SeriesInstruction | Partial<SeriesInstruction>, allInstructionsSeries): SeriesInstruction | Partial<SeriesInstruction> {
+    if (inputField.name === 'sleepsEqualToInstructions') {
+      let steps = 0;
+      for (let entry of allInstructionsSeries) {
+        if (entry.steps) {
+          steps += +entry.steps + 1;
+        }
+        if (entry.numberOfSleeps) {
+          steps += +entry.numberOfSleeps;
+        }
+      }
+      instructionValue['numberOfSleeps'] = String(steps);
+    }
+    return instructionValue;
   }
 
   pushToResultTemplate(instruction: Instruction) {
