@@ -95,7 +95,7 @@ export class SimulatorFileUploadDialog {
                   simulator.c8y_DeviceSimulator = this.deviceSimulator;
                   simulator.c8y_additionals = data.c8y_additionals;
                   simulator.c8y_Series = data.c8y_Series;
-                  simulator.name = data.c8y_DeviceSimulator.name;
+                  simulator.name = this.updateService.mo.c8y_DeviceSimulator.name;
                   this.backend
                     .addCustomSimulatorProperties(simulator)
                     .then((res1) => {
@@ -129,7 +129,7 @@ export class SimulatorFileUploadDialog {
                   );
                 }
               } catch (error) {
-                this.errorFeedback(error);
+                this.errorFeedback("File of incompatible type uploaded. Please import file of suitable format.")
               }
             },
             (err) => {
