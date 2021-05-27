@@ -1,11 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { Subject } from "rxjs";
 import { AlertService, Alert } from "@c8y/ngx-components";
+import { TranslateService } from "@ngx-translate/core";
 import {
   IManagedObject,
   IManagedObjectBinary,
   InventoryBinaryService,
-  InventoryService,
 } from "@c8y/client";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
 import { C8YDeviceSimulator, CustomSimulator } from "@models/simulator.model";
@@ -33,6 +33,7 @@ export interface ILabels {
           <label translate>File to upload</label>
           <input
             type="file"
+            accept=".txt,.json"
             class="form-control"
             (change)="selectFile($event.target.files)"
           />
@@ -49,7 +50,6 @@ export class SimulatorFileUploadDialog {
     cancel: "Cancel",
   };
   public modalTitle: string = "Upload Simulator";
-  // @Input() device: Ship;
 
   files: File[];
   deviceSimulator: C8YDeviceSimulator;
@@ -57,81 +57,92 @@ export class SimulatorFileUploadDialog {
   constructor(
     private alertService: AlertService,
     private inventoryBinary: InventoryBinaryService,
-    private inventory: InventoryService,
     private updateService: ManagedObjectUpdateService,
     private backend: SimulatorsBackendService,
-    private simSettingsService: SimulatorSettingsService
+    private simSettingsService: SimulatorSettingsService,
+    private translateService: TranslateService
   ) {}
 
   selectFile(files: File[]) {
     this.files = files;
   }
 
-  uploadFile(event) {
-    const file = this.files[0];
-    const mo: Partial<IManagedObject> = {
-      name: file.name,
-      type: file.type,
-      customSim_Import: {},
-    };
-    this.inventoryBinary.create(file, mo).then(
-      (result) => {
-        this.inventory
-          .childAdditionsAdd(result.data.id, this.updateService.mo.id)
-          .then((res) => {
-            this.readFileContent(file).then((res) => {
-              const data = JSON.parse(res);
-              this.deviceSimulator = data.c8y_DeviceSimulator;
-              this.deviceSimulator.id = this.updateService.mo.id;
-              // const simulator: Partial<CustomSimulator> = {
-              //   type: "c8y_DeviceSimulator",
-              //   owner: "service_device-simulator",
-              //   name: this.updateService.mo.name,
-              //   c8y_CustomSim: {},
-              //   id: this.updateService.mo.id,
-              //   c8y_DeviceSimulator: this.deviceSimulator,
-              //   c8y_additionals: data.c8y_additionals,
-              //   c8y_Series: data.c8y_Series,
-              // }
-              let simulator: CustomSimulator = this.updateService.mo;
-              simulator.c8y_DeviceSimulator = this.deviceSimulator;
-              simulator.c8y_additionals = data.c8y_additionals;
-              simulator.c8y_Series = data.c8y_Series;
-              simulator.name = data.c8y_DeviceSimulator.name;
-              this.backend
-                .addCustomSimulatorProperties(simulator)
-                .then((res1) => {
-                  console.log("CustomSim Created here: ", res1);
-                  console.log("the original mo: ", this.updateService.mo);
-                  // simulator.id
-                  this.updateService.setManagedObject(simulator);
-                  this.updateService
-                    .updateSimulatorObject(simulator)
-                    .then((res2) => {
-                      // sim settings indexed command queue, command queue, instruction series
-                      let indexedCommandQueue: IndexedCommandQueueEntry[] = [];
-                      indexedCommandQueue = this.simSettingsService.createIndexedCommandQueue(
-                        res2.c8y_additionals,
-                        res2.c8y_Series,
-                        res2.c8y_DeviceSimulator.commandQueue
-                      );
-                      console.log('idx:: ', indexedCommandQueue);
-                      this.simSettingsService.setIndexedCommandQueue(indexedCommandQueue);
-                      this.simSettingsService.setAllInstructionsSeries(res2.c8y_Series);
-                    });
-                });
-            });
-          });
-      },
-      (error) => {
-        this.alertService.add({
-          text: "Error while uploading File",
-          type: "danger",
-          timeout: 0,
-        } as Alert);
-        this.onDismiss(false);
+  uploadFile(event) {      
+      if (this.files === undefined) {
+        const errorText = 'Import file not selected. Please select file to import';
+        this.errorFeedback(errorText);
+        return;
       }
-    );
+      const file = this.files[0];
+      const mo: Partial<IManagedObject> = {
+        name: file.name,
+        type: file.type,
+        customSim_Import: {},
+      };
+
+      this.inventoryBinary.create(file, mo).then(
+        (result) => {
+          this.readFileContent(file).then(
+            (res) => {
+              try {
+                const data = JSON.parse(res);
+                if (
+                  this.instanceOfC8YDeviceSimulator(data.c8y_DeviceSimulator) &&
+                  (file.name.endsWith(".txt") || file.name.endsWith(".json"))
+                ) {
+                  this.deviceSimulator = data.c8y_DeviceSimulator;
+                  this.deviceSimulator.id = this.updateService.mo.id;
+                  const simulator: CustomSimulator = this.updateService.mo;
+                  simulator.c8y_DeviceSimulator = this.deviceSimulator;
+                  simulator.c8y_DeviceSimulator.name = this.updateService.mo.name;
+                  simulator.c8y_additionals = data.c8y_additionals;
+                  simulator.c8y_Series = data.c8y_Series;
+                  simulator.name = this.updateService.mo.name;
+                  this.backend
+                    .addCustomSimulatorProperties(simulator)
+                    .then((res1) => {
+                      this.updateService.setManagedObject(simulator);
+                      this.updateService
+                        .updateSimulatorObject(simulator)
+                        .then((res2) => {
+                          // sim settings indexed command queue, command queue, instruction series
+                          let indexedCommandQueue: IndexedCommandQueueEntry[] =
+                            [];
+                          indexedCommandQueue =
+                            this.simSettingsService.createIndexedCommandQueue(
+                              res2.c8y_additionals,
+                              res2.c8y_Series,
+                              res2.c8y_DeviceSimulator.commandQueue
+                            );
+                          this.simSettingsService.setIndexedCommandQueue(
+                            indexedCommandQueue
+                          );
+                          this.simSettingsService.setAllInstructionsSeries(
+                            res2.c8y_Series
+                          );
+                        });
+                    });
+                } else {
+                  this.updateService.simulatorUpdateFeedback(
+                    "danger",
+                    this.translateService.instant(
+                      "The uploaded simulator is invalid. Please upload a compatible file!"
+                    )
+                  );
+                }
+              } catch (error) {
+                this.errorFeedback("File of incompatible type uploaded. Please import file of suitable format.")
+              }
+            },
+            (err) => {
+              this.errorFeedback("File content could not be read. Please import file of suitable format.");
+            }
+          );
+        },
+        (error) => {
+          this.errorFeedback("File could not be uploaded. Please try again.");
+        }
+      );
   }
 
   onDismiss(event) {
@@ -144,10 +155,6 @@ export class SimulatorFileUploadDialog {
 
   readFileContent(file: File): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      if (!file) {
-        resolve("");
-      }
-
       const reader = new FileReader();
 
       reader.onload = (e) => {
@@ -157,5 +164,18 @@ export class SimulatorFileUploadDialog {
 
       reader.readAsText(file);
     });
+  }
+
+  instanceOfC8YDeviceSimulator(object: any): object is C8YDeviceSimulator {
+    return object.commandQueue !== undefined || object.commandQueue !== null;
+  }
+
+  errorFeedback(errorText: string) {
+    this.alertService.add({
+      text: this.translateService.instant(errorText),
+      type: "danger",
+      timeout: 0,
+    } as Alert);
+    this.onDismiss(false);
   }
 }

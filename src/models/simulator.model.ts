@@ -28,8 +28,8 @@ export interface C8YDeviceSimulator {
   instances?: number;
   name: string;
   state: string;
-  commandQueue?: CommandQueueEntry[],
-  c8y_SupportedOperations: string[] 
+  commandQueue: CommandQueueEntry[],
+  c8y_SupportedOperations?: string[] 
 }
 
 export interface CustomSimulator extends IManagedObject {
