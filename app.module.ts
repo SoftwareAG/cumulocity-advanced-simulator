@@ -41,6 +41,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { InstructionTypePipe } from "./src/shared/instructionType.pipe";
 import { BulkUpdatesComponent } from "@modules/bulk-updates/bulk-updates.component";
 import { SimulatorFileUploadDialog } from "@modules/create-sim/sim-settings/simulator-file-upload-dialog";
+import { CsvImportComponent } from "@modules/create-sim/csv-import/csv-import.component";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -106,6 +107,7 @@ const appRoutes: Routes = [
     SeriesItemComponent,
     SeriesListComponent,
     CountPipe,
+    CsvImportComponent,
     IsNumberPipe,
     InstructionTypePipe,
     SimulatorFileUploadDialog
@@ -114,6 +116,7 @@ const appRoutes: Routes = [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
+    CsvImportComponent,
     SimulatorChartComponent,
     WarningModalComponent,
     AlarmsComponent,

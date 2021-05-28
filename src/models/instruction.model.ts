@@ -64,7 +64,7 @@ export interface SmartRestConfiguration {
 export interface SmartRestInstruction extends Instruction2 {
   minValue?:string;
   maxValue?: string;
-  steps: string;
+  steps?: string;
   value?: string;
   isNumber?: boolean;
   type: InstructionCategory.SmartRest;
