@@ -1,10 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IndexedCommandQueueEntry } from '@models/commandQueue.model';
+import { Alert, AlertService } from "@c8y/ngx-components";
 import { DefaultConfig } from '@models/inputFields.const';
 import { InstructionCategory, SmartInstruction, SmartRestInstruction } from '@models/instruction.model';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
-
+import { SimulatorsServiceService } from "@services/simulatorsService.service";
+import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
+import { IManagedObject } from "@c8y/client";
 
 @Component({
   selector: 'app-csv-import',
@@ -26,10 +29,14 @@ export class CsvImportComponent implements OnInit {
   dataProperties: string[] = [];
   @Input() smartRestConfig;
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
+  @Input() importCSVView: boolean;
   
   constructor(
     private simSettings: SimulatorSettingsService,
-    private instructionService: InstructionService
+    private instructionService: InstructionService,
+    private updateService: ManagedObjectUpdateService,
+    private alertService: AlertService,
+    private simulatorervice: SimulatorsServiceService
     ) { }
 
   ngOnInit() {
@@ -92,8 +99,33 @@ export class CsvImportComponent implements OnInit {
       let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: 'single' };
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-      //this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
+      this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
+      this.importCSVView = false;
     }
+  }
+
+
+  updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
+    this.simulatorervice.updateSimulatorManagedObject(mo).then(
+      (res) => {
+        console.log(res);
+        const alert = {
+          text: `${type} updated successfully.`,
+          type: "success",
+        } as Alert;
+        this.alertService.add(alert);
+      },
+      (error) => {
+        const alert = {
+          text: `Failed to save selected ${type.toLowerCase()}.`,
+          type: "danger",
+        } as Alert;
+        this.alertService.add(alert);
+      }
+
+    );
+
+
   }
       /*
 

@@ -55,7 +55,7 @@
 
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" ng-click="$ctrl.cancel()" translate="">Cancel</button>
+      <button class="btn btn-default" (click)="$ctrl.cancel(); this.importCSVView = false;" translate="">Cancel</button>
       <button class="btn btn-primary"  (click)="incrementStep()">
         <span *ngIf="step !== 3">Continue</span>
         <span *ngIf="step === 3">Start Import</span> 
