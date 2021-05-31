@@ -1,19 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { BsModalService } from "ngx-bootstrap/modal";
-import { Subscription } from "rxjs";
-import { IManagedObject } from "@c8y/client";
-import { SimulatorConfigComponent } from "../simulator-config/simulator-config.component";
-import { SimulatorsServiceService } from "../../services/simulatorsService.service";
-import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
-import { Router } from "@angular/router";
-import { SimulatorsBackendService } from "../../services/simulatorsBackend.service";
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { IManagedObject } from '@c8y/client';
+import { Alert, AlertService } from '@c8y/ngx-components';
+import { CustomSimulator } from 'src/models/simulator.model';
+import { SimulatorsServiceService } from '@services/simulatorsService.service';
+import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
+import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
+import { version } from '../../../package.json';
 
 @Component({
-  selector: "app-simulator-entry",
-  templateUrl: "./simulator-entry.component.html",
-  styleUrls: ["./simulator-entry.component.scss"],
+  selector: 'app-simulator-entry',
+  templateUrl: './simulator-entry.component.html',
+  styleUrls: ['./simulator-entry.component.scss'],
 })
-export class SimulatorEntryComponent implements OnInit {
+export class SimulatorEntryComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   allSimulators: IManagedObject[];
   instructionTypes: {
@@ -23,25 +27,35 @@ export class SimulatorEntryComponent implements OnInit {
       break: boolean;
     };
   }[] = [
-    { category: { icon: "sliders", type: "measurements", break: false } },
-    { category: { icon: "bell", type: "alarms", break: false} },
-    { category: { icon: "tasks", type: "events", break: false } },
-    { category: { icon: "clock-o", type: "sleep", break: false} },
-    { category: { icon: "sitemap", type: "smartRest", break: false} },
+    { category: { icon: 'sliders', type: 'measurements', break: false } },
+    { category: { icon: 'bell', type: 'alarms', break: false } },
+    { category: { icon: 'tasks', type: 'events', break: false } },
+    { category: { icon: 'clock-o', type: 'sleep', break: false } },
+    { category: { icon: 'sitemap', type: 'smartRest', break: false } },
   ];
   listClass = 'interact-list';
+  appVersion: string;
+
   constructor(
     private modalService: BsModalService,
     private simService: SimulatorsServiceService,
     private router: Router,
-    private backend: SimulatorsBackendService
-  ) {}
+    private backend: SimulatorsBackendService,
+    private alertService: AlertService,
+    private translateService: TranslateService
+  ) {
+    this.appVersion = version;
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.refreshList();
   }
 
-  openAddNewSimulatorDialog() {
+  ngOnDestroy(): void {
+    this.modalUnsubscribe();
+  }
+
+  openAddNewSimulatorDialog(): void {
     const modal = this.modalService.show(SimulatorConfigComponent);
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
@@ -52,27 +66,25 @@ export class SimulatorEntryComponent implements OnInit {
     );
   }
 
-  
-  onListTypeChange(layout: string) {
+  onListTypeChange(layout: string): void {
     this.listClass = layout;
   }
 
-
-  modalUnsubscribe() {
+  modalUnsubscribe(): void {
     this.subscriptions.unsubscribe();
   }
 
-  editSimulator(simulator: CustomSimulator) {
-    this.router.navigate(["/createSim/" + simulator.id]);
+  editSimulator(simulator: CustomSimulator): void {
+    this.router.navigate(['/createSim/' + simulator.id]);
   }
 
-  onStateChange(simulator) {
-    simulator.c8y_DeviceSimulator.state === "RUNNING"
-      ? (simulator.c8y_DeviceSimulator.state = "PAUSED")
-      : (simulator.c8y_DeviceSimulator.state = "RUNNING");
+  onStateChange(simulator: CustomSimulator): void {
+    simulator.c8y_DeviceSimulator.state === 'RUNNING'
+      ? (simulator.c8y_DeviceSimulator.state = 'PAUSED')
+      : (simulator.c8y_DeviceSimulator.state = 'RUNNING');
 
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
-      console.log("State changed");
+      console.log('State changed');
       const moId = res.id;
       this.backend.connectToSimulatorsBackend(
         simulator.c8y_DeviceSimulator,
@@ -81,36 +93,64 @@ export class SimulatorEntryComponent implements OnInit {
     });
   }
 
-  onDeleteSelected(simulator) {
-    this.simService.deleteManagedObject(simulator.id).then(() => {
-      const pos = this.allSimulators.findIndex(
-        (entry) => entry.id === simulator.id
-      );
-      this.allSimulators.splice(pos, 1);
-      console.log("Successfully Deleted");
-    });
+  onDeleteSelected(simulator: CustomSimulator): void {
+    this.simService.deleteManagedObject(simulator.id).then(
+      () => {
+        const pos = this.allSimulators.findIndex(
+          (entry) => entry.id === simulator.id
+        );
+        this.allSimulators.splice(pos, 1);
+
+        this.refreshList();
+        this.alertService.add({
+          text: this.translateService.instant('Simulator deleted.'),
+          type: 'success',
+        } as Alert);
+      },
+      (error) => {
+        this.alertService.add({
+          text: this.translateService.instant(error),
+          type: 'danger',
+          timeout: 0,
+        } as Alert);
+      }
+    );
   }
 
-  onDuplicateSelected(simulator) {
+  onDuplicateSelected(simulator: CustomSimulator): void {
     let copyDeviceSim = JSON.parse(
       JSON.stringify(simulator.c8y_DeviceSimulator)
     );
-    copyDeviceSim.name = simulator.name + " #(copy)";
+    copyDeviceSim.name = simulator.name + ' #(copy)';
     const copyIndices = simulator.c8y_Indices;
     const copySeries = simulator.c8y_Series;
     const copySimulator: Partial<CustomSimulator> = {
-      name: simulator.name + " #(copy)",
+      name: simulator.name + ' #(copy)',
       c8y_CustomSim: {},
       c8y_DeviceSimulator: copyDeviceSim,
       c8y_Indices: copyIndices,
       c8y_Series: copySeries,
     };
-    this.simService
-      .createCustomSimulator(copySimulator)
-      .then((res) => console.log(res));
+
+    this.simService.createCustomSimulator(copySimulator).then(
+      () => {
+        this.refreshList();
+        this.alertService.add({
+          text: this.translateService.instant('Simulator duplicated.'),
+          type: 'success',
+        } as Alert);
+      },
+      (error) => {
+        this.alertService.add({
+          text: this.translateService.instant(error),
+          type: 'danger',
+          timeout: 0,
+        } as Alert);
+      }
+    );
   }
 
-  refreshList() {
+  refreshList(): void {
     this.simService.getAllDevices().then((simulators) => {
       this.allSimulators = simulators.sort((entry1, entry2) => {
         const val1 = entry1.name.toLowerCase();
