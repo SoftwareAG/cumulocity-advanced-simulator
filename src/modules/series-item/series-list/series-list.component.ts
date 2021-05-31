@@ -82,6 +82,4 @@ export class SeriesListComponent implements OnInit {
     this.simSettingsService.setAllInstructionsSeries(updatedInstructionsSeries);
     this.updatedService.updateSimulatorObject(this.updatedService.mo).then((res) => console.log(res));  
   }
-
-  
 }

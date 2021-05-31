@@ -1,11 +1,10 @@
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { IManagedObject } from '@c8y/client';
-import { Alert, AlertService } from '@c8y/ngx-components';
+import { Alert, AlertService, ModalService } from '@c8y/ngx-components';
 import { CustomSimulator } from 'src/models/simulator.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
@@ -38,6 +37,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
 
   constructor(
     private modalService: BsModalService,
+    private ngXmodalService: ModalService,
     private simService: SimulatorsServiceService,
     private router: Router,
     private backend: SimulatorsBackendService,
@@ -64,6 +64,30 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
         this.modalUnsubscribe();
       })
     );
+  }
+
+  deleteSimulatorPrompt(simulator: CustomSimulator): Promise<boolean> {
+    return this.ngXmodalService
+      .confirm(
+        'Delete Simulator',
+        'Do you want to delete the simulator "' +
+          simulator.name +
+          '"? This action cannot be undone.',
+        'danger',
+        {
+          ok: 'Delete',
+          cancel: 'Cancel',
+        }
+      )
+      .then(
+        () => {
+          return this.deleteSimulator(simulator);
+        },
+        () => {
+          // no actual handling required
+          return false;
+        }
+      );
   }
 
   onListTypeChange(layout: string): void {
@@ -93,8 +117,8 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteSelected(simulator: CustomSimulator): void {
-    this.simService.deleteManagedObject(simulator.id).then(
+  private deleteSimulator(simulator: CustomSimulator): Promise<boolean> {
+    return this.simService.deleteManagedObject(simulator.id).then(
       () => {
         const pos = this.allSimulators.findIndex(
           (entry) => entry.id === simulator.id
@@ -106,6 +130,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
           text: this.translateService.instant('Simulator deleted.'),
           type: 'success',
         } as Alert);
+        return true;
       },
       (error) => {
         this.alertService.add({
@@ -113,6 +138,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
           type: 'danger',
           timeout: 0,
         } as Alert);
+        return false;
       }
     );
   }
