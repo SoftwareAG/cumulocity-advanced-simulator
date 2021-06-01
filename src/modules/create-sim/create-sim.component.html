@@ -1,49 +1,49 @@
 
 <section [ngClass]="(grabber) ? 'noselect' : ''" (mousemove)="onMouseMove($event)">
+
 <c8y-title>
   <span *ngIf="!editMode">{{simulatorTitle}}</span>
   <input *ngIf="editMode" [(ngModel)]="simulatorTitle"  (focusout)="editSimulatorTitle()">&nbsp;&nbsp;
   <i c8yIcon="edit" style="font-size: small;" (click)="editMode=true"></i>
 </c8y-title>
-  <c8y-action-bar-item [itemClass]="'btn-group'" [placement]="'left'">
-    <button class="btn btn-link" (click)="changeRouteLastSite()">
-      <i c8yIcon="arrow-circle-left"></i>
-      All Simulators
-    </button>
-  </c8y-action-bar-item>
 
-  <c8y-action-bar-item [placement]="'left'" style="float:left;">
-    <div class="wizard">
-      <div class="wizard-styling">
-      </div>
+<c8y-action-bar-item [itemClass]="'btn-group'" [placement]="'left'">
+  <button class="btn btn-link" (click)="changeRouteLastSite()">
+    <i c8yIcon="arrow-circle-left"></i>
+    All Simulators
+  </button>
+</c8y-action-bar-item>
 
-      <div (click)="autoScrollTo(0)" [ngClass]="(wizardStep === 0) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
-        <div class="circle">1</div>
-        Create an Instruction or Series
-      </div>
-      
-      <div (click)="autoScrollTo(1)" [ngClass]="(wizardStep === 1) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
-        <div class="circle">2</div>
-        Check the Simulator
-      </div>
-
-      <div (click)="autoScrollTo(2)" [ngClass]="(wizardStep === 2) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
-        <div class="circle">3</div>
-        Bulk updates
-      </div>
-    
-      <div (click)="autoScrollTo(3)" [ngClass]="[(simulatorRunning) ? 'circle-animate' : '', (wizardStep === 3) ? 'wizard-item' : ((simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled')]">
-        <div class="circle"><span>4</span></div>
-        <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
-        <span *ngIf="!simulatorRunning">Start the Simulator</span>
-      </div>
+<c8y-action-bar-item [placement]="'left'">
+  <div class="wizard">
+    <div class="wizard-styling">
     </div>
-  </c8y-action-bar-item>
 
+    <div (click)="autoScrollTo(0)" [ngClass]="(wizardStep === 0) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
+      <div class="circle">1</div>
+      Create an Instruction or Series
+    </div>
+    
+    <div (click)="autoScrollTo(1)" [ngClass]="(wizardStep === 1) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
+      <div class="circle">2</div>
+      Check the Simulator
+    </div>
+
+    <div (click)="autoScrollTo(2)" [ngClass]="(wizardStep === 2) ? 'wizard-item' : (simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled'">
+      <div class="circle">3</div>
+      Bulk updates
+    </div>
+  
+    <div (click)="autoScrollTo(3)" [ngClass]="[(simulatorRunning) ? 'circle-animate' : '', (wizardStep === 3) ? 'wizard-item' : ((simulatorRunning) ? 'wizard-item-success' : 'wizard-item-disabled')]">
+      <div class="circle"><span>4</span></div>
+      <span *ngIf="simulatorRunning"><b>Pause</b> this Simulator</span>
+      <span *ngIf="!simulatorRunning">Start the Simulator</span>
+    </div>
+  </div>
+</c8y-action-bar-item>
 
 <section id="create-simulator" class="row main-div" [style.height.px]='height' style="margin-top:70px;">
     <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
-
       <div >
         <app-sim-settings
           [mo]="mo"
@@ -54,7 +54,6 @@
           [smartRestConfig]="smartRestConfig"
           (allSeriesEmitter)="updateAllSeries($event)"
         ></app-sim-settings>
-
         
         <div *ngIf="allInstructionsSeries.length" class="card series-header series-list">
           <div class="series-item">
