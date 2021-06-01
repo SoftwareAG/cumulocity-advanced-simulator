@@ -15,6 +15,7 @@ import {
   SeriesBasicEventsForm,
   SeriesEventsForm,
   SeriesSleepForm,
+  InputField,
 } from "@models/inputFields.const";
 import {
   AlarmInstruction,
@@ -182,6 +183,12 @@ export class SimSettingsComponent {
         }
     }
   }
+  switchHandler(inputField: InputField){
+    
+  }
+  buttonHandler(inputField: InputField){
+    this.instructionValue = this.simSettingsService.buttonHandler(inputField, this.instructionValue, this.allInstructionsSeries);
+  }
 
 
 
@@ -231,7 +238,7 @@ export class SimSettingsComponent {
   }
 
   updateSeriesColor() {
-    console.log(this.selectedColor);
+    
   }
 
   openSimulatorUploadFileDialog() {
