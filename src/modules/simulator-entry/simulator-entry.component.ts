@@ -5,11 +5,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { IManagedObject } from '@c8y/client';
 import { Alert, AlertService, ModalService } from '@c8y/ngx-components';
-import { CustomSimulator } from 'src/models/simulator.model';
+import { CustomSimulator, SimulatorTemplate } from 'src/models/simulator.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
 import { version } from '../../../package.json';
+import { TemplateSelectionDialog } from './template-selection-dialog';
 
 @Component({
   selector: 'app-simulator-entry',
@@ -19,6 +20,8 @@ import { version } from '../../../package.json';
 export class SimulatorEntryComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   allSimulators: IManagedObject[];
+  allSimulatorTemplates: IManagedObject[];
+  // simulatorTemplates: IManagedObject[];
   instructionTypes: {
     category: {
       icon: string;
@@ -49,6 +52,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.refreshList();
+    this.getSimulatorTemplates();
   }
 
   ngOnDestroy(): void {
@@ -57,6 +61,18 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
 
   openAddNewSimulatorDialog(): void {
     const modal = this.modalService.show(SimulatorConfigComponent);
+    this.subscriptions.add(
+      modal.content.closeSubject.subscribe((result) => {
+        if (result) {
+        }
+        this.modalUnsubscribe();
+      })
+    );
+  }
+
+  openTemplateSelectionDialog(): void {
+    const modal = this.modalService.show(TemplateSelectionDialog);
+    modal.content.allSimulatorTemplates = this.allSimulatorTemplates;
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
@@ -185,4 +201,18 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
       });
     });
   }
+
+  getSimulatorTemplates() {
+    this.simService.getSimulatorTemplates().then((templates) => {
+      this.allSimulatorTemplates = templates;
+      // .sort((entry1, entry2) => {
+      //   const val1 = entry1.name.toLowerCase();
+      //   const val2 = entry2.name.toLowerCase();
+      //   return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
+      // });
+      console.log(this.allSimulatorTemplates);
+    });
+  }
+
+
 }

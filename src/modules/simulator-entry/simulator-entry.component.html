@@ -36,10 +36,19 @@
     </ul>
   </div>
 </c8y-action-bar-item>
-<c8y-action-bar-item [placement]="'right'">
+<c8y-action-bar-item [placement]="'right'" [itemClass]="'btn-link'">
+  <button class="btn btn-link">
   <a routerLink="/bulk-simulators">
   <i c8yIcon="plus"></i>&nbsp;
-  Create bulk simulators </a> 
+  Create bulk simulators </a>
+</button>
+</c8y-action-bar-item>
+
+<c8y-action-bar-item [placement]="'right'" [itemClass]="'btn-link'">
+  <button class="btn btn-link" (click)="openTemplateSelectionDialog()">
+  <i c8yIcon="search"></i>&nbsp;
+  Create bulk simulators 
+</button>
 </c8y-action-bar-item>
 
 <div class="card-group" [ngClass]="listClass">

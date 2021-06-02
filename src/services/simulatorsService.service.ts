@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IdentityService, IManagedObject, InventoryService } from "@c8y/client";
-import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
+import { CustomSimulator, DeviceSimulator, SimulatorTemplate } from "src/models/simulator.model";
 import { ManagedObjectService } from "./ManagedObject.service";
 import { map } from 'rxjs/operators';
 
@@ -21,6 +21,14 @@ export class SimulatorsServiceService extends ManagedObjectService {
     return this.getFilterInventoryResult(deviceFilter);
   }
 
+  getSimulatorTemplates() {
+    const templateFilter = {
+      query: `$filter=(has(${this.simulatorTemplateFragment}))`,
+      pageSize: 1000,
+    }
+    return this.getFilterInventoryResult(templateFilter);
+  }
+
   fetchExternalIds(externalId: string) {
     return this.identityService.list(externalId);
   }
@@ -30,6 +38,10 @@ export class SimulatorsServiceService extends ManagedObjectService {
       const res = result;
       return res;
     });
+  }
+
+  createSimulatorTemplate(obj: Partial<SimulatorTemplate>) {
+    return this.createManagedObject(obj);
   }
 
   getSimulatorById(id: string) {

@@ -2,6 +2,7 @@ import { IManagedObject, InventoryService } from '@c8y/client';
 
 export abstract class ManagedObjectService {
     readonly customSimulatorFragment = "c8y_CustomSim";
+    readonly simulatorTemplateFragment = "c8y_Simulator_Template";
 
     constructor(private inventory: InventoryService) { }
 

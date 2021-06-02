@@ -42,6 +42,8 @@ import { InstructionTypePipe } from "./src/shared/instructionType.pipe";
 import { BulkUpdatesComponent } from "@modules/bulk-updates/bulk-updates.component";
 import { SimulatorFileUploadDialog } from "@modules/create-sim/sim-settings/simulator-file-upload-dialog";
 import { BulkSimulatorsComponent } from "@modules/bulk-simulators/bulk-simulators.component";
+import { TemplateSelectionDialog } from "@modules/simulator-entry/template-selection-dialog";
+import { SaveSimulatorTemplateDialog } from "@modules/create-sim/sim-settings/save-simulator-template-dialog";
 
 const appRoutes: Routes = [
   { path: "", component: SimulatorEntryComponent },
@@ -111,7 +113,9 @@ const appRoutes: Routes = [
     IsNumberPipe,
     InstructionTypePipe,
     SimulatorFileUploadDialog, 
-    BulkSimulatorsComponent
+    BulkSimulatorsComponent,
+    TemplateSelectionDialog,
+    SaveSimulatorTemplateDialog
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -130,7 +134,9 @@ const appRoutes: Routes = [
     SeriesItemComponent,
     SeriesListComponent,
     SimulatorFileUploadDialog,
-    BulkSimulatorsComponent
+    BulkSimulatorsComponent,
+    TemplateSelectionDialog,
+    SaveSimulatorTemplateDialog
   ],
   providers: [ThemeService],
 

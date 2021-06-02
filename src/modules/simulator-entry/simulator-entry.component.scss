@@ -11,6 +11,15 @@
   min-height: 100px;
 }
 
+.transparent {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
 .app-version {
   flex: 1 0 auto;
   margin: 2em 0 -1em;

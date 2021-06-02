@@ -47,6 +47,7 @@ import * as _ from "lodash";
 import { SimulatorFileUploadDialog } from "./simulator-file-upload-dialog";
 import { Subscription } from "rxjs";
 import { DomSanitizer } from "@angular/platform-browser";
+import { SaveSimulatorTemplateDialog } from "./save-simulator-template-dialog";
 @Component({
   selector: "app-sim-settings",
   templateUrl: "./sim-settings.component.html",
@@ -82,6 +83,7 @@ export class SimSettingsComponent {
   measurementOption = "linear";
   subscriptions: Subscription[] = [];
   importUrl;
+  subscription = new Subscription();
 
   smartRestAllValues: { minIncrement?: string, maxIncrement?: string, minimum?: string, maximum?: string, unit?: string } = {};
   @Input() header: TemplateRef<any>;
@@ -244,6 +246,21 @@ export class SimSettingsComponent {
         }
       })
     );
+  }
+
+  openSimulatorTemplateModal() {
+    const modal = this.modalService.show(SaveSimulatorTemplateDialog);
+    this.subscription.add(
+      modal.content.closeSubject.subscribe((result) => {
+        if (result) {
+        }
+        this.modalUnsubscribe();
+      })
+    );
+  }
+
+  modalUnsubscribe(): void {
+    this.subscription.unsubscribe();
   }
 
   downloadSimulator() {
