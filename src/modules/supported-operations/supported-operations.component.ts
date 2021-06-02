@@ -1,47 +1,37 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { CustomSimulator } from "@models/simulator.model";
-import { ManagedObjectService } from "@services/ManagedObject.service";
-import { SimulatorsServiceService } from "@services/simulatorsService.service";
-import { BsModalService } from "ngx-bootstrap/modal";
-import { Subscription } from "rxjs";
-import { CustomOperationComponent } from "./custom-operation/custom-operation.component";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { Subscription } from 'rxjs';
+import { CustomSimulator } from '@models/simulator.model';
+import { SimulatorsServiceService } from '@services/simulatorsService.service';
+import { CustomOperationComponent } from './custom-operation/custom-operation.component';
 
 @Component({
-  selector: "app-supported-operations",
-  templateUrl: "./supported-operations.component.html",
-  styleUrls: ["./supported-operations.component.scss"],
+  selector: 'app-supported-operations',
+  templateUrl: './supported-operations.component.html',
+  styleUrls: ['./supported-operations.component.scss']
 })
 export class SupportedOperationsComponent implements OnInit {
   data: any;
   mo: CustomSimulator;
-  subscriptions = new Subscription();
+  subscriptions = new Subscription(); // TODO private?
+  defaultSupportedOperations = [
+    { name: 'Configuration', fragment: 'c8y_Configuration', isActive: false },
+    { name: 'Device restart', fragment: 'c8y_Restart', isActive: false },
+    { name: 'Firmware update', fragment: 'c8y_Firmware', isActive: false },
+    { name: 'Software update', fragment: 'c8y_Software', isActive: false }
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private modalService: BsModalService,
-    private simulatorService: SimulatorsServiceService,
-    private managedService: SimulatorsServiceService
+    private simulatorService: SimulatorsServiceService
   ) {}
-
-  defaultSupportedOperations = [
-    { name: "Configuration", fragment: "c8y_Configuration", isActive: false },
-    { name: "Device restart", fragment: "c8y_Restart", isActive: false },
-    { name: "Firmware update", fragment: "c8y_Firmware", isActive: false },
-    { name: "Software update", fragment: "c8y_Software", isActive: false },
-  ];
 
   ngOnInit() {
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    const operations = this.mo.c8y_DeviceSimulator.c8y_SupportedOperations;
-    // operations.map(
-    //   (entry) =>
-    //     (this.defaultSupportedOperations.filter(
-    //       (item) => item.fragment === entry
-    //     )[0].isActive = true)
-    // );
   }
-
 
   addCustomOperationModal() {
     const modal = this.modalService.show(CustomOperationComponent);
@@ -61,32 +51,17 @@ export class SupportedOperationsComponent implements OnInit {
 
   changeOperationstate(operation) {
     operation.isActive = !operation.isActive;
-    if (
-      operation.isActive &&
-      !this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.includes(
-        operation.fragment
-      )
-    ) {
-      this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.push(
-        operation.fragment
-      );
+    if (operation.isActive && !this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.includes(operation.fragment)) {
+      this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.push(operation.fragment);
     } else if (
       !operation.isActive &&
-      this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.includes(
-        operation.fragment
-      )
+      this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.includes(operation.fragment)
     ) {
       const deletePosition = this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.findIndex(
         (entry) => entry == operation.fragment
       );
-      this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.splice(
-        deletePosition,
-        1
-      );
+      this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.splice(deletePosition, 1);
     }
-    // this.defaultSupportedOperations.push()
-    this.simulatorService
-      .updateSimulatorManagedObject(this.mo)
-      .then((result) => console.log(result));
+    this.simulatorService.updateSimulatorManagedObject(this.mo).then((result) => {}); // FIXME proper handling
   }
 }

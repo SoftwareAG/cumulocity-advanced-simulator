@@ -57,7 +57,6 @@ export class SmartRESTService {
     this.commandQueueArray = [];
     smartRestInstructionArray.forEach((instruction) => {
       let vals = [];
-      const steps = instruction.steps;
       if (instruction.minValue && instruction.maxValue) {
         vals = this.helperService
           .scaleTest(
@@ -67,19 +66,13 @@ export class SmartRESTService {
             this.smartRestOption
           ).map((temp) => temp.toString());
       } else {
-        console.log('instr vals ype string: ', instruction);
         vals.push(...this.fillArray(instruction.value, instruction.steps));
       }
       this.values.push(vals);
     });
-    console.log('this.values: ', this.values);
+    
     for (let i = 0; i < this.transposeArray(this.values).length; i++) {
-      let initialValues = [];
-      if (smartRESTTemplate.smartRestFields.mandatoryValues.length) {
-        initialValues = [""];
-      } else {
-        initialValues = [];
-      }
+      let initialValues = (smartRESTTemplate.smartRestFields.mandatoryValues.length) ? [""] : [];
       let commandQueueEntry: CommandQueueEntry = {
         type: CommandQueueType.message,
         values: initialValues,
