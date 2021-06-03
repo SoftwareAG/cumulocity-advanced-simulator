@@ -26,7 +26,7 @@ export const DefaultConfig: InstructionCategory[] = [
   InstructionCategory.BasicEvent,
   InstructionCategory.LocationUpdateEvent,
   InstructionCategory.Sleep,
-  InstructionCategory.SmartRest,
+  InstructionCategory.SmartRest
 ];
 
 export const MeasurementsForm: InputField[] = [
@@ -35,21 +35,21 @@ export const MeasurementsForm: InputField[] = [
     required: true,
     type: 'textField',
     hidden: true,
-    defaultValue: MessageIds.Measurement,
+    defaultValue: MessageIds.Measurement
   },
   {
     name: 'series',
     label: 'Series',
     placeholder: 'Vehicles, Airplanes',
     required: true,
-    type: 'textField',
+    type: 'textField'
   },
   {
     name: 'fragment',
     label: 'Fragment',
     placeholder: 'Speed, Distance, Velocity',
     required: true,
-    type: 'textField',
+    type: 'textField'
   },
   {
     name: 'value',
@@ -57,15 +57,15 @@ export const MeasurementsForm: InputField[] = [
     placeholder: 'Measurement',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'unit',
     label: 'Unit',
     placeholder: 'KM, °C, %, mph',
     required: true,
-    type: 'textField',
-  },
+    type: 'textField'
+  }
 ];
 
 export const SeriesMeasurementsForm: InputField[] = [
@@ -76,7 +76,7 @@ export const SeriesMeasurementsForm: InputField[] = [
     placeholder: 'Lowest Measurement',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'maxValue',
@@ -84,7 +84,7 @@ export const SeriesMeasurementsForm: InputField[] = [
     placeholder: 'Highest Measurement',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'steps',
@@ -92,14 +92,14 @@ export const SeriesMeasurementsForm: InputField[] = [
     placeholder: 'Number of values between min and max',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'Randomize',
     required: false,
     label: 'Randomize Measurements',
-    type: 'switch',
-  },
+    type: 'switch'
+  }
 ];
 
 export const AlarmsForm: InputField[] = [
@@ -112,23 +112,23 @@ export const AlarmsForm: InputField[] = [
     options: [
       { name: 'CRITICAL', id: '301', selected: true },
       { name: 'MAJOR', id: '302' },
-      { name: 'MINOR', id: '303' },
-    ],
+      { name: 'MINOR', id: '303' }
+    ]
   },
   {
     name: 'alarmType',
     label: 'Alarm Type',
     placeholder: 'Motor Failure',
     type: 'textField',
-    required: true,
+    required: true
   },
   {
     name: 'alarmText',
     label: 'Alarm Text',
     placeholder: 'The motor overheated please let it cooldown',
     type: 'textField',
-    required: true,
-  },
+    required: true
+  }
 ];
 
 export const SeriesAlarmsForm: InputField[] = [...AlarmsForm];
@@ -141,21 +141,22 @@ export const BasicEventsForm: InputField[] = [
     type: 'select',
     options: [{ name: 'Basic', id: '400' }],
     required: true,
+    defaultValue: MessageIds.Basic
   },
   {
     name: 'eventType',
     label: 'Event Type',
     placeholder: 'The device restarted',
     required: true,
-    type: 'textField',
+    type: 'textField'
   },
   {
     name: 'eventText',
     label: 'Event Text',
     placeholder: 'A planned restart was executed at 12pm',
     required: true,
-    type: 'textField',
-  },
+    type: 'textField'
+  }
 ];
 
 export const SeriesBasicEventsForm: InputField[] = [...BasicEventsForm];
@@ -168,10 +169,10 @@ export const EventsForm: InputField[] = [
     placeholder: '',
     options: [
       { name: 'Location Update', id: '401' },
-      { name: 'Location Update with Device', id: '402' },
+      { name: 'Location Update with Device', id: '402' }
     ],
     type: 'select',
-    required: true,
+    required: true
   },
   {
     name: 'altitude',
@@ -179,7 +180,7 @@ export const EventsForm: InputField[] = [
     placeholder: '658.4',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'longitude',
@@ -187,7 +188,7 @@ export const EventsForm: InputField[] = [
     placeholder: '8.6349013',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'latitude',
@@ -195,7 +196,7 @@ export const EventsForm: InputField[] = [
     placeholder: '49.8143',
     required: true,
     type: 'textField',
-    isNumber: true,
+    isNumber: true
   },
   {
     name: 'accuracy',
@@ -203,8 +204,8 @@ export const EventsForm: InputField[] = [
     placeholder: 'Accuracy',
     required: true,
     type: 'textField',
-    isNumber: true,
-  },
+    isNumber: true
+  }
 ];
 
 export const SeriesEventsForm: InputField[] = [...EventsForm];
@@ -217,8 +218,8 @@ export const SleepForm: InputField[] = [
     required: true,
     type: 'textField',
     minimum: 5,
-    isNumber: true,
-  },
+    isNumber: true
+  }
 ];
 
 export const SeriesSleepForm: InputField[] = [...SleepForm];
