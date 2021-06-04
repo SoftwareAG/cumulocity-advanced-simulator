@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alert, AlertService } from '@c8y/ngx-components';
 import { IResult, ICurrentTenant } from '@c8y/client';
@@ -52,6 +52,8 @@ export class CreateSimComponent implements OnInit {
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
+  @ViewChild('title', { static: true }) el: ElementRef;
+
   instructionSeriesTypes = [
     { category: { icon: 'sliders', type: 'measurements', break: true } },
     { category: { icon: 'bell', type: 'alarms', break: false } },
@@ -329,6 +331,13 @@ export class CreateSimComponent implements OnInit {
       const moId = res.id;
       this.backend.connectToSimulatorsBackend(this.updateService.mo.c8y_DeviceSimulator, moId);
       this.simulatorRunning = this.updateService.mo.c8y_DeviceSimulator.state === 'RUNNING';
+    });
+  }
+
+  onFocusTitle() {
+    this.editMode = true;
+    setTimeout(() => {
+      this.el.nativeElement.focus();
     });
   }
 

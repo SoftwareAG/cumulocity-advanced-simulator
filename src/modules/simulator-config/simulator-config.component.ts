@@ -17,6 +17,7 @@ export interface ILabels {
   template: ` <c8y-modal
     title="Create custom Simulator"
     (onClose)="saveSimulatorDetails($event)"
+    (keyup.enter)="saveSimulatorDetails($event)"
     (onDismiss)="onDismiss($event)"
     [labels]="labels"
   >
@@ -72,6 +73,7 @@ export class SimulatorConfigComponent implements OnInit {
       };
       this.backendService.addCustomSimulatorProperties(simulator).then((res) => {
         this.router.navigate(['/createSim/' + result.id]);
+        this.onClose(true);
       });
     });
   }
