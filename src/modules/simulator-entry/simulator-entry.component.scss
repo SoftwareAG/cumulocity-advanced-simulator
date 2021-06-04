@@ -24,3 +24,13 @@
     opacity: 1;
   }
 }
+
+a:link {
+  text-decoration: none;
+  color: black;
+}
+
+.align {
+  display: flex;
+  flex-direction: row;
+}
