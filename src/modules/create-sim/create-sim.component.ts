@@ -1,13 +1,15 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alert, AlertService } from '@c8y/ngx-components';
+import { IResult, ICurrentTenant } from '@c8y/client';
+import { TenantService } from '@c8y/ngx-components/api';
 import { Subscription } from 'rxjs';
 import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
-import { Modal } from '@modules/shared/models/modal.model';
 import { AlarmsService } from '@services/alarms.service';
+import { MeasurementsService } from '@services/measurements.service';
+import { Modal } from '@modules/shared/models/modal.model';
 import { InstructionService } from '@services/Instruction.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
-import { MeasurementsService } from '@services/measurements.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
@@ -32,7 +34,6 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
-
   viewNewSeries = false;
   viewHistoricalSeries = false;
   actionButtons = ['New Series', 'Existing series'];
@@ -51,7 +52,6 @@ export class CreateSimComponent implements OnInit {
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
-
   instructionSeriesTypes = [
     { category: { icon: 'sliders', type: 'measurements', break: true } },
     { category: { icon: 'bell', type: 'alarms', break: false } },
@@ -59,8 +59,33 @@ export class CreateSimComponent implements OnInit {
     { category: { icon: 'clock-o', type: 'sleep', break: false } },
     { category: { icon: 'sitemap', type: 'smartRest', break: false } }
   ];
-
   listClass = 'interact-list';
+  height = window.innerHeight * 0.7;
+  y = 100;
+  oldY = 0;
+  grabber = false;
+  wizardStep = 0;
+  scrollTransitionInPercentage = 0.3;
+  countdownInterval;
+  savedInterval: string;
+  currentTenantInfo: Promise<ICurrentTenant>;
+
+  @HostListener('window:scroll', ['$event']) onScroll(event) {
+    var checkSimulator = document.getElementById('check-simulator');
+    var bulkSimulator = document.getElementById('bulk-simulator');
+    var maintainSimulator = document.getElementById('maintain-simulator');
+    var scrollValue = window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
+
+    if (scrollValue < checkSimulator.offsetTop) {
+      this.wizardStep = 0;
+    } else if (scrollValue > checkSimulator.offsetTop && scrollValue < bulkSimulator.offsetTop) {
+      this.wizardStep = 1;
+    } else if (scrollValue > bulkSimulator.offsetTop && scrollValue < maintainSimulator.offsetTop) {
+      this.wizardStep = 2;
+    } else if (scrollValue > maintainSimulator.offsetTop) {
+      this.wizardStep = 3;
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -71,28 +96,14 @@ export class CreateSimComponent implements OnInit {
     private instructionsService: InstructionService,
     private alertService: AlertService,
     private updateService: ManagedObjectUpdateService,
-    private smartRestService: SmartRESTService
+    private smartRestService: SmartRESTService,
+    private tenantService: TenantService
   ) {}
 
-  getCurrentSimulatorState(event: boolean) {
-    this.invalidSimulator = event;
-  }
-
-  getCurrentValue(event) {
-    this.editedValue = event;
-  }
-
-  changeRouteLastSite() {
-    this.router.navigate(['/']);
-  }
-
-  filterAllInstructionsList() {
-    this.filteredInstructionsSeries = this.allInstructionsSeries.filter((series) =>
-      this.simSettings.objectContainsSearchString(series, this.searchString)
-    );
-  }
-
   ngOnInit() {
+    this.currentTenantInfo = this.getTenantInfo();
+
+    // TODO move to separate functions
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
       this.allInstructionsSeries = instructions;
       this.filteredInstructionsSeries = this.allInstructionsSeries;
@@ -106,7 +117,6 @@ export class CreateSimComponent implements OnInit {
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-
     const mo = _.cloneDeep(this.mo);
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
@@ -164,12 +174,39 @@ export class CreateSimComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.instructionsSubscription) {
+      this.instructionsSubscription.unsubscribe();
+    }
+    if (this.indexedCommandQueueSubscription) {
+      this.indexedCommandQueueSubscription.unsubscribe();
+    }
+  }
+
+  getCurrentSimulatorState(event: boolean) {
+    this.invalidSimulator = event;
+  }
+
+  getCurrentValue(event) {
+    this.editedValue = event;
+  }
+
+  changeRouteLastSite() {
+    this.router.navigate(['/']);
+  }
+
+  filterAllInstructionsList() {
+    this.filteredInstructionsSeries = this.allInstructionsSeries.filter((series) =>
+      this.simSettings.objectContainsSearchString(series, this.searchString)
+    );
+  }
+
   updateViewState(val) {
     this.displayInstructionsView = val.instructionsView;
     this.editedVal = val.editedValue;
   }
 
-  onClearAllInstructions() {}
+  onClearAllInstructions() {} // FIXME unused / deprecaed?
 
   delete(value) {
     if (!this.warningModal) {
@@ -206,10 +243,9 @@ export class CreateSimComponent implements OnInit {
 
   redirectToDeviceManagement() {
     const deviceIdOfSimulator = this.mo.id;
-    window.location.href =
-      'https://psfactory.eu-latest.cumulocity.com/apps/devicemanagement/index.html#/device/' +
-      deviceIdOfSimulator +
-      '/device-info';
+    this.currentTenantInfo.then((tenant: ICurrentTenant) => {
+      window.location.href = `//${tenant.domainName}/apps/devicemanagement/index.html#/device/${deviceIdOfSimulator}/device-info`;
+    });
   }
 
   editSimulatorTitle() {
@@ -230,32 +266,6 @@ export class CreateSimComponent implements OnInit {
       activeElement.blur();
     }
     this.currentSelection === this.actionButtons[0] ? (this.viewNewSeries = true) : (this.viewNewSeries = false);
-  }
-
-  height = window.innerHeight * 0.7;
-  y = 100;
-  oldY = 0;
-  grabber = false;
-  wizardStep = 0;
-  scrollTransitionInPercentage = 0.3;
-
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event) {
-    var createSimulator = document.getElementById('create-simulator');
-    var checkSimulator = document.getElementById('check-simulator');
-    var bulkSimulator = document.getElementById('bulk-simulator');
-    var maintainSimulator = document.getElementById('maintain-simulator');
-    var scrollValue = window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
-
-    if (scrollValue < checkSimulator.offsetTop) {
-      this.wizardStep = 0;
-    } else if (scrollValue > checkSimulator.offsetTop && scrollValue < bulkSimulator.offsetTop) {
-      this.wizardStep = 1;
-    } else if (scrollValue > bulkSimulator.offsetTop && scrollValue < maintainSimulator.offsetTop) {
-      this.wizardStep = 2;
-    } else if (scrollValue > maintainSimulator.offsetTop) {
-      this.wizardStep = 3;
-    }
   }
 
   autoScrollTo(newStep: number) {
@@ -300,8 +310,6 @@ export class CreateSimComponent implements OnInit {
     this.oldY = event.clientY;
   }
 
-  countdownInterval;
-  savedInterval: string;
   toggleSimulatorState() {
     if (+this.simulatorDuration > 0) {
       this.savedInterval = this.simulatorDuration;
@@ -326,12 +334,7 @@ export class CreateSimComponent implements OnInit {
 
   openSimulatorInDevmanagement() {} // FIXME to be removed?
 
-  ngOnDestroy() {
-    if (this.instructionsSubscription) {
-      this.instructionsSubscription.unsubscribe();
-    }
-    if (this.indexedCommandQueueSubscription) {
-      this.indexedCommandQueueSubscription.unsubscribe();
-    }
+  private getTenantInfo(): Promise<ICurrentTenant> {
+    return this.tenantService.current().then((res: IResult<ICurrentTenant>) => res.data);
   }
 }
