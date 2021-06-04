@@ -60,6 +60,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
+          this.modalService.hide(1);
         }
         this.modalUnsubscribe();
       })
