@@ -10,6 +10,7 @@ import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
 import { version } from '../../../package.json';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-simulator-entry',
@@ -60,6 +61,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
+          this.modalService.hide(1);
         }
         this.modalUnsubscribe();
       })
