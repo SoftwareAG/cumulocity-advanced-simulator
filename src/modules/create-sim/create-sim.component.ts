@@ -1,33 +1,27 @@
-import { Component, HostListener, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Alert, AlertService } from "@c8y/ngx-components";
-import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
-import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry } from "@models/commandQueue.model";
-import { Modal } from "@modules/shared/models/modal.model";
-import { AlarmsService } from "@services/alarms.service";
-import { InstructionService } from "@services/Instruction.service";
-import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
-// import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
-import { MeasurementsService } from "@services/measurements.service";
-import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
-import { SimulatorSettingsService } from "@services/simulatorSettings.service";
-import { SimulatorsServiceService } from "@services/simulatorsService.service";
-import { SmartRESTService } from "@services/smartREST.service";
-import { UpdateInstructionsService } from "@services/updateInstructions.service";
-import { isEqual } from "lodash";
-import * as _ from "lodash";
-import { Subscription } from "rxjs";
-import { HelperService } from "@services/helper.service";
-import { SeriesInstruction } from "@models/instruction.model";
-import { elementAt } from "rxjs/operators";
-
-
-
+import { Component, HostListener, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Alert, AlertService } from '@c8y/ngx-components';
+import { Subscription } from 'rxjs';
+import { IResult, ICurrentTenant } from '@c8y/client';
+import {
+  AdditionalParameter,
+  CommandQueueEntry,
+  IndexedCommandQueueEntry,
+} from '@models/commandQueue.model';
+import { Modal } from '@modules/shared/models/modal.model';
+import { InstructionService } from '@services/Instruction.service';
+import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
+import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
+import { SimulatorSettingsService } from '@services/simulatorSettings.service';
+import { SimulatorsServiceService } from '@services/simulatorsService.service';
+import { SmartRESTService } from '@services/smartREST.service';
+import * as _ from 'lodash';
+import { TenantService } from '@c8y/ngx-components/api';
 
 @Component({
-  selector: "app-create-sim",
-  templateUrl: "./create-sim.component.html",
-  styleUrls: ["./create-sim.component.scss"],
+  selector: 'app-create-sim',
+  templateUrl: './create-sim.component.html',
+  styleUrls: ['./create-sim.component.scss'],
 })
 export class CreateSimComponent implements OnInit {
   warningModal: Modal;
@@ -40,10 +34,9 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
-
   viewNewSeries = false;
   viewHistoricalSeries = false;
-  actionButtons = ["New Series", "Existing series"];
+  actionButtons = ['New Series', 'Existing series'];
   displayEditView = false;
   currentSelection: string = this.actionButtons[0];
   displayInstructionsView = false;
@@ -55,58 +48,72 @@ export class CreateSimComponent implements OnInit {
   invalidSimulator = false;
   editMode = false;
   simulatorRunning = false;
-  indexedCommandQueue:IndexedCommandQueueEntry[] = [];
+  indexedCommandQueue: IndexedCommandQueueEntry[] = [];
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
   @ViewChild('title', {static: true}) el:ElementRef;
 
   instructionSeriesTypes = [
-    { category: { icon: "sliders", type: "measurements", break: true } },
-    { category: { icon: "bell", type: "alarms", break: false} },
-    { category: { icon: "tasks", type: "events", break: true } },
-    { category: { icon: "clock-o", type: "sleep", break: false} },
-    { category: { icon: "sitemap", type: "smartRest", break: false} },
+    { category: { icon: 'sliders', type: 'measurements', break: true } },
+    { category: { icon: 'bell', type: 'alarms', break: false } },
+    { category: { icon: 'tasks', type: 'events', break: true } },
+    { category: { icon: 'clock-o', type: 'sleep', break: false } },
+    { category: { icon: 'sitemap', type: 'smartRest', break: false } },
   ];
-
   listClass = 'interact-list';
+  height = window.innerHeight * 0.7;
+  y = 100;
+  oldY = 0;
+  grabber = false;
+  wizardStep = 0;
+  scrollTransitionInPercentage = 0.3;
+  countdownInterval;
+  savedInterval: string;
+  currentTenantInfo: Promise<ICurrentTenant>;
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event) {
+    var checkSimulator = document.getElementById('check-simulator');
+    var bulkSimulator = document.getElementById('bulk-simulator');
+    var maintainSimulator = document.getElementById('maintain-simulator');
+    var scrollValue =
+      window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
+
+    if (scrollValue < checkSimulator.offsetTop) {
+      this.wizardStep = 0;
+    } else if (
+      scrollValue > checkSimulator.offsetTop &&
+      scrollValue < bulkSimulator.offsetTop
+    ) {
+      this.wizardStep = 1;
+    } else if (
+      scrollValue > bulkSimulator.offsetTop &&
+      scrollValue < maintainSimulator.offsetTop
+    ) {
+      this.wizardStep = 2;
+    } else if (scrollValue > maintainSimulator.offsetTop) {
+      this.wizardStep = 3;
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private simSettings: SimulatorSettingsService,
-    private measurementsService: MeasurementsService,
-    private alarmService: AlarmsService,
     private backend: SimulatorsBackendService,
     private simService: SimulatorsServiceService,
-    private updateInstructionsService: UpdateInstructionsService,
     private instructionsService: InstructionService,
     private alertService: AlertService,
     private updateService: ManagedObjectUpdateService,
     private smartRestService: SmartRESTService,
-    private helperService: HelperService,
+    private tenantService: TenantService
   ) {}
 
-  getCurrentSimulatorState(event: boolean) {
-    this.invalidSimulator = event;
-    console.error(event);
-  }
-  getCurrentValue(event) {
-    console.log(event);
-    this.editedValue = event;
-  }
-  changeRouteLastSite() {
-    this.router.navigate(["/"]);
-  }
-
-  filterAllInstructionsList() {
-    this.filteredInstructionsSeries = this.allInstructionsSeries.filter(
-      (series) => this.simSettings.objectContainsSearchString(series, this.searchString)
-    );
-  }
-
-  
   ngOnInit() {
+    this.currentTenantInfo = this.getTenantInfo();
+
+    // TODO move to separate functions
     this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe(
       (instructions) => {
         this.allInstructionsSeries = instructions;
@@ -114,16 +121,16 @@ export class CreateSimComponent implements OnInit {
       }
     );
 
-    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe((indexedCommandQueue: IndexedCommandQueueEntry[]) => {
+    this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe(
+      (indexedCommandQueue: IndexedCommandQueueEntry[]) => {
         this.indexedCommandQueue = indexedCommandQueue;
       }
     );
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-    
+
     const mo = JSON.parse(JSON.stringify(this.mo));
-    console.info("mo", mo);
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
@@ -131,18 +138,20 @@ export class CreateSimComponent implements OnInit {
 
     this.allInstructionsSeries = this.mo.c8y_Series;
     let additionals: AdditionalParameter[] = this.mo.c8y_additionals;
-    this.indexedCommandQueue = this.simSettings.createIndexedCommandQueue(additionals, this.allInstructionsSeries, MOCommandQueue);
-    console.info(this.indexedCommandQueue, additionals, this.commandQueue);
+    this.indexedCommandQueue = this.simSettings.createIndexedCommandQueue(
+      additionals,
+      this.allInstructionsSeries,
+      MOCommandQueue
+    );
     this.simSettings.setCommandQueue(this.commandQueue);
     this.simSettings.setIndexedCommandQueue(this.indexedCommandQueue);
     this.filteredInstructionsSeries = this.allInstructionsSeries;
     this.simSettings.setAllInstructionsSeries(this.allInstructionsSeries);
-    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === "RUNNING";
-    console.error("running", this.simulatorRunning);
+    this.simulatorRunning = this.mo.c8y_DeviceSimulator.state === 'RUNNING';
 
     const filter = {
       withTotalPages: true,
-      type: "c8y_SmartRest2Template",
+      type: 'c8y_SmartRest2Template',
       pageSize: 1000,
     };
     this.simService.getFilteredManagedObjects(filter).then((result) => {
@@ -179,9 +188,36 @@ export class CreateSimComponent implements OnInit {
         });
         this.instructionsService.SmartRestArray = this.smartRestConfig;
         this.smartRestService.setSmartRestUpdate(this.smartRestConfig);
-        console.log(this.smartRestConfig);
       });
     });
+  }
+
+  ngOnDestroy() {
+    if (this.instructionsSubscription) {
+      this.instructionsSubscription.unsubscribe();
+    }
+    if (this.indexedCommandQueueSubscription) {
+      this.indexedCommandQueueSubscription.unsubscribe();
+    }
+  }
+
+  getCurrentSimulatorState(event: boolean) {
+    this.invalidSimulator = event;
+  }
+
+  getCurrentValue(event) {
+    this.editedValue = event;
+  }
+
+  changeRouteLastSite() {
+    this.router.navigate(['/']);
+  }
+
+  filterAllInstructionsList() {
+    this.filteredInstructionsSeries = this.allInstructionsSeries.filter(
+      (series) =>
+        this.simSettings.objectContainsSearchString(series, this.searchString)
+    );
   }
 
   updateViewState(val) {
@@ -194,10 +230,10 @@ export class CreateSimComponent implements OnInit {
   delete(value) {
     if (!this.warningModal) {
       this.warningModal = {
-        title: "Delete Series",
-        type: "warning",
-        message: "",
-        options: ["", ""],
+        title: 'Delete Series',
+        type: 'warning',
+        message: '',
+        options: ['', ''],
       };
       return;
     }
@@ -205,20 +241,19 @@ export class CreateSimComponent implements OnInit {
     if (index !== -1) {
       this.allInstructionsSeries.splice(index, 1);
     }
-    console.log(this.allInstructionsSeries);
     this.updateService.mo.c8y_Series = this.allInstructionsSeries;
     this.updateService.updateSimulatorObject(this.updateService.mo).then(
       (res) => {
         const alert = {
           text: `Instruction Series deleted successfully.`,
-          type: "success",
+          type: 'success',
         } as Alert;
         this.alertService.add(alert);
       },
       (err) => {
         const alert = {
           text: `Instruction Series could not be deleted`,
-          type: "danger",
+          type: 'danger',
         } as Alert;
         this.alertService.add(alert);
       }
@@ -227,16 +262,18 @@ export class CreateSimComponent implements OnInit {
 
   redirectToDeviceManagement() {
     const deviceIdOfSimulator = this.mo.id;
-    window.location.href = "https://psfactory.eu-latest.cumulocity.com/apps/devicemanagement/index.html#/device/"+deviceIdOfSimulator+'/device-info';
+    this.currentTenantInfo.then((tenant: ICurrentTenant) => {
+      window.location.href = `//${tenant.domainName}/apps/devicemanagement/index.html#/device/${deviceIdOfSimulator}/device-info`;
+    });
   }
-  
+
   editSimulatorTitle() {
     this.editMode = false;
     this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
     this.updateService.mo.name = this.simulatorTitle;
     this.updateService
       .updateSimulatorObject(this.updateService.mo)
-      .then((res) => console.log(res));
+      .then((res) => {});
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {
@@ -254,44 +291,25 @@ export class CreateSimComponent implements OnInit {
       : (this.viewNewSeries = false);
   }
 
-  height = window.innerHeight * 0.7;
-  y = 100;
-  oldY = 0;
-  grabber = false;
-  wizardStep = 0;
-  scrollTransitionInPercentage = 0.3; 
-
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event){
-    var createSimulator = document.getElementById("create-simulator");
-    var checkSimulator = document.getElementById("check-simulator");
-    var bulkSimulator = document.getElementById("bulk-simulator");
-    var maintainSimulator = document.getElementById("maintain-simulator");
-    var scrollValue = window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
-    
-    if (scrollValue < checkSimulator.offsetTop) {
-      this.wizardStep = 0;
-    } else if (scrollValue > checkSimulator.offsetTop && scrollValue < bulkSimulator.offsetTop) {
-      this.wizardStep = 1;
-    } else if (scrollValue > bulkSimulator.offsetTop && scrollValue < maintainSimulator.offsetTop) {
-      this.wizardStep = 2;
-    } else if (scrollValue > maintainSimulator.offsetTop) {
-      this.wizardStep = 3;
-    }
-  }
-
   autoScrollTo(newStep: number) {
-    let element = "";
-    switch (newStep){
-      case 0: element = "create-simulator";break;
-      case 1: element = "check-simulator";break;
-      case 2: element = "bulk-simulator";break;
-      case 3: element = "maintain-simulator";break;
+    let element = '';
+    switch (newStep) {
+      case 0:
+        element = 'create-simulator';
+        break;
+      case 1:
+        element = 'check-simulator';
+        break;
+      case 2:
+        element = 'bulk-simulator';
+        break;
+      case 3:
+        element = 'maintain-simulator';
+        break;
     }
-    
+
     let y = document.getElementById(element).offsetTop;
     window.scrollTo({ top: y - 170, behavior: 'smooth' });
-
   }
 
   onMouseMove(event: MouseEvent) {
@@ -314,15 +332,13 @@ export class CreateSimComponent implements OnInit {
     this.grabber = true;
     this.oldY = event.clientY;
   }
-  
-  countdownInterval;
-  savedInterval:string;
+
   toggleSimulatorState() {
-    if (+this.simulatorDuration > 0){
+    if (+this.simulatorDuration > 0) {
       this.savedInterval = this.simulatorDuration;
-      this.countdownInterval = setInterval(() => { 
+      this.countdownInterval = setInterval(() => {
         this.simulatorDuration = String(+this.simulatorDuration - 1);
-        if(+this.simulatorDuration === 0){
+        if (+this.simulatorDuration === 0) {
           this.toggleSimulatorState();
           this.simulatorDuration = this.savedInterval;
           clearInterval(this.countdownInterval);
@@ -352,14 +368,9 @@ export class CreateSimComponent implements OnInit {
     
   }
 
-  ngOnDestroy() {
-    if (this.instructionsSubscription) {
-      this.instructionsSubscription.unsubscribe();
-    }
-    if (this.indexedCommandQueueSubscription) {
-      this.indexedCommandQueueSubscription.unsubscribe();
-    }
+  openSimulatorInDevmanagement() {}
+
+  private getTenantInfo(): Promise<ICurrentTenant> {
+    return this.tenantService.current().then((res: IResult<ICurrentTenant>) => res.data);
   }
-
-
 }
