@@ -38,12 +38,14 @@
           <button class="btn btn-primary" style="width:100%;" (click)="autoMapping()">
             Auto Mapping
           </button>
-          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues" >
+          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues;  let i=index" >
+            <ng-container *ngIf="i<30 && entry.value === null">
             <span>{{entry.path}}:</span>
             <select >
               <option>Select Mapping</option>
               <option *ngFor="let csvProperty of dataProperties;let i = index" [selected]="entry['csvProperty'] === csvProperty" (click)="mapDataToSmartRest(entry, csvProperty, i)" >{{csvProperty}}</option>
             </select>
+            </ng-container>
           </div>
         
           

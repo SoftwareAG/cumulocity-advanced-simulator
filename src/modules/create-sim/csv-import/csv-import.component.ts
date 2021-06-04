@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { DefaultConfig } from '@models/inputFields.const';
-import { InstructionCategory, SmartInstruction, SmartRestInstruction } from '@models/instruction.model';
+import { InstructionCategory, SeriesInstruction, SmartInstruction, SmartRestInstruction, SeriesCSVInstruction } from '@models/instruction.model';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
@@ -30,9 +30,10 @@ export class CsvImportComponent implements OnInit {
   @Input() smartRestConfig;
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
   @Input() importCSVView: boolean;
+  @Input() allInstructionsSeries;
   
   constructor(
-    private simSettings: SimulatorSettingsService,
+    private simSettingsService: SimulatorSettingsService,
     private instructionService: InstructionService,
     private updateService: ManagedObjectUpdateService,
     private alertService: AlertService,
@@ -45,23 +46,28 @@ export class CsvImportComponent implements OnInit {
   categoryChange(event) {
     console.error(event, this.smartRestSelectedConfig);
   }
-
+  deepCopy(obj){
+    return JSON.parse(JSON.stringify(obj));
+  }
   autoMapping() {
     let succeededMappings = 0;
-    for (let smartRestField of this.smartRestSelectedConfig.smartRestFields.customValues){
-      let index = 0;
-      for(let csvProperty of this.dataProperties){
+    let checkedDataProperties = this.deepCopy(this.dataProperties);
+    let filteredCustomValues = this.smartRestSelectedConfig.smartRestFields.customValues.filter(a => !a.value);
+    for (let smartRestField of filteredCustomValues){
+      for (let i = 0; i < checkedDataProperties.length; i++){
+        let csvProperty = checkedDataProperties[i];
         if (smartRestField.path.includes(csvProperty)) {
           smartRestField['csvProperty'] = csvProperty;
-          smartRestField['csvValues'] = this.data[index];
+          smartRestField['csvValues'] = this.data[i];
           succeededMappings++;
+          checkedDataProperties.splice(i,1);
+          this.data.splice(i,1);
           break;
         }
-        index++;
       }
     }
     
-    console.log(`${succeededMappings} of ${this.smartRestSelectedConfig.smartRestFields.customValues.length} successfully mapped`);
+    console.log(`${succeededMappings} of ${filteredCustomValues.length} successfully mapped`);
     console.log(this.smartRestSelectedConfig);
   }
   
@@ -73,35 +79,54 @@ export class CsvImportComponent implements OnInit {
   }
 
   startImport() {
-    let valuePosition = 0;
     let smartRestInstructions: SmartRestInstruction[] = [];
+    console.info(this.smartRestSelectedConfig.smartRestFields.customValues);
+    const assignedIndex: string = this.allInstructionsSeries.length.toString();
+
+
     for (let i = 0; i < this.dataPoints; i++){
       let smartRestInstruction = {
         type: InstructionCategory.SmartRest
       } as SmartInstruction;
       for (let smartRestField of this.smartRestSelectedConfig.smartRestFields.customValues) {
+        if(smartRestField.value !== null){continue;}
 
         smartRestInstruction[smartRestField['path']] = '';
 
         if (smartRestField['csvValues']){
-          smartRestInstruction[smartRestField['path']] = smartRestField['csvValues'][valuePosition];
-          valuePosition++;
+          smartRestInstruction[smartRestField['path']] = smartRestField['csvValues'][i];
         }
-
-     /*   let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: 'single' };
-        this.indexedCommandQueue.push(indexedCommandQueueEntry);
-*/
       }
       smartRestInstructions.push(smartRestInstruction as SmartRestInstruction);
 
-      const smartRestCommandQueueEntry = this.instructionService.smartRestInstructionToCommand(smartRestInstruction);
+      console.error(smartRestInstruction);
+      const smartRestCommandQueueEntry = this.instructionService.smartRestInstructionToCommand(smartRestInstruction, this.smartRestSelectedConfig);
       console.error(smartRestInstruction, smartRestCommandQueueEntry);
-      let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: 'single' };
+
+      let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: assignedIndex };
+
+      
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
-      this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+      //this.indexedCommandQueue.push(indexedCommandQueueEntry);
+      this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
       this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
       this.importCSVView = false;
     }
+
+
+    this.simSettingsService.pushToInstructionsArray({
+      index: assignedIndex,
+    //  type: InstructionCategory.CSVImport
+    } as SeriesCSVInstruction);
+
+    this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
+    console.log('mo', this.updateService.mo, this.simSettingsService.allInstructionsArray);
+    this.updateService
+    .updateSimulatorObject(this.updateService.mo)
+    .then((res) => {
+      this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
+      console.log('res', res);
+      });
   }
 
 
@@ -127,24 +152,7 @@ export class CsvImportComponent implements OnInit {
 
 
   }
-      /*
-
-  const temp = this.smartRestSelectedConfig.smartRestFields.customValues;
-      this.smartRestInstruction = ;
-temp.map((entry) => this.smartRestInstruction[entry.path] = '');
-
-      const smartRestCommandQueueEntry = this.instructionService.smartRestInstructionToCommand(this.smartRestInstruction);
-      let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: 'single' };
-      if (this.commandQueueEntryIndex) {
-
-        this.indexedCommandQueue.splice(this.commandQueueEntryIndex + 1, 0, indexedCommandQueueEntry);
-      } else {
-        this.indexedCommandQueue.push(indexedCommandQueueEntry);
-      }
-
-      this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-      this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
-    */
+  
 
   incrementStep() {
     this.step++;
@@ -168,17 +176,23 @@ temp.map((entry) => this.smartRestInstruction[entry.path] = '');
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       let fileContent = String(fileReader.result);
+      if(!fileContent.includes(this.delimiter)){
+          this.step--;
+          console.log('Delimiter not found in CSV');
+          return;
+      }
       this.dataProperties = fileContent.split('\r\n')[0].split(this.delimiter);
-      let data = fileContent.split(this.delimiter);
+
+      let data = fileContent.replace(/\r\n/g, ',').split(this.delimiter);
       for (let i = 0; i < this.dataProperties.length; i++){
         this.data.push([]);
-        for (let j = i; j < data.length; j += this.dataProperties.length-1){
+        for (let j = i; j < data.length; j += this.dataProperties.length){
           if(j < this.dataProperties.length){ continue; }
           this.data[this.data.length-1].push(data[j]);
         }
         this.dataPoints = this.data[this.data.length - 1].length;
       }
-      console.log('data', this.data, this.dataPoints);
+      console.log('data', this.data, this.dataPoints, this.dataProperties, data);
     }
     fileReader.readAsText(this.file);
   }

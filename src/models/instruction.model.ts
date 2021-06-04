@@ -7,6 +7,7 @@ export enum InstructionCategory {
   "BasicEvent"="BasicEvent",
   "LocationUpdateEvent"="LocationUpdateEvent",
   "Sleep"="Sleep",
+  "CSVImport" ="CSVImport",
   "SmartRest"="SmartRest"
 }
 
@@ -24,7 +25,8 @@ export type SeriesInstruction =
   | BasicEventInstruction
   | EventInstruction
   | SleepSeriesInstruction
-  | SeriesSmartRestInstruction;
+  | SeriesSmartRestInstruction
+  | SeriesCSVInstruction;
 
 
 export interface Empty {}
@@ -43,9 +45,13 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   index?: string;
   scalingOption?: string;
 }
+export interface SeriesCSVInstruction extends SmartInstruction {
+  index?: string;
+  type: InstructionCategory.CSVImport;
+}
 
 export interface SmartInstruction extends Instruction2 {
-  type: InstructionCategory.SmartRest;
+  type: InstructionCategory.SmartRest | InstructionCategory.CSVImport;
   // measurementOption?: string;
   [key: string]: string;
 }
