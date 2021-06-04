@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alert, AlertService } from '@c8y/ngx-components';
 import { Subscription } from 'rxjs';
@@ -52,6 +52,8 @@ export class CreateSimComponent implements OnInit {
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
+  @ViewChild('title', {static: true}) el:ElementRef;
+
   instructionSeriesTypes = [
     { category: { icon: 'sliders', type: 'measurements', break: true } },
     { category: { icon: 'bell', type: 'alarms', break: false } },
@@ -344,21 +346,26 @@ export class CreateSimComponent implements OnInit {
       }, 1000);
     }
     this.updateService.mo.c8y_DeviceSimulator.state =
-      this.updateService.mo.c8y_DeviceSimulator.state === 'RUNNING'
-        ? 'PAUSED'
-        : 'RUNNING';
+      this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
 
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {
-        const moId = res.id;
-        this.backend.connectToSimulatorsBackend(
-          this.updateService.mo.c8y_DeviceSimulator,
-          moId
-        );
-        this.simulatorRunning =
-          this.updateService.mo.c8y_DeviceSimulator.state === 'RUNNING';
-      });
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
+      const moId = res.id;
+      console.log('MO: ', this.updateService.mo);
+      this.backend.connectToSimulatorsBackend(
+        this.updateService.mo.c8y_DeviceSimulator,
+        moId
+      );
+      this.simulatorRunning = this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING";
+    });
+  }
+  
+
+  onFocusTitle() {
+    this.editMode=true;
+    setTimeout(()=>{
+      this.el.nativeElement.focus()
+  });
+    
   }
 
   openSimulatorInDevmanagement() {}
