@@ -1,9 +1,9 @@
 
 <section [ngClass]="(grabber) ? 'noselect' : ''" (mousemove)="onMouseMove($event)">
 <c8y-title>
-  <span *ngIf="!editMode">{{simulatorTitle}}</span>
-  <input *ngIf="editMode" [(ngModel)]="simulatorTitle" #title (focusout)="editSimulatorTitle()" (keyup.enter)="editSimulatorTitle()">&nbsp;&nbsp;
-  <i c8yIcon="edit" style="font-size: small;" (click)="editMode=true"></i>
+  <span [hidden]="editMode">{{simulatorTitle}}</span>
+  <input [(ngModel)]="simulatorTitle" #title [hidden]="!editMode" (blur)="editSimulatorTitle()" (keyup.enter)="editSimulatorTitle()">&nbsp;&nbsp;
+  <i c8yIcon="edit" style="font-size: small;" (click)="onFocusTitle()"></i>
 </c8y-title>
   <c8y-action-bar-item [itemClass]="'btn-group'" [placement]="'left'">
     <button class="btn btn-link" (click)="changeRouteLastSite()">

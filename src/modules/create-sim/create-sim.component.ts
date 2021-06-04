@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from "@angular/core";
+import { Component, HostListener, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { AlarmService, IdentityService } from "@c8y/ngx-components/api";
@@ -20,6 +20,10 @@ import { Subscription } from "rxjs";
 import { HelperService } from "@services/helper.service";
 import { SeriesInstruction } from "@models/instruction.model";
 import { elementAt } from "rxjs/operators";
+
+
+
+
 @Component({
   selector: "app-create-sim",
   templateUrl: "./create-sim.component.html",
@@ -55,6 +59,7 @@ export class CreateSimComponent implements OnInit {
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
+  @ViewChild('title', {static: true}) el:ElementRef;
 
   instructionSeriesTypes = [
     { category: { icon: "sliders", type: "measurements", break: true } },
@@ -337,7 +342,15 @@ export class CreateSimComponent implements OnInit {
       this.simulatorRunning = this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING";
     });
   }
-  openSimulatorInDevmanagement() {}
+  
+
+  onFocusTitle() {
+    this.editMode=true;
+    setTimeout(()=>{
+      this.el.nativeElement.focus()
+  });
+    
+  }
 
   ngOnDestroy() {
     if (this.instructionsSubscription) {
