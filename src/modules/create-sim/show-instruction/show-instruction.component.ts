@@ -60,6 +60,7 @@ export class ShowInstructionComponent implements OnInit {
       title: 'Invalid Simulator!',
       message: 'You need at least a 5 seconds sleep somewhere in the Instruction Queue.'
     };
+
     this.getInvalidSimulator.emit(true);
     this.invalidSimulator = true;
   }

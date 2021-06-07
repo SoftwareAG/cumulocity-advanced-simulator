@@ -14,7 +14,7 @@ import {
   IndexedCommandQueueEntry,
   MessageIds
 } from '@models/commandQueue.model';
-import { InputField } from "@models/inputFields.const";
+import { InputField } from '@models/inputFields.const';
 import { ManagedObjectUpdateService } from './ManagedObjectUpdate.service';
 import * as _ from 'lodash';
 
@@ -97,7 +97,7 @@ export class SimulatorSettingsService {
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
       }
     }
-    
+
     this.generateAlarmsOrEventsOrSleep();
     return this.resultTemplate.commandQueue;
   }
@@ -111,7 +111,7 @@ export class SimulatorSettingsService {
     if (additionals) {
       additionals.forEach((element) => {
         let color = '#fff';
-        if (element.index != 'single') {
+        if (element.index != 'single' && allInstructionsSeries[+element.index]) {
           color = allInstructionsSeries[+element.index].color;
         }
         element.color = color;
@@ -191,18 +191,22 @@ export class SimulatorSettingsService {
       }
     } else if (this.sleepService.sleeps.length && !this.resultTemplate.commandQueue.length) {
       const sleep = this.sleepService.sleeps[0];
-      for (let i = 0; i < ((+sleep.numberOfSleeps) || 1); i++) {
+      for (let i = 0; i < (+sleep.numberOfSleeps || 1); i++) {
         let instruction: Instruction = {
           type: InstructionCategory.Sleep,
           seconds: sleep.seconds,
-          color: (sleep.color || '')
+          color: sleep.color || ''
         };
         this.pushToResultTemplate(instruction);
       }
     }
   }
 
-  buttonHandler(inputField: InputField, instructionValue: SeriesInstruction | Partial<SeriesInstruction>, allInstructionsSeries): SeriesInstruction | Partial<SeriesInstruction> {
+  buttonHandler(
+    inputField: InputField,
+    instructionValue: SeriesInstruction | Partial<SeriesInstruction>,
+    allInstructionsSeries
+  ): SeriesInstruction | Partial<SeriesInstruction> {
     if (inputField.name === 'sleepsEqualToInstructions') {
       let steps = 0;
       for (let entry of allInstructionsSeries) {
@@ -250,19 +254,14 @@ export class SimulatorSettingsService {
     let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
     this.updateAll(indexedCommandQueue, commandQueue);
     this.setIndexedCommandQueueUpdate();
-    let additionals: AdditionalParameter[] = this.indexedCommandQueue.map(
-      (entry) => {
-        return {
-          index: entry.index,
-          mirrored: entry.mirrored,
-          deviation: entry.deviation,
-        } as AdditionalParameter;
-      }
-    );
-    this.updateService.updateMOCommandQueueAndIndices(
-      commandQueue,
-      additionals
-    );
+    let additionals: AdditionalParameter[] = this.indexedCommandQueue.map((entry) => {
+      return {
+        index: entry.index,
+        mirrored: entry.mirrored,
+        deviation: entry.deviation
+      } as AdditionalParameter;
+    });
+    this.updateService.updateMOCommandQueueAndIndices(commandQueue, additionals);
   }
 
   objectContainsSearchString(series, searchString) {

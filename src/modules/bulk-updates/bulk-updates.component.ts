@@ -75,11 +75,13 @@ export class BulkUpdatesComponent implements OnInit {
         numberOfTwines = 0,
         lastIndex = -1;
       if (maxIndex <= 2) {
+        this.intertwinedValues = false;
+        this.updateService.simulatorUpdateFeedback('info', 'You need at least two series to intertwine.');
         return;
       }
       //Prepare Structure to intertwine
       for (let entry of this.allInstructionsSeries) {
-        let count = 0;
+        let count = 1; //default number of instructions made by a series if nothing else is defined
         if (entry.steps) {
           count = +entry.steps + 1;
         }
