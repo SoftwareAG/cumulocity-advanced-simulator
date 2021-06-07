@@ -7,7 +7,7 @@ export interface InputField {
   placeholder?: string;
   required: boolean;
   label?: string;
-  type: 'select' | 'textField' | 'switch'; // TODO refactor to html-default: 'select', 'text', 'checkbox'
+  type: 'select' | 'textField' | 'switch' | 'button';  // TODO refactor to html-default: 'select', 'text', 'checkbox'
   options?: MessageId[];
   defaultValue?: string | number;
   hidden?: boolean;
@@ -93,12 +93,6 @@ export const SeriesMeasurementsForm: InputField[] = [
     required: true,
     type: 'textField',
     isNumber: true
-  },
-  {
-    name: 'Randomize',
-    required: false,
-    label: 'Randomize Measurements',
-    type: 'switch'
   }
 ];
 
@@ -219,6 +213,22 @@ export const SleepForm: InputField[] = [
     type: 'textField',
     minimum: 5,
     isNumber: true
+  },
+  {
+    name: "numberOfSleeps",
+    label: "Number of sleeps",
+    placeholder: "10",
+    required: true,
+    type: "textField",
+    minimum: 0,
+    isNumber: true
+  },
+  {
+    name: "sleepsEqualToInstructions",
+    label: "Number of sleeps equal to number of instructions",
+    placeholder: "Max Sleeps",
+    required: false,
+    type: 'button'
   }
 ];
 

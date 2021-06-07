@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import {
   CommandQueueEntry,
   IndexedCommandQueueEntry,
@@ -10,6 +10,7 @@ import {
   SeriesBasicEventsForm,
   SeriesEventsForm,
   SeriesSleepForm,
+  InputField,
 } from '@models/inputFields.const';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
@@ -23,7 +24,7 @@ import * as _ from 'lodash';
   templateUrl: "./series-item.component.html",
   styleUrls: ["./series-item.component.scss"],
 })
-export class SeriesItemComponent {
+export class SeriesItemComponent implements OnInit{
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
   @Input() smartRestConfig;
@@ -61,6 +62,9 @@ export class SeriesItemComponent {
     private smartRestService: SmartRESTService
   ) {}
 
+  ngOnInit() {
+    this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
+  }
   setLabelsForSelected() {
     switch (this.selectedSeries.type) {
       case 'Measurement':
@@ -95,8 +99,6 @@ export class SeriesItemComponent {
   }
 
   duplicateSeries() {
-    //TODO CHRISMEY FIX THIS
-
     const duplicated = _.cloneDeep(this.selectedSeries);
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
     duplicated.index = this.allInstructionsSeries.length.toString();
@@ -162,6 +164,10 @@ export class SeriesItemComponent {
         const alertText = `Series has been deleted succesfully.`;
         this.updateService.simulatorUpdateFeedback('success', alertText);
       });
+  }
+
+  buttonHandler(inputField: InputField) {
+    this.instructionValue = this.simSettingsService.buttonHandler(inputField, this.instructionValue, this.allInstructionsSeries) as SeriesInstruction;
   }
 
   updateSeries() {

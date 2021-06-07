@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { HelperService } from './helper.service';
 import { MeasurementsService } from './measurements.service';
 import { AlarmsService } from './alarms.service';
 import { EventsService } from './events.service';
+import { SleepService } from './sleep.service';
 import { CustomSimulator } from '@models/simulator.model';
 import { InstructionService } from './Instruction.service';
 import { Instruction, InstructionCategory, SeriesInstruction } from '@models/instruction.model';
@@ -12,8 +14,7 @@ import {
   IndexedCommandQueueEntry,
   MessageIds
 } from '@models/commandQueue.model';
-import { BehaviorSubject } from 'rxjs';
-import { SleepService } from './sleep.service';
+import { InputField } from "@models/inputFields.const";
 import { ManagedObjectUpdateService } from './ManagedObjectUpdate.service';
 import * as _ from 'lodash';
 
@@ -94,16 +95,9 @@ export class SimulatorSettingsService {
         let toBePushedWithIndex: IndexedCommandQueueEntry = { ...toBePushed, index: index } as IndexedCommandQueueEntry;
 
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
-
-        // Add sleep after inserting measurement
-        if (value.sleep && value.sleep !== +'') {
-          this.resultTemplate.commandQueue.push({
-            type: 'sleep',
-            seconds: value.sleep
-          } as IndexedCommandQueueEntry);
-        }
       }
     }
+    
     this.generateAlarmsOrEventsOrSleep();
     return this.resultTemplate.commandQueue;
   }
@@ -197,12 +191,31 @@ export class SimulatorSettingsService {
       }
     } else if (this.sleepService.sleeps.length && !this.resultTemplate.commandQueue.length) {
       const sleep = this.sleepService.sleeps[0];
-      let instruction: Instruction = {
-        type: InstructionCategory.Sleep,
-        seconds: sleep.seconds
-      };
-      this.pushToResultTemplate(instruction);
+      for (let i = 0; i < ((+sleep.numberOfSleeps) || 1); i++) {
+        let instruction: Instruction = {
+          type: InstructionCategory.Sleep,
+          seconds: sleep.seconds,
+          color: (sleep.color || '')
+        };
+        this.pushToResultTemplate(instruction);
+      }
     }
+  }
+
+  buttonHandler(inputField: InputField, instructionValue: SeriesInstruction | Partial<SeriesInstruction>, allInstructionsSeries): SeriesInstruction | Partial<SeriesInstruction> {
+    if (inputField.name === 'sleepsEqualToInstructions') {
+      let steps = 0;
+      for (let entry of allInstructionsSeries) {
+        if (entry.steps) {
+          steps += +entry.steps + 1;
+        }
+        if (entry.numberOfSleeps) {
+          steps += +entry.numberOfSleeps;
+        }
+      }
+      instructionValue['numberOfSleeps'] = String(steps);
+    }
+    return instructionValue;
   }
 
   pushToResultTemplate(instruction: Instruction) {
@@ -237,14 +250,19 @@ export class SimulatorSettingsService {
     let commandQueue = this.removeIndicesFromIndexedCommandQueueArray(indexedCommandQueue);
     this.updateAll(indexedCommandQueue, commandQueue);
     this.setIndexedCommandQueueUpdate();
-    let additionals: AdditionalParameter[] = this.indexedCommandQueue.map((entry) => {
-      return {
-        index: entry.index,
-        mirrored: entry.mirrored,
-        deviation: entry.deviation
-      } as AdditionalParameter;
-    });
-    this.updateService.updateMOCommandQueueAndIndices(commandQueue, additionals);
+    let additionals: AdditionalParameter[] = this.indexedCommandQueue.map(
+      (entry) => {
+        return {
+          index: entry.index,
+          mirrored: entry.mirrored,
+          deviation: entry.deviation,
+        } as AdditionalParameter;
+      }
+    );
+    this.updateService.updateMOCommandQueueAndIndices(
+      commandQueue,
+      additionals
+    );
   }
 
   objectContainsSearchString(series, searchString) {

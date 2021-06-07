@@ -9,7 +9,8 @@ import {
   SeriesAlarmsForm,
   SeriesBasicEventsForm,
   SeriesEventsForm,
-  SeriesSleepForm
+  SeriesSleepForm,
+  InputField
 } from '@models/inputFields.const';
 import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
 import { ColorsReduced } from '@models/colors.const';
@@ -142,6 +143,14 @@ export class SimSettingsComponent {
         this.smartRestInstruction[entry.path] = this.smartRestAllValues.unit;
       }
     }
+  }
+
+  buttonHandler(inputField: InputField) {
+    this.instructionValue = this.simSettingsService.buttonHandler(
+      inputField,
+      this.instructionValue,
+      this.allInstructionsSeries
+    );
   }
 
   private generateRequest() {
