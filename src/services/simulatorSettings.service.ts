@@ -20,6 +20,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { SleepService } from "./sleep.service";
 import { ManagedObjectUpdateService } from "./ManagedObjectUpdate.service";
 import * as _ from "lodash";
+import { InputField } from "@models/inputFields.const";
 @Injectable({
   providedIn: "root",
 })
@@ -120,15 +121,9 @@ export class SimulatorSettingsService {
         this.resultTemplate.commandQueue.push(toBePushedWithIndex);
 
         // Add sleep after inserting measurement
-
-        if (value.sleep && value.sleep !== +"") {
-          this.resultTemplate.commandQueue.push({
-            type: "sleep",
-            seconds: value.sleep,
-          } as IndexedCommandQueueEntry);
-        }
       }
     }
+    
     this.generateAlarmsOrEventsOrSleep();
     return this.resultTemplate.commandQueue;
   }
@@ -254,12 +249,31 @@ export class SimulatorSettingsService {
       !this.resultTemplate.commandQueue.length
     ) {
       const sleep = this.sleepService.sleeps[0];
-      let instruction: Instruction = {
-        type: InstructionCategory.Sleep,
-        seconds: sleep.seconds,
-      };
-      this.pushToResultTemplate(instruction);
+      for (let i = 0; i < ((+sleep.numberOfSleeps) || 1); i++) {
+        let instruction: Instruction = {
+          type: InstructionCategory.Sleep,
+          seconds: sleep.seconds,
+          color: (sleep.color || '')
+        };
+        this.pushToResultTemplate(instruction);
+      }
     }
+  }
+
+  buttonHandler(inputField: InputField, instructionValue: SeriesInstruction | Partial<SeriesInstruction>, allInstructionsSeries): SeriesInstruction | Partial<SeriesInstruction> {
+    if (inputField.name === 'sleepsEqualToInstructions') {
+      let steps = 0;
+      for (let entry of allInstructionsSeries) {
+        if (entry.steps) {
+          steps += +entry.steps + 1;
+        }
+        if (entry.numberOfSleeps) {
+          steps += +entry.numberOfSleeps;
+        }
+      }
+      instructionValue['numberOfSleeps'] = String(steps);
+    }
+    return instructionValue;
   }
 
   pushToResultTemplate(instruction: Instruction) {
@@ -314,7 +328,7 @@ export class SimulatorSettingsService {
         } as AdditionalParameter;
       }
     );
-    console.info("updateCommandQueue", this.commandQueue, additionals);
+    
     this.updateService.updateMOCommandQueueAndIndices(
       commandQueue,
       additionals

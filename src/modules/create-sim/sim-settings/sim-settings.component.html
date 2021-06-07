@@ -35,24 +35,6 @@
     
     <div *ngIf="isExpanded">
       <div class="card-block">
-      <!--
-      <ng-container  *ngIf="false">
-        <label class="c8y-switch">
-          <input type="checkbox"  [ngModel]="isSmartRestSelected" (ngModelChange)="isSmartRestSelected=!isSmartRestSelected"/>
-          <span></span><em> Select from SmartREST Templates </em>
-        </label>
-        <div class="row">
-            <div class="col-md-12">
-              <div class="form-group form-group-md">
-                <div class="c8y-select-wrapper" *ngIf="!isSmartRestSelected">
-                  <br />
-                </div>
-              </div>
-            </div>
-        </div>
-      </ng-container>
-    -->
-
       <!-- Add all series except type SmartRest -->
       <div [ngSwitch]="selectedConfig" *ngIf="!isSmartRestSelected">
         <ng-template
@@ -62,9 +44,16 @@
           <div class="row">
             <ng-container *ngFor="let entry of form">
               
-              <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
+              <div [class]="'col-xs-'+ (12 / form.length | number: '1.0-0')"  *ngIf="!entry.hidden">
                 <div class="form-group">
-                  <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
+                  <label class="text-truncate" for="{{entry.name}}" [title]="entry.label">{{ entry.label }}</label>
+                  <label class="c8y-switch" *ngIf="entry.type === 'switch'">
+                    <input type="checkbox" id="{{entry.name}}" [(ngModel)]="instructionValue[entry.name]"/>
+                    <em>{{entry.label}}</em>
+                  </label>
+                  <label class="c8y-switch" *ngIf="entry.type === 'button'">
+                    <button type="button"  (click)="buttonHandler(entry)" class="btn btn-primary">{{entry.placeholder}}</button>
+                  </label>
                   <div
                     class="form-group form-group-md"
                     *ngIf="entry.type === 'select'"
