@@ -249,7 +249,7 @@ export class SimulatorSettingsService {
       !this.resultTemplate.commandQueue.length
     ) {
       const sleep = this.sleepService.sleeps[0];
-      for (let i = 0; i < +sleep.numberOfSleeps || 1; i++) {
+      for (let i = 0; i < ((+sleep.numberOfSleeps) || 1); i++) {
         let instruction: Instruction = {
           type: InstructionCategory.Sleep,
           seconds: sleep.seconds,

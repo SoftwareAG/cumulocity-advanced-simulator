@@ -183,9 +183,7 @@ export class SimSettingsComponent {
         }
     }
   }
-  switchHandler(inputField: InputField){
-    
-  }
+  
   buttonHandler(inputField: InputField){
     this.instructionValue = this.simSettingsService.buttonHandler(inputField, this.instructionValue, this.allInstructionsSeries);
   }

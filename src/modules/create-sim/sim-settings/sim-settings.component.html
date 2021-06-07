@@ -48,8 +48,8 @@
                 <div class="form-group">
                   <label class="text-truncate" for="{{entry.name}}" [title]="entry.label">{{ entry.label }}</label>
                   <label class="c8y-switch" *ngIf="entry.type === 'switch'">
-                    <input type="checkbox" id="{{entry.name}}" [(ngModel)]="instructionValue[entry.name]" (change)="switchHandler(entry)" />
-                    <span></span><em>{{entry.label}}</em>
+                    <input type="checkbox" id="{{entry.name}}" [(ngModel)]="instructionValue[entry.name]"/>
+                    <em>{{entry.label}}</em>
                   </label>
                   <label class="c8y-switch" *ngIf="entry.type === 'button'">
                     <button type="button"  (click)="buttonHandler(entry)" class="btn btn-primary">{{entry.placeholder}}</button>
