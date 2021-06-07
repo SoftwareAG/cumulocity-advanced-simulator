@@ -211,7 +211,11 @@ export const SleepForm: InputField[] = [
     type: "textField",
     minimum: 5,
     isNumber: true
-  },
+  }
+];
+
+export const SeriesSleepForm: InputField[] = [
+  ...SleepForm,
   {
     name: "numberOfSleeps",
     label: "Number of sleeps",
@@ -229,7 +233,5 @@ export const SleepForm: InputField[] = [
     type: 'button'
   }
 ];
-
-export const SeriesSleepForm: InputField[] = [...SleepForm];
 
 
