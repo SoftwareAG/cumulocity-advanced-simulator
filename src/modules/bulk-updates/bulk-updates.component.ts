@@ -90,10 +90,11 @@ export class BulkUpdatesComponent implements OnInit {
         );
         return;
       }
-
+      //Prepare Structure to intertwine
       for (let entry of this.allInstructionsSeries) {
         let count = 1; //default number of instructions made by a series if nothing else is defined
         if (entry.steps) { count = +entry.steps + 1; }
+        if (entry.numberOfSleeps) { count = +entry.numberOfSleeps; }
         indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
         numberOfTwines += count;
       }
@@ -110,9 +111,9 @@ export class BulkUpdatesComponent implements OnInit {
         }
         startPosition++;
       }
-
       indexDistribution.sort((a, b) => b.count - a.count);
-
+      
+      // Actual intertwine / rearrange of the array
       for (let i = 0; i < numberOfTwines; i++) {
         for (let distributed of indexDistribution) {
           if (distributed.count <= 0) { continue; }

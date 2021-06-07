@@ -23,7 +23,7 @@ export type SeriesInstruction =
   | AlarmInstruction
   | BasicEventInstruction
   | EventInstruction
-  | SleepInstruction
+  | SleepSeriesInstruction
   | SeriesSmartRestInstruction;
 
 
@@ -117,4 +117,7 @@ export interface SleepInstruction extends Instruction2 {
   seconds: number | string;
   type:InstructionCategory.Sleep;
   index?: string;
+}
+export interface SleepSeriesInstruction extends SleepInstruction {
+  numberOfSleeps?: number | string;
 }
