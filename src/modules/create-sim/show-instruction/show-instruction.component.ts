@@ -67,7 +67,7 @@ export class ShowInstructionComponent implements OnInit {
       message:
       "You need at least a 5 seconds sleep somewhere in the Instruction Queue.",
     };
-    console.error(this.warning, this.indexedCommandQueue.length);
+    
     this.getInvalidSimulator.emit(true);
     this.invalidSimulator = true;
   }

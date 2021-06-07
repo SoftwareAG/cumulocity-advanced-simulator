@@ -81,14 +81,21 @@ export class BulkUpdatesComponent implements OnInit {
     let newIndexedCommandQueue: IndexedCommandQueueEntry[] = [];
     let filteredCommandQueue = this.indexedCommandQueue.filter(a => a.index === 'single');
     if (this.intertwinedValues === true) {
-      let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1, nextIndex = 1, endCondition = false;
+      let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1;
       if (maxIndex <= 2) {
+        this.intertwinedValues = false;
+        this.updateService.simulatorUpdateFeedback(
+          "info",
+          "You need at least two series to intertwine."
+        );
         return;
       }
 
       for (let entry of this.allInstructionsSeries) {
-        indexDistribution.push({ index: +entry.index, count: +entry.steps + 1, iterations: 0 });
-        numberOfTwines += +entry.steps + 1;
+        let count = 1; //default number of instructions made by a series if nothing else is defined
+        if (entry.steps) { count = +entry.steps + 1; }
+        indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
+        numberOfTwines += count;
       }
 
       let startPosition = 0;
@@ -120,7 +127,7 @@ export class BulkUpdatesComponent implements OnInit {
       newIndexedCommandQueue = this.indexedCommandQueue;
       newIndexedCommandQueue.sort((a, b) => { return +a.index - +b.index });
     }
-    
+  
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
 
