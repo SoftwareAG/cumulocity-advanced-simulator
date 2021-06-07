@@ -14,7 +14,7 @@ import { version } from '../../../package.json';
 @Component({
   selector: 'app-simulator-entry',
   templateUrl: './simulator-entry.component.html',
-  styleUrls: ['./simulator-entry.component.scss'],
+  styleUrls: ['./simulator-entry.component.scss']
 })
 export class SimulatorEntryComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
@@ -30,7 +30,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     { category: { icon: 'bell', type: 'alarms', break: false } },
     { category: { icon: 'tasks', type: 'events', break: false } },
     { category: { icon: 'clock-o', type: 'sleep', break: false } },
-    { category: { icon: 'sitemap', type: 'smartRest', break: false } },
+    { category: { icon: 'sitemap', type: 'smartRest', break: false } }
   ];
   listClass = 'interact-list';
   appVersion: string;
@@ -71,13 +71,11 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     return this.ngXmodalService
       .confirm(
         'Delete Simulator',
-        'Do you want to delete the simulator "' +
-          simulator.name +
-          '"? This action cannot be undone.',
+        'Do you want to delete the simulator "' + simulator.name + '"? This action cannot be undone.',
         'danger',
         {
           ok: 'Delete',
-          cancel: 'Cancel',
+          cancel: 'Cancel'
         }
       )
       .then(
@@ -109,27 +107,21 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
       : (simulator.c8y_DeviceSimulator.state = 'RUNNING');
 
     this.simService.updateSimulatorManagedObject(simulator).then((res) => {
-      console.log('State changed');
       const moId = res.id;
-      this.backend.connectToSimulatorsBackend(
-        simulator.c8y_DeviceSimulator,
-        moId
-      );
+      this.backend.connectToSimulatorsBackend(simulator.c8y_DeviceSimulator, moId);
     });
   }
 
   private deleteSimulator(simulator: CustomSimulator): Promise<boolean> {
     return this.simService.deleteManagedObject(simulator.id).then(
       () => {
-        const pos = this.allSimulators.findIndex(
-          (entry) => entry.id === simulator.id
-        );
+        const pos = this.allSimulators.findIndex((entry) => entry.id === simulator.id);
         this.allSimulators.splice(pos, 1);
 
         this.refreshList();
         this.alertService.add({
           text: this.translateService.instant('Simulator deleted.'),
-          type: 'success',
+          type: 'success'
         } as Alert);
         return true;
       },
@@ -137,7 +129,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
         this.alertService.add({
           text: this.translateService.instant(error),
           type: 'danger',
-          timeout: 0,
+          timeout: 0
         } as Alert);
         return false;
       }
@@ -145,9 +137,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
   }
 
   onDuplicateSelected(simulator: CustomSimulator): void {
-    let copyDeviceSim = JSON.parse(
-      JSON.stringify(simulator.c8y_DeviceSimulator)
-    );
+    let copyDeviceSim = JSON.parse(JSON.stringify(simulator.c8y_DeviceSimulator));
     copyDeviceSim.name = simulator.name + ' #(copy)';
     const copyIndices = simulator.c8y_Indices;
     const copySeries = simulator.c8y_Series;
@@ -156,7 +146,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
       c8y_CustomSim: {},
       c8y_DeviceSimulator: copyDeviceSim,
       c8y_Indices: copyIndices,
-      c8y_Series: copySeries,
+      c8y_Series: copySeries
     };
 
     this.simService.createCustomSimulator(copySimulator).then(
@@ -164,14 +154,14 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
         this.refreshList();
         this.alertService.add({
           text: this.translateService.instant('Simulator duplicated.'),
-          type: 'success',
+          type: 'success'
         } as Alert);
       },
       (error) => {
         this.alertService.add({
           text: this.translateService.instant(error),
           type: 'danger',
-          timeout: 0,
+          timeout: 0
         } as Alert);
       }
     );

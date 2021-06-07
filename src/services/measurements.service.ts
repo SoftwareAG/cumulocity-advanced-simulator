@@ -1,13 +1,9 @@
-
-import { Injectable } from "@angular/core";
-import { CustomSimulator, DeviceSimulator } from "@models/simulator.model";
+import { Injectable } from '@angular/core';
 import { HelperService } from './helper.service';
-import { AlarmInstruction, BasicEventInstruction, MeasurementInstruction, SleepInstruction, EventInstruction, SeriesMeasurementInstruction } from '@models/instruction.model';
-import { keyframes } from '@angular/animations';
-
+import { SeriesMeasurementInstruction } from '@models/instruction.model';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class MeasurementsService {
   uniqueMeasurementsArray: SeriesMeasurementInstruction[] = [];
@@ -16,24 +12,11 @@ export class MeasurementsService {
   scaledArray = [];
   randomSelected = false;
 
-  
   constructor(private helperService: HelperService) {}
 
-// setMeasurements(measurements: SeriesMeasurementInstruction[]) {
-//   this.measurements = measurements;
-// }
-
-pushToMeasurements(measurements: SeriesMeasurementInstruction) {
-  console.error(measurements);
-  this.measurements.push(measurements);
-}
-
-// public fetchMeasurements(mo: CustomSimulator): Promise<any[]> {
-//     return new Promise((resolve, reject) => {
-//       this.measurementSeries = mo.c8y_MeasurementSeries;
-//       resolve(this.measurementSeries);
-//     });
-//   }
+  pushToMeasurements(measurements: SeriesMeasurementInstruction) {
+    this.measurements.push(measurements);
+  }
 
   createUniqueMeasurementsArray() {
     for (let value of this.measurements.filter((a) => a.fragment)) {
@@ -41,33 +24,16 @@ pushToMeasurements(measurements: SeriesMeasurementInstruction) {
       value.minValue = +value.minValue;
       value.maxValue = +value.maxValue;
 
-      if (
-        this.uniqueMeasurementsArray.find((x) => x.fragment === value.fragment)
-      ) {
-        const pos = this.uniqueMeasurementsArray.findIndex(
-          (x) => x.fragment === value.fragment
-        );
+      if (this.uniqueMeasurementsArray.find((x) => x.fragment === value.fragment)) {
+        const pos = this.uniqueMeasurementsArray.findIndex((x) => x.fragment === value.fragment);
 
-        const nowScaled = this.helperService.scale(
-          value.minValue,
-          value.maxValue,
-          value.steps,
-          this.randomSelected
-        );
+        const nowScaled = this.helperService.scale(value.minValue, value.maxValue, value.steps, this.randomSelected);
         this.scaledArray[pos].push(...nowScaled);
       } else {
-        const nowScaled = this.helperService.scale(
-          value.minValue,
-          value.maxValue,
-          value.steps,
-          this.randomSelected
-        );
+        const nowScaled = this.helperService.scale(value.minValue, value.maxValue, value.steps, this.randomSelected);
         this.uniqueMeasurementsArray.push(value);
         this.scaledArray.push(nowScaled);
       }
     }
-    console.info('uniqueMeasurementsArray', this.uniqueMeasurementsArray);
   }
-
-
 }

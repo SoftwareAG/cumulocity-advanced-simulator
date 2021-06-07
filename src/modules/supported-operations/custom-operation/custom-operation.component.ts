@@ -57,7 +57,7 @@ export class CustomOperationComponent implements OnInit {
     }
     this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.push(this.customOperationTitle);
     this.mo.c8y_DeviceSimulator.c8y_CustomOperations.push(this.customOperationTitle);
-    this.simulatorService.updateSimulatorManagedObject(this.mo).then((res) => console.log(res));
+    this.simulatorService.updateSimulatorManagedObject(this.mo).then((res) => {}); // FIXME proper handling
 
   }
 

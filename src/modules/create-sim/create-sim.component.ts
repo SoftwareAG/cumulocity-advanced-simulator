@@ -1,13 +1,12 @@
 import { Component, HostListener, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alert, AlertService } from '@c8y/ngx-components';
-import { Subscription } from 'rxjs';
 import { IResult, ICurrentTenant } from '@c8y/client';
-import {
-  AdditionalParameter,
-  CommandQueueEntry,
-  IndexedCommandQueueEntry,
-} from '@models/commandQueue.model';
+import { TenantService } from '@c8y/ngx-components/api';
+import { Subscription } from 'rxjs';
+import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
+import { AlarmsService } from '@services/alarms.service';
+import { MeasurementsService } from '@services/measurements.service';
 import { Modal } from '@modules/shared/models/modal.model';
 import { InstructionService } from '@services/Instruction.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
@@ -15,13 +14,14 @@ import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SmartRESTService } from '@services/smartREST.service';
+import { UpdateInstructionsService } from '@services/updateInstructions.service';
+import { HelperService } from '@services/helper.service';
 import * as _ from 'lodash';
-import { TenantService } from '@c8y/ngx-components/api';
 
 @Component({
   selector: 'app-create-sim',
   templateUrl: './create-sim.component.html',
-  styleUrls: ['./create-sim.component.scss'],
+  styleUrls: ['./create-sim.component.scss']
 })
 export class CreateSimComponent implements OnInit {
   warningModal: Modal;
@@ -52,14 +52,14 @@ export class CreateSimComponent implements OnInit {
   instructionsSubscription: Subscription;
   indexedCommandQueueSubscription: Subscription;
   simulatorDuration: string;
-  @ViewChild('title', {static: true}) el:ElementRef;
+  @ViewChild('title', { static: true }) el: ElementRef;
 
   instructionSeriesTypes = [
     { category: { icon: 'sliders', type: 'measurements', break: true } },
     { category: { icon: 'bell', type: 'alarms', break: false } },
     { category: { icon: 'tasks', type: 'events', break: true } },
     { category: { icon: 'clock-o', type: 'sleep', break: false } },
-    { category: { icon: 'sitemap', type: 'smartRest', break: false } },
+    { category: { icon: 'sitemap', type: 'smartRest', break: false } }
   ];
   listClass = 'interact-list';
   height = window.innerHeight * 0.7;
@@ -72,25 +72,17 @@ export class CreateSimComponent implements OnInit {
   savedInterval: string;
   currentTenantInfo: Promise<ICurrentTenant>;
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event) {
+  @HostListener('window:scroll', ['$event']) onScroll(event) {
     var checkSimulator = document.getElementById('check-simulator');
     var bulkSimulator = document.getElementById('bulk-simulator');
     var maintainSimulator = document.getElementById('maintain-simulator');
-    var scrollValue =
-      window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
+    var scrollValue = window.scrollY + window.innerHeight * this.scrollTransitionInPercentage;
 
     if (scrollValue < checkSimulator.offsetTop) {
       this.wizardStep = 0;
-    } else if (
-      scrollValue > checkSimulator.offsetTop &&
-      scrollValue < bulkSimulator.offsetTop
-    ) {
+    } else if (scrollValue > checkSimulator.offsetTop && scrollValue < bulkSimulator.offsetTop) {
       this.wizardStep = 1;
-    } else if (
-      scrollValue > bulkSimulator.offsetTop &&
-      scrollValue < maintainSimulator.offsetTop
-    ) {
+    } else if (scrollValue > bulkSimulator.offsetTop && scrollValue < maintainSimulator.offsetTop) {
       this.wizardStep = 2;
     } else if (scrollValue > maintainSimulator.offsetTop) {
       this.wizardStep = 3;
@@ -114,12 +106,10 @@ export class CreateSimComponent implements OnInit {
     this.currentTenantInfo = this.getTenantInfo();
 
     // TODO move to separate functions
-    this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe(
-      (instructions) => {
-        this.allInstructionsSeries = instructions;
-        this.filteredInstructionsSeries = this.allInstructionsSeries;
-      }
-    );
+    this.instructionsSubscription = this.simSettings.instructionsSeriesUpdate$.subscribe((instructions) => {
+      this.allInstructionsSeries = instructions;
+      this.filteredInstructionsSeries = this.allInstructionsSeries;
+    });
 
     this.indexedCommandQueueSubscription = this.simSettings.indexedCommandQueueUpdate$.subscribe(
       (indexedCommandQueue: IndexedCommandQueueEntry[]) => {
@@ -129,8 +119,7 @@ export class CreateSimComponent implements OnInit {
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
-
-    const mo = JSON.parse(JSON.stringify(this.mo));
+    const mo = _.cloneDeep(this.mo);
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
@@ -152,17 +141,15 @@ export class CreateSimComponent implements OnInit {
     const filter = {
       withTotalPages: true,
       type: 'c8y_SmartRest2Template',
-      pageSize: 1000,
+      pageSize: 1000
     };
     this.simService.getFilteredManagedObjects(filter).then((result) => {
       const temp = [];
       const ids = [];
       result.map((value) => {
         temp.push({
-          values:
-            value.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate
-              .requestTemplates,
-          templateId: value.id,
+          values: value.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate.requestTemplates,
+          templateId: value.id
         });
       });
 
@@ -172,17 +159,14 @@ export class CreateSimComponent implements OnInit {
         arrayOfPromises.push(this.simService.fetchExternalIds(externalId));
       });
       Promise.all(arrayOfPromises).then((result) => {
-        temp.forEach(
-          (entry, index) =>
-            (entry.templateId = result[index].data[0].externalId)
-        );
+        temp.forEach((entry, index) => (entry.templateId = result[index].data[0].externalId));
         temp.forEach((entry) => {
           const template = entry.templateId;
           const smartRestValuesArray = entry.values;
           smartRestValuesArray.forEach((smartRestEntry) =>
             this.smartRestConfig.push({
               smartRestFields: smartRestEntry,
-              templateId: template,
+              templateId: template
             })
           );
         });
@@ -214,9 +198,8 @@ export class CreateSimComponent implements OnInit {
   }
 
   filterAllInstructionsList() {
-    this.filteredInstructionsSeries = this.allInstructionsSeries.filter(
-      (series) =>
-        this.simSettings.objectContainsSearchString(series, this.searchString)
+    this.filteredInstructionsSeries = this.allInstructionsSeries.filter((series) =>
+      this.simSettings.objectContainsSearchString(series, this.searchString)
     );
   }
 
@@ -225,7 +208,7 @@ export class CreateSimComponent implements OnInit {
     this.editedVal = val.editedValue;
   }
 
-  onClearAllInstructions() {}
+  onClearAllInstructions() {} // FIXME unused / deprecaed?
 
   delete(value) {
     if (!this.warningModal) {
@@ -233,7 +216,7 @@ export class CreateSimComponent implements OnInit {
         title: 'Delete Series',
         type: 'warning',
         message: '',
-        options: ['', ''],
+        options: ['', '']
       };
       return;
     }
@@ -246,14 +229,14 @@ export class CreateSimComponent implements OnInit {
       (res) => {
         const alert = {
           text: `Instruction Series deleted successfully.`,
-          type: 'success',
+          type: 'success'
         } as Alert;
         this.alertService.add(alert);
       },
       (err) => {
         const alert = {
           text: `Instruction Series could not be deleted`,
-          type: 'danger',
+          type: 'danger'
         } as Alert;
         this.alertService.add(alert);
       }
@@ -271,9 +254,7 @@ export class CreateSimComponent implements OnInit {
     this.editMode = false;
     this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
     this.updateService.mo.name = this.simulatorTitle;
-    this.updateService
-      .updateSimulatorObject(this.updateService.mo)
-      .then((res) => {});
+    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {}); // FIXME proper handling
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {
@@ -286,9 +267,7 @@ export class CreateSimComponent implements OnInit {
     if (activeElement && activeElement instanceof HTMLButtonElement) {
       activeElement.blur();
     }
-    this.currentSelection === this.actionButtons[0]
-      ? (this.viewNewSeries = true)
-      : (this.viewNewSeries = false);
+    this.currentSelection === this.actionButtons[0] ? (this.viewNewSeries = true) : (this.viewNewSeries = false);
   }
 
   autoScrollTo(newStep: number) {
@@ -346,29 +325,23 @@ export class CreateSimComponent implements OnInit {
       }, 1000);
     }
     this.updateService.mo.c8y_DeviceSimulator.state =
-      this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING" ? "PAUSED" : "RUNNING";
+      this.updateService.mo.c8y_DeviceSimulator.state === 'RUNNING' ? 'PAUSED' : 'RUNNING';
 
     this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {
       const moId = res.id;
-      console.log('MO: ', this.updateService.mo);
-      this.backend.connectToSimulatorsBackend(
-        this.updateService.mo.c8y_DeviceSimulator,
-        moId
-      );
-      this.simulatorRunning = this.updateService.mo.c8y_DeviceSimulator.state === "RUNNING";
+      this.backend.connectToSimulatorsBackend(this.updateService.mo.c8y_DeviceSimulator, moId);
+      this.simulatorRunning = this.updateService.mo.c8y_DeviceSimulator.state === 'RUNNING';
     });
   }
-  
 
   onFocusTitle() {
-    this.editMode=true;
-    setTimeout(()=>{
-      this.el.nativeElement.focus()
-  });
-    
+    this.editMode = true;
+    setTimeout(() => {
+      this.el.nativeElement.focus();
+    });
   }
 
-  openSimulatorInDevmanagement() {}
+  openSimulatorInDevmanagement() {} // FIXME to be removed?
 
   private getTenantInfo(): Promise<ICurrentTenant> {
     return this.tenantService.current().then((res: IResult<ICurrentTenant>) => res.data);
