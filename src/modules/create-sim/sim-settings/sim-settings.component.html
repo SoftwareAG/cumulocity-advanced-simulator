@@ -9,7 +9,7 @@
 </c8y-action-bar-item>
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="display:flex; flex-direction: row;">
-    <a [href]="importUrl" download="Simulator_To_Import.txt">
+    <a [href]="importUrl" [download]="'simulator-export_'+mo.id+'.json'">
   <button class="btn btn-link" (click)="downloadSimulator()">
     <i c8yIcon="file-text"></i>&nbsp; {{ 'Export'| translate }} <br> Simulator
   </button>
