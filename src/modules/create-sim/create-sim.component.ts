@@ -131,7 +131,6 @@ export class CreateSimComponent implements OnInit {
     this.mo = this.data.simulator.data;
 
     const mo = JSON.parse(JSON.stringify(this.mo));
-    console.info(mo);
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;
     const MOCommandQueue = this.mo.c8y_DeviceSimulator.commandQueue;
