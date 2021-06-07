@@ -137,7 +137,7 @@ export class SimulatorSettingsService {
     if (additionals) {
       additionals.forEach((element) => {
         let color = "#fff";
-        if (element.index != "single") {
+        if (element.index != "single" && allInstructionsSeries[+element.index]) {
           color = allInstructionsSeries[+element.index].color;
         }
         element.color = color;

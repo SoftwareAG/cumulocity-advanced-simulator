@@ -83,13 +83,18 @@ export class BulkUpdatesComponent implements OnInit {
     if (this.intertwinedValues === true) {
       let maxIndex = this.allInstructionsSeries.length + 1, numberOfTwines = 0, lastIndex = -1;
       if (maxIndex <= 2) {
+        this.intertwinedValues = false;
+        this.updateService.simulatorUpdateFeedback(
+          "info",
+          "You need at least two series to intertwine."
+        );
         return;
       }
       //Prepare Structure to intertwine
       for (let entry of this.allInstructionsSeries) {
-        let count = 0;
-        if(entry.steps){ count = +entry.steps + 1;}
-        if (entry.numberOfSleeps){ count = +entry.numberOfSleeps;}
+        let count = 1; //default number of instructions made by a series if nothing else is defined
+        if (entry.steps) { count = +entry.steps + 1; }
+        if (entry.numberOfSleeps) { count = +entry.numberOfSleeps; }
         indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
         numberOfTwines += count;
       }
@@ -123,7 +128,7 @@ export class BulkUpdatesComponent implements OnInit {
       newIndexedCommandQueue = this.indexedCommandQueue;
       newIndexedCommandQueue.sort((a, b) => { return +a.index - +b.index });
     }
-    
+  
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
 
