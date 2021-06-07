@@ -18,7 +18,7 @@ import { isEqual } from "lodash";
 import * as _ from "lodash";
 import { Subscription } from "rxjs";
 import { HelperService } from "@services/helper.service";
-import { SeriesInstruction } from "@models/instruction.model";
+import { SeriesCSVInstruction, SeriesInstruction, InstructionCategory } from "@models/instruction.model";
 import { elementAt } from "rxjs/operators";
 @Component({
   selector: "app-create-sim",
@@ -126,6 +126,7 @@ export class CreateSimComponent implements OnInit {
     this.commandQueue = MOCommandQueue;
 
     this.allInstructionsSeries = this.mo.c8y_Series;
+ 
     let additionals: AdditionalParameter[] = this.mo.c8y_additionals;
     this.indexedCommandQueue = this.simSettings.createIndexedCommandQueue(additionals, this.allInstructionsSeries, MOCommandQueue);
     console.info(this.indexedCommandQueue, additionals, this.commandQueue);

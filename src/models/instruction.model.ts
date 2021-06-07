@@ -47,6 +47,7 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
 }
 export interface SeriesCSVInstruction extends SmartInstruction {
   index?: string;
+  numberOfImportedInstructions?: string,
   type: InstructionCategory.CSVImport;
 }
 

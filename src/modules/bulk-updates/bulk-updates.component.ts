@@ -89,6 +89,7 @@ export class BulkUpdatesComponent implements OnInit {
       for (let entry of this.allInstructionsSeries) {
         let count = 0;
         if(entry.steps){ count = +entry.steps + 1;}
+        if (entry.numberOfImportedInstructions) { count = +entry.numberOfImportedInstructions;}
         if (entry.numberOfSleeps){ count = +entry.numberOfSleeps;}
         indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
         numberOfTwines += count;
@@ -123,7 +124,7 @@ export class BulkUpdatesComponent implements OnInit {
       newIndexedCommandQueue = this.indexedCommandQueue;
       newIndexedCommandQueue.sort((a, b) => { return +a.index - +b.index });
     }
-    
+    console.info(newIndexedCommandQueue, indexDistribution);
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
 

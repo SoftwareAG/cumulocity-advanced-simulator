@@ -157,6 +157,11 @@ export class SimSettingsComponent {
         index: assignedIndex,
         option: this.measurementOption,
       } as SeriesInstruction);
+      console.log(insVal, {
+        ...insVal,
+        index: assignedIndex,
+        option: this.measurementOption,
+      } as SeriesInstruction);
       this.generateRequest();
     }
   }
@@ -199,7 +204,9 @@ export class SimSettingsComponent {
       this.instructionValue.scalingOption
         ? this.instructionValue.scalingOption
         : "linear";
+    console.info('smull test');
     let instructionSet = this.simSettingsService.generateInstructions();
+    console.info(instructionSet);
     this.updateService.mo.c8y_DeviceSimulator.commandQueue = instructionSet;
     
     //this.updateService.mo.c8y_Indices = this.simSettingsService.getUpdatedIndicesArray().map((entry:AdditionalParameter)=> entry.index);

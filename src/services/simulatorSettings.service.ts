@@ -137,7 +137,7 @@ export class SimulatorSettingsService {
     if (additionals) {
       additionals.forEach((element) => {
         let color = "#fff";
-        if (element.index != "single") {
+        if (element.index != "single" && allInstructionsSeries[+element.index]) {
           color = allInstructionsSeries[+element.index].color;
         }
         element.color = color;
@@ -249,12 +249,14 @@ export class SimulatorSettingsService {
       !this.resultTemplate.commandQueue.length
     ) {
       const sleep = this.sleepService.sleeps[0];
-      for (let i = 0; i < +sleep.numberOfSleeps || 1; i++) {
+      console.error(sleep, ((+sleep.numberOfSleeps) || 1));
+      for (let i = 0; i < ((+sleep.numberOfSleeps) || 1); i++) {
         let instruction: Instruction = {
           type: InstructionCategory.Sleep,
           seconds: sleep.seconds,
           color: (sleep.color || '')
         };
+        
         this.pushToResultTemplate(instruction);
       }
     }

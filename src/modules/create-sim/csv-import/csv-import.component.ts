@@ -116,6 +116,8 @@ export class CsvImportComponent implements OnInit {
 
     this.simSettingsService.pushToInstructionsArray({
       index: assignedIndex,
+      numberOfImportedInstructions: String(this.dataPoints),
+      color: '#fff'
     //  type: InstructionCategory.CSVImport
     } as SeriesCSVInstruction);
 
@@ -132,7 +134,7 @@ export class CsvImportComponent implements OnInit {
 
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
     this.simulatorervice.updateSimulatorManagedObject(mo).then(
-      (res) => {
+      /*(res) => {
         console.log(res);
         const alert = {
           text: `${type} updated successfully.`,
@@ -146,7 +148,7 @@ export class CsvImportComponent implements OnInit {
           type: "danger",
         } as Alert;
         this.alertService.add(alert);
-      }
+      }*/
 
     );
 
