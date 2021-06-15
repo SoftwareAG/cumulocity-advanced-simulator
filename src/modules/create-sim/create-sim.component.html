@@ -43,7 +43,7 @@
 </c8y-action-bar-item>
 
 <section id="create-simulator" class="row main-div" [style.height.px]='height' style="margin-top:70px;">
-    <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
+    <div class="col-lg-8 overflow-container">
       <div >
         <app-sim-settings
           [mo]="mo"
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div class="col-lg-4" style="overflow-y:scroll; height:100%;">
+    <div class="col-lg-4 overflow-container">
       <app-show-instruction
         [mo]="mo"
         (getInvalidSimulator)="getCurrentSimulatorState($event)"
@@ -118,7 +118,7 @@
     <div id="grabber" [style.top.px]='height - 9' (mouseup)="onMouseUp($event)" (mousedown)="onMouseDown($event)"></div>
 </section>
 
-<section id="check-simulator" style="margin-top:120px;" >
+<section id="check-simulator">
     <div class="row" *ngIf="this.indexedCommandQueue.length && !this.invalidSimulator">
       <div class="col-xs-12">
         <h3>Dashboard / Simulation</h3>
