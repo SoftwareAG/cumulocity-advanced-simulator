@@ -5,8 +5,6 @@ import { IResult, ICurrentTenant } from '@c8y/client';
 import { TenantService } from '@c8y/ngx-components/api';
 import { Subscription } from 'rxjs';
 import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
-import { AlarmsService } from '@services/alarms.service';
-import { MeasurementsService } from '@services/measurements.service';
 import { Modal } from '@modules/shared/models/modal.model';
 import { InstructionService } from '@services/Instruction.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
@@ -14,8 +12,6 @@ import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SmartRESTService } from '@services/smartREST.service';
-import { UpdateInstructionsService } from '@services/updateInstructions.service';
-import { HelperService } from '@services/helper.service';
 import * as _ from 'lodash';
 
 @Component({
