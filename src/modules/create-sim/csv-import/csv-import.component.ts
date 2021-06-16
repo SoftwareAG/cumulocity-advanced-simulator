@@ -19,13 +19,14 @@ export class CsvImportComponent implements OnInit {
   smartRestCategory: InstructionCategory = InstructionCategory.SmartRest;
 
   
-  choosenInstructionCategory: InstructionCategory;
+  choosenInstructionCategory: InstructionCategory = this.smartRestCategory;
   smartRestSelectedConfig;
   step = 1;
   file:any;
-  delimiter:string = ';';
+  delimiter:string;
   data: string[][] = [];
   dataPoints: number;
+  mappingsDone = 0;
   dataProperties: string[] = [];
   @Input() smartRestConfig;
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
@@ -41,10 +42,6 @@ export class CsvImportComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    console.error(this.smartRestConfig, this.smartRestCategory);
-  }
-  categoryChange(event) {
-    console.error(event, this.smartRestSelectedConfig);
   }
   deepCopy(obj){
     return JSON.parse(JSON.stringify(obj));
@@ -60,27 +57,28 @@ export class CsvImportComponent implements OnInit {
           smartRestField['csvProperty'] = csvProperty;
           smartRestField['csvValues'] = this.data[i];
           succeededMappings++;
+          this.mappingsDone++;
           checkedDataProperties.splice(i,1);
           this.data.splice(i,1);
           break;
         }
       }
     }
-    
-    console.log(`${succeededMappings} of ${filteredCustomValues.length} successfully mapped`);
-    console.log(this.smartRestSelectedConfig);
+    if (succeededMappings > 0){
+      this.successMessage(`${succeededMappings} of ${filteredCustomValues.length} successfully mapped`);
+    } else {
+      this.sendToast('No mappings possible', 'info');
+    }
   }
   
   mapDataToSmartRest(smartRestField, csvProperty:string, i:number) {
-    console.info(csvProperty, smartRestField, i , this.data);
     smartRestField['csvProperty'] = csvProperty;
     smartRestField['csvValues'] = this.data[i];
-    console.log(this.smartRestSelectedConfig);
+    this.mappingsDone++;
   }
 
   startImport() {
     let smartRestInstructions: SmartRestInstruction[] = [];
-    console.info(this.smartRestSelectedConfig.smartRestFields.customValues);
     const assignedIndex: string = this.allInstructionsSeries.length.toString();
 
 
@@ -99,15 +97,12 @@ export class CsvImportComponent implements OnInit {
       }
       smartRestInstructions.push(smartRestInstruction as SmartRestInstruction);
 
-      console.error(smartRestInstruction);
       const smartRestCommandQueueEntry = this.instructionService.smartRestInstructionToCommand(smartRestInstruction, this.smartRestSelectedConfig);
-      console.error(smartRestInstruction, smartRestCommandQueueEntry);
 
       let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: assignedIndex };
 
       
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
-      //this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
       this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
       this.importCSVView = false;
@@ -118,45 +113,78 @@ export class CsvImportComponent implements OnInit {
       index: assignedIndex,
       numberOfImportedInstructions: String(this.dataPoints),
       color: '#fff'
-    //  type: InstructionCategory.CSVImport
     } as SeriesCSVInstruction);
 
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
-    console.log('mo', this.updateService.mo, this.simSettingsService.allInstructionsArray);
     this.updateService
     .updateSimulatorObject(this.updateService.mo)
     .then((res) => {
       this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
-      console.log('res', res);
       });
+      
   }
 
 
   updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
     this.simulatorervice.updateSimulatorManagedObject(mo).then(
-      /*(res) => {
-        console.log(res);
-        const alert = {
-          text: `${type} updated successfully.`,
-          type: "success",
-        } as Alert;
-        this.alertService.add(alert);
+      () => {
+        this.successMessage('Import was successful.');
       },
-      (error) => {
-        const alert = {
-          text: `Failed to save selected ${type.toLowerCase()}.`,
-          type: "danger",
-        } as Alert;
-        this.alertService.add(alert);
-      }*/
-
+      () => {
+        this.errorMessage('Import failed with an error.');
+      }
     );
 
 
   }
   
+  goBack(){
+    if(this.step > 1){
+      this.step--;
+    }
+  }
+
+  sendToast(text: string, type: string) {
+    const alert = {
+      text: text,
+      type: type,
+    } as Alert;
+    this.alertService.add(alert);
+  }
+  successMessage(text: string) {
+    this.sendToast(text, 'success');
+  }
+  errorMessage(text: string) {
+    this.sendToast(text, 'danger');
+  }
+
+  validateInputFields() {
+    let valid = true;
+    if (this.step === 1) {
+      if(!this.delimiter || !this.file){
+        this.errorMessage((!this.delimiter) ? 'Delimiter is not set.' : 'File is not uploaded.');
+        valid = false;
+      }
+    }
+    if (this.step === 2) {
+      if (!this.choosenInstructionCategory || !this.smartRestSelectedConfig){
+        this.errorMessage((!this.choosenInstructionCategory) ? 'Please select a category.' : 'Please select a Smartrest Template.');
+        valid = false;
+      }
+    }
+    if (this.step === 3) {
+      if (this.mappingsDone === 0){
+        this.errorMessage('Without any mappings no data will be imported');
+        valid = false;
+      }
+    }
+    return valid;
+  }
 
   incrementStep() {
+    if(!this.validateInputFields()){
+      return;
+    }
     this.step++;
     switch(this.step){
       case 2: this.readFileStream();break;
@@ -165,22 +193,20 @@ export class CsvImportComponent implements OnInit {
   }
   
   prepareFileStream(event) {
-    console.log(event);
-    this.file = event.target.files[0];
+   this.file = event.target.files[0];
   }
 
-  changeDelimiter(event) {
-    console.log(event);
-
-  }
 
   readFileStream() {
+    if(this.dataProperties && this.dataPoints){
+      return;
+    }
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       let fileContent = String(fileReader.result);
       if(!fileContent.includes(this.delimiter)){
           this.step--;
-          console.log('Delimiter not found in CSV');
+          this.errorMessage('Delimiter not found in CSV');
           return;
       }
       this.dataProperties = fileContent.split('\r\n')[0].split(this.delimiter);
@@ -194,7 +220,6 @@ export class CsvImportComponent implements OnInit {
         }
         this.dataPoints = this.data[this.data.length - 1].length;
       }
-      console.log('data', this.data, this.dataPoints, this.dataProperties, data);
     }
     fileReader.readAsText(this.file);
   }

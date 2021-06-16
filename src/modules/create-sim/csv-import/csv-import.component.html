@@ -2,7 +2,7 @@
   <div class="modal-content" style="z-index: 9999;position: absolute;" uib-modal-transclude="">
     <div class="modal-header">
       <h3>
-        <i c8y-icon="file-code-o" class="dlt-icon-file-code-o"></i>
+        <i c8y-icon="icon-import" class="dlt-c8y-icon-import"></i>
         <span translate="">Upload CSV</span>
       </h3>
     </div>
@@ -11,23 +11,28 @@
 
 
         <ng-template [ngSwitchCase]="1">
-          <input type="file" id="upload" (change)="prepareFileStream($event)">
-          <input type="textfield" [(ngModel)]="delimiter" plcaholder="; , % ." id="delimiter" (change)="changeDelimiter($event)">
+          <div class="row">
+              <div class="col-xs-12"><label for="upload">CSV File:</label></div>
+              <div class="col-xs-12"><input required type="file" id="upload" (change)="prepareFileStream($event)"></div>
+              
+              <div class="col-xs-12"><label for="delimiter">Delimiter:</label></div>
+              <div class="col-xs-12"><input required type="textfield" [(ngModel)]="delimiter" placeholder=" ; , % . " id="delimiter"></div>
+          </div>
         </ng-template>
 
 
         <ng-template [ngSwitchCase]="2">
-          <label for="instructionType">Choose Instruction Type</label>
+          <label for="instructionType">Choose Instruction Type:</label>
           <select id="instructionType" class="form-control select-config" [(ngModel)]="choosenInstructionCategory">
-            <option value="" disabled selected>Select Instruction Type</option>
-            <option *ngFor="let first of instructionCategories">{{ first }}</option>
+            <option value="default" disabled>Select Instruction Type:</option>
+            <option *ngFor="let category of instructionCategories" [value]="category" [disabled]="category !== smartRestCategory"><span *ngIf="category !== smartRestCategory">Coming soon - </span>{{ category }}</option>
           </select>
 
-          <label for="smartrestTemplate" *ngIf="choosenInstructionCategory === smartRestCategory">Choose Smartrest Template</label>
-          <select id="smartrestTemplate" class="form-control select-config" (change)="categoryChange($event)" [(ngModel)]="smartRestSelectedConfig" *ngIf="choosenInstructionCategory === smartRestCategory">
-            <option [ngValue]="!smartRestSelectedConfig" disabled>Select your Smart-Rest-Template</option>
-            <option *ngFor="let first of smartRestConfig" [ngValue]="first">
-              {{first.smartRestFields.msgId}}&nbsp;{{first.smartRestFields.name }}
+          <label for="smartrestTemplate" *ngIf="choosenInstructionCategory === smartRestCategory">Choose Smartrest Template:</label>
+          <select id="smartrestTemplate" class="form-control select-config" [(ngModel)]="smartRestSelectedConfig" *ngIf="choosenInstructionCategory === smartRestCategory">
+            <option [ngValue]="default" disabled>Select your Smart-Rest-Template</option>
+            <option *ngFor="let entry of smartRestConfig" [ngValue]="entry">
+              {{entry.smartRestFields.msgId}}&nbsp;{{entry.smartRestFields.name }}
             </option>
           </select>
         </ng-template>
@@ -38,12 +43,12 @@
           <button class="btn btn-primary" style="width:100%;" (click)="autoMapping()">
             Auto Mapping
           </button>
-          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues;  let i=index" >
-            <ng-container *ngIf="i<30 && entry.value === null">
+          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues; let i = index" >
+            <ng-container *ngIf="entry.value === null">
             <span>{{entry.path}}:</span>
             <select >
               <option>Select Mapping</option>
-              <option *ngFor="let csvProperty of dataProperties;let i = index" [selected]="entry['csvProperty'] === csvProperty" (click)="mapDataToSmartRest(entry, csvProperty, i)" >{{csvProperty}}</option>
+              <option *ngFor="let csvProperty of dataProperties; let i = index" [selected]="entry['csvProperty'] === csvProperty" (click)="mapDataToSmartRest(entry, csvProperty, i)" >{{csvProperty}}</option>
             </select>
             </ng-container>
           </div>
@@ -57,8 +62,9 @@
 
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" (click)="$ctrl.cancel(); this.importCSVView = false;" translate="">Cancel</button>
-      <button class="btn btn-primary"  (click)="incrementStep()">
+      <button class="btn btn-danger" (click)="$ctrl.cancel(); this.importCSVView = false;" translate="">Cancel</button>
+      <button class="btn btn-default" (click)="goBack()" translate="">Back</button>
+      <button class="btn btn-primary"  (click)="incrementStep();">
         <span *ngIf="step !== 3">Continue</span>
         <span *ngIf="step === 3">Start Import</span> 
       </button>
