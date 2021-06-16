@@ -84,17 +84,16 @@
               
               <label class="c8y-switch" *ngIf="entry.type === 'switch'">
                 <input type="checkbox"  [(ngModel)]="instructionValue[entry.name]"/>
-                <span></span><em>{{entry.label}}</em>
+                <em>{{entry.label}}</em>
               </label>
-              <label class="c8y-switch" *ngIf="entry.type === 'button'">
+              <ng-container class="c8y-switch" *ngIf="entry.type === 'button'">
                 <button 
                     type="button" 
-                    (click)="buttonHandler(entry)"
-                    (click)="inputChange($event)"
+                    (click)="buttonHandler(entry);inputChange($event);"
                     class="btn btn-primary">
                     {{entry.placeholder}}
                 </button>
-              </label>
+              </ng-container>
               <div
                 class="form-group form-group-md"
                 *ngIf="entry.type === 'select'"

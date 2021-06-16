@@ -97,19 +97,27 @@
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+
 .maintain-simulator {
-  margin-top: 150px;
-  margin-bottom: 1000px;
+  margin: 150px 0 100vh;
 }
 
 .wizard {
   position: relative;
   text-align: center;
   display: inline-block;
-  left: 22vw;
-  width: 1000px;
   cursor: pointer;
+
+  $items: (1400 5), (1600 7.5), (1800 12.5), (2000 15), (2200 17.5), (2400 20),
+    (2600 22.5), (2800 25);
+
+  @each $item in $items {
+    @media screen and (min-width: nth($item, 1) * 1px) {
+      transform: translateX(nth($item, 2) * 1vw);
+    }
+  }
 }
+
 .clickable {
   cursor: pointer;
 }
@@ -158,7 +166,6 @@
   text-align: center;
   margin: 0px auto;
   box-shadow: 0px 0px 7px #aaa;
-  font-weight: bold;
   background: #1776bf;
   border-color: #fff;
   color: #fff;
@@ -166,6 +173,7 @@
   font-weight: bold;
   line-height: 25px;
 }
+
 .wizard-item-disabled .circle {
   background: #bbb;
   color: #333;
@@ -181,6 +189,7 @@
 .circle-animate .circle {
   animation: rotate-animation 8s infinite linear;
 }
+
 .circle-animate .circle span {
   display: inline-block;
   animation: rotate-animation-inverse 8s infinite linear;
@@ -190,6 +199,7 @@
   -webkit-animation: none;
   animation: none;
 }
+
 .heartbeat {
   cursor: pointer;
   -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
@@ -242,6 +252,7 @@
     animation-timing-function: ease-out;
   }
 }
+
 @keyframes heartbeat {
   from {
     -webkit-transform: scale(1);

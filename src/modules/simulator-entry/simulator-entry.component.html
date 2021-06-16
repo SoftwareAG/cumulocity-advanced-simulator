@@ -97,7 +97,11 @@
         </div>
         
         <div class="card-header separator card-column-40">
+          
+          <a [routerLink]="['/createSim/'+simulator.id]">
+            <div class="align">
           <div class="card-icon">
+            
             <i
               c8y-icon="c8y-simulator c8y-icon-duocolor"
               class="c8y-icon c8y-icon-simulator c8y-icon-duocolor"
@@ -105,8 +109,12 @@
           </div>
           <div class="card-title">
             <!-- <h4 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon"> -->
+              
             &nbsp;{{ simulator.c8y_DeviceSimulator?.name }}
+            
           </div>
+        </div>
+      </a>
         </div>
 
         <div class="card-block card-column-30">
