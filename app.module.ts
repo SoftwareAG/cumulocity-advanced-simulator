@@ -1,73 +1,64 @@
-import { NgModule } from "@angular/core";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule as ngRouterModule, Routes } from '@angular/router';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { RouterModule as ngRouterModule, Routes } from "@angular/router";
-import { ChartsModule, ThemeService } from "ng2-charts";
-import {
-  CoreModule,
-  BootstrapComponent,
-  RouterModule,
-  HOOK_NAVIGATOR_NODES,
-} from "@c8y/ngx-components";
-// import { SimulatorEntryComponent } from './src/modules/simulator-entry/simulator-entry.component';
-// RECOMMENDED
-import { BsDropdownModule } from "ngx-bootstrap/dropdown";
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
-import { SimulatorEntryComponent } from "./src/modules/simulator-entry/simulator-entry.component";
-import { NavFactory } from "./src/modules/factories/Navigation";
-import { CreateSimComponent } from "./src/modules/create-sim/create-sim.component";
-import { SimulatorConfigComponent } from "./src/modules/simulator-config/simulator-config.component";
-import { SimulatorResolverService } from "./src/services/simulatorResolver.service";
-import { SimulatorChartComponent } from "./src/modules/simulator-chart/simulator-chart.component";
-import { C8yFactoriesModule } from "./src/modules/factories/c8yfactories.module";
-import { AlarmsComponent } from "./src/modules/alarms/alarms.component";
-import { SimSettingsComponent } from "./src/modules/create-sim/sim-settings/sim-settings.component";
-import { EditInstructionComponent } from "./src/modules/create-sim/edit-instruction/edit-instruction.component";
-import { ShowInstructionComponent } from "./src/modules/create-sim/show-instruction/show-instruction.component";
-import { SupportedOperationsComponent } from "@modules/supported-operations/supported-operations.component";
-import { CommandQueueStatisticsComponent } from "@modules/command-queue-statistics/command-queue-statistics.component";
-import { CustomOperationComponent } from "@modules/supported-operations/custom-operation/custom-operation.component";
-import { IsValuePipe } from "./src/shared/isValue.pipe";
-import { ToStringPipe } from "./src/shared/toString.pipe";
-import { WarningModalComponent } from "@modules/shared/warning-modal/warning-modal.component";
-import { SeriesItemComponent } from "@modules/series-item/series-item.component";
-import { SeriesListComponent } from "@modules/series-item/series-list/series-list.component";
-import { CountPipe } from "./src/shared/count.pipe";
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { IsNumberPipe } from "./src/shared/isNumber.pipe";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import { InstructionTypePipe } from "./src/shared/instructionType.pipe";
-import { BulkUpdatesComponent } from "@modules/bulk-updates/bulk-updates.component";
-import { SimulatorFileUploadDialog } from "@modules/create-sim/sim-settings/simulator-file-upload-dialog";
+import { ChartsModule, ThemeService } from 'ng2-charts';
+import { CoreModule, BootstrapComponent, RouterModule } from '@c8y/ngx-components';
+// import { SimulatorEntryComponent } from '@modules/simulator-entry/simulator-entry.component';
+// RECOMMENDED
+import { SimulatorResolverService } from '@services/simulatorResolver.service';
+import { SimulatorEntryComponent } from '@modules/simulator-entry/simulator-entry.component';
+import { CreateSimComponent } from '@modules/create-sim/create-sim.component';
+import { SimulatorConfigComponent } from '@modules/simulator-config/simulator-config.component';
+import { SimulatorChartComponent } from '@modules/simulator-chart/simulator-chart.component';
+import { C8yFactoriesModule } from '@modules/factories/c8yfactories.module';
+import { AlarmsComponent } from '@modules/alarms/alarms.component';
+import { SimSettingsComponent } from '@modules/create-sim/sim-settings/sim-settings.component';
+import { EditInstructionComponent } from '@modules/create-sim/edit-instruction/edit-instruction.component';
+import { ShowInstructionComponent } from '@modules/create-sim/show-instruction/show-instruction.component';
+import { CommandQueueStatisticsComponent } from '@modules/command-queue-statistics/command-queue-statistics.component';
+import { SupportedOperationsComponent } from '@modules/supported-operations/supported-operations.component';
+import { CustomOperationComponent } from '@modules/supported-operations/custom-operation/custom-operation.component';
+import { SeriesItemComponent } from '@modules/series-item/series-item.component';
+import { SeriesListComponent } from '@modules/series-item/series-list/series-list.component';
+import { BulkUpdatesComponent } from '@modules/bulk-updates/bulk-updates.component';
+import { SimulatorFileUploadDialog } from '@modules/create-sim/sim-settings/simulator-file-upload-dialog';
+import { SharedComponentsModule } from '@shared/shared.module';
 
 const appRoutes: Routes = [
-  { path: "", component: SimulatorEntryComponent },
+  { path: '', component: SimulatorEntryComponent },
   {
-    path: "createSim/:id",
-    
-    children: [{
-      path: "instructions",
-      component: CreateSimComponent,
-    }, {
-      path: "alarms",
-      component: AlarmsComponent
-      
-    }, {
-      path: "operations",
-      component: SupportedOperationsComponent
-      
-    }, {
-      path: "",
-      redirectTo: 'instructions',
-      pathMatch: 'full'
-      
-    },],
+    path: 'createSim/:id',
+
+    children: [
+      {
+        path: 'instructions',
+        component: CreateSimComponent
+      },
+      {
+        path: 'alarms',
+        component: AlarmsComponent
+      },
+      {
+        path: 'operations',
+        component: SupportedOperationsComponent
+      },
+      {
+        path: '',
+        redirectTo: 'instructions',
+        pathMatch: 'full'
+      }
+    ],
     resolve: {
-      simulator: SimulatorResolverService,
-    },
-  },
+      simulator: SimulatorResolverService
+    }
+  }
 ];
 
 @NgModule({
@@ -85,14 +76,14 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
-    DragDropModule
+    DragDropModule,
+    SharedComponentsModule
   ],
   declarations: [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
-    WarningModalComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
@@ -101,13 +92,8 @@ const appRoutes: Routes = [
     ShowInstructionComponent,
     SupportedOperationsComponent,
     CustomOperationComponent,
-    IsValuePipe,
-    ToStringPipe,
     SeriesItemComponent,
     SeriesListComponent,
-    CountPipe,
-    IsNumberPipe,
-    InstructionTypePipe,
     SimulatorFileUploadDialog
   ],
   entryComponents: [
@@ -115,14 +101,13 @@ const appRoutes: Routes = [
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
-    WarningModalComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
     CommandQueueStatisticsComponent,
     ShowInstructionComponent,
     BulkUpdatesComponent,
-    SupportedOperationsComponent, 
+    SupportedOperationsComponent,
     CustomOperationComponent,
     SeriesItemComponent,
     SeriesListComponent,
@@ -130,6 +115,6 @@ const appRoutes: Routes = [
   ],
   providers: [ThemeService],
 
-  bootstrap: [BootstrapComponent],
+  bootstrap: [BootstrapComponent]
 })
 export class AppModule {}
