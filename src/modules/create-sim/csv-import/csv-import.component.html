@@ -1,85 +1,101 @@
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="csv-action-button">
     <button class="btn btn-link" (click)="openCSVModal()">
-      <i c8yIcon="file-text"></i> {{ 'Import CSV'| translate }}
+      <i c8yIcon="file-text"></i> {{ 'Import CSV' | translate }}
     </button>
   </div>
 </c8y-action-bar-item>
 
 <div *ngIf="openCSVView" class="modal-dialog modal-sm">
-  <div class="modal-content" style="z-index: 9999;position: absolute;" uib-modal-transclude="">
+  <div class="modal-content" style="z-index: 9999; position: absolute" uib-modal-transclude="">
     <div class="modal-header">
       <h3>
         <i c8y-icon="icon-import" class="dlt-c8y-icon-import"></i>
-        <span translate="">Upload CSV</span>
+        <span>{{ 'Upload' | translate }} CSV</span>
       </h3>
     </div>
     <div class="modal-body">
       <ng-container [ngSwitch]="step">
-
-
         <ng-template [ngSwitchCase]="1">
           <div class="row">
-              <div class="col-xs-12"><label for="upload">CSV File:</label></div>
-              <div class="col-xs-12"><input required type="file" id="upload" (change)="prepareFileStream($event)"></div>
-              
-              <div class="col-xs-12"><label for="delimiter">Delimiter:</label></div>
-              <div class="col-xs-12"><input required type="textfield" [(ngModel)]="delimiter" placeholder=" ; , % . " id="delimiter"></div>
+            <div class="col-xs-12"><label for="upload">CSV {{ 'File' | translate }}:</label></div>
+            <div class="col-xs-12"><input required type="file" id="upload" (change)="prepareFileStream($event)" /></div>
+
+            <div class="col-xs-12"><label for="delimiter">{{ 'Delimiter' | translate }}:</label></div>
+            <div class="col-xs-12">
+              <input required type="textfield" [(ngModel)]="delimiter" placeholder=" ; , % . " id="delimiter" />
+            </div>
           </div>
         </ng-template>
 
-
         <ng-template [ngSwitchCase]="2">
-          <label for="instructionType">Choose Instruction Type:</label>
-          <select id="instructionType" class="form-control select-config" [(ngModel)]="choosenInstructionCategory">
-            <option value="default" disabled>Select Instruction Type:</option>
-            <option *ngFor="let category of instructionCategories" [value]="category" [disabled]="category !== smartRestCategory"><span *ngIf="category !== smartRestCategory">Coming soon - </span>{{ category }}</option>
+          <label for="instruction-type">{{ 'Choose instruction type' | translate }}:</label>
+          <select id="instruction-type" class="form-control select-config" [(ngModel)]="choosenInstructionCategory">
+            <option value="default" disabled>{{ 'Select instruction type' | translate }}:</option>
+            <option
+              *ngFor="let category of instructionCategories"
+              [value]="category"
+              [disabled]="category !== smartRestCategory"
+            >
+              <span *ngIf="category !== smartRestCategory">{{ 'Comming soon' | translate }} - </span>{{ category }}
+            </option>
           </select>
 
-          <label *ngIf="choosenInstructionCategory === smartRestCategory" for="smartrestTemplate">Choose Smartrest Template:</label>
-          <select [(ngModel)]="smartRestSelectedConfig" *ngIf="choosenInstructionCategory === smartRestCategory" id="smartrestTemplate" class="form-control select-config">
-            <option [ngValue]="default" disabled>Select your Smart-Rest-Template</option>
+          <label *ngIf="choosenInstructionCategory === smartRestCategory" for="smartrestTemplate"
+            >{{ 'Choose smartrest template' | translate }}:</label
+          >
+          <select
+            [(ngModel)]="smartRestSelectedConfig"
+            *ngIf="choosenInstructionCategory === smartRestCategory"
+            id="smartrestTemplate"
+            class="form-control select-config"
+          >
+            <option [ngValue]="default" disabled>{{ 'Select your Smart-Rest-Template' | translate }}</option>
             <option *ngFor="let entry of smartRestConfig" [ngValue]="entry">
-              {{entry.smartRestFields.msgId}}&nbsp;{{entry.smartRestFields.name }}
+              {{ entry.smartRestFields.msgId }} {{ entry.smartRestFields.name }}
             </option>
           </select>
         </ng-template>
 
-
         <ng-template [ngSwitchCase]="3">
-          <strong>Notice: Non-mapped Values will be ignored</strong>
-          <button class="btn btn-primary" style="width:100%;" (click)="autoMapping()">
-            Auto Mapping
-          </button>
-          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues;" >
+          <strong>{{ 'Notice: Non-mapped Values will be ignored' | translate }}</strong>
+          <button class="btn btn-primary" style="width: 100%" (click)="autoMapping()">{{ 'Auto Mapping' | translate }}</button>
+          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
             <ng-container *ngIf="entry.value === null">
-            <span>{{entry.path}}:</span>
-            <select >
-              <option>Select Mapping</option>
-              <option *ngFor="let csvProperty of dataProperties; let i = index" [selected]="entry['csvProperty'] === csvProperty" (click)="mapDataToSmartRest(entry, csvProperty, i)" >{{csvProperty}}</option>
-            </select>
+              <span>{{ entry.path }}:</span>
+              <select>
+                <option>{{ 'Select Mapping' | translate }}</option>
+                <option
+                  *ngFor="let csvProperty of dataProperties; let i = index"
+                  [selected]="entry['csvProperty'] === csvProperty"
+                  (click)="mapDataToSmartRest(entry, csvProperty, i)"
+                >
+                  {{ csvProperty }}
+                </option>
+              </select>
             </ng-container>
           </div>
-        
-          
-        
         </ng-template>
-
-
       </ng-container>
-
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger" (click)="closeCSVModal();" translate="">Cancel</button>
-      <button class="btn btn-default" (click)="goBack()" translate="">Back</button>
-      <button class="btn btn-primary"  (click)="incrementStep();">
-        <span *ngIf="step !== 3">Continue</span>
-        <span *ngIf="step === 3">Start Import</span> 
+      <button class="btn btn-danger" (click)="closeCSVModal()" >{{ 'Cancel' | translate }}</button>
+      <button class="btn btn-default" (click)="goBack()" >{{ 'Back' | translate }}</button>
+      <button class="btn btn-primary" (click)="incrementStep()">
+        <span *ngIf="step !== 3">{{ 'Continue' | translate }}</span>
+        <span *ngIf="step === 3">{{ 'Start Import' | translate }}</span>
       </button>
     </div>
   </div>
-  <div uib-modal-backdrop="modal-backdrop" class="modal-backdrop fade in"
-    ng-style="{'z-index': 1040 + (index &amp;&amp; 1 || 0) + index*10}" uib-modal-animation-class="fade"
-    modal-in-class="in" modal-animation="true" data-bootstrap-modal-aria-hidden-count="1" aria-hidden="true"
-    style="z-index: 1040;"></div>
+  <div
+    uib-modal-backdrop="modal-backdrop"
+    class="modal-backdrop fade in"
+    ng-style="{'z-index': 1040 + (index &amp;&amp; 1 || 0) + index*10}"
+    uib-modal-animation-class="fade"
+    modal-in-class="in"
+    modal-animation="true"
+    data-bootstrap-modal-aria-hidden-count="1"
+    aria-hidden="true"
+    style="z-index: 1040"
+  ></div>
 </div>
