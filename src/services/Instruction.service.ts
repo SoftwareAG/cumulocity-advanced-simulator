@@ -141,9 +141,7 @@ export class InstructionService {
           ) === true
       );
       selectedSmartRest = this.SmartRestArray[filteredIndex];
-      console.info('filteredIndex', filteredIndex, customPaths, customValuesFromInstruction);
     }
-    console.info('filteredIndex', selectedSmartRest);
     const messageId = selectedSmartRest.smartRestFields.msgId;
     const templateId = selectedSmartRest.templateId;
     let values: string[];

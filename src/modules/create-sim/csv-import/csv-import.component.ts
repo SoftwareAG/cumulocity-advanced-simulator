@@ -115,7 +115,7 @@ export class CsvImportComponent implements OnInit {
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
       this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
-      this.closeCSV();
+      this.closeCSVModal();
     }
 
 
