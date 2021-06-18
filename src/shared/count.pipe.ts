@@ -1,12 +1,13 @@
 import { getNumberOfCurrencyDigits } from "@angular/common";
 import { Pipe, PipeTransform } from "@angular/core";
+import { SeriesInstruction } from "@models/instruction.model";
 
 @Pipe({
   name: "count",
 })
 export class CountPipe implements PipeTransform {
   transform(
-    instructionSeries: any[]
+    instructionSeries: SeriesInstruction[]
   ): {
     alarms: number;
     events: number;

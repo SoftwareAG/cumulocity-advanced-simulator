@@ -3,7 +3,7 @@ import {
   CommandQueueEntry,
   IndexedCommandQueueEntry,
 } from '@models/commandQueue.model';
-import { SeriesInstruction } from '@models/instruction.model';
+import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
 import {
   SeriesMeasurementsForm,
   SeriesAlarmsForm,
@@ -35,13 +35,14 @@ export class SeriesItemComponent implements OnInit{
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
     this.selectedConfig = this.selectedSeries.type;
+    console.log('series-item: ', this.selectedSeries);
     this.instructionValue = value;
     this.setLabelsForSelected();
   }
   get series() {
     return this.selectedSeries;
   }
-  selectedSeries: any;
+  selectedSeries: SeriesInstruction;
   selectedConfig: string;
   instructionValue: SeriesInstruction;
   isSmartRestSelected = false;
@@ -105,12 +106,12 @@ export class SeriesItemComponent implements OnInit{
     const indexOfSeries = duplicated.index;
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries.push(duplicated);
-    if (this.instructionValue.type !== 'SmartRest') {
+    if (this.instructionValue.type !== InstructionCategory.SmartRest) {
       this.instructionService.pushToSeriesArrays(duplicated.type, duplicated);
       let template = this.simSettingsService.generateRequest();
       template.map((entry) => (entry.index = indexOfSeries));
       this.indexedCommandQueue.push(...template);
-    } else {
+    } else if (this.selectedSeries.type === InstructionCategory.SmartRest){
       let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(
         duplicated.instruction,
         duplicated.config
@@ -172,9 +173,9 @@ export class SeriesItemComponent implements OnInit{
 
   updateSeries() {
     this.simSettingsService.randomSelected =
-      this.selectedSeries.type === 'Measurement' ||
-      this.selectedSeries.type === 'SmartRest'
-        ? this.selectedSeries.option
+      this.selectedSeries.type === InstructionCategory.Measurement ||
+      this.selectedSeries.type === InstructionCategory.SmartRest
+        ? this.selectedSeries.scalingOption
         : null;
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     const indexOfSeries = this.selectedSeries.index;
@@ -185,8 +186,8 @@ export class SeriesItemComponent implements OnInit{
       (entry) => entry.index !== indexOfSeries
     );
 
-    if (this.instructionValue.type !== 'SmartRest') {
-      this.simSettingsService.randomSelected = this.selectedSeries.option;
+    if (this.instructionValue.type === InstructionCategory.Measurement) {
+      this.simSettingsService.randomSelected = this.selectedSeries.scalingOption;
       this.instructionService.pushToSeriesArrays(
         this.instructionValue.type,
         this.instructionValue
@@ -194,8 +195,8 @@ export class SeriesItemComponent implements OnInit{
       let template = this.simSettingsService.generateRequest();
       template.map((entry) => (entry.index = indexOfSeries));
       this.indexedCommandQueue.splice(itemPos, 0, ...template);
-    } else {
-      this.smartRestService.smartRestOption = this.selectedSeries.option;
+    } else if (this.selectedSeries.type === InstructionCategory.SmartRest) {
+      this.smartRestService.smartRestOption = this.selectedSeries.scalingOption;
       let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(
         this.selectedSeries.instruction,
         this.selectedSeries.config

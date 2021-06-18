@@ -1,5 +1,6 @@
 import { MessageIds } from "./commandQueue.model";
 import { GeoCoordinate } from "./geoCoordinate.model";
+import { SmartRESTConfiguration } from "./smartREST.model";
 
 export enum InstructionCategory {
   "Measurement"="Measurement",
@@ -33,21 +34,23 @@ export interface Instruction2 {
   messageId?: MessageIds;
   type?: InstructionCategory;
   color?: string;
+  steps?: number | string;
+  scalingOption? : string;
 }
 
 export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   minValue: number | string;
   maxValue: number | string;
-  steps: number | string;
+  steps?: number | string;
   sleep?: number | string;
   index?: string;
   scalingOption?: string;
+  color?: string;
 }
 
 export interface SmartInstruction extends Instruction2 {
   type: InstructionCategory.SmartRest;
-  // measurementOption?: string;
-  [key: string]: string;
+  [key: string]: any;
 }
 
 export interface SmartRestConfiguration {
@@ -64,21 +67,19 @@ export interface SmartRestConfiguration {
 export interface SmartRestInstruction extends Instruction2 {
   minValue?:string;
   maxValue?: string;
-  steps: string;
+  steps?: string;
   value?: string;
   isNumber?: boolean;
   type: InstructionCategory.SmartRest;
 }
 
-export interface SeriesSmartRestInstruction extends SmartInstruction {}
-
-export class SmartRestIns implements SmartRestInstruction {
-  minValue: string;
-  maxValue: string;
-  steps: string;
-  value?: string;
-  type: InstructionCategory.SmartRest;
+export interface SeriesSmartRestInstruction extends SmartInstruction {
+  index: string;
+  scalingOption: string;
+  config: SmartRESTConfiguration;
+  instruction: any;
 }
+
 export interface MeasurementInstruction extends Instruction2 {
   messageId?: MessageIds.Measurement;
   fragment: string;
@@ -120,4 +121,5 @@ export interface SleepInstruction extends Instruction2 {
 }
 export interface SleepSeriesInstruction extends SleepInstruction {
   numberOfSleeps?: number | string;
+  steps?: number | string;
 }

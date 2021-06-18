@@ -42,3 +42,7 @@ export enum CommandQueueType {
     "builtin"="builtin",
     "message"="message"
 }
+
+export interface InstructionsSeries {
+    
+}

@@ -116,8 +116,9 @@ export class SimSettingsComponent {
       this.simSettingsService.pushToInstructionsArray({
         ...insVal,
         index: assignedIndex,
-        option: this.measurementOption
+        scalingOption: this.measurementOption
       } as SeriesInstruction);
+      console.log('ins val: ', {...insVal, index: assignedIndex, scalingOption: this.measurementOption});
       this.generateRequest();
     }
   }
@@ -255,9 +256,9 @@ export class SimSettingsComponent {
         type: InstructionCategory.SmartRest,
         config: copySmartRestSelectedConfig,
         index: index,
-        option: this.smartRestOption
+        scalingOption: this.smartRestOption
       };
-
+      console.log('smartrest: ', combinedSmartInstruction);
       this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
       const indexedCmdQ = smartRestCommandQueue.map((entry) => ({
         ...entry,

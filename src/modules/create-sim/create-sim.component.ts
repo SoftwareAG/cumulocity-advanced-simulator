@@ -17,6 +17,7 @@ import { SmartRESTService } from '@services/smartREST.service';
 import { UpdateInstructionsService } from '@services/updateInstructions.service';
 import { HelperService } from '@services/helper.service';
 import * as _ from 'lodash';
+import { SeriesInstruction } from '@models/instruction.model';
 
 @Component({
   selector: 'app-create-sim',
@@ -26,7 +27,7 @@ import * as _ from 'lodash';
 export class CreateSimComponent implements OnInit {
   warningModal: Modal;
   readyToStartSimulator = false;
-  allInstructionsSeries = [];
+  allInstructionsSeries: SeriesInstruction[] = [];
   filteredInstructionsSeries = [];
   alarmSeries = [];
   smartRestConfig = [];
