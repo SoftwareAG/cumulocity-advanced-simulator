@@ -1,0 +1,34 @@
+<div class="card-group" [ngClass]="listClass">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <a class="card add-card clickable">
+      <i c8yicon="plus-square" class="fa fw fa-plus-square"></i><br />
+      Create Template
+    </a>
+  </div>
+
+  <div *ngIf="!allTemplates" class="loading-indicator">
+    <c8y-loading></c8y-loading>
+  </div>
+
+  <ng-container *ngFor="let template of allTemplates">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card custom-card">
+        
+        <div class="card-header separator card-column-40">
+          <div class="card-icon">
+            <i
+              c8y-icon="c8y-simulator c8y-icon-duocolor"
+              class="c8y-icon c8y-icon-simulator c8y-icon-duocolor"
+            ></i>
+          </div>
+          <div class="card-title">
+            <!-- <h4 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon"> -->
+            &nbsp;{{ template.name }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+</div>

@@ -4,6 +4,7 @@ import { IdentityService, IManagedObject, InventoryService } from "@c8y/client";
 import { CustomSimulator, DeviceSimulator, SimulatorTemplate } from "src/models/simulator.model";
 import { ManagedObjectService } from "./ManagedObject.service";
 import { map } from 'rxjs/operators';
+import { TemplateModel } from "@models/template.model";
 
 @Injectable({
   providedIn: "root",
@@ -19,6 +20,14 @@ export class SimulatorsServiceService extends ManagedObjectService {
       pageSize: 1000,
     };
     return this.getFilterInventoryResult(deviceFilter);
+  }
+
+  getAllTemplates() {
+    const templateFilter = {
+      query: `$filter=(has(${this.simulatorTemplateFragment}))`,
+      pageSize: 1000
+    }
+    return this.getFilterInventoryResult(templateFilter);
   }
 
   getSimulatorTemplates() {
@@ -59,6 +68,10 @@ export class SimulatorsServiceService extends ManagedObjectService {
   }
 
   updateSimulatorManagedObject(mo: Partial<CustomSimulator>) {
+    return this.updateManagedObject(mo);
+  }
+
+  updateTemplateManagedObject(mo: Partial<TemplateModel>) {
     return this.updateManagedObject(mo);
   }
 

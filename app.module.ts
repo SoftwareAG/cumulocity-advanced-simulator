@@ -7,7 +7,7 @@ import {
   CoreModule,
   BootstrapComponent,
   RouterModule,
-  HOOK_NAVIGATOR_NODES,
+  HOOK_TABS,
 } from "@c8y/ngx-components";
 // import { SimulatorEntryComponent } from './src/modules/simulator-entry/simulator-entry.component';
 // RECOMMENDED
@@ -44,10 +44,15 @@ import { SimulatorFileUploadDialog } from "@modules/create-sim/sim-settings/simu
 import { BulkSimulatorsComponent } from "@modules/bulk-simulators/bulk-simulators.component";
 import { TemplateSelectionDialog } from "@modules/simulator-entry/template-selection-dialog";
 import { SaveSimulatorTemplateDialog } from "@modules/create-sim/sim-settings/save-simulator-template-dialog";
+import { SimulatorCreateComponent } from "@modules/create-sim/simulator-create/simulator-create.component";
+import { TemplatesListComponent } from "@modules/templates-list/templates-list.component";
+import { CustomTabFactory } from "@modules/factories/tab.factory";
 
 const appRoutes: Routes = [
-  { path: "", component: SimulatorEntryComponent },
+  { path: "", redirectTo: 'simulators', pathMatch: 'full' },
+  { path: "simulators", component: SimulatorEntryComponent },
   { path: "bulk-simulators", component: BulkSimulatorsComponent },
+  { path: "templates", component: TemplatesListComponent },
   {
     path: "createSim/:id",
     
@@ -89,8 +94,15 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
-    DragDropModule
+    DragDropModule,
+    C8yFactoriesModule
   ],
+  providers: [
+    {
+      provide: HOOK_TABS,
+      useClass: CustomTabFactory,
+      multi: true
+    }, ThemeService],
   declarations: [
     SimulatorEntryComponent,
     CreateSimComponent,
@@ -115,7 +127,9 @@ const appRoutes: Routes = [
     SimulatorFileUploadDialog, 
     BulkSimulatorsComponent,
     TemplateSelectionDialog,
-    SaveSimulatorTemplateDialog
+    SaveSimulatorTemplateDialog,
+    SimulatorCreateComponent,
+    TemplatesListComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -136,10 +150,10 @@ const appRoutes: Routes = [
     SimulatorFileUploadDialog,
     BulkSimulatorsComponent,
     TemplateSelectionDialog,
-    SaveSimulatorTemplateDialog
+    SaveSimulatorTemplateDialog,
+    SimulatorCreateComponent,
+    TemplatesListComponent
   ],
-  providers: [ThemeService],
-
   bootstrap: [BootstrapComponent],
 })
 export class AppModule {}

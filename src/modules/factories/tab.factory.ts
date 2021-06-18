@@ -12,26 +12,20 @@ export class CustomTabFactory implements TabFactory {
 
     get(): Observable<Tab[] | Tab> | Promise<Tab[] | Tab> | Tab[] | Tab {
         const tabArray = new Array<Tab>();
-        const url = this.router.url;
-        
-        if (url && (url.match(/\d+/g))) {
-            const id = ((url.match(/\d+/g))[0]).toString();
-            // tabArray.push(
-
-            //     {
-            //         label: 'Instructions',
-            //         icon: 'sort-amount-asc',
-            //         path: `createSim/${id}/instructions`,
-            //         priority: 100
-            //     },
-            //     {
-            //         label: 'Supported Operations',
-            //         icon: 'gamepad',
-            //         path: `createSim/${id}/operations`,
-            //         priority: 99
-            //     }
-            // );
-        }
+            tabArray.push(
+                {
+                    label: 'Simulators',
+                    icon: 'c8y-icon-duocolor c8y-icon-simulator c8y-icon',
+                    path: `simulators`,
+                    priority: 100
+                },
+                {
+                    label: 'Templates',
+                    icon: 'fa fw fa-resume',
+                    path: `templates`,
+                    priority: 99
+                }
+            );
         return tabArray;
     }
 }

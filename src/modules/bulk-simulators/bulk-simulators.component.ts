@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlarmsForm, BasicEventsForm, EventsForm, InputField, MeasurementsForm, SeriesMeasurementsForm, SleepForm } from '@models/inputFields.const';
 import { Instruction, InstructionCategory, SeriesInstruction, SeriesMeasurementInstruction } from '@models/instruction.model';
 
@@ -19,6 +19,8 @@ export class BulkSimulatorsComponent implements OnInit {
   selectedInstructioncategory: InputField[] = SeriesMeasurementsForm;
   selectedInstructionType = InstructionCategory.Measurement;
   instructionTemplateList = [];
+  instructionSeries: any[] = [];
+  
   ngOnInit() {
   }
 
@@ -28,9 +30,12 @@ export class BulkSimulatorsComponent implements OnInit {
   }
 
   addSeries() {
-    console.log('instruction value:', this.instructionValue);
     this.instructionValue['type'] = this.selectedInstructionType;
     this.instructionTemplateList.push(this.instructionValue);
+  }
+
+  setInstructionsSeries(event) {
+    this.instructionSeries = event;
   }
 
 
