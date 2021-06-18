@@ -1,4 +1,12 @@
-<div class="modal-dialog modal-sm">
+<c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
+  <div class="display:flex; flex-direction: row;">
+    <button class="btn btn-link" (click)="openCSVModal()">
+      <i c8yIcon="file-text"></i>&nbsp; {{ 'Import CSV'| translate }}
+    </button>
+  </div>
+</c8y-action-bar-item>
+
+<div class="modal-dialog modal-sm" *ngIf="openCSVView">
   <div class="modal-content" style="z-index: 9999;position: absolute;" uib-modal-transclude="">
     <div class="modal-header">
       <h3>
@@ -43,7 +51,7 @@
           <button class="btn btn-primary" style="width:100%;" (click)="autoMapping()">
             Auto Mapping
           </button>
-          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues; let i = index" >
+          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues;" >
             <ng-container *ngIf="entry.value === null">
             <span>{{entry.path}}:</span>
             <select >
@@ -62,7 +70,7 @@
 
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger" (click)="$ctrl.cancel(); this.importCSVView = false;" translate="">Cancel</button>
+      <button class="btn btn-danger" (click)="closeCSVModal();" translate="">Cancel</button>
       <button class="btn btn-default" (click)="goBack()" translate="">Back</button>
       <button class="btn btn-primary"  (click)="incrementStep();">
         <span *ngIf="step !== 3">Continue</span>

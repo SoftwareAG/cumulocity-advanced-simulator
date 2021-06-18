@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { Alert, AlertService } from "@c8y/ngx-components";
 import { DefaultConfig } from '@models/inputFields.const';
@@ -30,7 +30,7 @@ export class CsvImportComponent implements OnInit {
   dataProperties: string[] = [];
   @Input() smartRestConfig;
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
-  @Input() importCSVView: boolean;
+  openCSVView = false;
   @Input() allInstructionsSeries;
   
   constructor(
@@ -45,6 +45,16 @@ export class CsvImportComponent implements OnInit {
   }
   deepCopy(obj){
     return JSON.parse(JSON.stringify(obj));
+  }
+  closeCSVModal() {
+    this.openCSVView = false;
+  }
+  openCSVModal() {
+    this.openCSVView = true;
+    this.dataProperties = [];
+    this.mappingsDone = 0;
+    this.data = [];
+    this.step = 1;
   }
   autoMapping() {
     let succeededMappings = 0;
@@ -105,7 +115,7 @@ export class CsvImportComponent implements OnInit {
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
       this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
-      this.importCSVView = false;
+      this.closeCSV();
     }
 
 

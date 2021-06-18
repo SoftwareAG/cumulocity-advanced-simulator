@@ -34,8 +34,6 @@ export class CreateSimComponent implements OnInit {
   data;
   mo;
   isExpanded = false;
-  importCSVView: boolean = false;
-
   viewNewSeries = false;
   viewHistoricalSeries = false;
   actionButtons = ['New Series', 'Existing series'];

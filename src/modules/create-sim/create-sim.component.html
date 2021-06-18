@@ -42,16 +42,10 @@
   </div>
 </c8y-action-bar-item>
 
-<c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-  <div class="display:flex; flex-direction: row;">
-    <button class="btn btn-link" (click)="importCSVView = !importCSVView">
-      <i c8yIcon="file-text"></i>&nbsp; {{ 'Import CSV'| translate }}
-    </button>
-  </div>
-</c8y-action-bar-item>
+
 
 <app-csv-import [indexedCommandQueue]="indexedCommandQueue" [smartRestConfig]="smartRestConfig"
-  [importCSVView]="importCSVView" [allInstructionsSeries]="allInstructionsSeries" *ngIf="importCSVView">
+  [allInstructionsSeries]="allInstructionsSeries">
 </app-csv-import>
 
 <section id="create-simulator" class="row main-div" [style.height.px]='height' style="margin-top:70px;">
