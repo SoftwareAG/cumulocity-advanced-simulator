@@ -3,8 +3,8 @@
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="c8y-action-button">
     <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
-      <i class="fa fw fa-upload"></i>{{ 'Import' | translate }} <br />
-      Simulator
+      <i class="fa fw fa-upload"></i>{{ 'Import' | translate }}<br />
+      &nbsp;Simulator
     </button>
   </div>
 </c8y-action-bar-item>
@@ -13,8 +13,8 @@
   <div class="c8y-action-button">
     <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
       <button class="btn btn-link" (click)="downloadSimulator()">
-        <i c8yIcon="file-text"></i>{{ 'Export' | translate }} <br />
-        Simulator
+        <i c8yIcon="file-text"></i>{{ 'Export' | translate }}<br />
+        &nbsp;Simulator
       </button>
     </a>
   </div>
