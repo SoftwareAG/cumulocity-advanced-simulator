@@ -14,16 +14,16 @@ import { IManagedObject } from "@c8y/client";
   templateUrl: './csv-import.component.html',
   styleUrls: ['./csv-import.component.scss']
 })
-export class CsvImportComponent implements OnInit {
+export class CsvImportComponent {
   instructionCategories: InstructionCategory[] = DefaultConfig;
   smartRestCategory: InstructionCategory = InstructionCategory.SmartRest;
 
-  
+
   choosenInstructionCategory: InstructionCategory = this.smartRestCategory;
   smartRestSelectedConfig;
   step = 1;
-  file:any;
-  delimiter:string;
+  file: any;
+  delimiter: string;
   data: string[][] = [];
   dataPoints: number;
   mappingsDone = 0;
@@ -32,23 +32,24 @@ export class CsvImportComponent implements OnInit {
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
   openCSVView = false;
   @Input() allInstructionsSeries;
-  
+
   constructor(
     private simSettingsService: SimulatorSettingsService,
     private instructionService: InstructionService,
     private updateService: ManagedObjectUpdateService,
     private alertService: AlertService,
     private simulatorervice: SimulatorsServiceService
-    ) { }
+  ) { }
 
-  ngOnInit() {
-  }
-  deepCopy(obj){
+
+  deepCopy(obj: string[]): string[] {
     return JSON.parse(JSON.stringify(obj));
   }
+
   closeCSVModal() {
     this.openCSVView = false;
   }
+
   openCSVModal() {
     this.openCSVView = true;
     this.dataProperties = [];
@@ -56,32 +57,33 @@ export class CsvImportComponent implements OnInit {
     this.data = [];
     this.step = 1;
   }
+
   autoMapping() {
     let succeededMappings = 0;
     let checkedDataProperties = this.deepCopy(this.dataProperties);
     let filteredCustomValues = this.smartRestSelectedConfig.smartRestFields.customValues.filter(a => !a.value);
-    for (let smartRestField of filteredCustomValues){
-      for (let i = 0; i < checkedDataProperties.length; i++){
+    for (let smartRestField of filteredCustomValues) {
+      for (let i = 0; i < checkedDataProperties.length; i++) {
         let csvProperty = checkedDataProperties[i];
         if (smartRestField.path.includes(csvProperty)) {
           smartRestField['csvProperty'] = csvProperty;
           smartRestField['csvValues'] = this.data[i];
           succeededMappings++;
           this.mappingsDone++;
-          checkedDataProperties.splice(i,1);
-          this.data.splice(i,1);
+          checkedDataProperties.splice(i, 1);
+          this.data.splice(i, 1);
           break;
         }
       }
     }
-    if (succeededMappings > 0){
+    if (succeededMappings > 0) {
       this.successMessage(`${succeededMappings} of ${filteredCustomValues.length} successfully mapped`);
     } else {
       this.sendToast('No mappings possible', 'info');
     }
   }
-  
-  mapDataToSmartRest(smartRestField, csvProperty:string, i:number) {
+
+  mapDataToSmartRest(smartRestField, csvProperty: string, i: number) {
     smartRestField['csvProperty'] = csvProperty;
     smartRestField['csvValues'] = this.data[i];
     this.mappingsDone++;
@@ -92,16 +94,16 @@ export class CsvImportComponent implements OnInit {
     const assignedIndex: string = this.allInstructionsSeries.length.toString();
 
 
-    for (let i = 0; i < this.dataPoints; i++){
+    for (let i = 0; i < this.dataPoints; i++) {
       let smartRestInstruction = {
         type: InstructionCategory.SmartRest
       } as SmartInstruction;
       for (let smartRestField of this.smartRestSelectedConfig.smartRestFields.customValues) {
-        if(smartRestField.value !== null){continue;}
+        if (smartRestField.value !== null) { continue; }
 
         smartRestInstruction[smartRestField['path']] = '';
 
-        if (smartRestField['csvValues']){
+        if (smartRestField['csvValues']) {
           smartRestInstruction[smartRestField['path']] = smartRestField['csvValues'][i];
         }
       }
@@ -111,7 +113,7 @@ export class CsvImportComponent implements OnInit {
 
       let indexedCommandQueueEntry = { ...smartRestCommandQueueEntry, index: assignedIndex };
 
-      
+
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
       this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
@@ -127,11 +129,11 @@ export class CsvImportComponent implements OnInit {
 
     this.updateService.mo.c8y_Series = this.simSettingsService.allInstructionsArray;
     this.updateService
-    .updateSimulatorObject(this.updateService.mo)
-    .then((res) => {
-      this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
+      .updateSimulatorObject(this.updateService.mo)
+      .then((res) => {
+        this.simSettingsService.setAllInstructionsSeries(res.c8y_Series);
       });
-      
+
   }
 
 
@@ -147,9 +149,9 @@ export class CsvImportComponent implements OnInit {
 
 
   }
-  
-  goBack(){
-    if(this.step > 1){
+
+  goBack() {
+    if (this.step > 1) {
       this.step--;
     }
   }
@@ -161,9 +163,11 @@ export class CsvImportComponent implements OnInit {
     } as Alert;
     this.alertService.add(alert);
   }
+
   successMessage(text: string) {
     this.sendToast(text, 'success');
   }
+
   errorMessage(text: string) {
     this.sendToast(text, 'danger');
   }
@@ -171,19 +175,19 @@ export class CsvImportComponent implements OnInit {
   validateInputFields() {
     let valid = true;
     if (this.step === 1) {
-      if(!this.delimiter || !this.file){
+      if (!this.delimiter || !this.file) {
         this.errorMessage((!this.delimiter) ? 'Delimiter is not set.' : 'File is not uploaded.');
         valid = false;
       }
     }
     if (this.step === 2) {
-      if (!this.choosenInstructionCategory || !this.smartRestSelectedConfig){
+      if (!this.choosenInstructionCategory || !this.smartRestSelectedConfig) {
         this.errorMessage((!this.choosenInstructionCategory) ? 'Please select a category.' : 'Please select a Smartrest Template.');
         valid = false;
       }
     }
     if (this.step === 3) {
-      if (this.mappingsDone === 0){
+      if (this.mappingsDone === 0) {
         this.errorMessage('Without any mappings no data will be imported');
         valid = false;
       }
@@ -192,41 +196,41 @@ export class CsvImportComponent implements OnInit {
   }
 
   incrementStep() {
-    if(!this.validateInputFields()){
+    if (!this.validateInputFields()) {
       return;
     }
     this.step++;
-    switch(this.step){
-      case 2: this.readFileStream();break;
-      case 4: this.startImport();break;
+    switch (this.step) {
+      case 2: this.readFileStream(); break;
+      case 4: this.startImport(); break;
     }
   }
-  
+
   prepareFileStream(event) {
-   this.file = event.target.files[0];
+    this.file = event.target.files[0];
   }
 
 
   readFileStream() {
-    if(this.dataProperties && this.dataPoints){
+    if (this.dataProperties && this.dataPoints) {
       return;
     }
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       let fileContent = String(fileReader.result);
-      if(!fileContent.includes(this.delimiter)){
-          this.step--;
-          this.errorMessage('Delimiter not found in CSV');
-          return;
+      if (!fileContent.includes(this.delimiter)) {
+        this.step--;
+        this.errorMessage('Delimiter not found in CSV');
+        return;
       }
       this.dataProperties = fileContent.split('\r\n')[0].split(this.delimiter);
 
       let data = fileContent.replace(/\r\n/g, ',').split(this.delimiter);
-      for (let i = 0; i < this.dataProperties.length; i++){
+      for (let i = 0; i < this.dataProperties.length; i++) {
         this.data.push([]);
-        for (let j = i; j < data.length; j += this.dataProperties.length){
-          if(j < this.dataProperties.length){ continue; }
-          this.data[this.data.length-1].push(data[j]);
+        for (let j = i; j < data.length; j += this.dataProperties.length) {
+          if (j < this.dataProperties.length) { continue; }
+          this.data[this.data.length - 1].push(data[j]);
         }
         this.dataPoints = this.data[this.data.length - 1].length;
       }

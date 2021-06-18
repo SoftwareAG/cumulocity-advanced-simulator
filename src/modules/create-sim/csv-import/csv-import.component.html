@@ -1,12 +1,12 @@
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-  <div class="display:flex; flex-direction: row;">
+  <div class="csv-action-button">
     <button class="btn btn-link" (click)="openCSVModal()">
-      <i c8yIcon="file-text"></i>&nbsp; {{ 'Import CSV'| translate }}
+      <i c8yIcon="file-text"></i> {{ 'Import CSV'| translate }}
     </button>
   </div>
 </c8y-action-bar-item>
 
-<div class="modal-dialog modal-sm" *ngIf="openCSVView">
+<div *ngIf="openCSVView" class="modal-dialog modal-sm">
   <div class="modal-content" style="z-index: 9999;position: absolute;" uib-modal-transclude="">
     <div class="modal-header">
       <h3>
@@ -36,8 +36,8 @@
             <option *ngFor="let category of instructionCategories" [value]="category" [disabled]="category !== smartRestCategory"><span *ngIf="category !== smartRestCategory">Coming soon - </span>{{ category }}</option>
           </select>
 
-          <label for="smartrestTemplate" *ngIf="choosenInstructionCategory === smartRestCategory">Choose Smartrest Template:</label>
-          <select id="smartrestTemplate" class="form-control select-config" [(ngModel)]="smartRestSelectedConfig" *ngIf="choosenInstructionCategory === smartRestCategory">
+          <label *ngIf="choosenInstructionCategory === smartRestCategory" for="smartrestTemplate">Choose Smartrest Template:</label>
+          <select [(ngModel)]="smartRestSelectedConfig" *ngIf="choosenInstructionCategory === smartRestCategory" id="smartrestTemplate" class="form-control select-config">
             <option [ngValue]="default" disabled>Select your Smart-Rest-Template</option>
             <option *ngFor="let entry of smartRestConfig" [ngValue]="entry">
               {{entry.smartRestFields.msgId}}&nbsp;{{entry.smartRestFields.name }}
