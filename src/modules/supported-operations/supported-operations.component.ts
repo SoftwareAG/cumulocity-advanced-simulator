@@ -62,6 +62,6 @@ export class SupportedOperationsComponent implements OnInit {
       );
       this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.splice(deletePosition, 1);
     }
-    this.simulatorService.updateSimulatorManagedObject(this.mo).then((result) => {}); // FIXME proper handling
+    this.simulatorService.updateSimulatorManagedObject(this.mo);
   }
 }
