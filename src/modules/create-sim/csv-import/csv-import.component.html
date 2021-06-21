@@ -79,8 +79,8 @@
       </ng-container>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger" (click)="closeCSVModal()" >{{ 'Cancel' | translate }}</button>
-      <button class="btn btn-default" (click)="goBack()" >{{ 'Back' | translate }}</button>
+      <button class="btn btn-default" *ngIf="step == 1" (click)="closeCSVModal()" >{{ 'Cancel' | translate }}</button>
+      <button class="btn btn-default" *ngIf="step > 1" (click)="goBack()" >{{ 'Back' | translate }}</button>
       <button class="btn btn-primary" (click)="incrementStep()">
         <span *ngIf="step !== 3">{{ 'Continue' | translate }}</span>
         <span *ngIf="step === 3">{{ 'Start Import' | translate }}</span>

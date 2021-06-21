@@ -46,15 +46,15 @@ export class CsvImportComponent {
     private simulatorervice: SimulatorsServiceService
   ) {}
 
-  deepCopy(obj: string[]): string[] {
+  private deepCopy(obj: string[]): string[] {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  closeCSVModal() {
+  closeCSVModal(): void {
     this.openCSVView = false;
   }
 
-  openCSVModal() {
+  openCSVModal(): void {
     this.openCSVView = true;
     this.dataProperties = [];
     this.mappingsDone = 0;
@@ -62,7 +62,7 @@ export class CsvImportComponent {
     this.step = 1;
   }
 
-  autoMapping() {
+  autoMapping(): void {
     let succeededMappings = 0;
     let checkedDataProperties = this.deepCopy(this.dataProperties);
     let filteredCustomValues = this.smartRestSelectedConfig.smartRestFields.customValues.filter((a) => !a.value);
@@ -87,13 +87,13 @@ export class CsvImportComponent {
     }
   }
 
-  mapDataToSmartRest(smartRestField, csvProperty: string, i: number) {
+  mapDataToSmartRest(smartRestField, csvProperty: string, i: number): void {
     smartRestField['csvProperty'] = csvProperty;
     smartRestField['csvValues'] = this.data[i];
     this.mappingsDone++;
   }
 
-  startImport() {
+  private startImport(): void {
     let smartRestInstructions: SmartRestInstruction[] = [];
     const assignedIndex: string = this.allInstructionsSeries.length.toString();
 
@@ -123,7 +123,7 @@ export class CsvImportComponent {
 
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-      this.updateCommandQueueInManagedObject(this.updateService.mo, 'SmartRest');
+      this.updateCommandQueueInManagedObject(this.updateService.mo);
       this.closeCSVModal();
     }
 
@@ -139,7 +139,7 @@ export class CsvImportComponent {
     });
   }
 
-  updateCommandQueueInManagedObject(mo: IManagedObject, type: string) {
+  private updateCommandQueueInManagedObject(mo: IManagedObject): void {
     this.simulatorervice.updateSimulatorManagedObject(mo).then(
       () => {
         this.successMessage('Import was successful.');
@@ -150,13 +150,13 @@ export class CsvImportComponent {
     );
   }
 
-  goBack() {
+  goBack(): void {
     if (this.step > 1) {
       this.step--;
     }
   }
 
-  sendToast(text: string, type: string) {
+  private sendToast(text: string, type: string): void {
     const alert = {
       text: text,
       type: type
@@ -164,15 +164,15 @@ export class CsvImportComponent {
     this.alertService.add(alert);
   }
 
-  successMessage(text: string) {
+  private successMessage(text: string): void {
     this.sendToast(text, 'success');
   }
 
-  errorMessage(text: string) {
+  private errorMessage(text: string): void {
     this.sendToast(text, 'danger');
   }
 
-  validateInputFields() {
+  private validateInputFields(): boolean {
     let valid = true;
     if (this.step === 1) {
       if (!this.delimiter || !this.file) {
@@ -197,7 +197,7 @@ export class CsvImportComponent {
     return valid;
   }
 
-  incrementStep() {
+  incrementStep(): void {
     if (!this.validateInputFields()) {
       return;
     }
@@ -212,11 +212,11 @@ export class CsvImportComponent {
     }
   }
 
-  prepareFileStream(event) {
+  prepareFileStream(event): void {
     this.file = event.target.files[0];
   }
 
-  readFileStream() {
+  private readFileStream(): void {
     if (this.dataProperties && this.dataPoints) {
       return;
     }
