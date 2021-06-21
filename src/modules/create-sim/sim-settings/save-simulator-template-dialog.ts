@@ -1,8 +1,9 @@
 import { Component, Input } from "@angular/core";
 import { Subject } from "rxjs";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
-import { C8YDeviceSimulator, CustomSimulator, SimulatorTemplate } from "@models/simulator.model";
+import { C8YDeviceSimulator, CustomSimulator } from "@models/simulator.model";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
+import { TemplateModel } from "@models/template.model";
 
 export interface ILabels {
   ok?: string;
@@ -58,9 +59,9 @@ export class SaveSimulatorTemplateDialog {
       deviceSimulator.name = '';
       deviceSimulator.state = 'PAUSED';
       deviceSimulator.id = '';
-      const template: Partial<SimulatorTemplate> = {
+      const template: Partial<TemplateModel> = {
           name: this.templateName,
-          c8y_Simulator_Template: {},
+          c8y_SimulatorTemplate: {},
           c8y_Template: deviceSimulator
       };
       this.simulatorService.createSimulatorTemplate(template).then((res) => {

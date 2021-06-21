@@ -53,11 +53,12 @@ export interface CustomSimulator extends IManagedObject {
     c8y_CustomOperations?: string[];
 
   };
+  c8y_hasTemplate: boolean;
   c8y_MeasurementSeries?: [];
 }
 
-export interface SimulatorTemplate extends IManagedObject {
-  type: string;
-  c8y_Simulator_Template: {};
-  c8y_Template: C8YDeviceSimulator;
-}
+// export interface SimulatorTemplate extends IManagedObject {
+//   type: string;
+//   c8y_Simulator_Template: {};
+//   c8y_Template: C8YDeviceSimulator;
+// }

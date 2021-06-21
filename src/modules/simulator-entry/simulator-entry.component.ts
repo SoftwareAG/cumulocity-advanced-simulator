@@ -5,12 +5,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { IManagedObject } from '@c8y/client';
 import { Alert, AlertService, ModalService } from '@c8y/ngx-components';
-import { CustomSimulator, SimulatorTemplate } from 'src/models/simulator.model';
+import { CustomSimulator } from 'src/models/simulator.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
 import { version } from '../../../package.json';
-import { TemplateSelectionDialog } from './template-selection-dialog';
 
 @Component({
   selector: 'app-simulator-entry',
@@ -70,17 +69,7 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     );
   }
 
-  openTemplateSelectionDialog(): void {
-    const modal = this.modalService.show(TemplateSelectionDialog);
-    modal.content.allSimulatorTemplates = this.allSimulatorTemplates;
-    this.subscriptions.add(
-      modal.content.closeSubject.subscribe((result) => {
-        if (result) {
-        }
-        this.modalUnsubscribe();
-      })
-    );
-  }
+  
 
   deleteSimulatorPrompt(simulator: CustomSimulator): Promise<boolean> {
     return this.ngXmodalService

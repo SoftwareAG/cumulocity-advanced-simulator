@@ -4,7 +4,8 @@ import {
   IManagedObject,
 } from "@c8y/client";
 import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
-import { C8YDeviceSimulator, CustomSimulator, SimulatorTemplate } from "@models/simulator.model";
+import { C8YDeviceSimulator, CustomSimulator } from "@models/simulator.model";
+import { TemplateModel } from "@models/template.model";
 import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
 import { SimulatorsServiceService } from "@services/simulatorsService.service";
 
@@ -65,7 +66,7 @@ export class TemplateSelectionDialog implements OnInit {
   public modalTitle: string = "Choose from existing templates to create bulk simulators";
 
   deviceSimulator: C8YDeviceSimulator;
-  simulatorTemplate: SimulatorTemplate;
+  simulatorTemplate: TemplateModel;
   @Input() allSimulatorTemplates: IManagedObject[];
   instances = 1;
   constructor(
@@ -88,7 +89,7 @@ export class TemplateSelectionDialog implements OnInit {
 
   onChange(simulator) {
     console.log('selected template: ', simulator);
-    this.simulatorTemplate = simulator as SimulatorTemplate;
+    this.simulatorTemplate = simulator as TemplateModel;
   }
 
   createBulkSimulatorsFromTemplate() {
@@ -97,7 +98,7 @@ export class TemplateSelectionDialog implements OnInit {
     for (let i = 0;  i < this.instances; i++) {
     deviceSimulator.name = this.simulatorTemplate.name + '_#' + i.toString();
     this.backendService.createSimulator(deviceSimulator).then((res) => {
-      const simulator = {
+      const simulator: Partial<CustomSimulator> = {
         type: "c8y_DeviceSimulator",
         owner: "service_device-simulator",
         name: deviceSimulator.name,

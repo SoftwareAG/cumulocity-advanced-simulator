@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IdentityService, IManagedObject, InventoryService } from "@c8y/client";
-import { CustomSimulator, DeviceSimulator, SimulatorTemplate } from "src/models/simulator.model";
+import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
 import { ManagedObjectService } from "./ManagedObject.service";
 import { map } from 'rxjs/operators';
 import { TemplateModel } from "@models/template.model";
@@ -49,7 +49,7 @@ export class SimulatorsServiceService extends ManagedObjectService {
     });
   }
 
-  createSimulatorTemplate(obj: Partial<SimulatorTemplate>) {
+  createSimulatorTemplate(obj: Partial<TemplateModel>) {
     return this.createManagedObject(obj);
   }
 
