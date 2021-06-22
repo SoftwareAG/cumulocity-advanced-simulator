@@ -33,6 +33,7 @@ export class ManagedObjectUpdateService {
     return this.simService.updateSimulatorManagedObject(mo);
   }
 
+
   updateMOCommandQueueAndIndices(
     commandQueue: CommandQueueEntry[],
     additionals: AdditionalParameter[]

@@ -1,13 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from "rxjs";
-import {
-  IManagedObject,
-} from "@c8y/client";
-import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
-import { C8YDeviceSimulator, CustomSimulator } from "@models/simulator.model";
-import { TemplateModel } from "@models/template.model";
-import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
-import { SimulatorsServiceService } from "@services/simulatorsService.service";
+import { Subject } from 'rxjs';
+import { IManagedObject } from '@c8y/client';
+import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
+import { C8YDeviceSimulator, CustomSimulator } from '@models/simulator.model';
+import { TemplateModel } from '@models/template.model';
+import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
+import { SimulatorsServiceService } from '@services/simulatorsService.service';
+import { AdditionalParameter } from '@models/commandQueue.model';
+import { SeriesInstruction } from '@models/instruction.model';
 
 export interface ILabels {
   ok?: string;
@@ -15,7 +15,7 @@ export interface ILabels {
 }
 
 @Component({
-  selector: "template-selection-dialog",
+  selector: 'template-selection-dialog',
   template: ` <c8y-modal
     title="{{ modalTitle }}"
     (onClose)="createBulkSimulatorsFromTemplate($event)"
@@ -23,8 +23,7 @@ export interface ILabels {
     [labels]="labels"
   >
     <ng-form>
-
-    <!-- <div class="form-group">
+      <!-- <div class="form-group">
         <br />
         <div class="input-group">
           <label translate>File to upload</label>
@@ -37,33 +36,41 @@ export interface ILabels {
         </div>
       </div> -->
 
-
       <div class="form-group">
         <br />
         <!-- <div class="input-group"> -->
-          <label translate>Select from saved templates *</label>
-          <select class="form-control select-config" [(ngModel)]="simulatorTemplate" (ngModelChange)="onChange($event)" [ngModelOptions]="{standalone: true}">
-      <option value="" disabled selected>Select from simulator templates</option>
-      <option *ngFor="let first of allSimulatorTemplates" [ngValue]="first">{{ first.name }}</option>
-    </select>
-    <!-- </div> -->
-    <br>
-    <label translate>Select number of instances *
-    </label>
-    <input type="text" class="form-control" [(ngModel)]="instances" [ngModelOptions]="{standalone: true}">
-        
+        <label translate>Select from saved templates *</label>
+        <select
+          class="form-control select-config"
+          [(ngModel)]="simulatorTemplate"
+          (ngModelChange)="onChange($event)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <option value="" disabled selected>Select from simulator templates</option>
+          <option *ngFor="let first of allSimulatorTemplates" [ngValue]="first">{{ first.name }}</option>
+        </select>
+        <!-- </div> -->
+        <br />
+        <label translate>Select number of instances * </label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="instances"
+          (ngModelChange)="onChangeInstances($event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
       </div>
     </ng-form>
-  </c8y-modal>`,
+  </c8y-modal>`
 })
 export class TemplateSelectionDialog implements OnInit {
   private closeSubject: Subject<any> = new Subject();
 
   public labels: ILabels = {
-    ok: "Create bulk simulators",
-    cancel: "Cancel",
+    ok: 'Create bulk simulators',
+    cancel: 'Cancel'
   };
-  public modalTitle: string = "Choose from existing templates to create bulk simulators";
+  public modalTitle = 'Choose from existing templates to create bulk simulators';
 
   deviceSimulator: C8YDeviceSimulator;
   simulatorTemplate: TemplateModel;
@@ -76,7 +83,7 @@ export class TemplateSelectionDialog implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.allSimulatorTemplates);
+    // console.log(this.allSimulatorTemplates);
   }
 
   onDismiss(event) {
@@ -92,28 +99,46 @@ export class TemplateSelectionDialog implements OnInit {
     this.simulatorTemplate = simulator as TemplateModel;
   }
 
-  createBulkSimulatorsFromTemplate() {
-    const {id, ...deviceSimulator} = this.simulatorTemplate.c8y_Template;
-    
-    for (let i = 0;  i < this.instances; i++) {
-    deviceSimulator.name = this.simulatorTemplate.name + '_#' + i.toString();
-    this.backendService.createSimulator(deviceSimulator).then((res) => {
-      const simulator: Partial<CustomSimulator> = {
-        type: "c8y_DeviceSimulator",
-        owner: "service_device-simulator",
-        name: deviceSimulator.name,
-        c8y_CustomSim: {},
-        id: res.id,
-        c8y_DeviceSimulator: res,
-        c8y_additionals: [],
-        c8y_Series: [],
-      }
-      this.backendService.addCustomSimulatorProperties(simulator).then((result) => {
-        console.log('CustomSim Created here: ', res);
-      });
-    });
-    }
+  onChangeInstances(newVal): void {
+    this.instances = newVal;
+    console.log('newVal: ', newVal);
   }
 
-  
+  async createBulkSimulatorsFromTemplate(event) {
+    const templateId = this.simulatorTemplate.id;
+    const { id, ...deviceSimulator } = this.simulatorTemplate.c8y_Template.c8y_DeviceSimulator;
+    console.log('ID: ', templateId);
+    const additionals = this.simulatorTemplate.c8y_Template.c8y_additionals;
+    const series = this.simulatorTemplate.c8y_Template.c8y_Series;
+    const promiseArray = new Array<Promise<void>>();
+    for (let i = 0; i < this.instances; i++) {
+      promiseArray.push(this.createSimulatorInstanceFromTemplate(templateId, deviceSimulator, i, additionals, series));
+    }
+    await Promise.all(promiseArray);
+  }
+
+  async createSimulatorInstanceFromTemplate(
+    id: string,
+    deviceSimulator,
+    index: number,
+    additionals: AdditionalParameter[],
+    series: SeriesInstruction[]
+  ) {
+    deviceSimulator.name = `${this.simulatorTemplate.name}_#${index}`;
+    const createdSimulator = await this.backendService.createSimulator(deviceSimulator);
+    const simulator: Partial<CustomSimulator> = {
+      type: 'c8y_DeviceSimulator',
+      owner: 'service_device-simulator',
+      name: deviceSimulator.name,
+      c8y_CustomSim: {},
+      id: createdSimulator.id,
+      c8y_DeviceSimulator: deviceSimulator,
+      c8y_additionals: additionals,
+      c8y_Series: series,
+      c8y_hasTemplate: true,
+      c8y_TemplateId: id
+    };
+
+    await this.backendService.addCustomSimulatorProperties(simulator);
+  }
 }

@@ -1,40 +1,52 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { IdentityService, IManagedObject, InventoryService } from "@c8y/client";
-import { CustomSimulator, DeviceSimulator } from "src/models/simulator.model";
-import { ManagedObjectService } from "./ManagedObject.service";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { IdentityService, IManagedObject, InventoryService } from '@c8y/client';
+import { CustomSimulator, DeviceSimulator } from 'src/models/simulator.model';
+import { ManagedObjectService } from './ManagedObject.service';
 import { map } from 'rxjs/operators';
-import { TemplateModel } from "@models/template.model";
+import { TemplateModel } from '@models/template.model';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class SimulatorsServiceService extends ManagedObjectService {
-  constructor(private inventoryService: InventoryService, private http: HttpClient, private identityService: IdentityService) {
+  constructor(
+    private inventoryService: InventoryService,
+    private http: HttpClient,
+    private identityService: IdentityService
+  ) {
     super(inventoryService);
   }
 
-  getAllDevices() {
+  getAllDevices(): Promise<IManagedObject[]> {
     const deviceFilter = {
       query: `$filter=(has(${this.customSimulatorFragment}))`,
-      pageSize: 1000,
+      pageSize: 1000
     };
     return this.getFilterInventoryResult(deviceFilter);
   }
 
-  getAllTemplates() {
+  getAllTemplates(): Promise<IManagedObject[]> {
     const templateFilter = {
       query: `$filter=(has(${this.simulatorTemplateFragment}))`,
       pageSize: 1000
-    }
+    };
     return this.getFilterInventoryResult(templateFilter);
   }
 
-  getSimulatorTemplates() {
+  getSimulatorsFromTemplate(templateId: string): Promise<IManagedObject[]> {
+    const filter = {
+      query: `$filter=(c8y_TemplateId eq '${templateId}')`,
+      pageSize: 1000
+    };
+    return this.getFilterInventoryResult(filter);
+  }
+
+  getSimulatorTemplates(): Promise<IManagedObject[]> {
     const templateFilter = {
       query: `$filter=(has(${this.simulatorTemplateFragment}))`,
-      pageSize: 1000,
-    }
+      pageSize: 1000
+    };
     return this.getFilterInventoryResult(templateFilter);
   }
 
@@ -54,15 +66,21 @@ export class SimulatorsServiceService extends ManagedObjectService {
   }
 
   getSimulatorById(id: string) {
-    return this.inventoryService.detail(id).then(result => {return result; });
+    return this.inventoryService.detail(id).then((result) => {
+      return result;
+    });
+  }
+
+  getTemplateById(id: string) {
+    return this.inventoryService.detail(id).then((result) => {
+      return result;
+    });
   }
 
   getAllDevicesGroupedByType() {
     return this.getAllDevices().then((result) => {
-      const typeAttribute = "type";
-      const simulators = result.filter(
-        (tmp) => tmp[typeAttribute] === this.customSimulatorFragment
-      );
+      const typeAttribute = 'type';
+      const simulators = result.filter((tmp) => tmp[typeAttribute] === this.customSimulatorFragment);
       return simulators;
     });
   }
@@ -77,5 +95,9 @@ export class SimulatorsServiceService extends ManagedObjectService {
 
   getFilteredManagedObjects(filter: any) {
     return this.getFilterInventoryResult(filter);
+  }
+
+  deleteTemplate(templateId: string) {
+    return this.deleteManagedObject(templateId);
   }
 }
