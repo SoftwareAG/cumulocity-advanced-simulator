@@ -22,18 +22,12 @@ import { ShowInstructionComponent } from './src/modules/create-sim/show-instruct
 import { SupportedOperationsComponent } from '@modules/supported-operations/supported-operations.component';
 import { CommandQueueStatisticsComponent } from '@modules/command-queue-statistics/command-queue-statistics.component';
 import { CustomOperationComponent } from '@modules/supported-operations/custom-operation/custom-operation.component';
-import { IsValuePipe } from './src/shared/isValue.pipe';
-import { ToStringPipe } from './src/shared/toString.pipe';
-import { WarningModalComponent } from '@modules/shared/warning-modal/warning-modal.component';
 import { SeriesItemComponent } from '@modules/series-item/series-item.component';
 import { SeriesListComponent } from '@modules/series-item/series-list/series-list.component';
-import { CountPipe } from './src/shared/count.pipe';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { IsNumberPipe } from './src/shared/isNumber.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { InstructionTypePipe } from './src/shared/instructionType.pipe';
 import { BulkUpdatesComponent } from '@modules/bulk-updates/bulk-updates.component';
 import { SimulatorFileUploadDialog } from '@modules/create-sim/sim-settings/simulator-file-upload-dialog';
 import { BulkSimulatorsComponent } from '@modules/bulk-simulators/bulk-simulators.component';
@@ -44,6 +38,7 @@ import { TemplatesListComponent } from '@modules/templates-list/templates-list.c
 import { CustomTabFactory } from '@modules/factories/tab.factory';
 import { TemplateOverviewComponent } from '@modules/template-overview/template-overview.component';
 import { TemplateResolverService } from '@services/templateResolver.service';
+import { SharedComponentsModule } from '@shared/shared.module';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'simulators', pathMatch: 'full' },
@@ -101,6 +96,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     ChartsModule,
     DragDropModule,
+    SharedComponentsModule,
     C8yFactoriesModule
   ],
   providers: [
@@ -110,13 +106,13 @@ const appRoutes: Routes = [
       multi: true
     },
     ThemeService
+    
   ],
   declarations: [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
-    WarningModalComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
@@ -125,27 +121,22 @@ const appRoutes: Routes = [
     ShowInstructionComponent,
     SupportedOperationsComponent,
     CustomOperationComponent,
-    IsValuePipe,
-    ToStringPipe,
     SeriesItemComponent,
     SeriesListComponent,
-    CountPipe,
-    IsNumberPipe,
-    InstructionTypePipe,
     SimulatorFileUploadDialog,
     BulkSimulatorsComponent,
     TemplateSelectionDialog,
     SaveSimulatorTemplateDialog,
     SimulatorCreateComponent,
     TemplatesListComponent,
-    TemplateOverviewComponent
+    TemplateOverviewComponent,
+    SimulatorFileUploadDialog
   ],
   entryComponents: [
     SimulatorEntryComponent,
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
-    WarningModalComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,

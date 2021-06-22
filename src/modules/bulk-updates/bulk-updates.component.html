@@ -22,11 +22,12 @@
         <input
           type="checkbox"
           [ngModel]="intertwinedValues"
-          [disabled]="invalidSimulator"
+          [disabled]="(invalidSimulator || allInstructionsSeries.length < 2)"
           (click)="toggleIntertwineSeries()"
         />
         <span></span>
       </label>
+      <p *ngIf="allInstructionsSeries.length < 2" class="additional-information">You need at least two series to intertwine</p>
     </div>
   </div>
 </div>

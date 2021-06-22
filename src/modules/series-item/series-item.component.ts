@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import {
   CommandQueueEntry,
   IndexedCommandQueueEntry,
@@ -10,19 +10,21 @@ import {
   SeriesBasicEventsForm,
   SeriesEventsForm,
   SeriesSleepForm,
+  InputField,
 } from '@models/inputFields.const';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SmartRESTService } from '@services/smartREST.service';
 import { FormState } from '@models/formstate.model';
+import * as _ from 'lodash';
 
 @Component({
   selector: "app-series-item",
   templateUrl: "./series-item.component.html",
   styleUrls: ["./series-item.component.scss"],
 })
-export class SeriesItemComponent {
+export class SeriesItemComponent implements OnInit{
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
   @Input() smartRestConfig;
@@ -60,6 +62,9 @@ export class SeriesItemComponent {
     private smartRestService: SmartRESTService
   ) {}
 
+  ngOnInit() {
+    this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
+  }
   setLabelsForSelected() {
     switch (this.selectedSeries.type) {
       case 'Measurement':
@@ -94,9 +99,7 @@ export class SeriesItemComponent {
   }
 
   duplicateSeries() {
-    //TODO CHRISMEY FIX THIS
-
-    const duplicated = JSON.parse(JSON.stringify(this.selectedSeries));
+    const duplicated = _.cloneDeep(this.selectedSeries);
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
     duplicated.index = this.allInstructionsSeries.length.toString();
     const indexOfSeries = duplicated.index;
@@ -142,18 +145,10 @@ export class SeriesItemComponent {
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries = this.simSettingsService.allInstructionsArray;
     const indexOfItem = +this.selectedSeries.index;
-    console.log('index of item: ', indexOfItem);
-    console.log('selected series: ', this.selectedSeries);
     const filtered = this.indexedCommandQueue.filter(
       (entry: IndexedCommandQueueEntry) => +entry.index !== +indexOfItem
     );
-    console.error(
-      'delete Series',
-      filtered,
-      this.indexedCommandQueue,
-      indexOfItem,
-      this.allInstructionsSeries
-    );
+
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(
       filtered
     );
@@ -171,8 +166,11 @@ export class SeriesItemComponent {
       });
   }
 
+  buttonHandler(inputField: InputField) {
+    this.instructionValue = this.simSettingsService.buttonHandler(inputField, this.instructionValue, this.allInstructionsSeries) as SeriesInstruction;
+  }
+
   updateSeries() {
-    console.log('scaling option: ', this.selectedSeries);
     this.simSettingsService.randomSelected =
       this.selectedSeries.type === 'Measurement' ||
       this.selectedSeries.type === 'SmartRest'
@@ -180,14 +178,12 @@ export class SeriesItemComponent {
         : null;
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     const indexOfSeries = this.selectedSeries.index;
-    console.log('indexOfSeries: ', indexOfSeries);
     let itemPos = this.indexedCommandQueue.findIndex(
       (entry) => entry.index === indexOfSeries
     );
     this.indexedCommandQueue = this.indexedCommandQueue.filter(
       (entry) => entry.index !== indexOfSeries
     );
-    console.log('idxdCmdq: ', this.indexedCommandQueue);
 
     if (this.instructionValue.type !== 'SmartRest') {
       this.simSettingsService.randomSelected = this.selectedSeries.option;
@@ -214,7 +210,6 @@ export class SeriesItemComponent {
       })) as IndexedCommandQueueEntry[];
       this.indexedCommandQueue.splice(itemPos, 0, ...indexedCmdQ);
     }
-    console.log('idxdCmdq: ', this.indexedCommandQueue);
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(
       this.indexedCommandQueue
     );

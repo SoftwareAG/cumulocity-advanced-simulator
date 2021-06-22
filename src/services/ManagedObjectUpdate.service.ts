@@ -2,8 +2,7 @@ import { Injectable } from "@angular/core";
 import { AlertService, Alert } from "@c8y/ngx-components";
 import {
   AdditionalParameter,
-  CommandQueueEntry,
-  CommandQueueC8YMapping,
+  CommandQueueEntry
 } from "@models/commandQueue.model";
 import { SeriesInstruction } from "@models/instruction.model";
 import { CustomSimulator } from "@models/simulator.model";
@@ -33,28 +32,9 @@ export class ManagedObjectUpdateService {
     return this.simService.updateSimulatorManagedObject(mo);
   }
 
-
-  updateMOCommandQueueAndIndices(
-    commandQueue: CommandQueueEntry[],
-    additionals: AdditionalParameter[]
-  ) {
+  updateMOCommandQueueAndIndices(commandQueue: CommandQueueEntry[], additionals: AdditionalParameter[]) {
     this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
     this.mo.c8y_additionals = additionals;
-    /*{
-  this.mo.c8y_DeviceSimulator.commandQueue = commandQueue;
-    for(const key in CommandQueueC8YMapping){
-      this.mo[ CommandQueueC8YMapping[key] ] = [];
-      //console.log("this.mo overrwirde", this.mo, CommandQueueC8YMapping[key], key);
-    }
-
-    additionals.forEach((element: AdditionalParameter) => {
-      for(let key in element){
-        this.mo[ CommandQueueC8YMapping[key] ].push( element[key] );
-        console.info("details", element, key, CommandQueueC8YMapping, CommandQueueC8YMapping[key], element[key], this.mo);
-      }
-      
-    });
-  console.error("mo", this.mo, additionals, CommandQueueC8YMapping);*/
   }
 
   updateMOInstructionsArray(instructionsArray: SeriesInstruction[]) {
