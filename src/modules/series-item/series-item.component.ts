@@ -18,6 +18,8 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { SmartRESTService } from '@services/smartREST.service';
 import { FormState } from '@models/formstate.model';
 import * as _ from 'lodash';
+import { CustomSimulator } from '@models/simulator.model';
+import { SmartRESTConfiguration } from '@models/smartREST.model';
 
 @Component({
   selector: "app-series-item",
@@ -29,9 +31,9 @@ export class SeriesItemComponent implements OnInit{
   @Input() isExpanded: boolean;
   @Input() smartRestConfig;
   @Input() id;
-  @Input() index;
+  @Input() index: number;
   @Input() commandQueue: CommandQueueEntry[];
-  @Input() mo;
+  @Input() mo: CustomSimulator;
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
     this.selectedConfig = this.selectedSeries.type;
@@ -46,12 +48,12 @@ export class SeriesItemComponent implements OnInit{
   selectedConfig: string;
   instructionValue: SeriesInstruction;
   isSmartRestSelected = false;
-  smartRestSelectedConfig;
+  smartRestSelectedConfig: SmartRESTConfiguration;
   smartRestInstruction;
   form;
   icon: string;
   measurementOptions = ['linear', 'random', 'wave'];
-  allInstructionsSeries;
+  allInstructionsSeries: SeriesInstruction[];
   indexedCommandQueue: IndexedCommandQueueEntry[];
   defaultFormState = FormState.PRISTINE;
   formState = this.defaultFormState;
