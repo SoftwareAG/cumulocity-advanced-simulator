@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { Alert, AlertService } from '@c8y/ngx-components';
-import { DefaultConfig } from '@models/inputFields.const';
 import {
   InstructionCategory,
   SmartInstruction,
@@ -13,6 +12,7 @@ import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { IManagedObject } from '@c8y/client';
+import { DefaultConfig } from '@constants/inputFields.const';
 
 @Component({
   selector: 'app-csv-import',

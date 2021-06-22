@@ -6,6 +6,7 @@
       "@models/*": ["./src/models/*"],
       "@services/*": ["./src/services/*"],
       "@modules/*": ["./src/modules/*"],
+      "@constants/*": ["./src/constants/*"],
       "@directives/*": ["./src/directives/*"]
     },
     "outDir": "./dist/out-tsc",

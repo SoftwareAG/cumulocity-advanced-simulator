@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommandQueueEntry, CommandQueueType, MessageIds } from '@models/commandQueue.model';
-import { InputField } from '@models/inputFields.const';
+import { InputField } from '@models/inputFields.models';
 import {
   AlarmInstruction,
   BasicEventInstruction,
