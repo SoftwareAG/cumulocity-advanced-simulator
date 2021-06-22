@@ -16,7 +16,7 @@ export class SimulatorsBackendService {
         'Content-Type': 'application/json'
       })
     };
-    this.http.put(url, resultTemplate, httpOptions).subscribe((data) => {}); // FIXME proper handling
+    this.http.put(url, resultTemplate, httpOptions).subscribe();
   }
 
   createSimulator(simulator: Partial<CustomSimulator>): Promise<any> {
