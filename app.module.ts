@@ -29,7 +29,8 @@ import { SeriesItemComponent } from '@modules/series-item/series-item.component'
 import { SeriesListComponent } from '@modules/series-item/series-list/series-list.component';
 import { BulkUpdatesComponent } from '@modules/bulk-updates/bulk-updates.component';
 import { SimulatorFileUploadDialog } from '@modules/create-sim/sim-settings/simulator-file-upload-dialog';
-import { SharedComponentsModule } from '@shared/shared.module';
+import { SharedComponentsModule } from './src/shared/shared.module';
+
 
 const appRoutes: Routes = [
   { path: '', component: SimulatorEntryComponent },

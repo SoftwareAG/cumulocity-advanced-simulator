@@ -7,7 +7,7 @@ import {
   InstructionCategory,
   SmartRestInstruction,
 } from "@models/instruction.model";
-import { SmartRest } from "@models/smartREST.model";
+import { SmartRESTConfiguration } from "@models/smartREST.model";
 import { BehaviorSubject } from "rxjs";
 import { HelperService } from "./helper.service";
 
@@ -33,7 +33,7 @@ export class SmartRESTService {
 
   smartRESTTemplateToCommandQueueEntry(
     smartRestEntry: any,
-    smartRESTTemplate: SmartRest
+    smartRESTTemplate: SmartRESTConfiguration
   ): CommandQueueEntry {
     let commandQueueEntry: CommandQueueEntry = {
       messageId: "",
@@ -51,7 +51,7 @@ export class SmartRESTService {
   
   generateSmartRestRequest(
     smartRestInstructionArray: SmartRestInstruction[],
-    smartRESTTemplate: SmartRest
+    smartRESTTemplate: SmartRESTConfiguration
   ): CommandQueueEntry[] {
     this.values = [];
     this.commandQueueArray = [];
