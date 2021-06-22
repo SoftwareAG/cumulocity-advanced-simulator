@@ -7,7 +7,8 @@
       "@services/*": ["./src/services/*"],
       "@modules/*": ["./src/modules/*"],
       "@constants/*": ["./src/constants/*"],
-      "@directives/*": ["./src/directives/*"]
+      "@directives/*": ["./src/directives/*"],
+      "@shared/*": ["./src/shared/*"]
     },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
