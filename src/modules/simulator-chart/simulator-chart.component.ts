@@ -7,20 +7,8 @@ import { IndexedCommandQueueEntry, MessageIds } from '@models/commandQueue.model
 import { SeriesInstruction } from '@models/instruction.model';
 import { ColorsReduced } from '@models/colors.const';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
+import { SleepChartBox, VerticalChartLine } from '@models/chart.model';
 
-// FIXME move to model-file
-export interface VerticalChartLine {
-  type: string;
-  label: string;
-  value: number;
-  color: string;
-}
-
-// FIXME move to model-file
-export interface SleepChartBox {
-  valueStart: number;
-  valueEnd: number;
-}
 
 @Component({
   selector: 'app-simulator-chart',

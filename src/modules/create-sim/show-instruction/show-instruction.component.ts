@@ -102,6 +102,6 @@ export class ShowInstructionComponent implements OnInit {
     moveItemInArray(this.indexedCommandQueue, event.previousIndex, event.currentIndex);
 
     this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {}); // FIXME proper handling
+    this.updateService.updateSimulatorObject(this.updateService.mo);
   }
 }

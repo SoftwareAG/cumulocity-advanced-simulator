@@ -174,9 +174,9 @@ export class EditInstructionComponent implements OnInit {
     }
   }
 
-  onDuplicateInstruction() {} // FIXME can be removed?
+  onDuplicateInstruction() {} // FIXME needs to be implemented
 
-  onClearAllInstructions() {} // FIXME can be removed?
+  onClearAllInstructions() {} // FIXME needs to be implemented
 
   updateCurrent(val) {
     this.displayEditView = true;

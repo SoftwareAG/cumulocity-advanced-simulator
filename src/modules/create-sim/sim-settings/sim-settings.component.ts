@@ -190,8 +190,6 @@ export class SimSettingsComponent {
     this.isSmartRestSelected = value === InstructionCategory.SmartRest;
   }
 
-  updateSeriesColor() {} // FIXME obsolete?
-
   openSimulatorUploadFileDialog() {
     const modal = this.modalService.show(SimulatorFileUploadDialog);
     this.subscriptions.push(

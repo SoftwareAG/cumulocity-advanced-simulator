@@ -150,7 +150,6 @@
                 class="form-control"
                 style="max-width: 200px; margin-right: 20px; float: right"
                 [(ngModel)]="selectedColor"
-                (update)="updateSeriesColor()"
               >
                 <option disabled value="#fff">Select Color</option>
                 <option *ngFor="let entry of reducedColors" [style.background]="entry">
