@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { AdditionalParameter, CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { AlarmsService } from '@services/alarms.service';
 import { MeasurementsService } from '@services/measurements.service';
-import { Modal } from '@modules/shared/models/modal.model';
+import { Modal } from '@models/modal.model';
 import { InstructionService } from '@services/Instruction.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';

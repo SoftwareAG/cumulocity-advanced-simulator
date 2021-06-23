@@ -1,4 +1,5 @@
-import { Component, Input } from "@angular/core";
+// FIXME move to separate component
+import { Component } from "@angular/core";
 import { Subject } from "rxjs";
 import { AlertService, Alert } from "@c8y/ngx-components";
 import { TranslateService } from "@ngx-translate/core";
@@ -12,11 +13,7 @@ import { C8YDeviceSimulator, CustomSimulator } from "@models/simulator.model";
 import { SimulatorsBackendService } from "@services/simulatorsBackend.service";
 import { SimulatorSettingsService } from "@services/simulatorSettings.service";
 import { IndexedCommandQueueEntry } from "@models/commandQueue.model";
-
-export interface ILabels {
-  ok?: string;
-  cancel?: string;
-}
+import { ILabels } from "@models/labels.model";
 
 @Component({
   selector: "simulator-file-upload-dialog",

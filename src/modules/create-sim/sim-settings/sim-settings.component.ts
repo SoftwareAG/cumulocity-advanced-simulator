@@ -3,17 +3,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Alert, AlertService } from '@c8y/ngx-components';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
-import {
-  DefaultConfig,
-  SeriesMeasurementsForm,
-  SeriesAlarmsForm,
-  SeriesBasicEventsForm,
-  SeriesEventsForm,
-  SeriesSleepForm,
-  InputField
-} from '@models/inputFields.const';
+import { InputField } from '@models/inputFields.models';
 import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
-import { ColorsReduced } from '@models/colors.const';
+import { ColorsReduced } from '@constants/colors.const';
 import { CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SmartRESTService } from '@services/smartREST.service';
@@ -21,6 +13,14 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorFileUploadDialog } from './simulator-file-upload-dialog';
 import * as _ from 'lodash';
+import {
+  DefaultConfig,
+  SeriesMeasurementsForm,
+  SeriesAlarmsForm,
+  SeriesBasicEventsForm,
+  SeriesEventsForm,
+  SeriesSleepForm
+} from '@constants/inputFields.const';
 
 @Component({
   selector: 'app-sim-settings',
