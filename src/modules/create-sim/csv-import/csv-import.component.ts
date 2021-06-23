@@ -13,6 +13,7 @@ import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { IManagedObject } from '@c8y/client';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-csv-import',
@@ -47,7 +48,7 @@ export class CsvImportComponent {
   ) {}
 
   private deepCopy(obj: string[]): string[] {
-    return JSON.parse(JSON.stringify(obj));
+    return _.cloneDeep(obj);
   }
 
   closeCSVModal(): void {
