@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommandQueueEntry, CommandQueueType, MessageIds } from '@models/commandQueue.model';
-import { InputField } from '@models/inputFields.const';
+import { InputField } from '@models/inputFields.models';
 import {
   AlarmInstruction,
   BasicEventInstruction,
@@ -112,25 +112,42 @@ export class InstructionService {
     }
   }
 
-  smartRestInstructionToCommand(instruction: SmartInstruction): CommandQueueEntry {
-    let customValuesFromInstruction = Object.keys(instruction).filter((key) => key !== 'type' && key !== '');
-    // Parse 'path' from each of the customValues of this.smartRestArray entries
-    let customPaths = [];
-    this.SmartRestArray.forEach((entry) => {
-      let arr = [];
-      entry.smartRestFields.customValues.forEach((customValue) => {
-        arr.push(customValue.path);
+  smartRestInstructionToCommand(
+    instruction: SmartInstruction, 
+    smartRestSelectedConfig?
+  ): CommandQueueEntry {
+    let selectedSmartRest;
+    if (smartRestSelectedConfig){
+      selectedSmartRest = smartRestSelectedConfig;
+    } else {
+      let customValuesFromInstruction = Object.keys(instruction).filter(
+        (key) => key !== 'type' && key !== ''
+      );
+      // Parse 'path' from each of the customValues of this.smartRestArray entries
+      let customPaths = [];
+      this.SmartRestArray.forEach((entry) => {
+        let arr = [];
+        entry.smartRestFields.customValues.forEach((customValue) => {
+          arr.push(customValue.path);
+        });
+        customPaths.push(arr);
       });
-      customPaths.push(arr);
-    });
-    // Find index by comparing custompath entries with keys of the SmartInstruction
-    const filteredIndex = customPaths.findIndex(
-      (customPathsForEntry) => this.compareArrays2(customValuesFromInstruction, customPathsForEntry) === true
-    );
-    const messageId = this.SmartRestArray[filteredIndex].smartRestFields.msgId;
-    const templateId = this.SmartRestArray[filteredIndex].templateId;
+      // Find index by comparing custompath entries with keys of the SmartInstruction
+      const filteredIndex = customPaths.findIndex(
+        (customPathsForEntry) =>
+          this.compareArrays2(
+            customValuesFromInstruction,
+            customPathsForEntry
+          ) === true
+      );
+      selectedSmartRest = this.SmartRestArray[filteredIndex];
+    }
+    const messageId = selectedSmartRest.smartRestFields.msgId;
+    const templateId = selectedSmartRest.templateId;
     let values: string[];
-    if (this.SmartRestArray[filteredIndex].smartRestFields.mandatoryValues.length) {
+    if (
+      selectedSmartRest.smartRestFields.mandatoryValues.length
+    ) {
       values = [''];
     } else {
       values = [];

@@ -30,7 +30,7 @@
   <div  cdkDropList
   id="indexed"
   (cdkDropListDropped)="drop($event)">
-    <div *ngFor="let item of indexedCommandQueue; let i; of: commandQueue.length"
+    <div *ngFor="let item of indexedCommandQueue; let i = index"
       [style.background]="item.color"
       cdkDrag [cdkDragData]="item">
           <div class="custom-placeholder" *cdkDragPlaceholder></div>
@@ -47,7 +47,7 @@
             <span *ngIf="item.type === 'builtin' && item.messageId === '200'">
               <i class="fa fw fa-list drag-item"></i>&nbsp;
               &nbsp;Custom measurement &nbsp;<em>{{ item.messageId }}</em>&nbsp;
-              <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+              <ng-container *ngFor="let value of item.values;"><span>{{ value }}&nbsp;</span></ng-container>
             </span>
 
             
@@ -74,7 +74,7 @@
             <span *ngIf="item.type === 'message'">
                   <i class="fa fw fa-sitemap drag-item"></i>&nbsp;
                   &nbsp;SmartREST Template &nbsp;<em>{{ item.templateId }}</em>&nbsp; / &nbsp;<em>{{ item.messageId }}</em>&nbsp;
-              <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+              <ng-container *ngFor="let value of item.values;"><span>{{ value }}&nbsp;</span></ng-container>
             </span>
 
 
@@ -96,16 +96,3 @@
     </div>
   </div>
 </section>
-    
-    <!-- </div> </ng-container>
-    <app-edit-instruction
-      *ngIf="item === editedValue"
-      [displayEditView]="true"
-      [edit]="editedValue"
-      [mo]="mo"
-      [indexedCommandQueue]="indexedCommandQueue"
-      [editedValue]="editedValue"
-    ></app-edit-instruction>
-  </div>
-</div>
-</section>-->

@@ -3,15 +3,7 @@ import { Alert, AlertService } from '@c8y/ngx-components';
 import { IManagedObject } from '@c8y/client';
 import { Subscription } from 'rxjs';
 import { EditedMeasurement } from 'src/models/editedMeasurement.model';
-import {
-  MeasurementsForm,
-  AlarmsForm,
-  EventsForm,
-  BasicEventsForm,
-  SleepForm,
-  DefaultConfig,
-  InputField
-} from '@models/inputFields.const';
+import { InputField } from '@models/inputFields.models';
 import { Instruction, Instruction2, InstructionCategory } from '@models/instruction.model';
 import { CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
@@ -19,6 +11,14 @@ import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { InstructionService } from '@services/Instruction.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { SmartRESTService } from '@services/smartREST.service';
+import {
+  DefaultConfig,
+  MeasurementsForm,
+  AlarmsForm,
+  BasicEventsForm,
+  EventsForm,
+  SleepForm
+} from '@constants/inputFields.const';
 
 @Component({
   selector: 'app-edit-instruction',

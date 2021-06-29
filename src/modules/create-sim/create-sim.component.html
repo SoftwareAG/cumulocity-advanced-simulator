@@ -42,6 +42,12 @@
   </div>
 </c8y-action-bar-item>
 
+
+
+<app-csv-import [indexedCommandQueue]="indexedCommandQueue" [smartRestConfig]="smartRestConfig"
+  [allInstructionsSeries]="allInstructionsSeries">
+</app-csv-import>
+
 <section id="create-simulator" class="row main-div" [style.height.px]='height' style="margin-top:70px;">
     <div class="col-lg-8" style="overflow-y:scroll; height:100%;">
       <div >
@@ -72,7 +78,6 @@
       </div>
         <!-- <ng-container *ngTemplateOutlet="popoverStats"></ng-container> -->
         </div>
-        
         <div class="filter common-header">
         <div id="filter" class="input-group input-group-search" style="padding: 5px" >
           <input

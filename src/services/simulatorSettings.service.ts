@@ -14,7 +14,7 @@ import {
   IndexedCommandQueueEntry,
   MessageIds
 } from '@models/commandQueue.model';
-import { InputField } from '@models/inputFields.const';
+import { InputField } from '@models/inputFields.models';
 import { ManagedObjectUpdateService } from './ManagedObjectUpdate.service';
 import * as _ from 'lodash';
 
@@ -197,6 +197,7 @@ export class SimulatorSettingsService {
           seconds: sleep.seconds,
           color: sleep.color || ''
         };
+        
         this.pushToResultTemplate(instruction);
       }
     }
