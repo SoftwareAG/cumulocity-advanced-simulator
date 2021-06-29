@@ -24,6 +24,7 @@ export class TemplateOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.mo = this.route.snapshot.data.template.data;
+    this.templateTitle = this.mo.name;
     this.getSimulatorsCorrespondingToTemplate(this.mo.id);
   }
 
