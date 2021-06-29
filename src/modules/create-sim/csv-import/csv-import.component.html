@@ -19,7 +19,7 @@
         <ng-template [ngSwitchCase]="1">
           <div class="form-group">
             <label for="upload">CSV {{ 'File' | translate }}:</label>
-            <input class="form-control" required type="file" id="upload" (change)="prepareFileStream($event)" />
+            <input class="form-control" required type="file" id="upload" accept=".txt,.csv" (change)="prepareFileStream($event)" />
           </div>
           <div class="form-group">
             <label for="delimiter">{{ 'Delimiter' | translate }}:</label>
@@ -59,7 +59,7 @@
           </div>
           <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
             <div class="form-group">
-              <div class="row" *ngIf="entry.value === null">
+              <div class="row" *ngIf="entry.value === null && !entry['csvProperty']">
                 <div class="col-sm-5">
                   <span>{{ entry.path }}:</span>
                 </div>
