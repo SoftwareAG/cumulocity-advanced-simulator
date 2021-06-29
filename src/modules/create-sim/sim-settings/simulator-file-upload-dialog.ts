@@ -156,7 +156,7 @@ export class SimulatorFileUploadDialog {
 
       reader.onload = (e) => {
         const text = reader.result.toString();
-        resolve(text);
+        resolve(text); // FIXME: there is no reject for error case
       };
 
       reader.readAsText(file);

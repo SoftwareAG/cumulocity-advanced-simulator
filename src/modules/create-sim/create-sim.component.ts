@@ -146,7 +146,6 @@ export class CreateSimComponent implements OnInit {
     };
     this.simService.getFilteredManagedObjects(filter).then((result) => {
       const temp = [];
-      const ids = [];
       result.map((value) => {
         temp.push({
           values: value.com_cumulocity_model_smartrest_csv_CsvSmartRestTemplate.requestTemplates,
@@ -255,7 +254,7 @@ export class CreateSimComponent implements OnInit {
     this.editMode = false;
     this.updateService.mo.c8y_DeviceSimulator.name = this.simulatorTitle;
     this.updateService.mo.name = this.simulatorTitle;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {}); // FIXME proper handling
+    this.updateService.updateSimulatorObject(this.updateService.mo);
   }
 
   updateAllSeries(updatedAllInstructionsSeries) {

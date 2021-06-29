@@ -26,7 +26,8 @@ export class CustomOperationComponent {
     }
     this.mo.c8y_DeviceSimulator.c8y_SupportedOperations.push(this.customOperationTitle);
     this.mo.c8y_DeviceSimulator.c8y_CustomOperations.push(this.customOperationTitle);
-    this.simulatorService.updateSimulatorManagedObject(this.mo).then((res) => {}); // FIXME proper handling
+    this.simulatorService.updateSimulatorManagedObject(this.mo);
+
   }
 
   onDismiss(event) {
