@@ -23,22 +23,8 @@ export interface ILabels {
     [labels]="labels"
   >
     <ng-form>
-      <!-- <div class="form-group">
+            <div class="form-group">
         <br />
-        <div class="input-group">
-          <label translate>File to upload</label>
-          <input
-            type="file"
-            accept=".txt,.json"
-            class="form-control"
-            (change)="selectFile($event.target.files)"
-          />
-        </div>
-      </div> -->
-
-      <div class="form-group">
-        <br />
-        <!-- <div class="input-group"> -->
         <label translate>Select from saved templates *</label>
         <select
           class="form-control select-config"
@@ -49,7 +35,7 @@ export interface ILabels {
           <option value="" disabled selected>Select from simulator templates</option>
           <option *ngFor="let first of allSimulatorTemplates" [ngValue]="first">{{ first.name }}</option>
         </select>
-        <!-- </div> -->
+        
         <br />
         <label translate>Select number of instances * </label>
         <input
@@ -67,7 +53,7 @@ export class TemplateSelectionDialog implements OnInit {
   private closeSubject: Subject<any> = new Subject();
 
   public labels: ILabels = {
-    ok: 'Create bulk simulators',
+    ok: 'Create simulators from template',
     cancel: 'Cancel'
   };
   public modalTitle = 'Choose from existing templates to create bulk simulators';
@@ -83,7 +69,7 @@ export class TemplateSelectionDialog implements OnInit {
   ) {}
 
   ngOnInit() {
-    // console.log(this.allSimulatorTemplates);
+    
   }
 
   onDismiss(event) {

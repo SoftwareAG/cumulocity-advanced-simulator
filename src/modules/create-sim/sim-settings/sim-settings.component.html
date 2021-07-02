@@ -2,43 +2,38 @@
 <br />
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="display:flex; flex-direction: row;">
-  <button class="btn btn-link">
-    <div class="dropdown settings" dropdown>
-      <button
-      type="button"
-      title="Actions"
-      dropdownToggle
-      class="dropdown-toggle c8y-dropdown"
-      >
-      <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br> {{'Options' | translate}} 
-      </button>
+    <button class="btn btn-link">
+      <div class="dropdown settings" dropdown>
+        <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
+          <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br />
+          {{ 'Options' | translate }}
+        </button>
 
-      <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
-        <li>
-          <button type="button" (click)="openSimulatorUploadFileDialog()">
-            <i c8yIcon="upload"></i> Import JSON File
-          </button>
-        </li>
-        <li>
-          <button type="button" (click)="openSimulatorTemplateModal()">
-            <i c8yIcon="copy"></i> Save template
-          </button>
-        </li>
-      </ul>
-    </div>
-  </button>
-</div>
+        <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+          <li>
+            <button type="button" (click)="openSimulatorUploadFileDialog()">
+              <i c8yIcon="upload"></i> Import JSON File
+            </button>
+          </li>
+        </ul>
+      </div>
+    </button>
+  </div>
 </c8y-action-bar-item>
 
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-  <div class="display:flex; flex-direction: row;">
-    <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
-      <button class="btn btn-link" (click)="downloadSimulator()">
-        <i c8yIcon="file-text"></i>&nbsp; {{ 'Export' | translate }} <br />
-        Simulator
-      </button>
-    </a>
-  </div>
+  <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
+    <button class="btn btn-link" (click)="downloadSimulator()">
+      <i c8yIcon="file-text"></i>&nbsp; {{ 'Export' | translate }} <br />
+      Simulator
+    </button>
+  </a>
+</c8y-action-bar-item>
+<c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
+  
+  <a>
+    <button class="btn btn-link" (click)="openSimulatorTemplateModal()"><i c8yIcon="copy"></i> Save template</button>
+  </a>
 </c8y-action-bar-item>
 
 <div class="card" [style.background]="selectedColor">

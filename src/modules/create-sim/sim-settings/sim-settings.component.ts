@@ -65,7 +65,7 @@ export class SimSettingsComponent {
     maximum?: string;
     unit?: string;
   } = {};
-  subscription = new Subscription();
+  private subscription = new Subscription();
   smartRestSelectedConfig; // FIXME set type
 
   constructor(

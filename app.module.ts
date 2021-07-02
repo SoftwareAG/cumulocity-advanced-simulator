@@ -33,7 +33,6 @@ import { SimulatorFileUploadDialog } from '@modules/create-sim/sim-settings/simu
 import { BulkSimulatorsComponent } from '@modules/bulk-simulators/bulk-simulators.component';
 import { TemplateSelectionDialog } from '@modules/simulator-entry/template-selection-dialog';
 import { SaveSimulatorTemplateDialog } from '@modules/create-sim/sim-settings/save-simulator-template-dialog';
-import { SimulatorCreateComponent } from '@modules/create-sim/simulator-create/simulator-create.component';
 import { TemplatesListComponent } from '@modules/templates-list/templates-list.component';
 import { CustomTabFactory } from '@modules/factories/tab.factory';
 import { TemplateOverviewComponent } from '@modules/template-overview/template-overview.component';
@@ -44,9 +43,12 @@ const appRoutes: Routes = [
   { path: '', redirectTo: 'simulators', pathMatch: 'full' },
   { path: 'simulators', component: SimulatorEntryComponent },
   { path: 'bulk-simulators', component: BulkSimulatorsComponent },
-  { path: 'templates', component: TemplatesListComponent },
   {
-    path: 'template-overview/:id',
+    path: 'templates',
+    component: TemplatesListComponent
+  },
+  {
+    path: 'templates/:id',
     component: TemplateOverviewComponent,
     resolve: {
       template: TemplateResolverService
@@ -106,7 +108,6 @@ const appRoutes: Routes = [
       multi: true
     },
     ThemeService
-    
   ],
   declarations: [
     SimulatorEntryComponent,
@@ -127,7 +128,6 @@ const appRoutes: Routes = [
     BulkSimulatorsComponent,
     TemplateSelectionDialog,
     SaveSimulatorTemplateDialog,
-    SimulatorCreateComponent,
     TemplatesListComponent,
     TemplateOverviewComponent,
     SimulatorFileUploadDialog
@@ -151,7 +151,6 @@ const appRoutes: Routes = [
     BulkSimulatorsComponent,
     TemplateSelectionDialog,
     SaveSimulatorTemplateDialog,
-    SimulatorCreateComponent,
     TemplatesListComponent,
     TemplateOverviewComponent
   ],

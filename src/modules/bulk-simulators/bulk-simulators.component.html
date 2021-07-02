@@ -14,12 +14,12 @@
           <div class="card-block">
         <ng-container *ngFor="let entry of selectedInstructioncategory">
                 
-          <div [class]="'col-xs-'+ (12 / selectedInstructioncategory.length | number: '1.0-0')"  *ngIf="!entry.hidden && !(entry.type === 'switch')">
+          <div *ngIf="!entry.hidden && !(entry.type === 'switch')" [class]="'col-xs-'+ (12 / selectedInstructioncategory.length | number: '1.0-0')">
             <div class="form-group">
               <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
               <div
-                class="form-group form-group-md"
                 *ngIf="entry.type === 'select'"
+                class="form-group form-group-md"
               >
                 <div class="c8y-select-wrapper">
                   <select
@@ -48,15 +48,13 @@
         </ng-container>
       </div>
       <div class="card-footer separator">
-        <div style="text-align: right; margin-right: 5px;">
+        <div class="align">
           <button class="btn btn-primary" (click)="addSeries()">Add {{selectedInstructionType}} </button>
         </div>
       </div>
     </div>
     </div>
-    <!-- <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      
-    </div> -->
+
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-8 col-lg-9">

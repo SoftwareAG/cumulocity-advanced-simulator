@@ -1,28 +1,41 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AlarmsForm, BasicEventsForm, EventsForm, InputField, MeasurementsForm, SeriesMeasurementsForm, SleepForm } from '@models/inputFields.const';
-import { Instruction, InstructionCategory, SeriesInstruction, SeriesMeasurementInstruction } from '@models/instruction.model';
+import { Component } from '@angular/core';
+import {
+  AlarmsForm,
+  BasicEventsForm,
+  EventsForm,
+  InputField,
+  SeriesMeasurementsForm,
+  SleepForm
+} from '@models/inputFields.const';
+import {
+  InstructionCategory,
+  SeriesInstruction,
+} from '@models/instruction.model';
 
 @Component({
   selector: 'app-bulk-simulators',
   templateUrl: './bulk-simulators.component.html',
   styleUrls: ['./bulk-simulators.component.scss']
 })
-
-export class BulkSimulatorsComponent implements OnInit {
-
-  constructor() { }
-  
+export class BulkSimulatorsComponent {
   instructionForms = [SeriesMeasurementsForm, AlarmsForm, BasicEventsForm, EventsForm, SleepForm];
-  instructionType = [InstructionCategory.Measurement, InstructionCategory.Alarm, InstructionCategory.BasicEvent, InstructionCategory.LocationUpdateEvent, InstructionCategory.Sleep]; 
+  instructionType = [
+    InstructionCategory.Measurement,
+    InstructionCategory.Alarm,
+    InstructionCategory.BasicEvent,
+    InstructionCategory.LocationUpdateEvent,
+    InstructionCategory.Sleep
+  ];
   instructionValue: Partial<SeriesInstruction> = {};
 
   selectedInstructioncategory: InputField[] = SeriesMeasurementsForm;
   selectedInstructionType = InstructionCategory.Measurement;
   instructionTemplateList = [];
   instructionSeries: any[] = [];
-  
-  ngOnInit() {
-  }
+  // TODO: Type will be fixed once SeriesInstructions type is handled
+
+  constructor() {}
+
 
   selectInstructionCategory(i: number) {
     this.selectedInstructionType = this.instructionType[i];
@@ -37,6 +50,4 @@ export class BulkSimulatorsComponent implements OnInit {
   setInstructionsSeries(event) {
     this.instructionSeries = event;
   }
-
-
 }
