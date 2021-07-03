@@ -3,14 +3,16 @@ import {
   AlarmsForm,
   BasicEventsForm,
   EventsForm,
-  InputField,
   SeriesMeasurementsForm,
   SleepForm
-} from '@models/inputFields.const';
+} from '@constants/inputFields.const';
 import {
   InstructionCategory,
   SeriesInstruction,
 } from '@models/instruction.model';
+import {
+  InputField
+} from '@models/inputFields.models'
 
 @Component({
   selector: 'app-bulk-simulators',
