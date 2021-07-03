@@ -88,6 +88,9 @@ export class BulkUpdatesComponent implements OnInit {
         if (entry.numberOfSleeps) {
           count = +entry.numberOfSleeps;
         }
+        if (entry.numberOfImportedInstructions) { 
+          count = +entry.numberOfImportedInstructions;
+        }
         indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
         numberOfTwines += count;
       }

@@ -22,13 +22,16 @@
 </c8y-action-bar-item>
 
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-  <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
-    <button class="btn btn-link" (click)="downloadSimulator()">
-      <i c8yIcon="file-text"></i>&nbsp; {{ 'Export' | translate }} <br />
-      Simulator
-    </button>
-  </a>
+  <div class="c8y-action-button">
+    <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
+      <button class="btn btn-link" (click)="downloadSimulator()">
+        <i c8yIcon="file-text"></i>{{ 'Export' | translate }}<br />
+        &nbsp;Simulator
+      </button>
+    </a>
+  </div>
 </c8y-action-bar-item>
+
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   
   <a>

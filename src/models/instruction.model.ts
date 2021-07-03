@@ -1,13 +1,14 @@
-import { MessageIds } from "./commandQueue.model";
-import { GeoCoordinate } from "./geoCoordinate.model";
+import { MessageIds } from './commandQueue.model';
+import { GeoCoordinate } from './geoCoordinate.model';
 
 export enum InstructionCategory {
-  "Measurement"="Measurement",
-  "Alarm"="Alarm",
-  "BasicEvent"="BasicEvent",
-  "LocationUpdateEvent"="LocationUpdateEvent",
-  "Sleep"="Sleep",
-  "SmartRest"="SmartRest"
+  'Measurement' = 'Measurement',
+  'Alarm' = 'Alarm',
+  'BasicEvent' = 'BasicEvent',
+  'LocationUpdateEvent' = 'LocationUpdateEvent',
+  'Sleep' = 'Sleep',
+  'CSVImport' = 'CSVImport',
+  'SmartRest' = 'SmartRest'
 }
 
 export type Instruction =
@@ -17,15 +18,15 @@ export type Instruction =
   | SleepInstruction
   | EventInstruction
   | SmartInstruction;
-  
+
 export type SeriesInstruction =
   | SeriesMeasurementInstruction
   | AlarmInstruction
   | BasicEventInstruction
   | EventInstruction
   | SleepSeriesInstruction
-  | SeriesSmartRestInstruction;
-
+  | SeriesSmartRestInstruction
+  | SeriesCSVInstruction;
 
 export interface Empty {}
 
@@ -43,9 +44,14 @@ export interface SeriesMeasurementInstruction extends MeasurementInstruction {
   index?: string;
   scalingOption?: string;
 }
+export interface SeriesCSVInstruction extends SmartInstruction {
+  index?: string;
+  numberOfImportedInstructions?: string;
+  type: InstructionCategory.CSVImport;
+}
 
 export interface SmartInstruction extends Instruction2 {
-  type: InstructionCategory.SmartRest;
+  type: InstructionCategory.SmartRest | InstructionCategory.CSVImport;
   // measurementOption?: string;
   [key: string]: string;
 }
@@ -57,14 +63,14 @@ export interface SmartRestConfiguration {
   api: string;
   byId: boolean;
   externalIdType?: string;
-  mandatoryValues?: {path: string; type: string; value: string}[];
-  customValues: {path: string; type: string; value: string}[];
+  mandatoryValues?: { path: string; type: string; value: string }[];
+  customValues: { path: string; type: string; value: string }[];
   name?: string;
 }
 export interface SmartRestInstruction extends Instruction2 {
-  minValue?:string;
+  minValue?: string;
   maxValue?: string;
-  steps: string;
+  steps?: string;
   value?: string;
   isNumber?: boolean;
   type: InstructionCategory.SmartRest;
@@ -115,7 +121,7 @@ export interface EventInstruction extends GeoCoordinate, Instruction2 {
 
 export interface SleepInstruction extends Instruction2 {
   seconds: number | string;
-  type:InstructionCategory.Sleep;
+  type: InstructionCategory.Sleep;
   index?: string;
 }
 export interface SleepSeriesInstruction extends SleepInstruction {

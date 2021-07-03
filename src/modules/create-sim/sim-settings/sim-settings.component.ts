@@ -9,10 +9,12 @@ import {
   SeriesBasicEventsForm,
   SeriesEventsForm,
   SeriesSleepForm,
-  InputField
-} from '@models/inputFields.const';
+  // InputField
+} from '@constants/inputFields.const';
+import { Subscription } from 'rxjs';
+import { InputField } from '@models/inputFields.models';
 import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
-import { ColorsReduced } from '@models/colors.const';
+import { ColorsReduced } from '@constants/colors.const';
 import { CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { SmartRESTService } from '@services/smartREST.service';
@@ -21,7 +23,6 @@ import { InstructionService } from '@services/Instruction.service';
 import { SimulatorFileUploadDialog } from './simulator-file-upload-dialog';
 import * as _ from 'lodash';
 import { SaveSimulatorTemplateDialog } from "./save-simulator-template-dialog";
-import { Subscription } from "rxjs";
 @Component({
   selector: 'app-sim-settings',
   templateUrl: './sim-settings.component.html',
