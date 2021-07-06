@@ -62,7 +62,7 @@ export class TemplateSelectionDialog implements OnInit {
     ok: 'Create simulators from template',
     cancel: 'Cancel'
   };
-  public modalTitle = 'Choose from existing templates to create bulk simulators';
+  public modalTitle = 'Choose from existing templates to create simulators';
 
   deviceSimulator: C8YDeviceSimulator;
   simulatorTemplate: TemplateModel;
