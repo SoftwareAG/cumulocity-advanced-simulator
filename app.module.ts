@@ -36,6 +36,7 @@ import { TemplateOverviewComponent } from '@modules/template-overview/template-o
 import { TemplateResolverService } from '@services/templateResolver.service';
 import { CsvImportComponent } from '@modules/create-sim/csv-import/csv-import.component';
 import { SharedComponentsModule } from '@shared/shared.module';
+import { SimulatorCardsComponent } from '@modules/simulator-card/simulator-card.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'simulators', pathMatch: 'full' },
@@ -129,7 +130,8 @@ const appRoutes: Routes = [
     SaveSimulatorTemplateDialog,
     TemplatesListComponent,
     TemplateOverviewComponent,
-    SimulatorFileUploadDialog
+    SimulatorFileUploadDialog,
+    SimulatorCardsComponent
   ],
   entryComponents: [
     SimulatorEntryComponent,
@@ -152,7 +154,8 @@ const appRoutes: Routes = [
     TemplateSelectionDialog,
     SaveSimulatorTemplateDialog,
     TemplatesListComponent,
-    TemplateOverviewComponent
+    TemplateOverviewComponent,
+    SimulatorCardsComponent
   ],
   bootstrap: [BootstrapComponent]
 })

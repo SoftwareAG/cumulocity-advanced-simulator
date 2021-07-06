@@ -10,23 +10,7 @@
     </div>
   </div>
 
-  
-
   <div class="col-lg-8">
-    <ng-container *ngFor="let simulator of allSimulatorsFromTemplate">
-      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div class="card custom-card">
-          <div class="card-header separator card-column-40">
-            <div class="card-icon">
-              <i c8y-icon="c8y-simulator c8y-icon-duocolor" class="c8y-icon c8y-icon-simulator c8y-icon-duocolor"></i>
-            </div>
-            <div class="card-title" (click)="redirectToSimulator(simulator)">
-              <!-- <h4 class="c8y-icon-duocolor c8y-icon-simulator c8y-icon"> -->
-              &nbsp;{{ simulator.c8y_DeviceSimulator?.name }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-container>
+     <app-simulator-card [allSimulators]="allSimulatorsFromTemplate"></app-simulator-card>   
   </div>
 </div>
