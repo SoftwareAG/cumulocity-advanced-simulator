@@ -1,11 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { IManagedObject } from '@c8y/client';
-import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import { C8YDeviceSimulator, CustomSimulator } from '@models/simulator.model';
 import { TemplateModel } from '@models/template.model';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
-import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { AdditionalParameter } from '@models/commandQueue.model';
 import { SeriesInstruction } from '@models/instruction.model';
 
@@ -23,7 +21,7 @@ export interface ILabels {
     [labels]="labels"
   >
     <ng-form>
-            <div class="form-group">
+      <div class="form-group">
         <br />
         <label translate>Select from saved templates *</label>
         <select
@@ -35,7 +33,7 @@ export interface ILabels {
           <option value="" disabled selected>Select from simulator templates</option>
           <option *ngFor="let first of allSimulatorTemplates" [ngValue]="first">{{ first.name }}</option>
         </select>
-        
+
         <br />
         <label translate>Select number of instances * </label>
         <input
@@ -43,6 +41,14 @@ export interface ILabels {
           class="form-control"
           [(ngModel)]="instances"
           (ngModelChange)="onChangeInstances($event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+        <br />
+        <label translate>Simulator title prefix</label>
+        <input
+          class="form-control"
+          placeholder="(Optional)"
+          [(ngModel)]="simulatorTitle"
           [ngModelOptions]="{ standalone: true }"
         />
       </div>
@@ -60,16 +66,15 @@ export class TemplateSelectionDialog implements OnInit {
 
   deviceSimulator: C8YDeviceSimulator;
   simulatorTemplate: TemplateModel;
+  simulatorTitle: string;
   @Input() allSimulatorTemplates: IManagedObject[];
   instances = 1;
   constructor(
-    private simulatorService: SimulatorsServiceService,
-    private updateService: ManagedObjectUpdateService,
     private backendService: SimulatorsBackendService
   ) {}
 
   ngOnInit() {
-    
+    this.simulatorTitle = this.simulatorTemplate.c8y_Template.c8y_DeviceSimulator.name;
   }
 
   onDismiss(event) {
@@ -81,19 +86,16 @@ export class TemplateSelectionDialog implements OnInit {
   }
 
   onChange(simulator) {
-    console.log('selected template: ', simulator);
     this.simulatorTemplate = simulator as TemplateModel;
   }
 
   onChangeInstances(newVal): void {
     this.instances = newVal;
-    console.log('newVal: ', newVal);
   }
 
   async createBulkSimulatorsFromTemplate(event) {
     const templateId = this.simulatorTemplate.id;
     const { id, ...deviceSimulator } = this.simulatorTemplate.c8y_Template.c8y_DeviceSimulator;
-    console.log('ID: ', templateId);
     const additionals = this.simulatorTemplate.c8y_Template.c8y_additionals;
     const series = this.simulatorTemplate.c8y_Template.c8y_Series;
     const promiseArray = new Array<Promise<void>>();
@@ -110,7 +112,9 @@ export class TemplateSelectionDialog implements OnInit {
     additionals: AdditionalParameter[],
     series: SeriesInstruction[]
   ) {
-    deviceSimulator.name = `${this.simulatorTemplate.name}_#${index}`;
+    deviceSimulator.name = this.simulatorTitle
+      ? `${this.simulatorTitle}_#${index}`
+      : `${this.simulatorTemplate.name}_#${index}`;
     const createdSimulator = await this.backendService.createSimulator(deviceSimulator);
     const simulator: Partial<CustomSimulator> = {
       type: 'c8y_DeviceSimulator',
