@@ -65,6 +65,6 @@ export class SeriesListComponent {
     this.instructionsSeries = updatedInstructionsSeries;
     this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
     this.simSettingsService.setAllInstructionsSeries(updatedInstructionsSeries);
-    this.updatedService.updateSimulatorObject(this.updatedService.mo).then((res) => {}); // FIXME proper handling
+    this.updatedService.updateSimulatorObject(this.updatedService.mo);
   }
 }

@@ -1,20 +1,20 @@
 <h3>Create / Edit a Series of Instructions</h3>
 <br />
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-  <div class="display:flex; flex-direction: row;">
+  <div class="c8y-action-button">
     <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
-      <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br />
-      Simulator
+      <i class="fa fw fa-upload"></i>{{ 'Import' | translate }}<br />
+      &nbsp;Simulator
     </button>
   </div>
 </c8y-action-bar-item>
 
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-  <div class="display:flex; flex-direction: row;">
+  <div class="c8y-action-button">
     <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
       <button class="btn btn-link" (click)="downloadSimulator()">
-        <i c8yIcon="file-text"></i>&nbsp; {{ 'Export' | translate }} <br />
-        Simulator
+        <i c8yIcon="file-text"></i>{{ 'Export' | translate }}<br />
+        &nbsp;Simulator
       </button>
     </a>
   </div>
@@ -129,7 +129,6 @@
                 class="form-control"
                 style="max-width: 200px; margin-right: 20px; float: right"
                 [(ngModel)]="selectedColor"
-                (update)="updateSeriesColor()"
               >
                 <option disabled value="#fff">Select Color</option>
                 <option *ngFor="let entry of reducedColors" [style.background]="entry">

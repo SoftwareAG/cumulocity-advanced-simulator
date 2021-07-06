@@ -60,7 +60,7 @@ export class BulkUpdatesComponent implements OnInit {
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
     this.updateService.mo.c8y_mirroredAxis = this.mirroredAxis;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {});
+    this.updateService.updateSimulatorObject(this.updateService.mo);
   }
 
   toggleIntertwineSeries() {
@@ -87,6 +87,9 @@ export class BulkUpdatesComponent implements OnInit {
         }
         if (entry.numberOfSleeps) {
           count = +entry.numberOfSleeps;
+        }
+        if (entry.numberOfImportedInstructions) { 
+          count = +entry.numberOfImportedInstructions;
         }
         indexDistribution.push({ index: +entry.index, count: count, iterations: 0 });
         numberOfTwines += count;
@@ -163,7 +166,7 @@ export class BulkUpdatesComponent implements OnInit {
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
     this.updateService.mo.c8y_saltValue = this.saltValue;
-    this.updateService.updateSimulatorObject(this.updateService.mo).then((res) => {});
+    this.updateService.updateSimulatorObject(this.updateService.mo);
   }
 
   calculateTheDeviation(entry: IndexedCommandQueueEntry) {

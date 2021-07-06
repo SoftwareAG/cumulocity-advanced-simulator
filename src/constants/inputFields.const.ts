@@ -1,26 +1,8 @@
-import { MessageIds } from './commandQueue.model';
-import { InstructionCategory } from './instruction.model';
+import { MessageIds } from '@models/commandQueue.model';
+import { InputField } from '@models/inputFields.models';
+import { InstructionCategory } from '@models/instruction.model';
 
-export interface InputField {
-  name: string;
-  minimum?: number;
-  placeholder?: string;
-  required: boolean;
-  label?: string;
-  type: 'select' | 'textField' | 'switch' | 'button';  // TODO refactor to html-default: 'select', 'text', 'checkbox'
-  options?: MessageId[];
-  defaultValue?: string | number;
-  hidden?: boolean;
-  isNumber?: boolean;
-}
-
-export interface MessageId {
-  name: string;
-  id: string;
-  selected?: boolean;
-}
-
-export const DefaultConfig: InstructionCategory[] = [
+export const DefaultConfig: InstructionCategory[] = [ // FIXME rename
   InstructionCategory.Measurement,
   InstructionCategory.Alarm,
   InstructionCategory.BasicEvent,
@@ -219,18 +201,18 @@ export const SleepForm: InputField[] = [
 export const SeriesSleepForm: InputField[] = [
   ...SleepForm,
   {
-    name: "numberOfSleeps",
-    label: "Number of sleeps",
-    placeholder: "10",
+    name: 'numberOfSleeps',
+    label: 'Number of sleeps',
+    placeholder: '10',
     required: true,
-    type: "textField",
+    type: 'textField',
     minimum: 0,
     isNumber: true
   },
   {
-    name: "sleepsEqualToInstructions",
-    label: "Number of sleeps equal to number of instructions",
-    placeholder: "Max Sleeps",
+    name: 'sleepsEqualToInstructions',
+    label: 'Number of sleeps equal to number of instructions',
+    placeholder: 'Max Sleeps',
     required: false,
     type: 'button'
   }

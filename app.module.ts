@@ -10,8 +10,6 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ChartsModule, ThemeService } from 'ng2-charts';
 import { CoreModule, BootstrapComponent, RouterModule } from '@c8y/ngx-components';
-// import { SimulatorEntryComponent } from '@modules/simulator-entry/simulator-entry.component';
-// RECOMMENDED
 import { SimulatorResolverService } from '@services/simulatorResolver.service';
 import { SimulatorEntryComponent } from '@modules/simulator-entry/simulator-entry.component';
 import { CreateSimComponent } from '@modules/create-sim/create-sim.component';
@@ -29,8 +27,8 @@ import { SeriesItemComponent } from '@modules/series-item/series-item.component'
 import { SeriesListComponent } from '@modules/series-item/series-list/series-list.component';
 import { BulkUpdatesComponent } from '@modules/bulk-updates/bulk-updates.component';
 import { SimulatorFileUploadDialog } from '@modules/create-sim/sim-settings/simulator-file-upload-dialog';
-import { SharedComponentsModule } from './src/shared/shared.module';
-
+import { CsvImportComponent } from '@modules/create-sim/csv-import/csv-import.component';
+import { SharedComponentsModule } from '@shared/shared.module';
 
 const appRoutes: Routes = [
   { path: '', component: SimulatorEntryComponent },
@@ -85,6 +83,7 @@ const appRoutes: Routes = [
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
+    CsvImportComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
@@ -102,6 +101,7 @@ const appRoutes: Routes = [
     CreateSimComponent,
     SimulatorConfigComponent,
     SimulatorChartComponent,
+    CsvImportComponent,
     AlarmsComponent,
     SimSettingsComponent,
     EditInstructionComponent,
