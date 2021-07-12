@@ -48,4 +48,8 @@ export class TemplateOverviewComponent implements OnInit {
   redirectToSimulator(simulator: CustomSimulator) {
     this.router.navigate(['createSim/'+simulator.id]);
   }
+
+  changeRouteLastSite() {
+    this.router.navigate(['/templates']);
+  }
 }

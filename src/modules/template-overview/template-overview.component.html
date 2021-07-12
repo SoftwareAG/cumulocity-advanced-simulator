@@ -1,13 +1,16 @@
 <c8y-title>{{'Templates' | translate}}</c8y-title>
+<c8y-action-bar-item [itemClass]="'btn-group'" [placement]="'left'">
+  <button class="btn btn-link" (click)="changeRouteLastSite()">
+    <i c8yIcon="arrow-circle-left"></i>
+    {{'All Templates' | translate}}
+  </button>
+</c8y-action-bar-item>
 <div class="row">
   <div class="col-lg-3">
-    <div class="card">
-      <div class="list-group-item align">
-        <span *ngIf="!editMode">{{ templateTitle }}</span>
-        <input *ngIf="editMode" [(ngModel)]="templateTitle" (keyup.enter)="editTemplateTitle()" />&nbsp;&nbsp;
-        <i c8yIcon="edit" (click)="editMode = true"> </i>
-      </div>
-    </div>
+        <label>{{'Template name' | translate }}</label>
+        <br>
+        <!-- <span *ngIf="!editMode" (click)="editMode=!editMode">{{ templateTitle }}</span> -->
+        <input (blur)="editMode=!editMode" class="form-control" [(ngModel)]="templateTitle" (keyup.enter)="editTemplateTitle()" />&nbsp;&nbsp;
   </div>
 
   <div class="col-lg-9">
