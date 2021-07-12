@@ -9,7 +9,6 @@
   <div class="col-lg-3">
         <label>{{'Template name' | translate }}</label>
         <br>
-        <!-- <span *ngIf="!editMode" (click)="editMode=!editMode">{{ templateTitle }}</span> -->
         <input (blur)="editMode=!editMode" class="form-control" [(ngModel)]="templateTitle" (keyup.enter)="editTemplateTitle()" />&nbsp;&nbsp;
   </div>
 
