@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CustomSimulator } from '@models/simulator.model';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -26,20 +26,24 @@ export class SimulatorCardsComponent implements OnInit {
     { category: { icon: 'clock-o', type: 'sleep', break: false } },
     { category: { icon: 'sitemap', type: 'smartRest', break: false } }
   ];
-  @Input() listClass;
+  @Input() listClass: string;
+  @Input() viewType: string;
   @Input() allSimulators: CustomSimulator[];
-
-  constructor(private modalService: BsModalService,
+  @Output() handleClick = new EventEmitter<MouseEvent>();
+  
+  constructor(
     private ngXmodalService: ModalService,
     private simService: SimulatorsServiceService,
     private router: Router,
     private backend: SimulatorsBackendService,
     private alertService: AlertService,
-    private translateService: TranslateService) {
-    
-   }
+    private translateService: TranslateService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  onClickAddSimulator(event: MouseEvent) {
+    this.handleClick.emit(event);
   }
 
   editSimulator(simulator: CustomSimulator): void {
@@ -135,6 +139,7 @@ export class SimulatorCardsComponent implements OnInit {
   }
 
   refreshList(): void {
+    if (this.viewType === 'simulators-view') {
     this.simService.getAllDevices().then((simulators) => {
       this.allSimulators = (simulators as CustomSimulator[]).sort((entry1, entry2) => {
         const val1 = entry1.name.toLowerCase();
@@ -143,5 +148,5 @@ export class SimulatorCardsComponent implements OnInit {
       });
     });
   }
-
+} 
 }

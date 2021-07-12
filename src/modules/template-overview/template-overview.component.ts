@@ -30,10 +30,9 @@ export class TemplateOverviewComponent implements OnInit {
     this.getSimulatorsCorrespondingToTemplate(this.mo.id);
   }
 
-  getSimulatorsCorrespondingToTemplate(templateId: string): void {
+  private getSimulatorsCorrespondingToTemplate(templateId: string): void {
     this.simulatorService.getSimulatorsFromTemplate(templateId).then((res) => {
       this.allSimulatorsFromTemplate = res as CustomSimulator[];
-      console.log(this.allSimulatorsFromTemplate);
     });
   }
 
@@ -41,6 +40,8 @@ export class TemplateOverviewComponent implements OnInit {
     this.mo.name = this.templateTitle;
     this.updateService.updateTemplateObject(this.mo as TemplateModel).then((res) => {
       this.editMode = false;
+    }, (error) => {
+      this.updateService.simulatorUpdateFeedback('danger', 'Template title could not be edited');
     });
   }
 

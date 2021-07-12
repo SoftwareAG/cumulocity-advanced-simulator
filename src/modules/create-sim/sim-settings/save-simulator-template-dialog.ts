@@ -4,11 +4,7 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { C8YDeviceSimulator, CustomSimulator } from '@models/simulator.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { TemplateModel } from '@models/template.model';
-
-export interface ILabels {
-  ok?: string;
-  cancel?: string;
-}
+import { ILabels } from '@models/labels.model';
 
 @Component({
   selector: 'save-simulator-template-dialog',
@@ -21,10 +17,8 @@ export interface ILabels {
     <ng-form>
       <div class="form-group">
         <br />
-        <!-- <div class="input-group"> -->
         <label translate>Enter name for simulator template *</label>
         <input class="form-control" [(ngModel)]="templateName" [ngModelOptions]="{ standalone: true }" />
-        <!-- </div> -->
       </div>
     </ng-form>
   </c8y-modal>`
@@ -43,7 +37,7 @@ export class SaveSimulatorTemplateDialog {
   deviceSimulator: C8YDeviceSimulator;
   constructor(private simulatorService: SimulatorsServiceService, private updateService: ManagedObjectUpdateService) {}
 
-  onDismiss(event) {
+  onDismiss() {
     this.closeSubject.next(undefined);
   }
 

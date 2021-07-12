@@ -1,16 +1,21 @@
+<c8y-title>{{'Templates' | translate}}</c8y-title>
 <div class="row">
-  <div class="col-lg-4">
+  <div class="col-lg-3">
     <div class="card">
-      <div class="list-group-item" style="display:flex; justify-content: space-between;">
-        <span *ngIf="!editMode">{{templateTitle}}</span>
-        <input *ngIf="editMode" [(ngModel)]="templateTitle" (keyup.enter)="editTemplateTitle()">&nbsp;&nbsp;
-        <i c8yIcon="edit" (click)="editMode=true">
-        </i>
+      <div class="list-group-item align">
+        <span *ngIf="!editMode">{{ templateTitle }}</span>
+        <input *ngIf="editMode" [(ngModel)]="templateTitle" (keyup.enter)="editTemplateTitle()" />&nbsp;&nbsp;
+        <i c8yIcon="edit" (click)="editMode = true"> </i>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-8">
-     <app-simulator-card [allSimulators]="allSimulatorsFromTemplate"></app-simulator-card>   
+  <div class="col-lg-9">
+    <app-simulator-card
+      [allSimulators]="allSimulatorsFromTemplate"
+      [viewType]="'simulators-within-templates-view'"
+      [listClass]="'interact-grid'"
+    ></app-simulator-card>
   </div>
 </div>
+

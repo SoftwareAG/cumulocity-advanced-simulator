@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IdentityService, IManagedObject, InventoryService } from '@c8y/client';
-import { CustomSimulator, DeviceSimulator } from 'src/models/simulator.model';
+import { CustomSimulator } from 'src/models/simulator.model';
 import { ManagedObjectService } from './ManagedObject.service';
-import { map } from 'rxjs/operators';
 import { TemplateModel } from '@models/template.model';
 
 @Injectable({
@@ -12,7 +11,6 @@ import { TemplateModel } from '@models/template.model';
 export class SimulatorsServiceService extends ManagedObjectService {
   constructor(
     private inventoryService: InventoryService,
-    private http: HttpClient,
     private identityService: IdentityService
   ) {
     super(inventoryService);
@@ -54,7 +52,7 @@ export class SimulatorsServiceService extends ManagedObjectService {
     return this.identityService.list(externalId);
   }
 
-  createCustomSimulator(obj: Partial<CustomSimulator>) {
+  createCustomSimulator(obj: Partial<CustomSimulator>): Promise<CustomSimulator> {
     return this.createManagedObject(obj).then((result) => {
       const res = result;
       return res;

@@ -1,15 +1,16 @@
 <h3>Create / Edit a Series of Instructions</h3>
 <br />
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
-    <div class="c8y-action-button">
-        <a>
-        <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
-          <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br />
-        Simulator</button>
-      </a>
-      </div>
+  <div class="c8y-action-button">
+    <a>
+      <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
+        <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br />
+        Simulator
+      </button>
+    </a>
+  </div>
 </c8y-action-bar-item>
-&nbsp;&nbsp;
+
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="c8y-action-button">
     <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
@@ -23,10 +24,13 @@
 
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="c8y-action-button">
-  <a>
-    <button class="btn btn-link" (click)="openSimulatorTemplateModal()"><i c8yIcon="copy"></i>&nbsp; {{'Save' | translate}}<br> template</button>
-  </a>
-</div>
+    <a>
+      <button class="btn btn-link" (click)="openSimulatorTemplateModal()">
+        <i c8yIcon="copy"></i>&nbsp; {{ 'Save' | translate }}<br />
+        template
+      </button>
+    </a>
+  </div>
 </c8y-action-bar-item>
 
 <div class="card" [style.background]="selectedColor">

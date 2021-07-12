@@ -6,12 +6,7 @@ import { TemplateModel } from '@models/template.model';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { AdditionalParameter } from '@models/commandQueue.model';
 import { SeriesInstruction } from '@models/instruction.model';
-
-export interface ILabels {
-  ok?: string;
-  cancel?: string;
-}
-
+import { ILabels } from '@models/labels.model';
 @Component({
   selector: 'template-selection-dialog',
   template: ` <c8y-modal
@@ -36,13 +31,7 @@ export interface ILabels {
 
         <br />
         <label translate>Select number of instances * </label>
-        <input
-          type="text"
-          class="form-control"
-          [(ngModel)]="instances"
-          (ngModelChange)="onChangeInstances($event)"
-          [ngModelOptions]="{ standalone: true }"
-        />
+        <input type="text" class="form-control" [(ngModel)]="instances" [ngModelOptions]="{ standalone: true }" />
         <br />
         <label translate>Simulator title prefix</label>
         <input
@@ -55,7 +44,7 @@ export interface ILabels {
     </ng-form>
   </c8y-modal>`
 })
-export class TemplateSelectionDialog implements OnInit {
+export class TemplateSelectionDialog {
   private closeSubject: Subject<any> = new Subject();
 
   public labels: ILabels = {
@@ -69,15 +58,9 @@ export class TemplateSelectionDialog implements OnInit {
   simulatorTitle: string;
   @Input() allSimulatorTemplates: IManagedObject[];
   instances = 1;
-  constructor(
-    private backendService: SimulatorsBackendService
-  ) {}
+  constructor(private backendService: SimulatorsBackendService) {}
 
-  ngOnInit() {
-    this.simulatorTitle = this.simulatorTemplate.c8y_Template.c8y_DeviceSimulator.name;
-  }
-
-  onDismiss(event) {
+  onDismiss() {
     this.closeSubject.next(undefined);
   }
 
@@ -85,29 +68,28 @@ export class TemplateSelectionDialog implements OnInit {
     this.closeSubject.next(event);
   }
 
-  onChange(simulator) {
+  onChange(simulator: TemplateModel) {
     this.simulatorTemplate = simulator as TemplateModel;
   }
 
-  onChangeInstances(newVal): void {
-    this.instances = newVal;
-  }
-
-  async createBulkSimulatorsFromTemplate(event) {
+  async createBulkSimulatorsFromTemplate() {
     const templateId = this.simulatorTemplate.id;
     const { id, ...deviceSimulator } = this.simulatorTemplate.c8y_Template.c8y_DeviceSimulator;
     const additionals = this.simulatorTemplate.c8y_Template.c8y_additionals;
     const series = this.simulatorTemplate.c8y_Template.c8y_Series;
     const promiseArray = new Array<Promise<void>>();
     for (let i = 0; i < this.instances; i++) {
-      promiseArray.push(this.createSimulatorInstanceFromTemplate(templateId, deviceSimulator, i, additionals, series));
+      ((i) => {
+        let index = i;
+        promiseArray.push(this.createSimulatorInstanceFromTemplate(templateId, deviceSimulator, index, additionals, series));
+      })(i);
     }
     await Promise.all(promiseArray);
   }
 
   async createSimulatorInstanceFromTemplate(
     id: string,
-    deviceSimulator,
+    deviceSimulator: C8YDeviceSimulator,
     index: number,
     additionals: AdditionalParameter[],
     series: SeriesInstruction[]

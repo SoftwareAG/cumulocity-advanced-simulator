@@ -15,6 +15,7 @@ export class TemplatesListComponent implements OnInit {
   allTemplates: TemplateModel[] = [];
   subscriptions = new Subscription();
   listClass = "interact-list";
+  viewType = "templates-view";
   constructor(
     private simulatorService: SimulatorsServiceService,
     private modalService: BsModalService,
@@ -25,11 +26,15 @@ export class TemplatesListComponent implements OnInit {
     this.refreshTemplateList();
   }
 
+  ngOnDestroy(): void {
+    this.modalUnsubscribe();
+  }
+
   openTemplateSelectionDialog(): void {
     const modal = this.modalService.show(TemplateSelectionDialog);
     modal.content.allSimulatorTemplates = this.allTemplates;
     this.subscriptions.add(
-      modal.content.closeSubject.subscribe((result) => {
+      modal.content.closeSubject.subscribe((result: boolean) => {
         if (result) {
         }
         this.modalUnsubscribe();
@@ -37,19 +42,15 @@ export class TemplatesListComponent implements OnInit {
     );
   }
 
-  deleteTemplate(template: TemplateModel) {
+  deleteTemplate(template: TemplateModel): void {
     this.simulatorService.deleteTemplate(template.id).then((res) => {
       this.updateService.simulatorUpdateFeedback('success', 'Template deleted successfully');
       this.refreshTemplateList();
     });
   }
 
-  modalUnsubscribe(): void {
+  private modalUnsubscribe(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.modalUnsubscribe();
   }
 
   refreshTemplateList() {
@@ -58,3 +59,4 @@ export class TemplatesListComponent implements OnInit {
     });
   }
 }
+

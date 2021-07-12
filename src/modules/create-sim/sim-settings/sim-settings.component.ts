@@ -57,7 +57,7 @@ export class SimSettingsComponent {
   disableBtn = true;
   smartRestOption = 'linear';
   measurementOption = 'linear';
-  subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[] = [];
   importUrl: SafeResourceUrl;
   smartRestAllValues: {
     minIncrement?: string;

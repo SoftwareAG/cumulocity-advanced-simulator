@@ -1,35 +1,26 @@
-
-  
-    <div class="row">
-      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <div *ngFor="let item of instructionType; let i = index">
-            <button class="list-group-item text-truncate" (click)="selectInstructionCategory(i)">{{item}}</button>
-        </div>
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div *ngFor="let item of instructionType; let i = index">
+      <button class="list-group-item text-truncate" (click)="selectInstructionCategory(i)">{{ item }}</button>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-6">
+    <div class="card">
+      <div class="card-header separator">
+        {{ selectedInstructionType }}
       </div>
-      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-6">
-        <div class="card">
-          <div class="card-header separator">
-            {{selectedInstructionType}}
-          </div>
-          <div class="card-block">
+      <div class="card-block">
         <ng-container *ngFor="let entry of selectedInstructioncategory">
-                
-          <div *ngIf="!entry.hidden && !(entry.type === 'switch')" [class]="'col-xs-'+ (12 / selectedInstructioncategory.length | number: '1.0-0')">
+          <div
+            *ngIf="!entry.hidden && !(entry.type === 'switch')"
+            [class]="'col-xs-' + (12 / selectedInstructioncategory.length | number: '1.0-0')"
+          >
             <div class="form-group">
               <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
-              <div
-                *ngIf="entry.type === 'select'"
-                class="form-group form-group-md"
-              >
+              <div *ngIf="entry.type === 'select'" class="form-group form-group-md">
                 <div class="c8y-select-wrapper">
-                  <select
-                    class="form-control"
-                    [(ngModel)]="instructionValue[entry.name]"
-                  >
-                    <option
-                      *ngFor="let category of entry.options"
-                      [value]="category.id"
-                    >
+                  <select class="form-control" [(ngModel)]="instructionValue[entry.name]">
+                    <option *ngFor="let category of entry.options" [value]="category.id">
                       {{ category.name }}
                     </option>
                   </select>
@@ -40,7 +31,7 @@
                 id="{{ entry.name }}"
                 class="form-control"
                 [(ngModel)]="instructionValue[entry.name]"
-                [ngModelOptions]="{standalone: true}"
+                [ngModelOptions]="{ standalone: true }"
                 placeholder="{{ entry.placeholder }}"
               />
             </div>
@@ -49,16 +40,15 @@
       </div>
       <div class="card-footer separator">
         <div class="align">
-          <button class="btn btn-primary" (click)="addSeries()">Add {{selectedInstructionType}} </button>
+          <button class="btn btn-primary" (click)="addSeries()">Add {{ selectedInstructionType }}</button>
         </div>
       </div>
     </div>
-    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-md-8 col-lg-9">
+    <app-series-list [instructionsSeries]="instructionTemplateList"></app-series-list>
+  </div>
+</div>
 
-  </div>
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-9">
-      <app-series-list [instructionsSeries]="instructionTemplateList"></app-series-list>
-    </div>
-  </div>
-  

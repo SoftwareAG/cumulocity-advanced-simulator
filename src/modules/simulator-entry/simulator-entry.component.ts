@@ -20,7 +20,6 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   allSimulators: IManagedObject[];
   allSimulatorTemplates: IManagedObject[];
-  // simulatorTemplates: IManagedObject[];
   instructionTypes: {
     category: {
       icon: string;
@@ -36,6 +35,8 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
   ];
   listClass = 'interact-list';
   appVersion: string;
+  clickAddSimulators = false;
+  viewType = 'simulators-view';
 
   constructor(
     private modalService: BsModalService,
@@ -60,6 +61,9 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
 
   openAddNewSimulatorDialog(): void {
     const modal = this.modalService.show(SimulatorConfigComponent);
+    modal.content.allSimulatorTemplates = this.allSimulatorTemplates;
+    console.log('Modal.content.allsimulatorTemplates: ', this.allSimulatorTemplates);
+    // this.clickAddSimulators = false;
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
@@ -70,7 +74,12 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     );
   }
 
-  
+  clickToOpenDialog(clicked): void {
+    if (clicked) {
+      this.openAddNewSimulatorDialog();
+    }
+    
+  }
 
   deleteSimulatorPrompt(simulator: CustomSimulator): Promise<boolean> {
     return this.ngXmodalService
@@ -182,17 +191,9 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     });
   }
 
-  getSimulatorTemplates() {
+  private getSimulatorTemplates(): void {
     this.simService.getSimulatorTemplates().then((templates) => {
       this.allSimulatorTemplates = templates;
-      // .sort((entry1, entry2) => {
-      //   const val1 = entry1.name.toLowerCase();
-      //   const val2 = entry2.name.toLowerCase();
-      //   return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
-      // });
-      console.log(this.allSimulatorTemplates);
     });
   }
-
-
 }

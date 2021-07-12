@@ -39,17 +39,17 @@ export class BulkSimulatorsComponent {
   constructor() {}
 
 
-  selectInstructionCategory(i: number) {
+  selectInstructionCategory(i: number): void {
     this.selectedInstructionType = this.instructionType[i];
     this.selectedInstructioncategory = this.instructionForms[i];
   }
 
-  addSeries() {
+  addSeries(): void {
     this.instructionValue['type'] = this.selectedInstructionType;
     this.instructionTemplateList.push(this.instructionValue);
   }
 
-  setInstructionsSeries(event) {
+  setInstructionsSeries(event): void {
     this.instructionSeries = event;
   }
 }
