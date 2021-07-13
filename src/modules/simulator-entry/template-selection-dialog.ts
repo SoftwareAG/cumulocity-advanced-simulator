@@ -7,6 +7,7 @@ import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
 import { AdditionalParameter } from '@models/commandQueue.model';
 import { SeriesInstruction } from '@models/instruction.model';
 import { ILabels } from '@models/labels.model';
+import * as _ from 'lodash';
 @Component({
   selector: 'template-selection-dialog',
   template: ` <c8y-modal
@@ -79,10 +80,9 @@ export class TemplateSelectionDialog {
     const series = this.simulatorTemplate.c8y_Template.c8y_Series;
     const promiseArray = new Array<Promise<void>>();
     for (let i = 0; i < this.instances; i++) {
-      ((i) => {
-        let index = i;
-        promiseArray.push(this.createSimulatorInstanceFromTemplate(templateId, deviceSimulator, index, additionals, series));
-      })(i);
+      promiseArray.push(
+        this.createSimulatorInstanceFromTemplate(templateId, _.cloneDeep(deviceSimulator), i + 1, additionals, series)
+      );
     }
     await Promise.all(promiseArray);
   }
