@@ -81,8 +81,7 @@
   cursor: s-resize;
   overflow: hidden;
   background-color: #fff;
-  background-image: url('https://cdn.sstatic.net/Sites/stackoverflow/img/sprites.svg'),
-    none;
+  background-image: url('https://cdn.sstatic.net/Sites/stackoverflow/img/sprites.svg'), none;
   background-position: 50% -359px;
   background-size: initial;
   background-repeat: no-repeat;
@@ -108,8 +107,7 @@
   display: inline-block;
   cursor: pointer;
 
-  $items: (1400 5), (1600 7.5), (1800 12.5), (2000 15), (2200 17.5), (2400 20),
-    (2600 22.5), (2800 25);
+  $items: (1400 5), (1600 7.5), (1800 12.5), (2000 15), (2200 17.5), (2400 20), (2600 22.5), (2800 25);
 
   @each $item in $items {
     @media screen and (min-width: nth($item, 1) * 1px) {

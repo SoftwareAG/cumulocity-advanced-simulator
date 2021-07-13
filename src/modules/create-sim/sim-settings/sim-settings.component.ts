@@ -2,6 +2,15 @@ import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/co
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Alert, AlertService } from '@c8y/ngx-components';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import {
+  DefaultConfig,
+  SeriesMeasurementsForm,
+  SeriesAlarmsForm,
+  SeriesBasicEventsForm,
+  SeriesEventsForm,
+  SeriesSleepForm
+  // InputField
+} from '@constants/inputFields.const';
 import { Subscription } from 'rxjs';
 import { InputField } from '@models/inputFields.models';
 import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
@@ -13,15 +22,7 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorFileUploadDialog } from './simulator-file-upload-dialog';
 import * as _ from 'lodash';
-import {
-  DefaultConfig,
-  SeriesMeasurementsForm,
-  SeriesAlarmsForm,
-  SeriesBasicEventsForm,
-  SeriesEventsForm,
-  SeriesSleepForm
-} from '@constants/inputFields.const';
-
+import { SaveSimulatorTemplateDialog } from './save-simulator-template-dialog';
 @Component({
   selector: 'app-sim-settings',
   templateUrl: './sim-settings.component.html',
@@ -56,7 +57,7 @@ export class SimSettingsComponent {
   disableBtn = true;
   smartRestOption = 'linear';
   measurementOption = 'linear';
-  subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[] = [];
   importUrl: SafeResourceUrl;
   smartRestAllValues: {
     minIncrement?: string;
@@ -65,6 +66,7 @@ export class SimSettingsComponent {
     maximum?: string;
     unit?: string;
   } = {};
+  private subscription = new Subscription();
   smartRestSelectedConfig; // FIXME set type
 
   constructor(
@@ -199,6 +201,10 @@ export class SimSettingsComponent {
         }
       })
     );
+  }
+
+  openSimulatorTemplateModal() {
+    this.modalService.show(SaveSimulatorTemplateDialog);
   }
 
   downloadSimulator() {
