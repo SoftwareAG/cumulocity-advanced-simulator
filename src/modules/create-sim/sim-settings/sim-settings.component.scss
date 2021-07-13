@@ -50,3 +50,10 @@ select + small {
   display: inline-block;
   margin-left: 5px;
 }
+
+.action-buttons {
+  max-width: 80px;
+  max-height: 75px;
+  word-break: break-word;
+  white-space: initial;
+}

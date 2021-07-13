@@ -1,11 +1,10 @@
-<h3>Create / Edit a Series of Instructions</h3>
+<h3>{{ 'Create / Edit a Series of Instructions' | translate }}</h3>
 <br />
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="c8y-action-button">
     <a>
-      <button class="btn btn-link" (click)="openSimulatorUploadFileDialog()">
-        <i class="fa fw fa-upload"></i>&nbsp; {{ 'Import' | translate }} <br />
-        Simulator
+      <button class="btn btn-link action-buttons" (click)="openSimulatorUploadFileDialog()">
+        <i class="fa fw fa-upload"></i> {{ 'Import Simulator' | translate }}
       </button>
     </a>
   </div>
@@ -14,9 +13,8 @@
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="c8y-action-button">
     <a [href]="importUrl" [download]="'simulator-export_' + mo.id + '.json'">
-      <button class="btn btn-link" (click)="downloadSimulator()">
-        <i c8yIcon="file-text"></i>&nbsp;{{ 'Export' | translate }}<br />
-        Simulator
+      <button class="btn btn-link action-buttons" (click)="downloadSimulator()">
+        <i c8yIcon="file-text"></i>{{ 'Export Simulator' | translate }}
       </button>
     </a>
   </div>
@@ -25,9 +23,8 @@
 <c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
   <div class="c8y-action-button">
     <a>
-      <button class="btn btn-link" (click)="openSimulatorTemplateModal()">
-        <i c8yIcon="copy"></i>&nbsp; {{ 'Save' | translate }}<br />
-        template
+      <button class="btn btn-link action-buttons" (click)="openSimulatorTemplateModal()">
+        <i c8yIcon="copy"></i> {{ 'Save template' | translate }}
       </button>
     </a>
   </div>
@@ -108,7 +105,7 @@
                     class="custom-validation"
                     *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)"
                   >
-                    <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;
+                    <i c8yIcon="exclamation-circle validation-icon"></i>
                     <div>Please enter a number</div></em
                   >
                   <!-- ----------------------------------- -->
@@ -118,7 +115,7 @@
                     class="custom-validation"
                     *ngIf="selected.selected && selected.entryName === entry.name && !instructionValue[entry.name]"
                   >
-                    <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;
+                    <i c8yIcon="exclamation-circle validation-icon"></i>
                     <div>Required</div></em
                   >
                   <!-- ------------------------------------ -->
@@ -269,7 +266,7 @@
                         !(smartRestInstruction[entry.path + '_min'] | isNumber)
                       "
                     >
-                      <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;
+                      <i c8yIcon="exclamation-circle validation-icon"></i>
                       <div>Please enter a number</div></em
                     >
                     <!-- ------------------------------- -->
@@ -295,7 +292,7 @@
                         !(smartRestInstruction[entry.path + '_max'] | isNumber)
                       "
                     >
-                      <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;
+                      <i c8yIcon="exclamation-circle validation-icon"></i>
                       <div>Please enter a number</div></em
                     >
                     <!-- -------------------------------- -->
@@ -317,7 +314,7 @@
               class="custom-validation"
               *ngIf="smartRestInstruction['steps'] && !(smartRestInstruction['steps'] | isNumber)"
             >
-              <i c8yIcon="exclamation-circle validation-icon"></i>&nbsp;&nbsp;
+              <i c8yIcon="exclamation-circle validation-icon"></i>
               <div>Please enter a number</div></em
             >
             <!-- ------------------------------ -->
