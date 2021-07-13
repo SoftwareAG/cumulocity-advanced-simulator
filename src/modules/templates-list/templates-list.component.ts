@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { TemplateModel } from "@models/template.model";
-import { TemplateSelectionDialog } from "@modules/simulator-entry/template-selection-dialog";
-import { ManagedObjectUpdateService } from "@services/ManagedObjectUpdate.service";
-import { SimulatorsServiceService } from "@services/simulatorsService.service";
-import { BsModalService } from "ngx-bootstrap/modal";
-import { Subscription } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { TemplateModel } from '@models/template.model';
+import { TemplateSelectionDialog } from '@modules/simulator-entry/template-selection-dialog';
+import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
+import { SimulatorsServiceService } from '@services/simulatorsService.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: "app-templates-list",
-  templateUrl: "./templates-list.component.html",
-  styleUrls: ["./templates-list.component.scss"],
+  selector: 'app-templates-list',
+  templateUrl: './templates-list.component.html',
+  styleUrls: ['./templates-list.component.scss']
 })
 export class TemplatesListComponent implements OnInit {
   allTemplates: TemplateModel[] = [];
   subscriptions = new Subscription();
-  listClass = "interact-list";
-  viewType = "templates-view";
+  listClass = 'interact-list';
+  viewType = 'templates-view';
   constructor(
     private simulatorService: SimulatorsServiceService,
     private modalService: BsModalService,
@@ -59,4 +59,3 @@ export class TemplatesListComponent implements OnInit {
     });
   }
 }
-

@@ -30,7 +30,7 @@ export class SimulatorCardsComponent implements OnInit {
   @Input() viewType: string;
   @Input() allSimulators: CustomSimulator[];
   @Output() handleClick = new EventEmitter<MouseEvent>();
-  
+
   constructor(
     private ngXmodalService: ModalService,
     private simService: SimulatorsServiceService,
@@ -140,13 +140,13 @@ export class SimulatorCardsComponent implements OnInit {
 
   refreshList(): void {
     if (this.viewType === 'simulators-view') {
-    this.simService.getAllDevices().then((simulators) => {
-      this.allSimulators = (simulators as CustomSimulator[]).sort((entry1, entry2) => {
-        const val1 = entry1.name.toLowerCase();
-        const val2 = entry2.name.toLowerCase();
-        return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
+      this.simService.getAllDevices().then((simulators) => {
+        this.allSimulators = (simulators as CustomSimulator[]).sort((entry1, entry2) => {
+          const val1 = entry1.name.toLowerCase();
+          const val2 = entry2.name.toLowerCase();
+          return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
+        });
       });
-    });
+    }
   }
-} 
 }

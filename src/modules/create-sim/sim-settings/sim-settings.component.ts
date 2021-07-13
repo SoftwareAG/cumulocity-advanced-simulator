@@ -8,7 +8,7 @@ import {
   SeriesAlarmsForm,
   SeriesBasicEventsForm,
   SeriesEventsForm,
-  SeriesSleepForm,
+  SeriesSleepForm
   // InputField
 } from '@constants/inputFields.const';
 import { Subscription } from 'rxjs';
@@ -22,7 +22,7 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorFileUploadDialog } from './simulator-file-upload-dialog';
 import * as _ from 'lodash';
-import { SaveSimulatorTemplateDialog } from "./save-simulator-template-dialog";
+import { SaveSimulatorTemplateDialog } from './save-simulator-template-dialog';
 @Component({
   selector: 'app-sim-settings',
   templateUrl: './sim-settings.component.html',
@@ -204,18 +204,7 @@ export class SimSettingsComponent {
   }
 
   openSimulatorTemplateModal() {
-    const modal = this.modalService.show(SaveSimulatorTemplateDialog);
-    this.subscription.add(
-      modal.content.closeSubject.subscribe((result) => {
-        if (result) {
-        }
-        this.modalUnsubscribe();
-      })
-    );
-  }
-
-  modalUnsubscribe(): void {
-    this.subscription.unsubscribe();
+    this.modalService.show(SaveSimulatorTemplateDialog);
   }
 
   downloadSimulator() {

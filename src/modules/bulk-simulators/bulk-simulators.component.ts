@@ -6,13 +6,8 @@ import {
   SeriesMeasurementsForm,
   SleepForm
 } from '@constants/inputFields.const';
-import {
-  InstructionCategory,
-  SeriesInstruction,
-} from '@models/instruction.model';
-import {
-  InputField
-} from '@models/inputFields.models'
+import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
+import { InputField } from '@models/inputFields.models';
 
 @Component({
   selector: 'app-bulk-simulators',
@@ -37,7 +32,6 @@ export class BulkSimulatorsComponent {
   // TODO: Type will be fixed once SeriesInstructions type is handled
 
   constructor() {}
-
 
   selectInstructionCategory(i: number): void {
     this.selectedInstructionType = this.instructionType[i];
