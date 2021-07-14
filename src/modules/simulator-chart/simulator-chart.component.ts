@@ -201,6 +201,9 @@ export class SimulatorChartComponent implements OnInit, OnDestroy {
     this.createEventDataSet();
     this.createSleepSet();
     this.lineChartData = dataSet;
+    if(this.chart && this.chart.chart){
+      this.updateAnnotations();
+    }
   }
 
   createEventDataSet() {

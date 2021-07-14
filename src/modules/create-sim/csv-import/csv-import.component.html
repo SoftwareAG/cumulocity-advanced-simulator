@@ -59,7 +59,7 @@
           </div>
           <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
             <div class="form-group">
-              <div class="row" *ngIf="entry.value === null && !entry['csvProperty']">
+              <div class="row" *ngIf="entry.value === null && (!entry['csvProperty'] || showMappedValues)">
                 <div class="col-sm-5">
                   <span>{{ entry.path }}:</span>
                 </div>
@@ -76,8 +76,9 @@
                   </select>
                 </div>
               </div>
+            </div>
           </div>
-        </div>
+          <span class="btn-link" (click)="toggleShowMappedValues()">{{ (showMappedValues) ? 'Hide' : 'Show'}} mapped values</span>
         </ng-template>
       </ng-container>
     </div>
