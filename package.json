@@ -1,18 +1,18 @@
 {
   "name": "simulators",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "c8ycli": "c8ycli",
-    "start": "c8ycli server -u https://pssolutions.eu-latest.cumulocity.com",
+    "start": "c8ycli server",
     "build": "c8ycli build",
-    "deploy": "c8ycli deploy -u https://pssolutions.eu-latest.cumulocity.com",
+    "deploy": "c8ycli deploy",
     "locale-extract": "c8ycli locale-extract"
   },
-  "keywords": [],
+  "keywords": [ "cumulocity", "c8y", "iot-analytics" ],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@angular/animations": "8.2.13",
     "@angular/cdk": "8.2.3",
