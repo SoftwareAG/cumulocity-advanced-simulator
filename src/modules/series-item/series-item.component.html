@@ -1,19 +1,12 @@
-<div
-  class="list-group-item list-item"
-  [style.background]="selectedSeries.color"
->
+<div class="list-group-item list-item" [style.background]="selectedSeries.color">
   <header>
     <h4 class="text-truncate" [title]="selectedSeries.type">
-      <i [c8yIcon]="icon"></i>&nbsp;{{ selectedSeries.type }}
+      <i [c8yIcon]="icon"></i>
+      {{ selectedSeries.type }}
     </h4>
 
     <div class="dropdown settings" dropdown>
-      <button
-        type="button"
-        title="Actions"
-        dropdownToggle
-        class="dropdown-toggle c8y-dropdown"
-      >
+      <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
         <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
       </button>
 
@@ -26,42 +19,27 @@
         </li>
         <li>
           <button type="button" (click)="duplicateSeries()">
-            <i c8yIcon="copy"></i> Duplicate Series
+            <i c8yIcon="copy"></i> {{ 'Duplicate Series' | translate }}
           </button>
         </li>
         <li>
           <button type="button" (click)="deleteSeries()">
-            <i c8yIcon="trash"></i> Delete Series
+            <i c8yIcon="trash"></i> {{ 'Delete Series' | translate }}
           </button>
         </li>
       </ul>
     </div>
   </header>
 
-  <div
-    class="body"
-    [ngClass]="{ 'smart-rest': selectedSeries.type == 'SmartRest' }"
-  >
+  <div class="body" [ngClass]="{ 'smart-rest': selectedSeries.type == 'SmartRest' }">
     <div class="form-fields">
-      <ng-container
-        *ngIf="
-          selectedSeries.type === 'Measurement' ||
-          selectedSeries.type === 'SmartRest'
-        "
-      >
+      <ng-container *ngIf="selectedSeries.type === 'Measurement' || selectedSeries.type === 'SmartRest'">
         <div class="field field-scaling-options">
-          <label class="text-truncate" [title]="'Scaling Options'"
-            >Scaling Options</label
-          >
-          <select
-            class="form-control"
-            (change)="inputChange($event)"
-            [(ngModel)]="selectedSeries.scalingOption"
-          >
-            <option
-              *ngFor="let entry of measurementOptions"
-              [style.background]="entry"
-            >
+          <label class="text-truncate" [title]="'Scaling Options'">
+            {{ 'Scaling Options' | translate }}
+          </label>
+          <select class="form-control" (change)="inputChange($event)" [(ngModel)]="selectedSeries.scalingOption">
+            <option *ngFor="let entry of measurementOptions" [style.background]="entry">
               {{ entry }}
             </option>
           </select>
@@ -69,46 +47,28 @@
       </ng-container>
 
       <ng-container *ngFor="let entry of form">
-        <ng-container
-          *ngIf="selectedSeries.type !== 'SmartRest'; else smartRestForm"
-        >
-          <div
-            *ngIf="!entry.hidden"
-            id="{{ entry.path + '_' + id }}"
-            class="field"
-          >
+        <ng-container *ngIf="selectedSeries.type !== 'SmartRest'; else smartRestForm">
+          <div *ngIf="!entry.hidden" id="{{ entry.path + '_' + id }}" class="field">
             <div class="form-group">
-              <label class="text-truncate" [title]="entry.label">{{
-                entry.label
-              }}</label>
-              
+              <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
+
               <label class="c8y-switch" *ngIf="entry.type === 'switch'">
-                <input type="checkbox"  [(ngModel)]="instructionValue[entry.name]"/>
-                <em>{{entry.label}}</em>
+                <input type="checkbox" [(ngModel)]="instructionValue[entry.name]" />
+                <em>{{ entry.label }}</em>
               </label>
               <ng-container class="c8y-switch" *ngIf="entry.type === 'button'">
-                <button 
-                    type="button" 
-                    (click)="buttonHandler(entry);inputChange($event);"
-                    class="btn btn-primary">
-                    {{entry.placeholder}}
+                <button type="button" (click)="buttonHandler(entry); inputChange($event)" class="btn btn-primary">
+                  {{ entry.placeholder }}
                 </button>
               </ng-container>
-              <div
-                class="form-group form-group-md"
-                *ngIf="entry.type === 'select'"
-              >
+              <div class="form-group form-group-md" *ngIf="entry.type === 'select'">
                 <div class="c8y-select-wrapper">
                   <select
                     class="form-control"
                     [(ngModel)]="instructionValue[entry.name]"
                     (change)="inputChange($event)"
                   >
-                    <option
-                      *ngFor="let category of entry.options"
-                      [attr.disabled]="true"
-                      [value]="category.id"
-                    >
+                    <option *ngFor="let category of entry.options" [attr.disabled]="true" [value]="category.id">
                       {{ category.name }}
                     </option>
                   </select>
@@ -130,9 +90,7 @@
 
         <ng-template #smartRestForm>
           <div class="field">
-            <label class="text-truncate" [title]="entry.label">{{
-              entry.label
-            }}</label>
+            <label class="text-truncate" [title]="entry.label">{{ entry.label }}</label>
             <input
               *ngIf="entry.type === 'textField'"
               id="{{ entry.name + '_' + id }}"

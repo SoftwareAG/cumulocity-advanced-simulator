@@ -1,7 +1,7 @@
 <section [ngClass]="!displayAddView ? 'scale-in-ver-top' : 'scale-out-ver-top'">
   <div class="card" style="margin-bottom: 0px">
     <div class="card-block">
-      <h4>Edit Instruction</h4>
+      <h4>{{ 'Edit Instruction' | translate }}</h4>
       <br />
 
       <!-- Edit all series, add single all series types except smartrest -->
@@ -44,7 +44,7 @@
                     *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)"
                   >
                     <i c8yIcon="exclamation-circle" class="validation-icon"></i>&nbsp;&nbsp;
-                    <div>Please enter a number</div>
+                    <div>{{ 'Please enter a Number' | translate }}</div>
                   </em>
                   <!-- ------------------------------ -->
                 </div>
@@ -75,27 +75,29 @@
 
 <div class="tight-grid">
   <br />
-  <div class="col-xs-4">
+  <div class="col-xs-6">
     <button title="Add instruction" class="btn-add-block" (click)="onAddInstruction()">
-      <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> Add single Instruction
+      <i c8y-icon="arrow-right" class="fa fw fa-arrow-right"></i> {{ 'Add Single Instruction' | translate }}
     </button>
   </div>
-  <div class="col-xs-4">
+  <div class="col-xs-6">
     <button title="Add Sleep" class="btn-add-block" (click)="onAddSleep()">
-      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> Add Sleep
+      <i c8y-icon="clock-o" class="fa fw fa-clock-o"></i> {{ 'Add Sleep' | translate }}
     </button>
   </div>
+  <!--
   <div class="col-xs-4">
     <button title="Clear all Instructions" class="btn-add-block" (click)="onClearAllInstructions()">
-      <i c8y-icon="clock-o" class="fa fa-trash"></i> Clear all Instructions
+      <i c8y-icon="clock-o" class="fa fa-trash"></i> {{ 'Clear all Instructions' | translate }}
     </button>
   </div>
+  -->
 </div>
 
 <section [ngClass]="displayAddView ? 'scale-in-ver-top' : 'scale-out-ver-top'">
   <div class="card">
     <div class="card-block">
-      <h4>Add single Instruction</h4>
+      <h4>{{ 'Add Single Instruction' | translate }}</h4>
       <br />
       <select class="form-control" [(ngModel)]="selectedEditView" (ngModelChange)="change($event)">
         <option *ngFor="let first of defaultConfig">{{ first }}</option>
@@ -107,7 +109,7 @@
         (ngModelChange)="onChangeConfig($event)"
         *ngIf="selectedEditView === 'SmartRest'"
       >
-        <option [ngValue]="!smartRestSelectedConfig" disabled>Select your Smart-Rest-Template</option>
+        <option [ngValue]="!smartRestSelectedConfig" disabled>S{{ 'elect your SmartREST Template' | translate }}</option>
         <option *ngFor="let first of smartRestConfig" [ngValue]="first">
           {{ first.smartRestFields.msgId }}&nbsp;{{ first.smartRestFields.name }}
         </option>
@@ -155,7 +157,7 @@
                     *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)"
                   >
                     <i c8yIcon="exclamation-circle" class="validation-icon"></i>&nbsp;&nbsp;
-                    <div>Please enter a number</div>
+                    <div>{{ 'Please enter a Number' | translate }}</div>
                   </em>
                   <!-- ------------------------------ -->
                 </div>
@@ -193,7 +195,7 @@
                     *ngIf="smartRestInstruction[entry.path] && !(smartRestInstruction[entry.path] | isNumber)"
                   >
                     <i c8yIcon="exclamation-circle" class="validation-icon"></i>&nbsp;&nbsp;
-                    <div>Please enter a number</div></em
+                    <div>{{ 'Please enter a number' | translate }}</div></em
                   >
                   <!-- -------------------------------- -->
                 </div>
@@ -203,7 +205,7 @@
           <br />
           <div class="row">
             <button class="btn btn-default" (click)="addSingleSmartRestInstruction()" style="float: right">
-              Add SmartRest
+              {{ 'Add SmartREST' | translate }}
             </button>
           </div>
         </ng-container>

@@ -4,7 +4,8 @@
   margin-left: 2px;
 }
 
-.delete:hover, .drag-item:hover {
+.delete:hover,
+.drag-item:hover {
   transform: scale(1.3);
 }
 .delete {
@@ -14,16 +15,35 @@
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  color:#333;
-  float:right;
-  transition: .1s all;
+  color: #333;
+  float: right;
+  transition: 0.1s all;
 }
 
 .list-group-item {
   border-radius: 5px;
+  display: flex;
+
+  .drag-item,
+  button {
+    flex: 0 0 auto;
+  }
+
+  .drag-item {
+    transform: translateY(2px);
+  }
+
+  button {
+    transform: translateY(-1px);
+  }
+
+  span {
+    flex: 1 1 auto;
+    padding: 0 0.75em;
+  }
 }
 
-.empty-command-queue{
+.empty-command-queue {
   text-align: center;
   font-size: 1.2em;
   margin-top: 70px;

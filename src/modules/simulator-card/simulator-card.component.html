@@ -2,10 +2,12 @@
   <div *ngIf="viewType !== 'simulators-within-templates-view'" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
     <a class="card add-card clickable" (click)="onClickAddSimulator($event)"
       ><i c8yicon="plus-square" class="fa fw fa-plus-square"></i>
-      <ng-container *ngIf="viewType === 'simulators-view'">{{ 'Add Simulator' | translate }}</ng-container>
-      <ng-container *ngIf="viewType === 'templates-view'">{{
-        'Create Simulators from Template' | translate
-      }}</ng-container>
+      <ng-container *ngIf="viewType === 'simulators-view'">
+        {{ 'Add Simulator' | translate }}
+      </ng-container>
+      <ng-container *ngIf="viewType === 'templates-view'">
+        {{ 'Create Simulators from Template' | translate }}
+      </ng-container>
     </a>
   </div>
 
@@ -51,17 +53,20 @@
             <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
               <li>
                 <button type="button" (click)="editSimulator(simulator)">
-                  <i c8yIcon="edit"></i> {{ 'Edit Simulator' | translate }}
+                  <i c8yIcon="edit"></i>
+                  {{ 'Edit Simulator' | translate }}
                 </button>
               </li>
               <li>
                 <button type="button" (click)="onDuplicateSelected(simulator)">
-                  <i c8yIcon="copy"></i> {{ 'Duplicate' | translate }}
+                  <i c8yIcon="copy"></i>
+                  {{ 'Duplicate' | translate }}
                 </button>
               </li>
               <li>
                 <button type="button" (click)="deleteSimulatorPrompt(simulator)">
-                  <i c8yIcon="trash"></i> {{ 'Delete' | translate }}
+                  <i c8yIcon="trash"></i>
+                  {{ 'Delete' | translate }}
                 </button>
               </li>
             </ul>
@@ -127,6 +132,4 @@
       </table>
     </ng-template>
   </ng-container>
-
-  <!-- <small class="app-version">Advanced Simulators v{{ appVersion }}</small> -->
 </div>

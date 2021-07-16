@@ -34,7 +34,7 @@
   <div class="card-header separator">
     <ng-container *ngTemplateOutlet="header; context: templateCtx"></ng-container>
     <select class="form-control select-config" [(ngModel)]="selectedConfig" (ngModelChange)="onChangeConfig($event)">
-      <option value="" disabled selected>Select Instruction Type</option>
+      <option value="" disabled selected>{{ 'Select Instruction Type' | translate }}</option>
       <option *ngFor="let first of defaultConfig">{{ first }}</option>
     </select>
     <ng-container *ngIf="isSmartRestSelected">
@@ -46,7 +46,7 @@
           [(ngModel)]="smartRestSelectedConfig"
         >
           <option value="" disabled>
-            {{ 'Select your SmartRest-Template' | translate }}
+            {{ 'Select SmartREST Template' | translate }}
           </option>
           <option *ngFor="let option of smartRestConfig" [ngValue]="option">
             {{ option.smartRestFields.msgId }} {{ option.smartRestFields.name }}
@@ -57,7 +57,7 @@
       <ng-template #noSmartTemplateAvailable>
         <small>
           <i c8yIcon="info-circle"></i>
-          {{ 'No Smart-Rest-Template available.' | translate }}
+          {{ 'No SmartREST Template available.' | translate }}
         </small>
       </ng-template>
     </ng-container>
@@ -106,7 +106,7 @@
                     *ngIf="instructionValue[entry.name] && entry.isNumber && !(instructionValue[entry.name] | isNumber)"
                   >
                     <i c8yIcon="exclamation-circle validation-icon"></i>
-                    <div>Please enter a number</div></em
+                    <div>{{ 'Please nter a number' | translate }}</div></em
                   >
                   <!-- ----------------------------------- -->
 
@@ -116,7 +116,7 @@
                     *ngIf="selected.selected && selected.entryName === entry.name && !instructionValue[entry.name]"
                   >
                     <i c8yIcon="exclamation-circle validation-icon"></i>
-                    <div>Required</div></em
+                    <div>{{ 'Required' | translate }}</div></em
                   >
                   <!-- ------------------------------------ -->
                 </div>
@@ -132,7 +132,7 @@
                 {{ selectedSeries ? 'Update' : 'Add' }} {{ defaultConfig[i] }}
               </button>
               <button class="btn btn-primary" (click)="clearSeries()" style="float: right; margin-right: 12px">
-                Reset/Clear
+                {{ 'Reset' | translate }}
               </button>
 
               <select
@@ -140,7 +140,7 @@
                 style="max-width: 200px; margin-right: 20px; float: right"
                 [(ngModel)]="selectedColor"
               >
-                <option disabled value="#fff">Select Color</option>
+                <option disabled value="#fff">{{ 'Select Color' | translate }}</option>
                 <option *ngFor="let entry of reducedColors" [style.background]="entry">
                   {{ entry }}
                 </option>
@@ -152,7 +152,7 @@
                   style="max-width: 200px; margin-right: 20px; float: right"
                   [(ngModel)]="measurementOption"
                 >
-                  <option disabled value="linear">Select Scaling Option</option>
+                  <option disabled value="linear">{{ 'Select Scaling Option' | translate }}</option>
                   <option *ngFor="let entry of measurementOptions">
                     {{ entry }}
                   </option>
@@ -168,12 +168,12 @@
         <br />
         <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig.smartRestFields">
           <ng-container *ngIf="smartRestSelectedConfig.smartRestFields.customValues.length > 5">
-            <h3>Bulk Changes</h3>
+            <h3>{{ 'Bulk Changes' | translate }}</h3>
             <div class="row smartrest-bulk">
               <div class="col-xs-6">
-                <label for="{{ 'id_for_all.minimum' }}" class="text-truncate" [title]="'for_all.minimum'">{{
-                  'Minimum for all values'
-                }}</label>
+                <label for="{{ 'id_for_all.minimum' }}" class="text-truncate" [title]="'for_all.minimum'">
+                  {{ 'Minimum for All Values' | translate }}
+                </label>
                 <input
                   id="{{ 'id_for_all.minimum' }}"
                   [(ngModel)]="smartRestAllValues['minimum']"
@@ -183,9 +183,9 @@
                 />
               </div>
               <div class="col-xs-6">
-                <label for="{{ 'id_for_all.maximum' }}" class="text-truncate" [title]="'for_all.maximum'">{{
-                  'Maximum for all values'
-                }}</label>
+                <label for="{{ 'id_for_all.maximum' }}" class="text-truncate" [title]="'for_all.maximum'">
+                  {{ 'Maximum for All Values' | translate }}
+                </label>
                 <input
                   id="{{ 'id_for_all.maximum' }}"
                   [(ngModel)]="smartRestAllValues['maximum']"
@@ -195,9 +195,9 @@
                 />
               </div>
               <div class="col-xs-6">
-                <label for="{{ 'id_for_all.minIncrement' }}" class="text-truncate" [title]="'for_all.minIncrement'">{{
-                  'Increment all Minimum values'
-                }}</label>
+                <label for="{{ 'id_for_all.minIncrement' }}" class="text-truncate" [title]="'for_all.minIncrement'">
+                  {{ 'Increment All Minimum Values' | translate }}
+                </label>
                 <input
                   id="{{ 'id_for_all.minIncrement' }}"
                   [(ngModel)]="smartRestAllValues['minIncrement']"
@@ -207,9 +207,9 @@
                 />
               </div>
               <div class="col-xs-6">
-                <label for="{{ 'id_for_all.maxIncrement' }}" class="text-truncate" [title]="'for_all.maxIncrement'">{{
-                  'Increment all Maximum values'
-                }}</label>
+                <label for="{{ 'id_for_all.maxIncrement' }}" class="text-truncate" [title]="'for_all.maxIncrement'">
+                  {{ 'Increment All Maximum Values' | translate }}
+                </label>
                 <input
                   id="{{ 'id_for_all.maxIncrement' }}"
                   [(ngModel)]="smartRestAllValues['maxIncrement']"
@@ -219,9 +219,9 @@
                 />
               </div>
               <div class="col-xs-6">
-                <label for="{{ 'id_for_all.unit' }}" class="text-truncate" [title]="'for_all.unit'">{{
-                  'Unit for all values'
-                }}</label>
+                <label for="{{ 'id_for_all.unit' }}" class="text-truncate" [title]="'for_all.unit'">
+                  {{ 'Unit for All Values' | translate }}
+                </label>
                 <input
                   id="{{ 'id_for_all.unit' }}"
                   [(ngModel)]="smartRestAllValues['unit']"
@@ -267,7 +267,7 @@
                       "
                     >
                       <i c8yIcon="exclamation-circle validation-icon"></i>
-                      <div>Please enter a number</div></em
+                      <div>{{ 'Please enter a number' | translate }}</div></em
                     >
                     <!-- ------------------------------- -->
                   </div>
@@ -293,7 +293,7 @@
                       "
                     >
                       <i c8yIcon="exclamation-circle validation-icon"></i>
-                      <div>Please enter a number</div></em
+                      <div>{{ 'Please enter a number' | translate }}</div></em
                     >
                     <!-- -------------------------------- -->
                   </div>
@@ -301,6 +301,7 @@
               </ng-container>
             </ng-container>
           </div>
+
           <ng-container *ngIf="smartRestSelectedConfig && smartRestSelectedConfig != ''">
             <label for="{{ id + 'steps' }}" class="text-truncate" [title]="'steps'">{{ 'steps' }}</label>
             <input
@@ -315,20 +316,23 @@
               *ngIf="smartRestInstruction['steps'] && !(smartRestInstruction['steps'] | isNumber)"
             >
               <i c8yIcon="exclamation-circle validation-icon"></i>
-              <div>Please enter a number</div></em
-            >
+              <div>{{ 'Please enter a number' | translate }}</div>
+            </em>
             <!-- ------------------------------ -->
           </ng-container>
-          <br />
-          <button class="btn btn-success" (click)="saveSmartRestTemplateToCommandQueue()" style="float: right">
-            Add SmartRest
-          </button>
-          <button class="btn btn-default" (click)="clearSeries()" style="float: right; margin-right: 20px">
-            Reset/Clear
-          </button>
-          <select class="form-control smartrest-select" [(ngModel)]="smartRestOption">
-            <option disabled value="linear">Select SmartRest Option</option>
 
+          <br />
+
+          <button class="btn btn-success" (click)="saveSmartRestTemplateToCommandQueue()" style="float: right">
+            {{ 'Add SmartREST' | translate }}
+          </button>
+
+          <button class="btn btn-default" (click)="clearSeries()" style="float: right; margin-right: 20px">
+            {{ 'Reset' | translate }}
+          </button>
+
+          <select class="form-control smartrest-select" [(ngModel)]="smartRestOption">
+            <option disabled value="linear">{{ 'Select SmartREST Option' | translate }}</option>
             <option *ngFor="let entry of measurementOptions">
               {{ entry }}
             </option>
