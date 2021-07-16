@@ -118,7 +118,7 @@ export class SimSettingsComponent {
       this.simSettingsService.pushToInstructionsArray({
         ...insVal,
         index: assignedIndex,
-        option: this.measurementOption
+        scalingOption: this.measurementOption
       } as SeriesInstruction);
       this.generateRequest();
     }
@@ -192,15 +192,7 @@ export class SimSettingsComponent {
   }
 
   openSimulatorUploadFileDialog() {
-    const modal = this.modalService.show(SimulatorFileUploadDialog);
-    this.subscriptions.push(
-      modal.content.closeSubject.subscribe((result: any) => {
-        if (result) {
-          const fileType = result.name;
-          // const data =
-        }
-      })
-    );
+    this.modalService.show(SimulatorFileUploadDialog);
   }
 
   openSimulatorTemplateModal() {
@@ -259,9 +251,8 @@ export class SimSettingsComponent {
         type: InstructionCategory.SmartRest,
         config: copySmartRestSelectedConfig,
         index: index,
-        option: this.smartRestOption
+        scalingOption: this.smartRestOption
       };
-
       this.simSettingsService.pushToInstructionsArray(combinedSmartInstruction);
       const indexedCmdQ = smartRestCommandQueue.map((entry) => ({
         ...entry,

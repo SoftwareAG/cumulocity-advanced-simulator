@@ -99,6 +99,10 @@ export class SimulatorFileUploadDialog {
                     this.simSettingsService.setIndexedCommandQueue(indexedCommandQueue);
                     this.simSettingsService.setAllInstructionsSeries(res2.c8y_Series);
                   });
+                  this.updateService.simulatorUpdateFeedback(
+                    'success',
+                    this.translateService.instant('Simulator successfully imported.')
+                  );
                 });
               } else {
                 this.updateService.simulatorUpdateFeedback(

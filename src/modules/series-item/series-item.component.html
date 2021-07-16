@@ -56,7 +56,7 @@
           <select
             class="form-control"
             (change)="inputChange($event)"
-            [(ngModel)]="selectedSeries.option"
+            [(ngModel)]="selectedSeries.scalingOption"
           >
             <option
               *ngFor="let entry of measurementOptions"

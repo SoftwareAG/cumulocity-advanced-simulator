@@ -6,6 +6,7 @@ import { SimulatorSettingsService } from '@services/simulatorSettings.service';
 import { DragDropSeriesService } from '@services/DragDropSeries.service';
 import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.service';
 import * as _ from 'lodash';
+import { SeriesInstruction } from '@models/instruction.model';
 
 @Component({
   selector: 'app-series-list',
@@ -41,7 +42,7 @@ export class SeriesListComponent {
     }
   }
 
-  drop(event: CdkDragDrop<any[]>) {
+  drop(event: CdkDragDrop<SeriesInstruction[]>) {
     const instructionsArray = this.instructionsSeries;
     moveItemInArray(this.instructionsSeries, event.previousIndex, event.currentIndex);
 

@@ -28,7 +28,7 @@ export class SimulatorSettingsService {
   commandQueueUpdate$ = this.commandQueueUpdate.asObservable();
   indexedCommandQueueUpdate = new BehaviorSubject<IndexedCommandQueueEntry[]>([]);
   indexedCommandQueueUpdate$ = this.indexedCommandQueueUpdate.asObservable();
-  instructionsSeriesUpdate = new BehaviorSubject<any[]>([]);
+  instructionsSeriesUpdate = new BehaviorSubject<SeriesInstruction[]>([]);
   instructionsSeriesUpdate$ = this.instructionsSeriesUpdate.asObservable();
   resultTemplate: { commandQueue: IndexedCommandQueueEntry[]; name: string } = {
     commandQueue: [],
@@ -52,7 +52,7 @@ export class SimulatorSettingsService {
     private updateService: ManagedObjectUpdateService
   ) {}
 
-  fetchAllSeries(mo: CustomSimulator): Promise<any[]> {
+  fetchAllSeries(mo: CustomSimulator): Promise<SeriesInstruction[]> {
     this.allTypesSeries = mo.c8y_Series;
     return new Promise((resolve, reject) => resolve(this.allTypesSeries));
   }
@@ -104,7 +104,7 @@ export class SimulatorSettingsService {
 
   createIndexedCommandQueue(
     additionals: AdditionalParameter[],
-    allInstructionsSeries: any[],
+    allInstructionsSeries: SeriesInstruction[],
     MOCommandQueue: CommandQueueEntry[]
   ) {
     let indexedCommandQueue: IndexedCommandQueueEntry[] = [];
@@ -206,7 +206,7 @@ export class SimulatorSettingsService {
   buttonHandler(
     inputField: InputField,
     instructionValue: SeriesInstruction | Partial<SeriesInstruction>,
-    allInstructionsSeries
+    allInstructionsSeries: SeriesInstruction[]
   ): SeriesInstruction | Partial<SeriesInstruction> {
     if (inputField.name === 'sleepsEqualToInstructions') {
       let steps = 0;
@@ -214,7 +214,7 @@ export class SimulatorSettingsService {
         if (entry.steps) {
           steps += +entry.steps + 1;
         }
-        if (entry.numberOfSleeps) {
+        if (entry.type === InstructionCategory.Sleep && entry.numberOfSleeps) {
           steps += +entry.numberOfSleeps;
         }
       }
@@ -294,7 +294,7 @@ export class SimulatorSettingsService {
   modifyInstructionSeries(series) {
     let modifiedSeries = series.type === 'SmartRest' ? { ...series.instruction, type: series.type } : series;
     if (series.type !== 'SmartRest' || series.type !== 'Measurement') {
-      const { option, ...nonOptionSeries } = modifiedSeries;
+      const { scalingOption, ...nonOptionSeries } = modifiedSeries;
       modifiedSeries = nonOptionSeries;
     }
     if (

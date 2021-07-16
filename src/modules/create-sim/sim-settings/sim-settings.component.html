@@ -233,7 +233,7 @@
             </div>
           </ng-container>
           <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
-            <ng-container *ngIf="entry.value === null">
+            <ng-container *ngIf="entry.value === null || entry.value === ''">
               <div [hidden]="entry | isValue">
                 <label for="{{ id + entry.path }}" class="text-truncate" [title]="entry.path">{{ entry.path }}</label>
                 <input

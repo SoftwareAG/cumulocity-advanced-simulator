@@ -1,6 +1,13 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
-import { SeriesInstruction } from '@models/instruction.model';
+import { InstructionCategory, SeriesInstruction, SmartRestConfiguration } from '@models/instruction.model';
+import {
+  SeriesMeasurementsForm,
+  SeriesAlarmsForm,
+  SeriesBasicEventsForm,
+  SeriesEventsForm,
+  SeriesSleepForm
+} from '@constants/inputFields.const';
 import { InputField } from '@models/inputFields.models';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
@@ -8,13 +15,8 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { SmartRESTService } from '@services/smartREST.service';
 import { FormState } from '@models/formstate.model';
 import * as _ from 'lodash';
-import {
-  SeriesAlarmsForm,
-  SeriesBasicEventsForm,
-  SeriesEventsForm,
-  SeriesMeasurementsForm,
-  SeriesSleepForm
-} from '@constants/inputFields.const';
+import { CustomSimulator } from '@models/simulator.model';
+import { SmartRESTConfiguration } from '@models/smartREST.model';
 
 @Component({
   selector: 'app-series-item',
@@ -24,11 +26,11 @@ import {
 export class SeriesItemComponent implements OnInit {
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
-  @Input() smartRestConfig;
-  @Input() id;
-  @Input() index;
+  @Input() smartRestConfig: SmartRestConfiguration;
+  @Input() id: number | string;
+  @Input() index: number;
   @Input() commandQueue: CommandQueueEntry[];
-  @Input() mo;
+  @Input() mo: CustomSimulator;
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
     this.selectedConfig = this.selectedSeries.type;
@@ -38,16 +40,16 @@ export class SeriesItemComponent implements OnInit {
   get series() {
     return this.selectedSeries;
   }
-  selectedSeries: any;
+  selectedSeries: SeriesInstruction;
   selectedConfig: string;
   instructionValue: SeriesInstruction;
   isSmartRestSelected = false;
-  smartRestSelectedConfig;
+  smartRestSelectedConfig: SmartRESTConfiguration;
   smartRestInstruction;
   form;
   icon: string;
   measurementOptions = ['linear', 'random', 'wave'];
-  allInstructionsSeries;
+  allInstructionsSeries: SeriesInstruction[];
   indexedCommandQueue: IndexedCommandQueueEntry[];
   defaultFormState = FormState.PRISTINE;
   formState = this.defaultFormState;
@@ -100,12 +102,12 @@ export class SeriesItemComponent implements OnInit {
     const indexOfSeries = duplicated.index;
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     this.allInstructionsSeries.push(duplicated);
-    if (this.instructionValue.type !== 'SmartRest') {
+    if (this.instructionValue.type !== InstructionCategory.SmartRest) {
       this.instructionService.pushToSeriesArrays(duplicated.type, duplicated);
       let template = this.simSettingsService.generateRequest();
       template.map((entry) => (entry.index = indexOfSeries));
       this.indexedCommandQueue.push(...template);
-    } else {
+    } else if (this.selectedSeries.type === InstructionCategory.SmartRest) {
       let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(
         duplicated.instruction,
         duplicated.config
@@ -153,22 +155,23 @@ export class SeriesItemComponent implements OnInit {
 
   updateSeries() {
     this.simSettingsService.randomSelected =
-      this.selectedSeries.type === 'Measurement' || this.selectedSeries.type === 'SmartRest'
-        ? this.selectedSeries.option
+      this.selectedSeries.type === InstructionCategory.Measurement ||
+      this.selectedSeries.type === InstructionCategory.SmartRest
+        ? this.selectedSeries.scalingOption
         : null;
     this.indexedCommandQueue = this.simSettingsService.indexedCommandQueue;
     const indexOfSeries = this.selectedSeries.index;
     let itemPos = this.indexedCommandQueue.findIndex((entry) => entry.index === indexOfSeries);
     this.indexedCommandQueue = this.indexedCommandQueue.filter((entry) => entry.index !== indexOfSeries);
 
-    if (this.instructionValue.type !== 'SmartRest') {
-      this.simSettingsService.randomSelected = this.selectedSeries.option;
+    if (this.instructionValue.type === InstructionCategory.Measurement) {
+      this.simSettingsService.randomSelected = this.selectedSeries.scalingOption;
       this.instructionService.pushToSeriesArrays(this.instructionValue.type, this.instructionValue);
       let template = this.simSettingsService.generateRequest();
       template.map((entry) => (entry.index = indexOfSeries));
       this.indexedCommandQueue.splice(itemPos, 0, ...template);
-    } else {
-      this.smartRestService.smartRestOption = this.selectedSeries.option;
+    } else if (this.selectedSeries.type === InstructionCategory.SmartRest) {
+      this.smartRestService.smartRestOption = this.selectedSeries.scalingOption;
       let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(
         this.selectedSeries.instruction,
         this.selectedSeries.config
