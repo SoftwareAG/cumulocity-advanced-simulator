@@ -62,8 +62,6 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
   openAddNewSimulatorDialog(): void {
     const modal = this.modalService.show(SimulatorConfigComponent);
     modal.content.allSimulatorTemplates = this.allSimulatorTemplates;
-    console.log('Modal.content.allsimulatorTemplates: ', this.allSimulatorTemplates);
-    // this.clickAddSimulators = false;
     this.subscriptions.add(
       modal.content.closeSubject.subscribe((result) => {
         if (result) {
@@ -78,7 +76,6 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     if (clicked) {
       this.openAddNewSimulatorDialog();
     }
-    
   }
 
   deleteSimulatorPrompt(simulator: CustomSimulator): Promise<boolean> {

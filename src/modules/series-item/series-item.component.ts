@@ -1,9 +1,6 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import {
-  CommandQueueEntry,
-  IndexedCommandQueueEntry,
-} from '@models/commandQueue.model';
-import { InstructionCategory, SeriesInstruction } from '@models/instruction.model';
+import { CommandQueueEntry, IndexedCommandQueueEntry } from '@models/commandQueue.model';
+import { InstructionCategory, SeriesInstruction, SmartRestConfiguration } from '@models/instruction.model';
 import {
   SeriesMeasurementsForm,
   SeriesAlarmsForm,
@@ -29,15 +26,14 @@ import { SmartRESTConfiguration } from '@models/smartREST.model';
 export class SeriesItemComponent implements OnInit {
   @Input() header: TemplateRef<any>;
   @Input() isExpanded: boolean;
-  @Input() smartRestConfig;
-  @Input() id;
+  @Input() smartRestConfig: SmartRestConfiguration;
+  @Input() id: number | string;
   @Input() index: number;
   @Input() commandQueue: CommandQueueEntry[];
   @Input() mo: CustomSimulator;
   @Input() set series(value: SeriesInstruction) {
     this.selectedSeries = value;
     this.selectedConfig = this.selectedSeries.type;
-    console.log('series-item: ', this.selectedSeries);
     this.instructionValue = value;
     this.setLabelsForSelected();
   }
@@ -111,7 +107,7 @@ export class SeriesItemComponent implements OnInit {
       let template = this.simSettingsService.generateRequest();
       template.map((entry) => (entry.index = indexOfSeries));
       this.indexedCommandQueue.push(...template);
-    } else if (this.selectedSeries.type === InstructionCategory.SmartRest){
+    } else if (this.selectedSeries.type === InstructionCategory.SmartRest) {
       let smartRestInstructionsArray = this.smartRestService.convertToSmartRestModel(
         duplicated.instruction,
         duplicated.config
@@ -170,10 +166,7 @@ export class SeriesItemComponent implements OnInit {
 
     if (this.instructionValue.type === InstructionCategory.Measurement) {
       this.simSettingsService.randomSelected = this.selectedSeries.scalingOption;
-      this.instructionService.pushToSeriesArrays(
-        this.instructionValue.type,
-        this.instructionValue
-      );
+      this.instructionService.pushToSeriesArrays(this.instructionValue.type, this.instructionValue);
       let template = this.simSettingsService.generateRequest();
       template.map((entry) => (entry.index = indexOfSeries));
       this.indexedCommandQueue.splice(itemPos, 0, ...template);

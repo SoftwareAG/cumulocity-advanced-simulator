@@ -1,6 +1,6 @@
-import { MessageIds } from "./commandQueue.model";
-import { GeoCoordinate } from "./geoCoordinate.model";
-import { SmartRESTConfiguration } from "./smartREST.model";
+import { MessageIds } from './commandQueue.model';
+import { GeoCoordinate } from './geoCoordinate.model';
+import { SmartRESTConfiguration } from './smartREST.model';
 
 export enum InstructionCategory {
   'Measurement' = 'Measurement',
@@ -36,7 +36,7 @@ export interface Instruction2 {
   type?: InstructionCategory;
   color?: string;
   steps?: number | string;
-  scalingOption? : string;
+  scalingOption?: string;
 }
 
 export interface SeriesMeasurementInstruction extends MeasurementInstruction {
@@ -56,8 +56,8 @@ export interface SeriesCSVInstruction extends SmartInstruction {
 
 export interface SmartInstruction extends Instruction2 {
   type: InstructionCategory.SmartRest | InstructionCategory.CSVImport;
-  // measurementOption?: string;
   [key: string]: any;
+  // Using type any because smartREST object type is dynamically defined
 }
 
 export interface SmartRestConfiguration {
