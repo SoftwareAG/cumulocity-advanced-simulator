@@ -1,25 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CustomSimulator } from '@models/simulator.model';
 import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
-import { IManagedObject } from '@c8y/client';
 import { Alert, AlertService, ModalService } from '@c8y/ngx-components';
-import { CustomSimulator } from 'src/models/simulator.model';
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { SimulatorsBackendService } from '@services/simulatorsBackend.service';
-import { SimulatorConfigComponent } from '../simulator-config/simulator-config.component';
-import { version } from '../../../package.json';
 
 @Component({
-  selector: 'app-simulator-entry',
-  templateUrl: './simulator-entry.component.html',
-  styleUrls: ['./simulator-entry.component.scss']
+  selector: 'app-simulator-card',
+  templateUrl: './simulator-card.component.html',
+  styleUrls: ['./simulator-card.component.scss']
 })
-export class SimulatorEntryComponent implements OnInit, OnDestroy {
-  subscriptions = new Subscription();
-  allSimulators: IManagedObject[];
-  allSimulatorTemplates: IManagedObject[];
+export class SimulatorCardsComponent implements OnInit {
   instructionTypes: {
     category: {
       icon: string;
@@ -33,82 +26,24 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     { category: { icon: 'clock-o', type: 'sleep', break: false } },
     { category: { icon: 'sitemap', type: 'smartRest', break: false } }
   ];
-  listClass = 'interact-list';
-  appVersion: string;
-  clickAddSimulators = false;
-  viewType = 'simulators-view';
+  @Input() listClass: string;
+  @Input() viewType: string;
+  @Input() allSimulators: CustomSimulator[];
+  @Output() handleClick = new EventEmitter<MouseEvent>();
 
   constructor(
-    private modalService: BsModalService,
     private ngXmodalService: ModalService,
     private simService: SimulatorsServiceService,
     private router: Router,
     private backend: SimulatorsBackendService,
     private alertService: AlertService,
     private translateService: TranslateService
-  ) {
-    this.appVersion = version;
-  }
+  ) {}
 
-  ngOnInit(): void {
-    this.refreshList();
-    this.getSimulatorTemplates();
-  }
+  ngOnInit() {}
 
-  ngOnDestroy(): void {
-    this.modalUnsubscribe();
-  }
-
-  openAddNewSimulatorDialog(): void {
-    const modal = this.modalService.show(SimulatorConfigComponent);
-    modal.content.allSimulatorTemplates = this.allSimulatorTemplates;
-    console.log('Modal.content.allsimulatorTemplates: ', this.allSimulatorTemplates);
-    // this.clickAddSimulators = false;
-    this.subscriptions.add(
-      modal.content.closeSubject.subscribe((result) => {
-        if (result) {
-          this.modalService.hide(1);
-        }
-        this.modalUnsubscribe();
-      })
-    );
-  }
-
-  clickToOpenDialog(clicked): void {
-    if (clicked) {
-      this.openAddNewSimulatorDialog();
-    }
-    
-  }
-
-  deleteSimulatorPrompt(simulator: CustomSimulator): Promise<boolean> {
-    return this.ngXmodalService
-      .confirm(
-        'Delete Simulator',
-        'Do you want to delete the simulator "' + simulator.name + '"? This action cannot be undone.',
-        'danger',
-        {
-          ok: 'Delete',
-          cancel: 'Cancel'
-        }
-      )
-      .then(
-        () => {
-          return this.deleteSimulator(simulator);
-        },
-        () => {
-          // no actual handling required
-          return false;
-        }
-      );
-  }
-
-  onListTypeChange(layout: string): void {
-    this.listClass = layout;
-  }
-
-  modalUnsubscribe(): void {
-    this.subscriptions.unsubscribe();
+  onClickAddSimulator(event: MouseEvent) {
+    this.handleClick.emit(event);
   }
 
   editSimulator(simulator: CustomSimulator): void {
@@ -150,6 +85,28 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
     );
   }
 
+  deleteSimulatorPrompt(simulator: CustomSimulator): Promise<boolean> {
+    return this.ngXmodalService
+      .confirm(
+        'Delete Simulator',
+        'Do you want to delete the simulator "' + simulator.name + '"? This action cannot be undone.',
+        'danger',
+        {
+          ok: 'Delete',
+          cancel: 'Cancel'
+        }
+      )
+      .then(
+        () => {
+          return this.deleteSimulator(simulator);
+        },
+        () => {
+          // no actual handling required
+          return false;
+        }
+      );
+  }
+
   onDuplicateSelected(simulator: CustomSimulator): void {
     let copyDeviceSim = JSON.parse(JSON.stringify(simulator.c8y_DeviceSimulator));
     copyDeviceSim.name = simulator.name + ' #(copy)';
@@ -182,18 +139,14 @@ export class SimulatorEntryComponent implements OnInit, OnDestroy {
   }
 
   refreshList(): void {
-    this.simService.getAllDevices().then((simulators) => {
-      this.allSimulators = simulators.sort((entry1, entry2) => {
-        const val1 = entry1.name.toLowerCase();
-        const val2 = entry2.name.toLowerCase();
-        return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
+    if (this.viewType === 'simulators-view') {
+      this.simService.getAllDevices().then((simulators) => {
+        this.allSimulators = (simulators as CustomSimulator[]).sort((entry1, entry2) => {
+          const val1 = entry1.name.toLowerCase();
+          const val2 = entry2.name.toLowerCase();
+          return val1 < val2 ? -1 : val1 > val2 ? 1 : 0;
+        });
       });
-    });
-  }
-
-  private getSimulatorTemplates(): void {
-    this.simService.getSimulatorTemplates().then((templates) => {
-      this.allSimulatorTemplates = templates;
-    });
+    }
   }
 }

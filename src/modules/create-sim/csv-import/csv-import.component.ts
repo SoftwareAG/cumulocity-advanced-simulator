@@ -35,10 +35,10 @@ export class CsvImportComponent {
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
   openCSVView = false;
   @Input() allInstructionsSeries;
+  showMappedValues: boolean = false;
 
   smartRestSelectedConfig: any; // :any => smartresttemplates are highly flexible and you can't know what they include as key value pairs
   file: any; //same for csv file
-
   constructor(
     private simSettingsService: SimulatorSettingsService,
     private instructionService: InstructionService,
@@ -53,6 +53,10 @@ export class CsvImportComponent {
 
   closeCSVModal(): void {
     this.openCSVView = false;
+  }
+
+  toggleShowMappedValues(): void {
+    this.showMappedValues = !this.showMappedValues;
   }
 
   openCSVModal(): void {
