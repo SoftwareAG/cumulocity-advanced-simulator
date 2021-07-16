@@ -17,7 +17,7 @@ import { ILabels } from '@models/labels.model';
     <ng-form>
       <div class="form-group">
         <br />
-        <label translate>Enter name for simulator template *</label>
+        <label translate>{{ 'Simulator Template Name' | translate }}</label>
         <input class="form-control" [(ngModel)]="templateName" [ngModelOptions]="{ standalone: true }" />
       </div>
     </ng-form>

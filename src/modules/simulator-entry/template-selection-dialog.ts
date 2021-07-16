@@ -19,22 +19,23 @@ import * as _ from 'lodash';
     <ng-form>
       <div class="form-group">
         <br />
-        <label translate>Select from Saved Templates *</label>
+        <label>{{ 'Template' | translate }} *</label>
         <select
           class="form-control select-config"
           [(ngModel)]="simulatorTemplate"
           (ngModelChange)="onChange($event)"
           [ngModelOptions]="{ standalone: true }"
         >
-          <option value="" disabled selected>Select from Simulator Templates</option>
+          <option value="" disabled selected>{{ 'Select Template' | translate }}</option>
           <option *ngFor="let first of allSimulatorTemplates" [ngValue]="first">{{ first.name }}</option>
         </select>
 
         <br />
-        <label translate>Select number of instances * </label>
+        <label>{{ 'Number of Instances' | translate }}</label>
         <input type="text" class="form-control" [(ngModel)]="instances" [ngModelOptions]="{ standalone: true }" />
         <br />
-        <label translate>Simulator Title Prefix</label>
+
+        <label>{{ 'Simulator Title Prefix' | translate }}</label>
         <input
           class="form-control"
           placeholder="(Optional)"

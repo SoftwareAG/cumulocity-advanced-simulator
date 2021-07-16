@@ -8,8 +8,13 @@
   <ng-form>
     <div class="inputs">
       <div class="form-group width-33">
-        <label>{{ 'Enter custom simulator instance name *' | translate }}</label>
-        <input class="form-control" [(ngModel)]="simulatorTitle" [ngModelOptions]="{ standalone: true }" />
+        <label>{{ 'Simulator Name' | translate }}</label>
+        <input
+          class="form-control"
+          [(ngModel)]="simulatorTitle"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="{{ 'e.g. Vehicle Simulator' | translate }}"
+        />
       </div>
     </div>
   </ng-form>

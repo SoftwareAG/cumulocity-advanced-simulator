@@ -23,7 +23,7 @@ import { ILabels } from '@models/labels.model';
       <div class="form-group">
         <br />
         <div class="input-group">
-          <label translate>File to upload</label>
+          <label translate>{{ 'File to upload' | translate }}</label>
           <input type="file" accept=".txt,.json" class="form-control" (change)="selectFile($event.target.files)" />
         </div>
       </div>
