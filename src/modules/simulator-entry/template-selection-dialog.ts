@@ -19,14 +19,14 @@ import * as _ from 'lodash';
     <ng-form>
       <div class="form-group">
         <br />
-        <label translate>Select from saved templates *</label>
+        <label translate>Select from Saved Templates *</label>
         <select
           class="form-control select-config"
           [(ngModel)]="simulatorTemplate"
           (ngModelChange)="onChange($event)"
           [ngModelOptions]="{ standalone: true }"
         >
-          <option value="" disabled selected>Select from simulator templates</option>
+          <option value="" disabled selected>Select from Simulator Templates</option>
           <option *ngFor="let first of allSimulatorTemplates" [ngValue]="first">{{ first.name }}</option>
         </select>
 
@@ -34,7 +34,7 @@ import * as _ from 'lodash';
         <label translate>Select number of instances * </label>
         <input type="text" class="form-control" [(ngModel)]="instances" [ngModelOptions]="{ standalone: true }" />
         <br />
-        <label translate>Simulator title prefix</label>
+        <label translate>Simulator Title Prefix</label>
         <input
           class="form-control"
           placeholder="(Optional)"
@@ -49,10 +49,10 @@ export class TemplateSelectionDialog {
   private closeSubject: Subject<any> = new Subject();
 
   public labels: ILabels = {
-    ok: 'Create simulators from template',
+    ok: 'Create Simulators from Template',
     cancel: 'Cancel'
   };
-  public modalTitle = 'Choose from existing templates to create simulators';
+  public modalTitle = 'Choose from Existing Templates to Create Simulators';
 
   deviceSimulator: C8YDeviceSimulator;
   simulatorTemplate: TemplateModel;

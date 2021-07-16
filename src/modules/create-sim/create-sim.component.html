@@ -43,7 +43,7 @@
         [ngClass]="wizardStep === 2 ? 'wizard-item' : simulatorRunning ? 'wizard-item-success' : 'wizard-item-disabled'"
       >
         <div class="circle">3</div>
-        Bulk updates
+        Bulk Updates
       </div>
 
       <div
@@ -155,7 +155,7 @@
               <!-- Card header containing the title, make sure you always add text-truncate -->
               <div class="card-header separator text-truncate">
                 <div class="card-title" title="BeagleBone Black">
-                  {{ entry === 1 ? 'Just one Cycle' : 'Multiple Runthroughs' }}
+                  {{ entry === 1 ? 'Just one Cycle' : 'Multiple Cycles' }}
                 </div>
               </div>
 
@@ -221,13 +221,12 @@
           <div class="card-title" title="BeagleBone Black">Control the Simulator</div>
         </div>
         <div class="card-block">
-          Duration turns the Simulator off after the given time in seconds. This only works when you keep this site
-          open. 0 or empty Input let it run until you stop the Simulator. &nbsp;
+          Run the Simulator for the specified Duration in Seconds. This only works as long as the page is open. Zero or Empty Values let Simulator run until the Simulator is manually stopped. &nbsp;
           <input
             type="text"
             [(ngModel)]="simulatorDuration"
             [disabled]="invalidSimulator || simulatorRunning"
-            placeholder="Duration in seconds"
+            placeholder="Duration in Seconds"
           />
           <br />
           <br />

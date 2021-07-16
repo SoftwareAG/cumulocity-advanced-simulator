@@ -1,4 +1,4 @@
-<h3>Statistcs about the Simulator</h3>
+<h3>Statistics about the Simulator</h3>
 <br>
 <div class="card-group interact-grid">
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
@@ -26,19 +26,19 @@
           </thead>
           <tbody>
             <tr>
-              <td scope="row"><strong>Time for one loop:</strong></td>
+              <td scope="row"><strong>Time for one Cycle:</strong></td>
               <td>{{timeForOneLoop}}s</td>
             </tr>
             <tr>
-              <td scope="row"><strong>Runthroughs per minute:</strong></td>
+              <td scope="row"><strong>Cycles per Minute:</strong></td>
               <td>{{runthroughsPerMinute}}</td>
             </tr>
             <tr>
-              <td scope="row"><strong>Runthroughs per hour:</strong></td>
+              <td scope="row"><strong>Cycles per Hour:</strong></td>
               <td>{{runthroughsPerHour}}</td>
             </tr>
             <tr>
-              <td scope="row"><strong>Runthroughs per day:</strong></td>
+              <td scope="row"><strong>Cycles per Day:</strong></td>
               <td>{{runthroughsPerDay}}</td>
             </tr>
           </tbody>
@@ -79,25 +79,25 @@
             </thead>
             <tbody>
               <tr>
-                <td scope="row"><strong>Sum of one loop:</strong></td>
+                <td scope="row"><strong>Sum of one Cycle:</strong></td>
                 <td>{{entry.value}} {{entry.unit}}</td>
                 <td scope="row"><strong>Average:</strong></td>
                 <td>{{entry.avg / indexedCommandQueue.length | number: '1.0-2'}} {{entry.unit}}</td>
               </tr>
               <tr>
-                <td scope="row"><strong>Sum per minute:</strong></td>
+                <td scope="row"><strong>Sum per Minute:</strong></td>
                 <td>{{entry.runthroughsPerMinute}} {{entry.unit}}</td>
                 <td scope="row"><strong>Lowest:</strong></td>
                 <td>{{entry.lowest}}</td>
               </tr>
               <tr>
-                <td scope="row"><strong>Sum per hour:</strong></td>
+                <td scope="row"><strong>Sum per Hour:</strong></td>
                 <td>{{entry.runthroughsPerHour}} {{entry.unit}}</td>
                 <td scope="row"><strong>Highest:</strong></td>
                 <td>{{entry.highest}}</td>
               </tr>
               <tr>
-                <td scope="row"><strong>Sum per day:</strong></td>
+                <td scope="row"><strong>Sum per Day:</strong></td>
                 <td>{{entry.runthroughsPerDay}} {{entry.unit}}</td>
               </tr>
             </tbody>
