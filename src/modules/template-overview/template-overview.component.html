@@ -1,0 +1,27 @@
+<c8y-title>{{ 'Templates' | translate }}</c8y-title>
+<c8y-action-bar-item [itemClass]="'btn-group'" [placement]="'left'">
+  <button class="btn btn-link" (click)="changeRouteLastSite()">
+    <i c8yIcon="arrow-circle-left"></i>
+    {{ 'All Templates' | translate }}
+  </button>
+</c8y-action-bar-item>
+<div class="row">
+  <div class="col-lg-3">
+    <label>{{ 'Template Name' | translate }}</label>
+    <br />
+    <input
+      (blur)="editMode = !editMode"
+      class="form-control"
+      [(ngModel)]="templateTitle"
+      (keyup.enter)="editTemplateTitle()"
+    />&nbsp;&nbsp;
+  </div>
+
+  <div class="col-lg-9">
+    <app-simulator-card
+      [allSimulators]="allSimulatorsFromTemplate"
+      [viewType]="'simulators-within-templates-view'"
+      [listClass]="'interact-grid'"
+    ></app-simulator-card>
+  </div>
+</div>

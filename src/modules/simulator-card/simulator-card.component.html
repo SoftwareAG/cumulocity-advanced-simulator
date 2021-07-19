@@ -1,0 +1,135 @@
+<div class="card-group" [ngClass]="listClass">
+  <div *ngIf="viewType !== 'simulators-within-templates-view'" class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <a class="card add-card clickable" (click)="onClickAddSimulator($event)"
+      ><i c8yicon="plus-square" class="fa fw fa-plus-square"></i>
+      <ng-container *ngIf="viewType === 'simulators-view'">
+        {{ 'Add Simulator' | translate }}
+      </ng-container>
+      <ng-container *ngIf="viewType === 'templates-view'">
+        {{ 'Create Simulators from Template' | translate }}
+      </ng-container>
+    </a>
+  </div>
+
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 page-sticky-header card align-center">
+    <ng-container *ngIf="listClass === 'interact-list' && viewType === 'simulators-view'">
+      <br />
+      <div class="card-header card-column-40">
+        <strong>{{ 'Title' | translate }}</strong>
+      </div>
+      <div class="card-block card-column-30">
+        <strong>{{ 'Status' | translate }}</strong>
+      </div>
+      <div class="card-footer card-column-30">
+        <strong>{{ 'Instructions' | translate }}</strong>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="listClass === 'interact-list' && viewType === 'templates-view'">
+      <br />
+      <div class="card-header card-column-40">
+        <strong>{{ 'Template' | translate }}</strong>
+      </div>
+      <div class="card-block card-column-30">
+        <strong>{{ 'Last Updated' | translate }}</strong>
+      </div>
+      <div class="card-footer card-column-30">
+        <strong>{{ 'Actions' | translate }}</strong>
+      </div>
+    </ng-container>
+  </div>
+
+  <div *ngIf="!allSimulators" class="loading-indicator">
+    <c8y-loading></c8y-loading>
+  </div>
+  <ng-container *ngFor="let simulator of allSimulators">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card custom-card">
+        <div class="card-actions">
+          <div class="dropdown settings" dropdown>
+            <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
+              <i c8yIcon="ellipsis-v" class="fa fw fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
+              <li>
+                <button type="button" (click)="editSimulator(simulator)">
+                  <i c8yIcon="edit"></i>
+                  {{ 'Edit Simulator' | translate }}
+                </button>
+              </li>
+              <li>
+                <button type="button" (click)="onDuplicateSelected(simulator)">
+                  <i c8yIcon="copy"></i>
+                  {{ 'Duplicate' | translate }}
+                </button>
+              </li>
+              <li>
+                <button type="button" (click)="deleteSimulatorPrompt(simulator)">
+                  <i c8yIcon="trash"></i>
+                  {{ 'Delete' | translate }}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card-header separator card-column-40">
+          <a [routerLink]="['/createSim/' + simulator.id]">
+            <div class="align">
+              <div class="card-icon">
+                <i c8y-icon="c8y-simulator c8y-icon-duocolor" class="c8y-icon c8y-icon-simulator c8y-icon-duocolor"></i>
+              </div>
+              <div class="card-title text-truncate">&nbsp;{{ simulator.c8y_DeviceSimulator?.name }}</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card-block card-column-30">
+          <label class="c8y-switch">
+            <input
+              type="checkbox"
+              [ngModel]="simulator.c8y_DeviceSimulator.state === 'RUNNING'"
+              (ngModelChange)="onStateChange(simulator)"
+            />
+            <span></span><em> {{ simulator.c8y_DeviceSimulator.state | lowercase }}</em>
+          </label>
+        </div>
+
+        <div class="card-footer separator card-column-30">
+          <div triggers="hover" [popover]="popStats" placement="auto" #pop="bs-popover">
+            <ng-container *ngFor="let item of instructionTypes">
+              &nbsp;&nbsp;<i [c8yIcon]="item.category.icon" class="color"></i>&nbsp;
+              {{
+                (simulator.c8y_DeviceSimulator.commandQueue | instructionType)[item.category.type]
+                  ? (simulator.c8y_DeviceSimulator.commandQueue | instructionType)[item.category.type]
+                  : '0'
+              }}<ng-container *ngIf="item.category.break"><br /></ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #popStats>
+      <em>{{ 'Total Instructions' | translate }}: {{ simulator.c8y_DeviceSimulator.commandQueue.length }}</em>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>{{ 'Category' | translate }}</th>
+            <th>{{ 'Count' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of instructionTypes">
+            <td>
+              <i [c8yIcon]="item.category.icon"></i>&nbsp;<span>{{ item.category.type | capitalizeFirst }}</span>
+            </td>
+            <td>
+              {{ (simulator.c8y_DeviceSimulator.commandQueue | instructionType)[item.category.type] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </ng-container>
+</div>

@@ -1,0 +1,131 @@
+<c8y-action-bar-item [itemClass]="'btn-link'" [placement]="'right'">
+  <div class="csv-action-button">
+    <button class="btn btn-link" (click)="openCSVModal()">
+      <i c8yIcon="file-text"></i> {{ 'Import Instructions (CSV)' | translate }}
+    </button>
+  </div>
+</c8y-action-bar-item>
+
+<div *ngIf="openCSVView" class="modal-dialog modal-sm">
+  <div class="modal-content" style="z-index: 9999; position: absolute" uib-modal-transclude="">
+    <div class="modal-header">
+      <h3>
+        <i c8y-icon="icon-import" class="dlt-c8y-icon-import"></i>
+        <span>{{ 'Upload' | translate }} CSV</span>
+      </h3>
+    </div>
+    <div class="modal-body">
+      <ng-container [ngSwitch]="step">
+        <ng-template [ngSwitchCase]="1">
+          <div class="form-group">
+            <label for="upload">CSV {{ 'File' | translate }}:</label>
+            <input
+              class="form-control"
+              required
+              type="file"
+              id="upload"
+              accept=".txt,.csv"
+              (change)="prepareFileStream($event)"
+            />
+          </div>
+          <div class="form-group">
+            <label for="delimiter">{{ 'Delimiter' | translate }}:</label>
+            <input
+              class="form-control"
+              required
+              type="textfield"
+              [(ngModel)]="delimiter"
+              placeholder=" ; , % . "
+              id="delimiter"
+            />
+          </div>
+        </ng-template>
+
+        <ng-template [ngSwitchCase]="2">
+          <div class="form-group">
+            <label for="instruction-type">{{ 'Select instruction type' | translate }}:</label>
+            <select id="instruction-type" class="form-control select-config" [(ngModel)]="choosenInstructionCategory">
+              <option value="default" disabled>{{ 'Select instruction type' | translate }}:</option>
+              <option
+                *ngFor="let category of instructionCategories"
+                [value]="category"
+                [disabled]="category !== smartRestCategory"
+              >
+                <span *ngIf="category !== smartRestCategory">{{ 'Coming soon' | translate }} - </span>{{ category }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label *ngIf="choosenInstructionCategory === smartRestCategory" for="smartrestTemplate">
+              {{ 'Select SmartREST Template' | translate }}:
+            </label>
+            <select
+              [(ngModel)]="smartRestSelectedConfig"
+              *ngIf="choosenInstructionCategory === smartRestCategory"
+              id="smartrestTemplate"
+              class="form-control select-config"
+            >
+              <option [ngValue]="default" disabled>{{ 'Select your SmartREST Template' | translate }}</option>
+              <option *ngFor="let entry of smartRestConfig" [ngValue]="entry">
+                {{ entry.smartRestFields.msgId }} {{ entry.smartRestFields.name }}
+              </option>
+            </select>
+          </div>
+        </ng-template>
+
+        <ng-template [ngSwitchCase]="3">
+          <div class="form-group">
+            <strong>{{ 'Notice: Non-mapped Values will be ignored' | translate }}</strong>
+            <button class="btn btn-primary" style="width: 100%" (click)="autoMapping()">
+              {{ 'Auto Mapping' | translate }}
+            </button>
+          </div>
+          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
+            <div class="form-group">
+              <div class="row" *ngIf="entry.value === null && (!entry['csvProperty'] || showMappedValues)">
+                <div class="col-sm-5">
+                  <span>{{ entry.path }}:</span>
+                </div>
+                <div class="col-sm-2">→</div>
+                <div class="col-sm-5">
+                  <select class="form-control">
+                    <option>{{ 'Select Mapping' | translate }}</option>
+                    <option
+                      *ngFor="let csvProperty of dataProperties; let i = index"
+                      [selected]="entry['csvProperty'] === csvProperty"
+                      (click)="mapDataToSmartRest(entry, csvProperty, i)"
+                    >
+                      {{ csvProperty }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="btn-link" (click)="toggleShowMappedValues()"
+            >{{ showMappedValues ? 'Hide' : 'Show' }} mapped Values</span
+          >
+        </ng-template>
+      </ng-container>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" *ngIf="step == 1" (click)="closeCSVModal()">{{ 'Cancel' | translate }}</button>
+      <button class="btn btn-default" *ngIf="step > 1" (click)="goBack()">{{ 'Back' | translate }}</button>
+      <button class="btn btn-primary" (click)="incrementStep()">
+        <span *ngIf="step !== 3">{{ 'Continue' | translate }}</span>
+        <span *ngIf="step === 3">{{ 'Start Import' | translate }}</span>
+      </button>
+    </div>
+  </div>
+  <div
+    uib-modal-backdrop="modal-backdrop"
+    class="modal-backdrop fade in"
+    ng-style="{'z-index': 1040 + (index &amp;&amp; 1 || 0) + index*10}"
+    uib-modal-animation-class="fade"
+    modal-in-class="in"
+    modal-animation="true"
+    data-bootstrap-modal-aria-hidden-count="1"
+    aria-hidden="true"
+    style="z-index: 1040"
+  ></div>
+</div>
