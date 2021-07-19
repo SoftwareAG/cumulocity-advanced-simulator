@@ -5,6 +5,7 @@ import { ManagedObjectUpdateService } from '@services/ManagedObjectUpdate.servic
 import { SimulatorsServiceService } from '@services/simulatorsService.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { Subscription } from 'rxjs';
+import { ModalService } from '@c8y/ngx-components';
 
 @Component({
   selector: 'app-templates-list',
@@ -19,6 +20,7 @@ export class TemplatesListComponent implements OnInit {
   constructor(
     private simulatorService: SimulatorsServiceService,
     private modalService: BsModalService,
+    private ngXmodalService: ModalService,
     private updateService: ManagedObjectUpdateService
   ) {}
 
@@ -51,6 +53,28 @@ export class TemplatesListComponent implements OnInit {
 
   private modalUnsubscribe(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  deleteTemplatePrompt(template: TemplateModel): Promise<boolean | void> {
+    return this.ngXmodalService
+      .confirm(
+        'Delete Template',
+        'Do you want to delete the template "' + template.name + '"? This action cannot be undone.',
+        'danger',
+        {
+          ok: 'Delete',
+          cancel: 'Cancel'
+        }
+      )
+      .then(
+        () => {
+          return this.deleteTemplate(template);
+        },
+        () => {
+          // no actual handling required
+          return false;
+        }
+      );
   }
 
   refreshTemplateList() {

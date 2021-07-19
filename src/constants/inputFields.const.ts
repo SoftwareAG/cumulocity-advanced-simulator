@@ -2,7 +2,8 @@ import { MessageIds } from '@models/commandQueue.model';
 import { InputField } from '@models/inputFields.models';
 import { InstructionCategory } from '@models/instruction.model';
 
-export const DefaultConfig: InstructionCategory[] = [ // FIXME rename
+export const DefaultConfig: InstructionCategory[] = [
+  // FIXME rename
   InstructionCategory.Measurement,
   InstructionCategory.Alarm,
   InstructionCategory.BasicEvent,
@@ -20,16 +21,16 @@ export const MeasurementsForm: InputField[] = [
     defaultValue: MessageIds.Measurement
   },
   {
-    name: 'series',
-    label: 'Series',
-    placeholder: 'Vehicles, Airplanes',
+    name: 'fragment',
+    label: 'Fragment',
+    placeholder: 'Speed, Distance, Velocity',
     required: true,
     type: 'textField'
   },
   {
-    name: 'fragment',
-    label: 'Fragment',
-    placeholder: 'Speed, Distance, Velocity',
+    name: 'series',
+    label: 'Series',
+    placeholder: 'Vehicles, Airplanes',
     required: true,
     type: 'textField'
   },
@@ -202,7 +203,7 @@ export const SeriesSleepForm: InputField[] = [
   ...SleepForm,
   {
     name: 'numberOfSleeps',
-    label: 'Number of sleeps',
+    label: 'Number of Sleeps',
     placeholder: '10',
     required: true,
     type: 'textField',
@@ -211,7 +212,7 @@ export const SeriesSleepForm: InputField[] = [
   },
   {
     name: 'sleepsEqualToInstructions',
-    label: 'Number of sleeps equal to number of instructions',
+    label: 'Number of Sleeps Equal to Number of Instructions',
     placeholder: 'Max Sleeps',
     required: false,
     type: 'button'

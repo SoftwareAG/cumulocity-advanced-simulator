@@ -10,12 +10,13 @@
         <i class="fa fa-arrows-h"></i>
       </div>
       <div class="card-title" title="BeagleBone Black">
-        {{ 'Interleave all Series' | translate }}
+        {{ 'Interleave All Series' | translate }}
       </div>
     </div>
     <div class="card-block">
       {{
-        'Rather than having all series after one another, this alternates values belonging to each series.' | translate
+        'Rather than having all series after one another, this feature alternates values belonging to each series.'
+          | translate
       }}<br />
       <label class="c8y-switch">
         <input
@@ -39,10 +40,10 @@
       <div class="card-icon">
         <i class="fa fa-arrows-h"></i>
       </div>
-      <div class="card-title" title="BeagleBone Black">{{ 'Mirror along Y Axis' | translate }}</div>
+      <div class="card-title" title="BeagleBone Black">{{ 'Mirror Along Y Axis' | translate }}</div>
     </div>
     <div class="card-block">
-      {{ 'This duplicates values in instructions set in the reverse order.' | translate }}<br />
+      {{ 'This feature duplicates values in instructions set in the reverse order.' | translate }}<br />
       <label class="c8y-switch">
         <input type="checkbox" [ngModel]="mirroredAxis" [disabled]="invalidSimulator" (click)="toggleMirrorYAxis()" />
         <span></span>
@@ -58,12 +59,12 @@
         <i class="fa fa-area-chart"></i>
       </div>
       <div class="card-title" title="BeagleBone Black">
-        {{ 'Add some salt' | translate }}
+        {{ 'Add Some Salt' | translate }}
       </div>
     </div>
     <div class="card-block">
       <p>
-        {{ 'Set a Percentage by which the Value can vary.' | translate }}
+        {{ 'Set a percentage by which the value can vary.' | translate }}
       </p>
 
       <div class="input-group">

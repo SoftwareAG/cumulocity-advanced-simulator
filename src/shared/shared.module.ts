@@ -9,10 +9,27 @@ import { IsNumberPipe } from './pipes/isNumber.pipe';
 import { IsValuePipe } from './pipes/isValue.pipe';
 import { ToStringPipe } from './pipes/toString.pipe';
 import { WarningModalComponent } from './components/warning-modal/warning-modal.component';
+import { CapitalizeFirstPipe } from './pipes/capitalizeFirst.pipe';
 
 @NgModule({
-  declarations: [IsValuePipe, ToStringPipe, IsNumberPipe, InstructionTypePipe, CountPipe, WarningModalComponent],
-  exports: [IsValuePipe, ToStringPipe, IsNumberPipe, InstructionTypePipe, CountPipe, WarningModalComponent],
+  declarations: [
+    IsValuePipe,
+    ToStringPipe,
+    IsNumberPipe,
+    InstructionTypePipe,
+    CountPipe,
+    WarningModalComponent,
+    CapitalizeFirstPipe
+  ],
+  exports: [
+    IsValuePipe,
+    ToStringPipe,
+    IsNumberPipe,
+    InstructionTypePipe,
+    CountPipe,
+    WarningModalComponent,
+    CapitalizeFirstPipe
+  ],
   imports: [CommonModule, RouterModule, FormsModule, TranslateModule.forChild({})]
 })
 export class SharedComponentsModule {}

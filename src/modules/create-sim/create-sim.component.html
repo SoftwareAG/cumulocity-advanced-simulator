@@ -213,7 +213,7 @@
         </div>
         <div class="card-block">
           {{
-            'Run the simulator for the specified duration in seconds. This only works as long as the page is kept open. Zero or empty values let simulator run until the simulator is manually stopped.'
+            'Run the simulator for the specified duration in seconds. This only works as long as this page is kept open. Zero or empty values lets simulator run until manually stopped.'
               | translate
           }}
           <input
@@ -242,7 +242,7 @@
           <div class="card-icon">
             <i class="fa fa-arrows-h"></i>
           </div>
-          <div class="card-title" title="BeagleBone Black">{{ 'See the running Simulator' | translate }}</div>
+          <div class="card-title" title="BeagleBone Black">{{ 'See the Running Simulator' | translate }}</div>
         </div>
         <div class="card-block">
           <!-- TODO implement as link -->
@@ -279,52 +279,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngIf="(allInstructionsSeries | count).alarms">
-        <th>
-          <small>{{ 'Alarms' | translate }}</small>
-        </th>
-        &nbsp;
-        <td>
-          <small>{{ (allInstructionsSeries | count).alarms }}</small>
-        </td>
-      </tr>
-      <tr *ngIf="(allInstructionsSeries | count).sleep">
-        <th>
-          <small>{{ 'Sleep' | translate }}</small>
-        </th>
-        <td>
-          <small>{{ (allInstructionsSeries | count).sleep }}</small>
-        </td>
-      </tr>
-      <tr *ngIf="(allInstructionsSeries | count).events">
-        <th>
-          <small>{{ 'Events' | translate }}</small>
-        </th>
-        <td>
-          <small>{{ (allInstructionsSeries | count).events }}</small>
-        </td>
-      </tr>
-      <tr *ngIf="(allInstructionsSeries | count).measurements">
-        <th>
-          <small>{{ 'Measurements' | translate }}</small>
-        </th>
-        <td>
-          <small>{{ (allInstructionsSeries | count).measurements }}</small>
-        </td>
-      </tr>
-      <tr *ngIf="(allInstructionsSeries | count).smartRest">
-        <th>
-          <small>{{ 'SmartREST' | translate }}</small>
-        </th>
-        &nbsp;
-        <td>
-          <small>{{ (allInstructionsSeries | count).smartRest }}</small>
-        </td>
-      </tr>
       <tr *ngFor="let item of instructionSeriesTypes">
         <td>
           <i [c8yIcon]="item.category.icon" style="color: #b0b9bf"></i>
-          <span>{{ item.category.type }}</span>
+          <span>&nbsp;{{ item.category.type | capitalizeFirst }}</span>
         </td>
         <td>{{ (allInstructionsSeries | count)[item.category.type] }}</td>
       </tr>

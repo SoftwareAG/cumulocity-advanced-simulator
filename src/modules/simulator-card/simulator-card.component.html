@@ -122,7 +122,7 @@
         <tbody>
           <tr *ngFor="let item of instructionTypes">
             <td>
-              <i [c8yIcon]="item.category.icon"></i>&nbsp;<span>{{ item.category.type }}</span>
+              <i [c8yIcon]="item.category.icon"></i>&nbsp;<span>{{ item.category.type | capitalizeFirst }}</span>
             </td>
             <td>
               {{ (simulator.c8y_DeviceSimulator.commandQueue | instructionType)[item.category.type] }}
