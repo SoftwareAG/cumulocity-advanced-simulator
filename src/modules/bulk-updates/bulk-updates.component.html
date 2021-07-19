@@ -10,11 +10,13 @@
         <i class="fa fa-arrows-h"></i>
       </div>
       <div class="card-title" title="BeagleBone Black">
-        {{ 'Intertleave all Series' | translate }}
+        {{ 'Interleave all Series' | translate }}
       </div>
     </div>
     <div class="card-block">
-      {{ 'Rather than having all Series after another this alternates each Series.' | translate }}<br />
+      {{
+        'Rather than having all series after one another, this alternates values belonging to each series.' | translate
+      }}<br />
       <label class="c8y-switch">
         <input
           type="checkbox"
@@ -40,7 +42,7 @@
       <div class="card-title" title="BeagleBone Black">{{ 'Mirror along Y Axis' | translate }}</div>
     </div>
     <div class="card-block">
-      {{ 'This duplicates all Values in the Instructionset in reverse Order.' | translate }}<br />
+      {{ 'This duplicates values in instructions set in the reverse order.' | translate }}<br />
       <label class="c8y-switch">
         <input type="checkbox" [ngModel]="mirroredAxis" [disabled]="invalidSimulator" (click)="toggleMirrorYAxis()" />
         <span></span>
@@ -81,7 +83,7 @@
       </div>
 
       <button (click)="addSomeSalt()" [disabled]="invalidSimulator" class="btn btn-primary">
-        {{ 'Variate' | translate }}
+        {{ 'Randomize' | translate }}
       </button>
     </div>
   </div>
