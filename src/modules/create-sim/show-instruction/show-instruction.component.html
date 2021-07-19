@@ -1,0 +1,98 @@
+<h3>Work with a single Instruction</h3>
+<br />
+<div
+  class="alert alert-warning"
+  *ngIf="warning && indexedCommandQueue.length"
+  style="max-width: 100%; display: inline-block"
+  role="alert"
+>
+  <strong>{{ warning.title }}</strong> {{ warning.message }}
+</div>
+<app-edit-instruction
+  *ngIf="!editedValue"
+  [mo]="mo"
+  [indexedCommandQueue]="indexedCommandQueue"
+></app-edit-instruction>
+<!-- {{resultTemplate.commandQueue | json }} -->
+<section style="height: calc(100% - 110px)">
+  <div
+    class="col-sm-12 empty-command-queue"
+    style="text-align: center"
+    *ngIf="!indexedCommandQueue.length">
+    <div class="c8y-empty-state text-left">
+      <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+      <p>
+        <strong>No Instruction found.</strong><br>
+        Create your first Instruction or Series...
+      </p>
+    </div>
+  </div>
+  <div  cdkDropList
+  id="indexed"
+  (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let item of indexedCommandQueue; let i = index"
+      [style.background]="item.color"
+      cdkDrag [cdkDragData]="item">
+          <div class="custom-placeholder" *cdkDragPlaceholder></div>
+        <!-- <div style="display: flex; cursor: move;"> -->
+          <button class="list-group-item" [style.background]="item.color" (click)="updateCurrentValue(item)">
+            
+            <span *ngIf="item.type === 'sleep'">
+              <i class="fa fw fa-clock-o drag-item"></i>&nbsp;
+              &nbsp;Sleep &nbsp;{{ item.seconds }} seconds
+            </span>
+
+
+            
+            <span *ngIf="item.type === 'builtin' && item.messageId === '200'">
+              <i class="fa fw fa-list drag-item"></i>&nbsp;
+              &nbsp;Custom measurement &nbsp;<em>{{ item.messageId }}</em>&nbsp;
+              <ng-container *ngFor="let value of item.values;"><span>{{ value }}&nbsp;</span></ng-container>
+            </span>
+
+            
+            <span *ngIf="item.type === 'builtin' &&
+            (item.messageId === '301' ||
+            item.messageId === '302' ||
+            item.messageId === '303')">
+              <i class="fa fw fa-bell drag-item"></i>&nbsp;
+              &nbsp;Custom alarm &nbsp;<em>{{ item.messageId }}</em>&nbsp;
+              <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+            </span>
+            
+            
+            <span *ngIf="item.type === 'builtin' &&
+            (item.messageId === '400' ||
+            item.messageId === '401' ||
+            item.messageId === '402')">
+                  <i class="fa fw fa-tasks drag-item"></i>&nbsp;
+                  &nbsp;Custom event &nbsp;<em>{{ item.messageId }}</em>&nbsp;
+                  <ng-container *ngFor="let value of item.values">{{ value }}&nbsp;</ng-container>
+                </span>
+                
+                
+            <span *ngIf="item.type === 'message'">
+                  <i class="fa fw fa-sitemap drag-item"></i>&nbsp;
+                  &nbsp;SmartREST Template &nbsp;<em>{{ item.templateId }}</em>&nbsp; / &nbsp;<em>{{ item.messageId }}</em>&nbsp;
+              <ng-container *ngFor="let value of item.values;"><span>{{ value }}&nbsp;</span></ng-container>
+            </span>
+
+
+            <button class="delete">
+              <i
+                class="fa fw fa-trash"
+                (click)="deleteMeasurementOrSleep(item)"></i>
+            </button>
+          </button>
+          <div >
+            <app-edit-instruction 
+              *ngIf="item === editedValue"
+              [displayEditView]="true" 
+              [edit]="editedValue" 
+              [mo]="mo" 
+              [indexedCommandQueue]="indexedCommandQueue" 
+              [editedValue]="editedValue"></app-edit-instruction>
+          </div>
+    </div>
+  </div>
+</section>
