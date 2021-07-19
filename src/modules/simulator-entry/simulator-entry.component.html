@@ -1,0 +1,44 @@
+<c8y-title>Advanced Simulator</c8y-title>
+
+<c8y-action-bar-item>
+  <div
+    class="dropdown"
+    dropdown
+    *ngIf="allSimulators && allSimulators.length > 1"
+  >
+    <button
+      type="button"
+      title="dropdown-toggle"
+      dropdownToggle
+      class="btn btn-default dropdown-toggle c8y-dropdown"
+    >
+      <span
+        ><i
+          c8yIcon="{{
+            listClass == 'interact-list' ? 'align-justify' : 'th-large'
+          }}"
+        ></i>
+        {{ listClass == 'interact-list' ? 'List Layout' : 'Grid Layout' }}</span
+      >
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" *dropdownMenu>
+      <li>
+        <button type="button" (click)="onListTypeChange('interact-list')">
+          <i c8yIcon="align-justify"></i> List Layout
+        </button>
+      </li>
+      <li>
+        <button type="button" (click)="onListTypeChange('interact-grid')">
+          <i c8yIcon="th-large"></i> Grid Layout
+        </button>
+      </li>
+    </ul>
+  </div>
+</c8y-action-bar-item>
+
+  <app-simulator-card [allSimulators]="allSimulators" [listClass]="listClass" [viewType]="viewType" (handleClick)="clickToOpenDialog($event)"></app-simulator-card>
+  
+  
+  <small class="app-version">Advanced Simulators v{{ appVersion }}</small>
+
