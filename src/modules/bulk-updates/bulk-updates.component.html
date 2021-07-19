@@ -1,0 +1,91 @@
+<div class="col-xs-12">
+  <h3>{{ 'Bulk changes' | translate }}</h3>
+  <br />
+</div>
+
+<div class="col-sm-6 col-md-4" [ngClass]="{ disabled: invalidSimulator }">
+  <div class="card">
+    <div class="card-header separator text-truncate">
+      <div class="card-icon">
+        <i class="fa fa-arrows-h"></i>
+      </div>
+      <div class="card-title" title="BeagleBone Black">
+        {{ 'Interleave All Series' | translate }}
+      </div>
+    </div>
+    <div class="card-block">
+      {{
+        'Rather than having all series after one another, this feature alternates values belonging to each series.'
+          | translate
+      }}<br />
+      <label class="c8y-switch">
+        <input
+          type="checkbox"
+          [ngModel]="intertwinedValues"
+          [disabled]="invalidSimulator || allInstructionsSeries.length < 2"
+          (click)="toggleIntertwineSeries()"
+        />
+        <span></span>
+      </label>
+      <p *ngIf="allInstructionsSeries.length < 2" class="additional-information">
+        {{ 'You need at least two Series to Interleave' | translate }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-6 col-md-4" [ngClass]="{ disabled: invalidSimulator }">
+  <div class="card">
+    <div class="card-header separator text-truncate">
+      <div class="card-icon">
+        <i class="fa fa-arrows-h"></i>
+      </div>
+      <div class="card-title" title="BeagleBone Black">{{ 'Mirror Along Y Axis' | translate }}</div>
+    </div>
+    <div class="card-block">
+      {{ 'This feature duplicates values in instructions set in the reverse order.' | translate }}<br />
+      <label class="c8y-switch">
+        <input type="checkbox" [ngModel]="mirroredAxis" [disabled]="invalidSimulator" (click)="toggleMirrorYAxis()" />
+        <span></span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-6 col-md-4" [ngClass]="{ disabled: invalidSimulator }">
+  <div class="card">
+    <div class="card-header separator text-truncate">
+      <div class="card-icon">
+        <i class="fa fa-area-chart"></i>
+      </div>
+      <div class="card-title" title="BeagleBone Black">
+        {{ 'Add Some Salt' | translate }}
+      </div>
+    </div>
+    <div class="card-block">
+      <p>
+        {{ 'Set a percentage by which the value can vary.' | translate }}
+      </p>
+
+      <div class="input-group">
+        <select class="form-control select-config" [(ngModel)]="randomizeValueType">
+          <option>{{ 'All' | translate }}</option>
+          <option>{{ 'SmartREST' | translate }}</option>
+          <option>{{ 'Measurements' | translate }}</option>
+        </select>
+        &nbsp;
+        <input
+          type="text"
+          [(ngModel)]="saltValue"
+          [disabled]="invalidSimulator"
+          placeholder="{{ 'Percentage %' | translate }}"
+        />
+        <div class="input-group-addon">%</div>
+      </div>
+
+      <button (click)="addSomeSalt()" [disabled]="invalidSimulator" class="btn btn-primary">
+        {{ 'Randomize' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

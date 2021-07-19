@@ -1,0 +1,76 @@
+<div>
+  <div class="col-sm-12 empty-command-queue" style="text-align: center" *ngIf="!indexedCommandQueue.length">
+    <div class="c8y-empty-state text-left">
+      <h1 class="c8y-icon c8y-icon-data-points c8y-icon-duocolor"></h1>
+      <p>
+        <strong>{{ 'No Instruction Found' | translate }}</strong>
+        {{ 'Create your first Instruction or Series.' | translate }}
+      </p>
+    </div>
+  </div>
+
+  <canvas
+    baseChart
+    height="120"
+    [datasets]="lineChartData"
+    [options]="lineChartOptions"
+    [colors]="lineChartColors"
+    [chartType]="lineChartType"
+  ></canvas>
+  <button
+    type="button"
+    (click)="toggleAlarms()"
+    *ngIf="!showAlarms && alarmLines.length"
+    class="btn-icon btn btn-primary"
+  >
+    <i class="fa fw fa-bell"></i>
+    {{ 'Show Alarms' | translate }}
+  </button>
+  <button
+    type="button"
+    (click)="toggleAlarms()"
+    *ngIf="showAlarms && alarmLines.length"
+    class="btn-icon btn btn-default"
+  >
+    <i class="fa fw fa-bell"></i>
+    {{ 'Hide Alarms' | translate }}
+  </button>
+
+  <button
+    type="button"
+    (click)="toggleEvents()"
+    *ngIf="!showEvents && eventLines.length"
+    class="btn-icon btn btn-primary"
+  >
+    <i class="fa fw fa-tasks"></i>
+    {{ 'Show Events' | translate }}
+  </button>
+  <button
+    type="button"
+    (click)="toggleEvents()"
+    *ngIf="showEvents && eventLines.length"
+    class="btn-icon btn btn-default"
+  >
+    <i class="fa fw fa-tasks"></i>
+    {{ 'Hide Events' | translate }}
+  </button>
+
+  <button
+    type="button"
+    (click)="toggleSleeps()"
+    *ngIf="!showSleeps && sleepLines.length"
+    class="btn-icon btn btn-primary"
+  >
+    <i class="fa fw fa-clock-o"></i>
+    {{ 'Show Sleep' | translate }}
+  </button>
+  <button
+    type="button"
+    (click)="toggleSleeps()"
+    *ngIf="showSleeps && sleepLines.length"
+    class="btn-icon btn btn-default"
+  >
+    <i class="fa fw fa-clock-o"></i>
+    {{ 'Hide Sleep' | translate }}
+  </button>
+</div>

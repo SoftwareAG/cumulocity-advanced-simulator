@@ -1,0 +1,20 @@
+<c8y-modal
+  title="Add Custom Operation"
+  (onClose)="saveCustomOperation($event)"
+  (onDismiss)="onDismiss($event)"
+  [labels]="labels"
+>
+  <ng-form>
+    <div class="inputs">
+      <div class="form-group width-33">
+        <label>{{ 'Custom Operation Type *' | translate }}</label>
+        <input
+          class="form-control"
+          [(ngModel)]="customOperationTitle"
+          placeholder="e.g. myCustomOperation (required)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
+    </div>
+  </ng-form>
+</c8y-modal>

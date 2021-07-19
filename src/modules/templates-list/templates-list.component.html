@@ -1,0 +1,58 @@
+<c8y-title>{{ 'Templates' | translate }}</c8y-title>
+
+<div class="card-group" [ngClass]="listClass">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <a class="card add-card clickable" (click)="openTemplateSelectionDialog()">
+      <i c8yicon="plus-square" class="fa fw fa-plus-square"></i>
+      {{ 'Create Simulators from Template' | translate }}
+    </a>
+    <br />
+  </div>
+
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 page-sticky-header card center">
+    <ng-container *ngIf="listClass === 'interact-list'">
+      <br />
+      <div class="card-header card-column-50">
+        <strong>{{ 'Template' | translate }}</strong>
+      </div>
+      <div class="card-block card-column-40">
+        <strong>{{ 'Last Updated' | translate }}</strong>
+      </div>
+      <div class="card-footer card-column-10">
+        <strong>{{ 'Actions' | translate }}</strong>
+      </div>
+    </ng-container>
+  </div>
+
+  <div *ngIf="!allTemplates" class="loading-indicator">
+    <c8y-loading></c8y-loading>
+  </div>
+
+  <ng-container *ngFor="let template of allTemplates">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card custom-card">
+        <div class="card-actions">
+          <div class="dropdown settings card-column-10" dropdown>
+            <button type="button" title="Actions" dropdownToggle class="dropdown-toggle c8y-dropdown">
+              <i c8yIcon="trash" (click)="deleteTemplatePrompt(template)"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-header separator card-column-50">
+          <a [routerLink]="['/templates/' + template.id]">
+            <div class="align">
+              <div class="card-icon">
+                <i c8y-icon="c8y-simulator c8y-icon-duocolor" class="c8y-icon c8y-icon-simulator c8y-icon-duocolor"></i>
+              </div>
+              <div class="card-title">&nbsp;{{ template.name }}</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="card-header card-column-40">
+          <span>{{ template.lastUpdated }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

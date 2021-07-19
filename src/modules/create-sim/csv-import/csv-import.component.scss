@@ -1,0 +1,14 @@
+label {
+  padding: 0;
+}
+
+.csv-action-button button{
+  max-width: 100px;
+  max-height: 75px;
+  word-break: break-word;
+  white-space: initial;
+}
+.csv-action-button {
+  display: flex;
+  flex-direction: row;
+}
