@@ -1,0 +1,109 @@
+<h3>Statistcs about the Simulator</h3>
+<br>
+<div class="card-group interact-grid">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="card">
+      <!-- Card header containing the title, make sure you always add text-truncate -->
+      <div class="card-header separator text-truncate">
+        <div class="card-icon">
+          <i c8y-icon="c8y-group-open" class="c8y-icon c8y-icon-group-open"></i>
+        </div>
+        <!-- Always add the title attribute -->
+        <div class="card-title" title="BeagleBone Black">
+          General Information
+        </div>
+      </div>
+
+      <!-- Card content -->
+      <!-- you may use the grid classes to structure the content horizontally -->
+      <div class="card-block">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Timing</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td scope="row"><strong>Time for one loop:</strong></td>
+              <td>{{timeForOneLoop}}s</td>
+            </tr>
+            <tr>
+              <td scope="row"><strong>Runthroughs per minute:</strong></td>
+              <td>{{runthroughsPerMinute}}</td>
+            </tr>
+            <tr>
+              <td scope="row"><strong>Runthroughs per hour:</strong></td>
+              <td>{{runthroughsPerHour}}</td>
+            </tr>
+            <tr>
+              <td scope="row"><strong>Runthroughs per day:</strong></td>
+              <td>{{runthroughsPerDay}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<h3>Calculations about Measurements</h3>
+<br>
+<div class="card-group interact-grid">
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let entry of measurementCategory">
+    <div class="card">
+      <!-- Card header containing the title, make sure you always add text-truncate -->
+      <div class="card-header separator text-truncate">
+        <div class="card-icon">
+          <i class="fa fw fa-sliders"></i>
+        </div>
+        <!-- Always add the title attribute -->
+        <div class="card-title" title="BeagleBone Black">
+          {{entry.identifier}}
+        </div>
+      </div>
+
+      <!-- Card content -->
+      <!-- you may use the grid classes to structure the content horizontally -->
+      <div class="card-block">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Sums</th>
+                <th>Value</th>
+                <th>Aggregations</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td scope="row"><strong>Sum of one loop:</strong></td>
+                <td>{{entry.value}} {{entry.unit}}</td>
+                <td scope="row"><strong>Average:</strong></td>
+                <td>{{entry.avg / indexedCommandQueue.length | number: '1.0-2'}} {{entry.unit}}</td>
+              </tr>
+              <tr>
+                <td scope="row"><strong>Sum per minute:</strong></td>
+                <td>{{entry.runthroughsPerMinute}} {{entry.unit}}</td>
+                <td scope="row"><strong>Lowest:</strong></td>
+                <td>{{entry.lowest}}</td>
+              </tr>
+              <tr>
+                <td scope="row"><strong>Sum per hour:</strong></td>
+                <td>{{entry.runthroughsPerHour}} {{entry.unit}}</td>
+                <td scope="row"><strong>Highest:</strong></td>
+                <td>{{entry.highest}}</td>
+              </tr>
+              <tr>
+                <td scope="row"><strong>Sum per day:</strong></td>
+                <td>{{entry.runthroughsPerDay}} {{entry.unit}}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+    </div>
+  </div>
+</div>

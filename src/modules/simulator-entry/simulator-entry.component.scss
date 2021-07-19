@@ -1,0 +1,36 @@
+.add-icon {
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100px;
+}
+
+.app-version {
+  flex: 1 0 auto;
+  margin: 2em 0 -1em;
+  padding: 0 12px;
+  opacity: 0.25;
+  text-align: right;
+  cursor: default;
+  transition: opacity 0.5s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+a:link {
+  text-decoration: none;
+  color: black;
+}
+
+.align {
+  display: flex;
+  flex-direction: row;
+}
