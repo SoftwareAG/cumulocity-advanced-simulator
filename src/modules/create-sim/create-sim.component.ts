@@ -116,6 +116,7 @@ export class CreateSimComponent implements OnInit {
 
     this.data = this.route.snapshot.data;
     this.mo = this.data.simulator.data;
+    console.error(this.mo);
     const mo = _.cloneDeep(this.mo);
     this.updateService.setManagedObject(mo);
     this.simulatorTitle = this.mo.c8y_DeviceSimulator.name;

@@ -64,6 +64,7 @@ export class BulkUpdatesComponent implements OnInit {
   }
 
   toggleIntertwineSeries() {
+    console.error(this.indexedCommandQueue, this.allInstructionsSeries);
     this.intertwinedValues = !this.intertwinedValues;
     let indexDistribution: { iterations?: number; index: number; count: number; start?: number }[] = [
       { index: -1, count: -1 }
@@ -129,12 +130,14 @@ export class BulkUpdatesComponent implements OnInit {
         return +a.index - +b.index;
       });
     }
-
-    this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
+    console.log(newIndexedCommandQueue);
+    console.log(this.simSettings.allInstructionsArray);
+    console.log(this.intertwinedValues);
+    /*this.simSettings.updateCommandQueueAndIndicesFromIndexedCommandQueue(newIndexedCommandQueue);
 
     this.updateService.mo.c8y_Series = this.simSettings.allInstructionsArray;
     this.updateService.mo.c8y_intertwinedValues = this.intertwinedValues;
-    this.updateService.updateSimulatorObject(this.updateService.mo);
+    this.updateService.updateSimulatorObject(this.updateService.mo);*/
   }
 
   saltValue: number;

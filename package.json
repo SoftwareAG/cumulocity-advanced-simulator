@@ -6,7 +6,7 @@
   "scripts": {
     "c8ycli": "c8ycli",
     "start": "c8ycli server -u https://pssolutions.eu-latest.cumulocity.com",
-    "build": "c8ycli build",
+    "build": "rimraf dist && c8ycli build",
     "deploy": "c8ycli deploy -u https://pssolutions.eu-latest.cumulocity.com",
     "locale-extract": "c8ycli locale-extract"
   },
