@@ -1,9 +1,5 @@
 # Advanced Simulator for Cumulocity
 
-------------------------------
-
-These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
-
 ## Feature Log
 - Create thousands of instructions simple with an UI
 - Orchestrate thousands of instructions effortlessly
@@ -24,3 +20,7 @@ Alternative way to install through CLI:
 1. Fork and clone the repositoriy
 2. Use ```npm install && npm build``` in the cloned Repo
 3. Run ```npm deploy``` and enter the URL of your tenant and enter credentials with the appropriate permission
+
+------------------------------
+
+These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
