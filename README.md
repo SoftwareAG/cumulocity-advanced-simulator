@@ -114,15 +114,7 @@ invoke build
 
 The build step will build the python project (injecting a version number based on the current tag), then build a Cumulocity microservice zip file based on a production Dockerfile.
 
-### Test
 
-Tests are run via `pytest` and can be executed using:
-
-```sh
-invoke test
-```
-
-The tests are defined under the `./tests` folder.
 
 ## Deploy
 
@@ -140,4 +132,4 @@ invoke lint build test deploy
 ```
 
 ## Documentation
-[Documentation](https://github.com/SoftwareAG/gateway-certification/blob/dev/docs/index.md)
+[Documentation](./docs/index.md)
