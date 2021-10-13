@@ -5,7 +5,9 @@ import {
   InstructionCategory,
   SmartInstruction,
   SmartRestInstruction,
-  SeriesCSVInstruction
+  SeriesCSVInstruction,
+  MeasurementInstruction,
+  Instruction
 } from '@models/instruction.model';
 import { InstructionService } from '@services/Instruction.service';
 import { SimulatorSettingsService } from '@services/simulatorSettings.service';
@@ -23,13 +25,28 @@ import { DefaultConfig } from '@constants/inputFields.const';
 export class CsvImportComponent {
   instructionCategories: InstructionCategory[] = DefaultConfig;
   smartRestCategory: InstructionCategory = InstructionCategory.SmartRest;
+  measurementCategory: InstructionCategory = InstructionCategory.Measurement;
 
-  choosenInstructionCategory: InstructionCategory = this.smartRestCategory;
+  choosenInstructionCategory: InstructionCategory = this.measurementCategory;
   step = 1;
   delimiter: string;
   data: string[][] = [];
   dataPoints: number;
   mappingsDone = 0;
+  mappingInstructions: { type: InstructionCategory; keys: string[]; values: string[]; mappings: number[] }[] = [
+    {
+      type: InstructionCategory.Measurement,
+      values: ['Fragment', 'Series', 'Value', 'Unit'],
+      keys: ['fragment', 'series', 'value', 'unit'],
+      mappings: []
+    },
+    {
+      type: InstructionCategory.Sleep,
+      values: ['Sleep'],
+      keys: ['seconds'],
+      mappings: []
+    }
+  ];
   dataProperties: string[] = [];
   @Input() smartRestConfig;
   @Input() indexedCommandQueue: IndexedCommandQueueEntry[];
@@ -92,6 +109,17 @@ export class CsvImportComponent {
     }
   }
 
+  mapDataToNonSmartRest(
+    mappingInstruction,
+    mappingInstructionIndex: number,
+    csvProperty: string,
+    csvPropertyIndex: number
+  ): void {
+    mappingInstruction.mappings[csvPropertyIndex] = mappingInstructionIndex;
+    this.mappingsDone++;
+    console.log(mappingInstruction, mappingInstructionIndex, csvProperty, csvPropertyIndex);
+  }
+
   mapDataToSmartRest(smartRestField, csvProperty: string, i: number): void {
     smartRestField['csvProperty'] = csvProperty;
     smartRestField['csvValues'] = this.data[i];
@@ -99,9 +127,43 @@ export class CsvImportComponent {
   }
 
   private startImport(): void {
-    let smartRestInstructions: SmartRestInstruction[] = [];
     const assignedIndex: string = this.allInstructionsSeries.length.toString();
+    if (this.choosenInstructionCategory === this.smartRestCategory) {
+      this.performRestImport(assignedIndex);
+    } else {
+      this.performNonRestImport(assignedIndex);
+    }
+  }
+  private performNonRestImport(assignedIndex: string): void {
+    let instructions: Instruction[] = [];
+    let usedInstructionTypes = this.mappingInstructions.filter((a) => a.mappings.length > 0);
 
+    for (let lineIndex = 0; lineIndex < this.dataPoints; lineIndex++) {
+      loop1:
+      for (let entry of usedInstructionTypes) {
+        let instruction = { type: entry.type } as Instruction;
+        loop2:
+        for (let columnIndex = 0; columnIndex < entry.mappings.length; columnIndex++) {
+          if (entry.mappings[columnIndex] === undefined) continue loop2;
+          if (this.data[columnIndex][lineIndex] === '') continue loop1;
+           let key = entry.keys[entry.mappings[columnIndex]];
+          instruction[key] = this.data[columnIndex][lineIndex];
+        }
+        
+        instructions.push(instruction);
+        let indexedCommandQueueEntry = { ...this.instructionService.instructionToCommand(instruction), index: assignedIndex };
+        
+        console.log(entry, instructions, indexedCommandQueueEntry);
+        /*
+        this.indexedCommandQueue.push(indexedCommandQueueEntry);
+        this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
+        this.updateCommandQueueInManagedObject(this.updateService.mo);*/
+      }
+    }
+    this.finishImport(assignedIndex);
+  }
+  private performRestImport(assignedIndex: string): void {
+    let smartRestInstructions: SmartRestInstruction[] = [];
     for (let i = 0; i < this.dataPoints; i++) {
       let smartRestInstruction = {
         type: InstructionCategory.SmartRest
@@ -129,8 +191,12 @@ export class CsvImportComponent {
       this.indexedCommandQueue.push(indexedCommandQueueEntry);
       this.simSettingsService.updateCommandQueueAndIndicesFromIndexedCommandQueue(this.indexedCommandQueue);
       this.updateCommandQueueInManagedObject(this.updateService.mo);
-      this.closeCSVModal();
     }
+    this.finishImport(assignedIndex);
+  }
+
+  private finishImport(assignedIndex: string): void {
+    this.closeCSVModal();
 
     this.simSettingsService.pushToInstructionsArray({
       index: assignedIndex,
@@ -186,16 +252,27 @@ export class CsvImportComponent {
       }
     }
     if (this.step === 2) {
-      if (!this.choosenInstructionCategory || !this.smartRestSelectedConfig) {
-        this.errorMessage(
-          !this.choosenInstructionCategory ? 'Please select a category.' : 'Please select a Smartrest Template.'
-        );
+      if (this.choosenInstructionCategory === this.smartRestCategory && !this.smartRestSelectedConfig) {
+        this.errorMessage('Please select a Smartrest Template.');
         valid = false;
       }
     }
     if (this.step === 3) {
+      let unusedInstructionTypes = this.mappingInstructions.filter(
+        (a) => a.mappings.length > 0 && a.mappings.length < a.values.length
+      );
+
       if (this.mappingsDone === 0) {
         this.errorMessage('Without any mappings no data will be imported');
+        valid = false;
+      } else if (unusedInstructionTypes.length) {
+        let values = '';
+        for (let i = 0; i < unusedInstructionTypes[0].values.length; i++) {
+          if (unusedInstructionTypes[0].mappings[i] === undefined) {
+            values += unusedInstructionTypes[0].values[i] + ' ';
+          }
+        }
+        this.errorMessage('Missing Instruction Types for ' + unusedInstructionTypes[0].type + ': ' + values);
         valid = false;
       }
     }
@@ -235,7 +312,7 @@ export class CsvImportComponent {
       }
       this.dataProperties = fileContent.split('\r\n')[0].split(this.delimiter);
 
-      let data = fileContent.replace(/\r\n/g, ',').split(this.delimiter);
+      let data = fileContent.replace(/\r\n/g, this.delimiter).split(this.delimiter);
       for (let i = 0; i < this.dataProperties.length; i++) {
         this.data.push([]);
         for (let j = i; j < data.length; j += this.dataProperties.length) {
@@ -247,6 +324,7 @@ export class CsvImportComponent {
         this.dataPoints = this.data[this.data.length - 1].length;
       }
     };
+    console.info(this.data, this.dataPoints);
     fileReader.readAsText(this.file);
   }
 }

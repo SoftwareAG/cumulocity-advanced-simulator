@@ -6,11 +6,11 @@
   </div>
 </c8y-action-bar-item>
 
-<div *ngIf="openCSVView" class="modal-dialog modal-sm">
+<div *ngIf="openCSVView" class="modal-dialog modal-md">
   <div class="modal-content" style="z-index: 9999; position: absolute" uib-modal-transclude="">
     <div class="modal-header">
       <h3>
-        <i c8y-icon="icon-import" class="dlt-c8y-icon-import"></i>
+        <i c8yIcon="import"></i>
         <span>{{ 'Upload' | translate }} CSV</span>
       </h3>
     </div>
@@ -40,68 +40,126 @@
             />
           </div>
         </ng-template>
-
         <ng-template [ngSwitchCase]="2">
           <div class="form-group">
             <label for="instruction-type">{{ 'Select instruction type' | translate }}:</label>
             <select id="instruction-type" class="form-control select-config" [(ngModel)]="choosenInstructionCategory">
               <option value="default" disabled>{{ 'Select instruction type' | translate }}:</option>
-              <option
-                *ngFor="let category of instructionCategories"
-                [value]="category"
-                [disabled]="category !== smartRestCategory"
-              >
-                <span *ngIf="category !== smartRestCategory">{{ 'Coming soon' | translate }} - </span>{{ category }}
+              <option *ngFor="let category of instructionCategories" [value]="category"
+                [disabled]="category !== smartRestCategory && category !== measurementCategory">
+                <span *ngIf="category !== smartRestCategory && category !== measurementCategory">{{ 'Coming soon' | translate }}
+                  - </span>{{ category }}
               </option>
             </select>
           </div>
-          <div class="form-group">
-            <label *ngIf="choosenInstructionCategory === smartRestCategory" for="smartrestTemplate">
+          <div class="form-group" *ngIf="choosenInstructionCategory === smartRestCategory">
+            <label for="smartrestTemplate">
               {{ 'Select SmartREST Template' | translate }}:
             </label>
-            <select
-              [(ngModel)]="smartRestSelectedConfig"
-              *ngIf="choosenInstructionCategory === smartRestCategory"
-              id="smartrestTemplate"
-              class="form-control select-config"
-            >
+            <select [(ngModel)]="smartRestSelectedConfig" id="smartrestTemplate" class="form-control select-config">
               <option [ngValue]="default" disabled>{{ 'Select your SmartREST Template' | translate }}</option>
               <option *ngFor="let entry of smartRestConfig" [ngValue]="entry">
                 {{ entry.smartRestFields.msgId }} {{ entry.smartRestFields.name }}
               </option>
             </select>
           </div>
+          <div class="alert alert-info" role="alert">
+            <strong>CSV doesn't has to be a specific format.</strong> We have chosen a mapping approach so that you can use your
+            CSV file as it is. The only requirement is that it is valid.
+          </div>
         </ng-template>
 
         <ng-template [ngSwitchCase]="3">
+          <ng-container *ngIf="choosenInstructionCategory === smartRestCategory">
           <div class="form-group">
             <strong>{{ 'Notice: Non-mapped Values will be ignored' | translate }}</strong>
             <button class="btn btn-primary" style="width: 100%" (click)="autoMapping()">
               {{ 'Auto Mapping' | translate }}
             </button>
           </div>
-          <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues">
+
             <div class="form-group">
-              <div class="row" *ngIf="entry.value === null && (!entry['csvProperty'] || showMappedValues)">
+              <div class="row">
                 <div class="col-sm-5">
-                  <span>{{ entry.path }}:</span>
+                  <strong>Smartrest</strong>
                 </div>
-                <div class="col-sm-2">→</div>
+                <div class="col-sm-2"></div>
                 <div class="col-sm-5">
-                  <select class="form-control">
-                    <option>{{ 'Select Mapping' | translate }}</option>
-                    <option
-                      *ngFor="let csvProperty of dataProperties; let i = index"
-                      [selected]="entry['csvProperty'] === csvProperty"
-                      (click)="mapDataToSmartRest(entry, csvProperty, i)"
-                    >
-                      {{ csvProperty }}
-                    </option>
-                  </select>
+                  <strong>Your CSV</strong>
                 </div>
               </div>
             </div>
+            <div *ngFor="let entry of smartRestSelectedConfig.smartRestFields.customValues; let i = index">
+              <ng-container *ngIf="i < 30">
+              <div class="form-group">
+                <div class="row" *ngIf="entry.value === null && (!entry['csvProperty'] || showMappedValues)">
+                  <div class="col-sm-5">
+                    <span>{{ entry.path }}:</span>
+                  </div>
+                  <div class="col-sm-2">→</div>
+                  <div class="col-sm-5">
+                    <select class="form-control">
+                      <option>{{ 'Select Mapping' | translate }}</option>
+                      <option
+                        *ngFor="let csvProperty of dataProperties; let i = index"
+                        [selected]="entry['csvProperty'] === csvProperty"
+                        (click)="mapDataToSmartRest(entry, csvProperty, i)"
+                      >
+                        {{ csvProperty }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="choosenInstructionCategory !== smartRestCategory">
+            <div class="form-group">
+              <div class="alert alert-info" role="alert">
+                <strong>Empty cells will be skipped.</strong> Therefore you do not necessarily need empty lines for individual
+                instructions but can create several instructions per
+                csv line. Learn more in the documentation
+              </div>
+            </div>
+            <div class="form-group">
+            <div class="row">
+              <div class="col-sm-5">
+                <strong>Your CSV</strong>
+              </div>
+              <div class="col-sm-2"></div>
+              <div class="col-sm-5">
+                <strong>Cumulocity Attributes</strong>
+              </div>
+            </div>
           </div>
+            <div *ngFor="let csvProperty of dataProperties; let i = index">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <span>{{csvProperty}} </span>
+                    <span>(ref. {{data[i][0]}}):</span>
+                  </div>
+                  <div class="col-sm-2">→</div>
+                  <div class="col-sm-5">
+                    <select class="form-control">
+                      <option>{{ 'Select Mapping' | translate }}</option>
+                      <ng-container *ngFor="let instructionType of mappingInstructions">
+                        <option
+                          *ngFor="let value of instructionType.values; let j = index"
+                          (click)="mapDataToNonSmartRest(instructionType, j, csvProperty, i)"
+                        >
+                          {{ value }} - {{ instructionType.type }}
+                        </option>
+                      </ng-container>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
           <span class="btn-link" (click)="toggleShowMappedValues()"
             >{{ showMappedValues ? 'Hide' : 'Show' }} mapped Values</span
           >
