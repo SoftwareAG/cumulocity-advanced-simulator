@@ -132,4 +132,4 @@ invoke lint build test deploy
 ```
 
 ## Documentation
-[Documentation](./docs/index.md)
+[Documentation](./docs/README.md)
